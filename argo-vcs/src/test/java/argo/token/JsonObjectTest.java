@@ -1,27 +1,30 @@
 package argo.token;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import java.util.HashMap;
 import java.util.Collections;
+import java.util.HashMap;
 
 public final class JsonObjectTest {
 
     @Test
     public void testEquals() {
         assertEquals(new JsonObject(new HashMap<JsonString, JsonValue>()), new JsonObject(new HashMap<JsonString, JsonValue>()));
-        assertEquals(new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue)new JsonString("Value"))), new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue)new JsonString("Value"))));
-        assertFalse(new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue)new JsonString("Value"))).equals(new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue)new JsonString("Another value")))));
+        assertEquals(new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue) new JsonString("Value"))), new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue) new JsonString("Value"))));
+        assertFalse(new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue) new JsonString("Value"))).equals(new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue) new JsonString("Another value")))));
+        assertFalse(new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue) new JsonString("Value"))).equals(new JsonObject(Collections.singletonMap(new JsonString("Another test"), (JsonValue) new JsonString("Value")))));
     }
 
     @Test
     public void testHashCode() {
-        // Add your code here
+        assertEquals(new JsonObject(new HashMap<JsonString, JsonValue>()), new JsonObject(new HashMap<JsonString, JsonValue>()));
+        assertEquals(new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue) new JsonString("Value"))).hashCode(), new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue) new JsonString("Value"))).hashCode());
     }
 
     @Test
     public void testToString() {
-        // Add your code here
+        new JsonObject(Collections.singletonMap(new JsonString("Test"), (JsonValue) new JsonString("Value"))).toString();
     }
 }
