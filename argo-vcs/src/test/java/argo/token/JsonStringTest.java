@@ -4,7 +4,10 @@ import junit.framework.TestCase;
 
 import java.io.PushbackReader;
 import java.io.StringReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class JsonStringTest extends TestCase {
 
@@ -55,13 +58,13 @@ public final class JsonStringTest extends TestCase {
     public void testTokenizesSimpleJsonStringValue() throws Exception {
         final String inputString = "{\"hello\":\"world\"}";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("hello"), (JsonValue)new JsonString("world"))), result);
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("hello"), (JsonValue) new JsonString("world"))), result);
     }
 
     public void testTokenizesSimpleJsonStringValueWithWhitespace() throws Exception {
         final String inputString = "{\"hello\": \"world\"}";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("hello"), (JsonValue)new JsonString("world"))), result);
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("hello"), (JsonValue) new JsonString("world"))), result);
     }
 
     public void testTokenizesJsonStringValuePair() throws Exception {
@@ -76,25 +79,25 @@ public final class JsonStringTest extends TestCase {
     public void testTokenizesSimpleJsonNumberValue() throws Exception {
         final String inputString = "{\"room\":101}";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("room"), (JsonValue)new JsonNumber("101"))), result);
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("room"), (JsonValue) new JsonNumber("101"))), result);
     }
 
     public void testTokenizesSimpleJsonNull() throws Exception {
         final String inputString = "{\"points\":null}";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("points"), (JsonValue)JsonConstants.NULL)), result);
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("points"), (JsonValue) JsonConstants.NULL)), result);
     }
 
     public void testTokenizesSimpleJsonTrue() throws Exception {
         final String inputString = "{\"points\":true}";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("points"), (JsonValue)JsonConstants.TRUE)), result);
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("points"), (JsonValue) JsonConstants.TRUE)), result);
     }
 
     public void testTokenizesSimpleJsonFalse() throws Exception {
         final String inputString = "{\"points\":false}";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("points"), (JsonValue)JsonConstants.FALSE)), result);
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("points"), (JsonValue) JsonConstants.FALSE)), result);
     }
 
     public void testTokenizesJsonNumberValuePair() throws Exception {
@@ -125,5 +128,23 @@ public final class JsonStringTest extends TestCase {
         final String inputString = "[]";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
         assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.<JsonValue>emptyList()), result);
+    }
+
+    public void testTokenizesSingleElementArray() throws Exception {
+        final String inputString = "[12]";
+        final JsonValue result = Tokenizer.json(new StringReader(inputString));
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.singletonList((JsonValue) new JsonNumber("12"))), result);
+    }
+
+    public void testTokenizesMultiElementArray() throws Exception {
+        final String inputString = "[12,\"test\"]";
+        final JsonValue result = Tokenizer.json(new StringReader(inputString));
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Arrays.asList(new JsonNumber("12"), new JsonString("test"))), result);
+    }
+
+    public void testTokenizesNestedArray() throws Exception {
+        final String inputString = "[[12]]";
+        final JsonValue result = Tokenizer.json(new StringReader(inputString));
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.singletonList((JsonValue) new JsonArray(Collections.singletonList((JsonValue) new JsonNumber("12"))))), result);
     }
 }

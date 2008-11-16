@@ -29,12 +29,43 @@ public final class Tokenizer {
                 result = objectString(pushbackReader);
                 break;
             case '[':
-                throw new UnsupportedOperationException("Arrays not supported yet.");
+                pushbackReader.unread(nextChar);
+                result = arrayString(pushbackReader);
+                break;
             default:
                 throw new InvalidSyntaxException("Expected either [ or { but got [" + nextChar + "].");
         }
         // TODO allow whitespace??
         return result;
+    }
+
+    private static JsonArray arrayString(final PushbackReader pushbackReader) throws IOException {
+        final List<JsonValue> elements = new LinkedList<JsonValue>();
+        final char firstChar = (char) pushbackReader.read();
+        if (firstChar != '[') {
+            throw new InvalidSyntaxException("Expected object to start with [ but got [" + firstChar + "].");
+        }
+        final char secondChar = (char) pushbackReader.read();
+        pushbackReader.unread(secondChar);
+        if (secondChar != ']') {
+            final JsonValue jsonValue = aJsonValue(pushbackReader);
+            elements.add(jsonValue);
+        }
+        boolean gotEndOfObject = false;
+        while (!gotEndOfObject) {
+            final char nextChar = (char) pushbackReader.read();
+            switch (nextChar) {
+                case ',':
+                    final JsonValue jsonValue = aJsonValue(pushbackReader);
+                    elements.add(jsonValue);
+                case ']':
+                    gotEndOfObject = true;
+                    break;
+                default:
+                    throw new InvalidSyntaxException("Expected either , or ] but got [" + nextChar + "].");
+            }
+        }
+        return new JsonArray(elements);
     }
 
     private static JsonObject objectString(final PushbackReader pushbackReader) throws IOException {
@@ -72,6 +103,11 @@ public final class Tokenizer {
         if (separatorChar != ':') {
             throw new InvalidSyntaxException("Expected object identifier to be followed by : but got [" + separatorChar + "].");
         }
+        final JsonValue value = aJsonValue(pushbackReader);
+        return new JsonField(name, value);
+    }
+
+    private static JsonValue aJsonValue(final PushbackReader pushbackReader) throws IOException {
         final JsonValue value;
         final char nextChar = (char) pushbackReader.read();
         switch (nextChar) {
@@ -123,7 +159,7 @@ public final class Tokenizer {
             default:
                 throw new InvalidSyntaxException("Invalid character at start of value [" + nextChar + "].");
         }
-        return new JsonField(name, value);
+        return value;
     }
 
     public static JsonNumber numberToken(final PushbackReader in) throws IOException {
