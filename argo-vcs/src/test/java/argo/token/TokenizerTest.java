@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class JsonStringTest extends TestCase {
+public final class TokenizerTest extends TestCase {
 
     public void testTokenizesValidString() throws Exception {
         final String inputString = "\"hello world\"";

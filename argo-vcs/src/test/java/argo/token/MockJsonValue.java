@@ -1,7 +1,7 @@
 package argo.token;
 
 /**
- * Test JsonValue that determines equality based on equality with an int provided in the constructor.  Immutable.
+ * Test JsonValue that determines equality based on equality of an int field provided in the constructor.  Immutable.
  */
 final class MockJsonValue implements JsonValue {
 
