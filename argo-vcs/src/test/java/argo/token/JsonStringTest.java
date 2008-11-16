@@ -67,6 +67,12 @@ public final class JsonStringTest extends TestCase {
         assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.singletonMap(new JsonString("hello"), (JsonValue) new JsonString("world"))), result);
     }
 
+    public void testTokenizesMultiElementArrayWithWhitespace() throws Exception {
+        final String inputString = "[ 1, 2 ]";
+        final JsonValue result = Tokenizer.json(new StringReader(inputString));
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Arrays.<JsonValue>asList(new JsonNumber("1"), new JsonNumber("2"))), result);
+    }
+
     public void testTokenizesJsonStringValuePair() throws Exception {
         final String inputString = "{\"hello\":\"world\",\"foo\":\"bar\"}";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));

@@ -35,17 +35,17 @@ public final class Tokenizer {
             default:
                 throw new InvalidSyntaxException("Expected either [ or { but got [" + nextChar + "].");
         }
-        // TODO allow whitespace??
+        //TODO - check for trailing characters?
         return result;
     }
 
     private static JsonArray arrayString(final PushbackReader pushbackReader) throws IOException {
         final List<JsonValue> elements = new LinkedList<JsonValue>();
-        final char firstChar = (char) pushbackReader.read();
+        final char firstChar = readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '[') {
             throw new InvalidSyntaxException("Expected object to start with [ but got [" + firstChar + "].");
         }
-        final char secondChar = (char) pushbackReader.read();
+        final char secondChar = readNextNonWhitespaceChar(pushbackReader);
         pushbackReader.unread(secondChar);
         if (secondChar != ']') {
             final JsonValue jsonValue = aJsonValue(pushbackReader);
@@ -53,7 +53,7 @@ public final class Tokenizer {
         }
         boolean gotEndOfObject = false;
         while (!gotEndOfObject) {
-            final char nextChar = (char) pushbackReader.read();
+            final char nextChar = readNextNonWhitespaceChar(pushbackReader);
             switch (nextChar) {
                 case ',':
                     final JsonValue jsonValue = aJsonValue(pushbackReader);
@@ -70,11 +70,11 @@ public final class Tokenizer {
 
     private static JsonObject objectString(final PushbackReader pushbackReader) throws IOException {
         final Map<JsonString, JsonValue> fields = new HashMap<JsonString, JsonValue>();
-        final char firstChar = (char) pushbackReader.read();
+        final char firstChar = readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '{') {
             throw new InvalidSyntaxException("Expected object to start with { but got [" + firstChar + "].");
         }
-        final char secondChar = (char) pushbackReader.read();
+        final char secondChar = readNextNonWhitespaceChar(pushbackReader);
         pushbackReader.unread(secondChar);
         if (secondChar != '}') {
             final JsonField jsonField = aFieldToken(pushbackReader);
@@ -82,7 +82,7 @@ public final class Tokenizer {
         }
         boolean gotEndOfObject = false;
         while (!gotEndOfObject) {
-            final char nextChar = (char) pushbackReader.read();
+            final char nextChar = readNextNonWhitespaceChar(pushbackReader);
             switch (nextChar) {
                 case ',':
                     final JsonField jsonField = aFieldToken(pushbackReader);
@@ -99,7 +99,7 @@ public final class Tokenizer {
 
     private static JsonField aFieldToken(final PushbackReader pushbackReader) throws IOException {
         final JsonString name = stringToken(pushbackReader);
-        final char separatorChar = (char) pushbackReader.read();
+        final char separatorChar = readNextNonWhitespaceChar(pushbackReader);
         if (separatorChar != ':') {
             throw new InvalidSyntaxException("Expected object identifier to be followed by : but got [" + separatorChar + "].");
         }
@@ -109,7 +109,7 @@ public final class Tokenizer {
 
     private static JsonValue aJsonValue(final PushbackReader pushbackReader) throws IOException {
         final JsonValue value;
-        final char nextChar = (char) pushbackReader.read();
+        final char nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
                 pushbackReader.unread(nextChar);
@@ -379,5 +379,23 @@ public final class Tokenizer {
             throw new InvalidSyntaxException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexidecimal number.", e);
         }
         return result;
+    }
+
+    private static char readNextNonWhitespaceChar(final Reader in) throws IOException {
+        char nextChar;
+        boolean gotNonWhitespace = false;
+        do {
+            nextChar = (char) in.read();
+            switch (nextChar) {
+                case ' ':
+                case '\t':
+                case '\n':
+                case '\r':
+                    break;
+                default:
+                    gotNonWhitespace = true;
+            }
+        } while (!gotNonWhitespace);
+        return nextChar;
     }
 }
