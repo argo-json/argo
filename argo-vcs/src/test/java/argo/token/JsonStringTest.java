@@ -124,6 +124,12 @@ public final class JsonStringTest extends TestCase {
         assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.<JsonString, JsonValue>emptyMap()), result);
     }
 
+    public void testTokenizesNestedObject() throws Exception {
+        final String inputString = "{\"Test\":{\"Inner test\":12}}";
+        final JsonValue result = Tokenizer.json(new StringReader(inputString));
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.<JsonString, JsonValue>singletonMap(new JsonString("Test"), new JsonObject(Collections.<JsonString, JsonValue>singletonMap(new JsonString("Inner test"), new JsonNumber("12"))))), result);
+    }
+
     public void testTokenizesEmptyArray() throws Exception {
         final String inputString = "[]";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
@@ -146,5 +152,17 @@ public final class JsonStringTest extends TestCase {
         final String inputString = "[[12]]";
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
         assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.singletonList((JsonValue) new JsonArray(Collections.singletonList((JsonValue) new JsonNumber("12"))))), result);
+    }
+
+    public void testTokenizesObjectWithArrayValue() throws Exception {
+        final String inputString = "{\"Test\":[12]}";
+        final JsonValue result = Tokenizer.json(new StringReader(inputString));
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.<JsonString, JsonValue>singletonMap(new JsonString("Test"), new JsonArray(Collections.<JsonValue>singletonList(new JsonNumber("12"))))), result);
+    }
+
+    public void testTokenizesArrayWithObjectElement() throws Exception {
+        final String inputString = "[{\"Test\":12}]";
+        final JsonValue result = Tokenizer.json(new StringReader(inputString));
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.<JsonValue>singletonList(new JsonObject(Collections.<JsonString, JsonValue>singletonMap(new JsonString("Test"), new JsonNumber("12"))))), result);
     }
 }

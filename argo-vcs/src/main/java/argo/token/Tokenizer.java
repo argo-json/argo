@@ -156,6 +156,14 @@ public final class Tokenizer {
                 pushbackReader.unread(nextChar);
                 value = numberToken(pushbackReader);
                 break;
+            case '{':
+                pushbackReader.unread(nextChar);
+                value = objectString(pushbackReader);
+                break;
+            case '[':
+                pushbackReader.unread(nextChar);
+                value = arrayString(pushbackReader);
+                break;
             default:
                 throw new InvalidSyntaxException("Invalid character at start of value [" + nextChar + "].");
         }
