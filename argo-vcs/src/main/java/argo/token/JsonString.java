@@ -1,14 +1,17 @@
 package argo.token;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 public final class JsonString implements JsonValue {
 
     private final String value;
 
     public JsonString(final String value) {
+        if (value == null) {
+            throw new NullPointerException("Attempt to construct a JsonNumber with a null value.");
+        }
         this.value = value;
     }
 
