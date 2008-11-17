@@ -1,42 +1,79 @@
-<project name="argo" default="dist" basedir=".">
+<project name="argo" default="compile">
+
     <description>
         Argo build file
     </description>
 
-    <!-- set global properties for this build -->
-    <property name="src" location="src/main/java"/>
-    <property name="build" location="build"/>
-    <property name="dist" location="dist"/>
-    <path id="compiletime-main-libraries">
-        <fileset dir="lib/main/compile" includes="*.jar"/>
+    <property name="location.lib" value="lib"/>
+    <property name="location.src" value="src/main"/>
+    <property name="location.src.test" value="src/test"/>
+
+    <property name="location.build" value="build"/>
+    <property name="location.classes" value="${location.build}/classes"/>
+    <property name="location.testclasses" value="${location.build}/test-classes"/>
+
+    <property name="location.dist" value="${location.build}/dist"/>
+
+    <path id="all">
+        <fileset dir="${location.lib}">
+            <include name="**/*.jar"/>
+        </fileset>
     </path>
 
-    <target name="init">
-        <!-- Create the time stamp -->
-        <tstamp/>
-        <!-- Create the build directory structure used by compile -->
-        <mkdir dir="${build}"/>
+    <target name="compile">
+        <echo message="Starting compile"/>
+        <delete dir="${location.classes}"/>
+        <mkdir dir="${location.classes}"/>
+        <delete dir="${location.testclasses}"/>
+        <mkdir dir="${location.testclasses}"/>
+
+        <javac destdir="${location.classes}" debug="on" source="1.6" target="1.6">
+            <src path="${location.src}"/>
+            <classpath refid="all"/>
+        </javac>
+
+        <javac destdir="${location.testclasses}" debug="on" source="1.6" target="1.6">
+            <src path="${location.src.test}"/>
+            <classpath refid="all"/>
+            <classpath location="${location.classes}"/>
+        </javac>
+
+        <copy todir="${location.classes}">
+            <fileset dir="src/main">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+        <echo message="Finished compile"/>
     </target>
 
-    <target name="compile" depends="init"
-            description="compile the source ">
-        <!-- Compile the java code from ${src} into ${build} -->
-        <javac srcdir="${src}" destdir="${build}" classpathref="compiletime-main-libraries"/>
+    <target name="development-version" unless="release">
+        <property file="version.properties"/>
+        <tstamp>
+            <format property="timestamp" pattern="yyyyMMddHHmm" locale="en" timezone="UTC"/>
+        </tstamp>
+        <property name="version" value="${argo.version}-${timestamp}"/>
     </target>
 
-    <target name="dist" depends="compile"
-            description="generate the distribution">
-        <!-- Create the distribution directory -->
-        <mkdir dir="${dist}/lib"/>
-
-        <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-        <jar jarfile="${dist}/lib/MyProject-${DSTAMP}.jar" basedir="${build}"/>
+    <target name="release-version" if="release">
+        <property file="version.properties"/>
+        <property name="version" value="${argo.version}"/>
     </target>
 
-    <target name="clean"
-            description="clean up">
-        <!-- Delete the ${build} and ${dist} directory trees -->
-        <delete dir="${build}"/>
-        <delete dir="${dist}"/>
+    <target name="determine-version" depends="development-version, release-version">
+        <echo message="Version for build is: ${version}"/>
+    </target>
+
+    <target name="dist" depends="compile, determine-version">
+        <echo message="Creating release structure"/>
+        <delete dir="${location.dist}"/>
+        <mkdir dir="${location.dist}"/>
+
+        <jar basedir="${location.classes}" destfile="${location.dist}/iburndown-${version}.jar"/>
+
+    </target>
+
+    <target name="release" description="creates an offical release">
+        <property name="release" value="true"/>
+        <antcall target="dist"/>
     </target>
 </project>
