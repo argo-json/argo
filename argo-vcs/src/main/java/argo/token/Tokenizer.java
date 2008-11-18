@@ -11,6 +11,9 @@ public final class Tokenizer {
     private static final char DOUBLE_QUOTE = '"';
     private static final char BACK_SLASH = '\\';
     private static final char BACKSPACE = '\b';
+    private static final char TAB = '\t';
+    private static final char NEWLINE = '\n';
+    private static final char CARRIAGE_RETURN = '\r';
 
     /**
      * Sole, private constructor, to prevent instantiation.
@@ -388,9 +391,9 @@ public final class Tokenizer {
             nextChar = (char) in.read();
             switch (nextChar) {
                 case ' ':
-                case '\t':
-                case '\n':
-                case '\r':
+                case TAB:
+                case NEWLINE:
+                case CARRIAGE_RETURN:
                     break;
                 default:
                     gotNonWhitespace = true;
