@@ -14,8 +14,23 @@
 
     <property name="location.dist" value="${location.build}/dist"/>
 
-    <path id="all">
+    <path id="all-libs">
         <fileset dir="${location.lib}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="main-compile-libs">
+        <fileset dir="${location.lib}/main/compile">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="test-compile-libs">
+        <fileset dir="${location.lib}/main/compile">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${location.lib}/test/compile">
             <include name="**/*.jar"/>
         </fileset>
     </path>
@@ -29,12 +44,12 @@
 
         <javac destdir="${location.classes}" debug="on" source="1.6" target="1.6">
             <src path="${location.src}"/>
-            <classpath refid="all"/>
+            <classpath refid="main-compile-libs"/>
         </javac>
 
         <javac destdir="${location.testclasses}" debug="on" source="1.6" target="1.6">
             <src path="${location.src.test}"/>
-            <classpath refid="all"/>
+            <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
         </javac>
 
@@ -44,6 +59,22 @@
             </fileset>
         </copy>
         <echo message="Finished compile"/>
+    </target>
+
+    <target name="test" depends="compile">
+        <junit printsummary="yes" haltonfailure="yes">
+            <formatter type="plain" usefile="false"/>
+            <classpath>
+                <pathelement location="${location.testclasses}"/>
+                <pathelement location="${location.classes}"/>
+                <path refid="test-compile-libs"/>
+            </classpath>
+            <batchtest fork="yes">
+                <fileset dir="${location.testclasses}">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
     </target>
 
     <target name="development-version" unless="release">
