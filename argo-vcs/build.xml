@@ -94,17 +94,17 @@
         <echo message="Version for build is: ${version}"/>
     </target>
 
-    <target name="dist" depends="compile, determine-version">
+    <target name="distribute" depends="compile, determine-version">
         <echo message="Creating release structure"/>
         <delete dir="${location.dist}"/>
         <mkdir dir="${location.dist}"/>
 
-        <jar basedir="${location.classes}" destfile="${location.dist}/iburndown-${version}.jar"/>
+        <jar basedir="${location.classes}" destfile="${location.dist}/argo-${version}.jar"/>
 
     </target>
 
     <target name="release" description="creates an offical release">
         <property name="release" value="true"/>
-        <antcall target="dist"/>
+        <antcall target="distribute"/>
     </target>
 </project>
