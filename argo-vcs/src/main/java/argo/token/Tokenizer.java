@@ -14,6 +14,7 @@ public final class Tokenizer {
     private static final char TAB = '\t';
     private static final char NEWLINE = '\n';
     private static final char CARRIAGE_RETURN = '\r';
+    private static final char FORM_FEED = '\f';
 
     /**
      * Sole, private constructor, to prevent instantiation.
@@ -349,16 +350,16 @@ public final class Tokenizer {
                 result = BACKSPACE;
                 break;
             case 'f':
-                result = '\f';
+                result = FORM_FEED;
                 break;
             case 'n':
-                result = '\n';
+                result = NEWLINE;
                 break;
             case 'r':
-                result = '\r';
+                result = CARRIAGE_RETURN;
                 break;
             case 't':
-                result = '\t';
+                result = TAB;
                 break;
             case 'u':
                 result = (char) hexidecimalNumber(in);
