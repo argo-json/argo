@@ -39,17 +39,20 @@ public final class Tokenizer {
             default:
                 throw new InvalidSyntaxException("Expected either [ or { but got [" + nextChar + "].");
         }
-        //TODO - check for trailing characters?
+        final int trailingCharacter = readNextNonWhitespaceChar(pushbackReader);
+        if (trailingCharacter != -1) {
+            throw new InvalidSyntaxException("Got unexpected trailing character [" + trailingCharacter + "].");
+        }
         return result;
     }
 
     private static JsonArray arrayString(final PushbackReader pushbackReader) throws IOException {
         final List<JsonValue> elements = new LinkedList<JsonValue>();
-        final char firstChar = readNextNonWhitespaceChar(pushbackReader);
+        final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '[') {
             throw new InvalidSyntaxException("Expected object to start with [ but got [" + firstChar + "].");
         }
-        final char secondChar = readNextNonWhitespaceChar(pushbackReader);
+        final char secondChar = (char) readNextNonWhitespaceChar(pushbackReader);
         pushbackReader.unread(secondChar);
         if (secondChar != ']') {
             final JsonValue jsonValue = aJsonValue(pushbackReader);
@@ -57,11 +60,12 @@ public final class Tokenizer {
         }
         boolean gotEndOfObject = false;
         while (!gotEndOfObject) {
-            final char nextChar = readNextNonWhitespaceChar(pushbackReader);
+            final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
             switch (nextChar) {
                 case ',':
                     final JsonValue jsonValue = aJsonValue(pushbackReader);
                     elements.add(jsonValue);
+                    break;
                 case ']':
                     gotEndOfObject = true;
                     break;
@@ -74,11 +78,11 @@ public final class Tokenizer {
 
     private static JsonObject objectString(final PushbackReader pushbackReader) throws IOException {
         final Map<JsonString, JsonValue> fields = new HashMap<JsonString, JsonValue>();
-        final char firstChar = readNextNonWhitespaceChar(pushbackReader);
+        final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '{') {
             throw new InvalidSyntaxException("Expected object to start with { but got [" + firstChar + "].");
         }
-        final char secondChar = readNextNonWhitespaceChar(pushbackReader);
+        final char secondChar = (char) readNextNonWhitespaceChar(pushbackReader);
         pushbackReader.unread(secondChar);
         if (secondChar != '}') {
             final JsonField jsonField = aFieldToken(pushbackReader);
@@ -86,11 +90,12 @@ public final class Tokenizer {
         }
         boolean gotEndOfObject = false;
         while (!gotEndOfObject) {
-            final char nextChar = readNextNonWhitespaceChar(pushbackReader);
+            final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
             switch (nextChar) {
                 case ',':
                     final JsonField jsonField = aFieldToken(pushbackReader);
                     fields.put(jsonField.getName(), jsonField.getValue());
+                    break;
                 case '}':
                     gotEndOfObject = true;
                     break;
@@ -103,7 +108,7 @@ public final class Tokenizer {
 
     private static JsonField aFieldToken(final PushbackReader pushbackReader) throws IOException {
         final JsonString name = stringToken(pushbackReader);
-        final char separatorChar = readNextNonWhitespaceChar(pushbackReader);
+        final char separatorChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (separatorChar != ':') {
             throw new InvalidSyntaxException("Expected object identifier to be followed by : but got [" + separatorChar + "].");
         }
@@ -113,7 +118,7 @@ public final class Tokenizer {
 
     private static JsonValue aJsonValue(final PushbackReader pushbackReader) throws IOException {
         final JsonValue value;
-        final char nextChar = readNextNonWhitespaceChar(pushbackReader);
+        final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
                 pushbackReader.unread(nextChar);
@@ -385,11 +390,11 @@ public final class Tokenizer {
         return result;
     }
 
-    private static char readNextNonWhitespaceChar(final Reader in) throws IOException {
-        char nextChar;
+    private static int readNextNonWhitespaceChar(final Reader in) throws IOException {
+        int nextChar;
         boolean gotNonWhitespace = false;
         do {
-            nextChar = (char) in.read();
+            nextChar = in.read();
             switch (nextChar) {
                 case ' ':
                 case TAB:

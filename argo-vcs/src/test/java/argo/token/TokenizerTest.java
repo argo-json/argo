@@ -197,4 +197,22 @@ public final class TokenizerTest {
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
         assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.<JsonValue>singletonList(new JsonObject(Collections.<JsonString, JsonValue>singletonMap(new JsonString("Test"), new JsonNumber("12"))))), result);
     }
+
+    @Test
+    public void testRejectsTrailingNonWhitespaceCharacters() throws Exception {
+        final String inputString = "[]whoops";
+        try {
+            Tokenizer.json(new StringReader(inputString));
+            fail("Attempting to parse an String with trailing characters [" + inputString + "] should throw an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            // expect to end up here
+        }
+    }
+
+    @Test
+    public void testTokenizesObjectTrailingWhitespaceCharacters() throws Exception {
+        final String inputString = "[] ";
+        final JsonValue result = Tokenizer.json(new StringReader(inputString));
+        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.<JsonValue>emptyList()), result);
+    }
 }
