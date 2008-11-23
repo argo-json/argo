@@ -7,10 +7,14 @@
     <property name="location.lib" value="lib"/>
     <property name="location.src" value="src/main"/>
     <property name="location.src.test" value="src/test"/>
+    <property name="location.src.performancetest" value="src/performancetest"/>
 
     <property name="location.build" value="build"/>
     <property name="location.classes" value="${location.build}/classes"/>
     <property name="location.testclasses" value="${location.build}/test-classes"/>
+    <property name="location.testresources" value="${location.src.test}/resources"/>
+    <property name="location.performancetestclasses" value="${location.build}/performance-test-classes"/>
+    <property name="location.performancetestresources" value="${location.src.performancetest}/resources"/>
 
     <property name="location.dist" value="${location.build}/dist"/>
 
@@ -35,12 +39,29 @@
         </fileset>
     </path>
 
+    <path id="performance-test-compile-libs">
+        <fileset dir="${location.lib}/main/compile">
+            <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${location.lib}/performancetest/compile">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="performance-test-run-libs">
+        <fileset dir="${location.lib}/performancetest/run">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
     <target name="compile">
         <echo message="Starting compile"/>
         <delete dir="${location.classes}"/>
         <mkdir dir="${location.classes}"/>
         <delete dir="${location.testclasses}"/>
         <mkdir dir="${location.testclasses}"/>
+        <delete dir="${location.performancetestclasses}"/>
+        <mkdir dir="${location.performancetestclasses}"/>
 
         <javac destdir="${location.classes}" debug="on" source="1.6" target="1.6">
             <src path="${location.src}"/>
@@ -49,6 +70,13 @@
 
         <javac destdir="${location.testclasses}" debug="on" source="1.6" target="1.6">
             <src path="${location.src.test}"/>
+            <classpath refid="test-compile-libs"/>
+            <classpath location="${location.classes}"/>
+        </javac>
+
+        <javac destdir="${location.performancetestclasses}" debug="on" source="1.6" target="1.6">
+            <src path="${location.src.performancetest}"/>
+            <classpath refid="performance-test-compile-libs"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
         </javac>
@@ -68,9 +96,29 @@
                 <pathelement location="${location.testclasses}"/>
                 <pathelement location="${location.classes}"/>
                 <path refid="test-compile-libs"/>
+                <pathelement location="${location.testresources}"/>
             </classpath>
             <batchtest fork="yes">
                 <fileset dir="${location.testclasses}">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="performance-test" depends="compile">
+        <junit printsummary="yes" haltonfailure="yes">
+            <formatter type="plain" usefile="false"/>
+            <classpath>
+                <pathelement location="${location.performancetestclasses}"/>
+                <pathelement location="${location.classes}"/>
+                <path refid="performance-test-compile-libs"/>
+                <path refid="test-compile-libs"/>
+                <path refid="performance-test-run-libs"/>
+                <pathelement location="${location.performancetestresources}"/>
+            </classpath>
+            <batchtest fork="yes">
+                <fileset dir="${location.performancetestclasses}">
                     <include name="**/*Test.class"/>
                 </fileset>
             </batchtest>

@@ -107,6 +107,11 @@ public final class Tokenizer {
     }
 
     private static JsonField aFieldToken(final PushbackReader pushbackReader) throws IOException {
+        final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
+        if (DOUBLE_QUOTE != nextChar) {
+            throw new InvalidSyntaxException("Expected object identifier to begin with [\"] but got [" + nextChar + "].");
+        }
+        pushbackReader.unread(nextChar);
         final JsonString name = stringToken(pushbackReader);
         final char separatorChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (separatorChar != ':') {

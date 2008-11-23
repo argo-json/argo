@@ -215,4 +215,5 @@ public final class TokenizerTest {
         final JsonValue result = Tokenizer.json(new StringReader(inputString));
         assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.<JsonValue>emptyList()), result);
     }
+
 }
