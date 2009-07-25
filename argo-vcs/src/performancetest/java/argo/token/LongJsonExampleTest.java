@@ -6,8 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
 
 public final class LongJsonExampleTest {
 
@@ -15,7 +17,10 @@ public final class LongJsonExampleTest {
 
     @Before
     public void getJson() throws Exception {
-        final File longJsonExample = new File(this.getClass().getResource("LongJsonExample.json").getFile());
+        final URL resource = this.getClass().getResource("LongJsonExample.json");
+        final File longJsonExample = new File(resource.getFile());
+        final ClassLoader loader = this.getClass().getClassLoader();
+        final InputStream stream = loader.getResourceAsStream("argo.token.LongJsonExample.json");
         final String json = FileUtils.readFileToString(longJsonExample);
         for (int i = 0; i < jsonReaders.length; i++) {
             jsonReaders[i] = new StringReader(json);
