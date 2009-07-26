@@ -16,18 +16,13 @@ public final class Tokenizer {
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
 
-    /**
-     * Sole, private constructor, to prevent instantiation.
-     */
-    private Tokenizer() {
-        // deliberately empty
+    private final JsonListener jsonListener;
+
+    public Tokenizer(final JsonListener jsonListener) {
+        this.jsonListener = jsonListener;
     }
 
-    public static JsonValue json(final Reader in) throws IOException {
-        return json(in, new JsonOutJsonListener(System.out));
-    }
-
-    public static JsonValue json(final Reader in, final JsonListener jsonListener) throws IOException {
+    public JsonValue json(final Reader in) throws IOException {
         final JsonValue result;
         final PushbackReader pushbackReader = new PushbackReader(in);
         final char nextChar = (char) pushbackReader.read();
@@ -35,12 +30,12 @@ public final class Tokenizer {
             case '{':
                 pushbackReader.unread(nextChar);
                 jsonListener.startDocument();
-                result = objectString(pushbackReader, jsonListener);
+                result = objectString(pushbackReader);
                 break;
             case '[':
                 pushbackReader.unread(nextChar);
                 jsonListener.startDocument();
-                result = arrayString(pushbackReader, jsonListener);
+                result = arrayString(pushbackReader);
                 break;
             default:
                 throw new InvalidSyntaxException("Expected either [ or { but got [" + nextChar + "].");
@@ -53,7 +48,7 @@ public final class Tokenizer {
         return result;
     }
 
-    private static JsonArray arrayString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException {
+    private JsonArray arrayString(final PushbackReader pushbackReader) throws IOException {
         final List<JsonValue> elements = new LinkedList<JsonValue>();
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '[') {
@@ -63,7 +58,7 @@ public final class Tokenizer {
         final char secondChar = (char) readNextNonWhitespaceChar(pushbackReader);
         pushbackReader.unread(secondChar);
         if (secondChar != ']') {
-            final JsonValue jsonValue = aJsonValue(pushbackReader, jsonListener);
+            final JsonValue jsonValue = aJsonValue(pushbackReader);
             elements.add(jsonValue);
         }
         boolean gotEndOfObject = false;
@@ -71,7 +66,7 @@ public final class Tokenizer {
             final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
             switch (nextChar) {
                 case ',':
-                    final JsonValue jsonValue = aJsonValue(pushbackReader, jsonListener);
+                    final JsonValue jsonValue = aJsonValue(pushbackReader);
                     elements.add(jsonValue);
                     break;
                 case ']':
@@ -85,7 +80,7 @@ public final class Tokenizer {
         return new JsonArray(elements);
     }
 
-    private static JsonObject objectString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException {
+    private JsonObject objectString(final PushbackReader pushbackReader) throws IOException {
         final Map<JsonString, JsonValue> fields = new HashMap<JsonString, JsonValue>();
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '{') {
@@ -95,7 +90,7 @@ public final class Tokenizer {
         final char secondChar = (char) readNextNonWhitespaceChar(pushbackReader);
         pushbackReader.unread(secondChar);
         if (secondChar != '}') {
-            final JsonField jsonField = aFieldToken(pushbackReader, jsonListener);
+            final JsonField jsonField = aFieldToken(pushbackReader);
             fields.put(jsonField.getName(), jsonField.getValue());
         }
         boolean gotEndOfObject = false;
@@ -103,7 +98,7 @@ public final class Tokenizer {
             final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
             switch (nextChar) {
                 case ',':
-                    final JsonField jsonField = aFieldToken(pushbackReader, jsonListener);
+                    final JsonField jsonField = aFieldToken(pushbackReader);
                     fields.put(jsonField.getName(), jsonField.getValue());
                     break;
                 case '}':
@@ -117,7 +112,7 @@ public final class Tokenizer {
         return new JsonObject(fields);
     }
 
-    private static JsonField aFieldToken(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException {
+    private JsonField aFieldToken(final PushbackReader pushbackReader) throws IOException {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
             throw new InvalidSyntaxException("Expected object identifier to begin with [\"] but got [" + nextChar + "].");
@@ -130,13 +125,13 @@ public final class Tokenizer {
         if (separatorChar != ':') {
             throw new InvalidSyntaxException("Expected object identifier to be followed by : but got [" + separatorChar + "].");
         }
-        final JsonValue value = aJsonValue(pushbackReader, jsonListener);
+        final JsonValue value = aJsonValue(pushbackReader);
         jsonListener.endField();
         // EVENT - end element
         return new JsonField(name, value);
     }
 
-    private static JsonValue aJsonValue(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException {
+    private JsonValue aJsonValue(final PushbackReader pushbackReader) throws IOException {
         final JsonValue value;
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
@@ -194,11 +189,11 @@ public final class Tokenizer {
                 break;
             case '{':
                 pushbackReader.unread(nextChar);
-                value = objectString(pushbackReader, jsonListener);
+                value = objectString(pushbackReader);
                 break;
             case '[':
                 pushbackReader.unread(nextChar);
-                value = arrayString(pushbackReader, jsonListener);
+                value = arrayString(pushbackReader);
                 break;
             default:
                 throw new InvalidSyntaxException("Invalid character at start of value [" + nextChar + "].");
@@ -206,7 +201,7 @@ public final class Tokenizer {
         return value;
     }
 
-    public static JsonNumber numberToken(final PushbackReader in) throws IOException {
+    public JsonNumber numberToken(final PushbackReader in) throws IOException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if ('-' == firstChar) {
@@ -218,7 +213,7 @@ public final class Tokenizer {
         return new JsonNumber(result.toString());
     }
 
-    private static String nonNegativeNumberToken(final PushbackReader in) throws IOException {
+    private String nonNegativeNumberToken(final PushbackReader in) throws IOException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if ('0' == firstChar) {
@@ -233,7 +228,7 @@ public final class Tokenizer {
         return result.toString();
     }
 
-    private static char nonZeroDigitToken(final PushbackReader in) throws IOException {
+    private char nonZeroDigitToken(final PushbackReader in) throws IOException {
         final char result;
         final char nextChar = (char) in.read();
         switch (nextChar) {
@@ -254,7 +249,7 @@ public final class Tokenizer {
         return result;
     }
 
-    private static char digitToken(final PushbackReader in) throws IOException {
+    private char digitToken(final PushbackReader in) throws IOException {
         final char result;
         final char nextChar = (char) in.read();
         switch (nextChar) {
@@ -276,7 +271,7 @@ public final class Tokenizer {
         return result;
     }
 
-    private static String digitString(final PushbackReader in) throws IOException {
+    private String digitString(final PushbackReader in) throws IOException {
         final StringBuilder result = new StringBuilder();
         boolean gotANonDigit = false;
         while (!gotANonDigit) {
@@ -302,7 +297,7 @@ public final class Tokenizer {
         return result.toString();
     }
 
-    private static String possibleFractionalComponent(final PushbackReader pushbackReader) throws IOException {
+    private String possibleFractionalComponent(final PushbackReader pushbackReader) throws IOException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '.') {
@@ -315,7 +310,7 @@ public final class Tokenizer {
         return result.toString();
     }
 
-    private static String possibleExponent(final PushbackReader pushbackReader) throws IOException {
+    private String possibleExponent(final PushbackReader pushbackReader) throws IOException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '.' || firstChar == 'E') {
@@ -329,7 +324,7 @@ public final class Tokenizer {
         return result.toString();
     }
 
-    private static String possibleSign(final PushbackReader pushbackReader) throws IOException {
+    private String possibleSign(final PushbackReader pushbackReader) throws IOException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '+' || firstChar == '-') {
@@ -341,7 +336,7 @@ public final class Tokenizer {
     }
 
 
-    static JsonString stringToken(final Reader in) throws IOException {
+    JsonString stringToken(final Reader in) throws IOException {
         final StringWriter result = new StringWriter();
         final char firstChar = (char) in.read();
         if (DOUBLE_QUOTE != firstChar) {
@@ -365,7 +360,7 @@ public final class Tokenizer {
         return new JsonString(result.toString());
     }
 
-    private static char escapedStringChar(final Reader in) throws IOException {
+    private char escapedStringChar(final Reader in) throws IOException {
         final char result;
         final char firstChar = (char) in.read();
         switch (firstChar) {
@@ -402,7 +397,7 @@ public final class Tokenizer {
         return result;
     }
 
-    private static int hexidecimalNumber(final Reader in) throws IOException {
+    private int hexidecimalNumber(final Reader in) throws IOException {
         final char[] resultCharArray = new char[4];
         final int readSize = in.read(resultCharArray);
         if (readSize != 4) {
@@ -417,7 +412,7 @@ public final class Tokenizer {
         return result;
     }
 
-    private static int readNextNonWhitespaceChar(final Reader in) throws IOException {
+    private int readNextNonWhitespaceChar(final Reader in) throws IOException {
         int nextChar;
         boolean gotNonWhitespace = false;
         do {

@@ -195,7 +195,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         JsonValue generateJsonValue();
     }
 
-    private static final JsonValue generateJsonValue(final Object value) {
+    private static JsonValue generateJsonValue(final Object value) {
         final JsonValue result;
         if (value instanceof JsonValue) {
             result = (JsonValue) value;
