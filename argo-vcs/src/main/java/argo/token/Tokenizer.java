@@ -22,7 +22,7 @@ public final class Tokenizer {
         this.jsonListener = jsonListener;
     }
 
-    public JsonValue json(final Reader in) throws IOException {
+    public void json(final Reader in) throws IOException {
         final JsonValue result;
         final PushbackReader pushbackReader = new PushbackReader(in);
         final char nextChar = (char) pushbackReader.read();
@@ -30,12 +30,12 @@ public final class Tokenizer {
             case '{':
                 pushbackReader.unread(nextChar);
                 jsonListener.startDocument();
-                result = objectString(pushbackReader);
+                objectString(pushbackReader);
                 break;
             case '[':
                 pushbackReader.unread(nextChar);
                 jsonListener.startDocument();
-                result = arrayString(pushbackReader);
+                arrayString(pushbackReader);
                 break;
             default:
                 throw new InvalidSyntaxException("Expected either [ or { but got [" + nextChar + "].");
@@ -45,7 +45,6 @@ public final class Tokenizer {
             throw new InvalidSyntaxException("Got unexpected trailing character [" + trailingCharacter + "].");
         }
         jsonListener.endDocument();
-        return result;
     }
 
     private JsonArray arrayString(final PushbackReader pushbackReader) throws IOException {
@@ -201,7 +200,7 @@ public final class Tokenizer {
         return value;
     }
 
-    public JsonNumber numberToken(final PushbackReader in) throws IOException {
+    private JsonNumber numberToken(final PushbackReader in) throws IOException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if ('-' == firstChar) {
@@ -336,7 +335,7 @@ public final class Tokenizer {
     }
 
 
-    JsonString stringToken(final Reader in) throws IOException {
+    private JsonString stringToken(final Reader in) throws IOException {
         final StringWriter result = new StringWriter();
         final char firstChar = (char) in.read();
         if (DOUBLE_QUOTE != firstChar) {
