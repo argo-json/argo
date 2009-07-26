@@ -17,10 +17,10 @@ public final class LongJsonExampleTest {
 
     @Before
     public void getJson() throws Exception {
-        final URL resource = this.getClass().getResource("LongJsonExample.json");
+        final URL resource = this.getClass().getResource("LongJsonExample.parse");
         final File longJsonExample = new File(resource.getFile());
         final ClassLoader loader = this.getClass().getClassLoader();
-        final InputStream stream = loader.getResourceAsStream("argo.token.LongJsonExample.json");
+        final InputStream stream = loader.getResourceAsStream("argo.token.LongJsonExample.parse");
         final String json = FileUtils.readFileToString(longJsonExample);
         for (int i = 0; i < jsonReaders.length; i++) {
             jsonReaders[i] = new StringReader(json);
@@ -30,8 +30,8 @@ public final class LongJsonExampleTest {
     @Test
     public void testArgo() throws Exception {
         for (final Reader reader : jsonReaders) {
-            Tokenizer tokenizer = new Tokenizer();
-            tokenizer.json(reader, new SystemOutJsonListener());
+            JsonParser jsonParser = new JsonParser();
+            jsonParser.parse(reader, new SystemOutJsonListener());
         }
     }
 

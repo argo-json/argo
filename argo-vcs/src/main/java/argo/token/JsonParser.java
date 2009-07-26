@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Arrays;
 
-public final class Tokenizer {
+public final class JsonParser {
 
     private static final char DOUBLE_QUOTE = '"';
     private static final char BACK_SLASH = '\\';
@@ -16,10 +16,10 @@ public final class Tokenizer {
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
 
-    public Tokenizer() {
+    public JsonParser() {
     }
 
-    public void json(final Reader in, final JsonListener jsonListener) throws IOException, JsonListenerException {
+    public void parse(final Reader in, final JsonListener jsonListener) throws IOException, JsonListenerException {
         final PushbackReader pushbackReader = new PushbackReader(in);
         final char nextChar = (char) pushbackReader.read();
         switch (nextChar) {

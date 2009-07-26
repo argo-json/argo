@@ -13,7 +13,7 @@ public final class JsonListenerToSaxAdapterTest {
 
     @Test
     public void handlesHelloWorldExample() throws Exception {
-         new Tokenizer().json(new StringReader("{\"hello\":\"world\"}"), new JsonListenerToSaxAdapter(new ContentHandler() {
+         new JsonParser().parse(new StringReader("{\"hello\":\"world\"}"), new JsonListenerToSaxAdapter(new ContentHandler() {
              public void setDocumentLocator(Locator locator) {
                  throw new UnsupportedOperationException("Not implemented yet");
              }
