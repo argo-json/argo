@@ -13,14 +13,6 @@ class SystemOutJsonListener implements JsonListener {
         System.out.println("Tokenizer.startArray");
     }
 
-    public void startValue() {
-        System.out.println("Tokenizer.startValue");
-    }
-
-    public void endValue() {
-        System.out.println("Tokenizer.endValue");
-    }
-
     public void endArray() {
         System.out.println("Tokenizer.endArray");
     }

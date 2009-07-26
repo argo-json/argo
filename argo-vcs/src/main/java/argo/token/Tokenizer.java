@@ -63,20 +63,16 @@ public final class Tokenizer {
         final char secondChar = (char) readNextNonWhitespaceChar(pushbackReader);
         pushbackReader.unread(secondChar);
         if (secondChar != ']') {
-            jsonListener.startValue();
             final JsonValue jsonValue = aJsonValue(pushbackReader, jsonListener);
             elements.add(jsonValue);
-            jsonListener.endValue();
         }
         boolean gotEndOfObject = false;
         while (!gotEndOfObject) {
             final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
             switch (nextChar) {
                 case ',':
-                    jsonListener.startValue();
                     final JsonValue jsonValue = aJsonValue(pushbackReader, jsonListener);
                     elements.add(jsonValue);
-                    jsonListener.endValue();
                     break;
                 case ']':
                     gotEndOfObject = true;

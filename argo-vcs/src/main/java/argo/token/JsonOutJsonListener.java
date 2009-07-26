@@ -27,12 +27,6 @@ class JsonOutJsonListener implements JsonListener {
         inArray.push(true);
     }
 
-    public void startValue() {
-    }
-
-    public void endValue() {
-    }
-
     public void endArray() {
         out.print("]");
         firstElementProcessedStack.pop();

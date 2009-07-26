@@ -8,16 +8,6 @@ public interface JsonListener {
 
     void startArray();
 
-    /**
-     * @deprecated this doesn't appear to be required for anything
-     */
-    void startValue();
-
-    /**
-     * @deprecated this doesn't appear to be required for anything
-     */
-    void endValue();
-
     void endArray();
 
     void startObject();

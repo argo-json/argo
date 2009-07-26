@@ -20,14 +20,6 @@ public final class JsonListenerToStajAdapter implements JsonListener, JsonStream
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public void startValue() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    public void endValue() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
     public void endArray() {
         throw new UnsupportedOperationException("Not implemented yet");
     }

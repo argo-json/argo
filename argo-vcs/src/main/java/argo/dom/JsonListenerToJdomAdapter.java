@@ -29,14 +29,6 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         stack.push(mutableJsonArray);
     }
 
-    public void startValue() {
-        // do nothing
-    }
-
-    public void endValue() {
-        // do nothing
-    }
-
     public void endArray() {
         // TODO check type?
         stack.pop();
