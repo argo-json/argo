@@ -458,6 +458,7 @@
   </component>
   <component name="SvnBranchConfigurationManager">
     <option name="myVersion" value="123" />
+    <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="SvnChangesBrowserSettings">
     <option name="USE_AUTHOR_FIELD" value="true" />
@@ -521,6 +522,14 @@
       <JAVADOC />
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib/performancetest/compile" recursive="false" />
+    </library>
+    <library name="test run">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/test/run" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/test/run" recursive="false" />
     </library>
   </component>
   <component name="se.expertsystem.intellij.aop.aspectj.AspectJProjectComponent">

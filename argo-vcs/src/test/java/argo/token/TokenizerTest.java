@@ -1,5 +1,8 @@
 package argo.token;
 
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.Sequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Test;
@@ -12,14 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class TokenizerTest {
-
+    private final Mockery context = new Mockery();
     private final Tokenizer tokenizer = new Tokenizer(new SystemOutJsonListener());
 
     @Test
-    public void testTokenizesValidString() throws Exception {
+    public void tokenizesValidString() throws Exception {
         final String inputString = "\"hello world\"";
         final JsonString result = tokenizer.stringToken(new StringReader(inputString));
         assertEquals("Tokenizing String [" + inputString + "].", new JsonString("hello world"), result);
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -145,17 +149,55 @@ public final class TokenizerTest {
     }
 
     @Test
-    public void testTokenizesEmptyObject() throws Exception {
+    public void tokenizesEmptyObject() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
+        }});
         final String inputString = "{}";
-        final JsonValue result = tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.<JsonString, JsonValue>emptyMap()), result);
+        new Tokenizer(jsonListener).json(new StringReader(inputString));
+        context.assertIsSatisfied();
     }
 
     @Test
-    public void testTokenizesNestedObject() throws Exception {
+    public void tokenizesNestedObject() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("Test");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("Inner test");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
+        }});
         final String inputString = "{\"Test\":{\"Inner test\":12}}";
-        final JsonValue result = tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonObject(Collections.<JsonString, JsonValue>singletonMap(new JsonString("Test"), new JsonObject(Collections.<JsonString, JsonValue>singletonMap(new JsonString("Inner test"), new JsonNumber("12"))))), result);
+        new Tokenizer(jsonListener).json(new StringReader(inputString));
+        context.assertIsSatisfied();
     }
 
     @Test
