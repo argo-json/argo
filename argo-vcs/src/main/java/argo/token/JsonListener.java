@@ -2,29 +2,29 @@ package argo.token;
 
 public interface JsonListener {
 
-    void startDocument();
+    void startDocument() throws JsonListenerException;
 
-    void endDocument();
+    void endDocument() throws JsonListenerException;
 
-    void startArray();
+    void startArray() throws JsonListenerException;
 
-    void endArray();
+    void endArray() throws JsonListenerException;
 
-    void startObject();
+    void startObject() throws JsonListenerException;
 
-    void endObject();
+    void endObject() throws JsonListenerException;
 
-    void startField(String name);
+    void startField(String name) throws JsonListenerException;
 
-    void endField();
+    void endField() throws JsonListenerException;
 
-    void stringValue(String value);
+    void stringValue(String value) throws JsonListenerException;
 
-    void numberValue(String value);
+    void numberValue(String value) throws JsonListenerException;
 
-    void trueValue();
+    void trueValue() throws JsonListenerException;
 
-    void falseValue();
+    void falseValue() throws JsonListenerException;
 
-    void nullValue();
+    void nullValue() throws JsonListenerException;
 }

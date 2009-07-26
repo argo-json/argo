@@ -424,7 +424,7 @@ public final class TokenizerTest {
         context.assertIsSatisfied();
     }
 
-    private void assertJsonValueFragmentResultsInStringValue(final String jsonFragment, final String expectedStringValue) throws IOException {
+    private void assertJsonValueFragmentResultsInStringValue(final String jsonFragment, final String expectedStringValue) throws IOException, JsonListenerException {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
