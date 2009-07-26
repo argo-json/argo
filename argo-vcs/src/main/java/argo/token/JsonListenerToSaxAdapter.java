@@ -6,6 +6,9 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import java.util.Stack;
 
+/**
+ * Makes a stream of JsonListener events into a stream of XML ContentHandler events, as per the BadgerFish convention.
+ */
 public final class JsonListenerToSaxAdapter implements JsonListener {
 
     private final ContentHandler contentHandler;
