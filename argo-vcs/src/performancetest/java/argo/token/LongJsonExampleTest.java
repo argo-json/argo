@@ -30,8 +30,8 @@ public final class LongJsonExampleTest {
     @Test
     public void testArgo() throws Exception {
         for (final Reader reader : jsonReaders) {
-            Tokenizer tokenizer = new Tokenizer(new SystemOutJsonListener());
-            tokenizer.json(reader);
+            Tokenizer tokenizer = new Tokenizer();
+            tokenizer.json(reader, new SystemOutJsonListener());
         }
     }
 

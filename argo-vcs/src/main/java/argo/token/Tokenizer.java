@@ -16,25 +16,22 @@ public final class Tokenizer {
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
 
-    private final JsonListener jsonListener;
-
-    public Tokenizer(final JsonListener jsonListener) {
-        this.jsonListener = jsonListener;
+    public Tokenizer() {
     }
 
-    public void json(final Reader in) throws IOException {
+    public void json(final Reader in, final JsonListener jsonListener) throws IOException {
         final PushbackReader pushbackReader = new PushbackReader(in);
         final char nextChar = (char) pushbackReader.read();
         switch (nextChar) {
             case '{':
                 pushbackReader.unread(nextChar);
                 jsonListener.startDocument();
-                objectString(pushbackReader);
+                objectString(pushbackReader, jsonListener);
                 break;
             case '[':
                 pushbackReader.unread(nextChar);
                 jsonListener.startDocument();
-                arrayString(pushbackReader);
+                arrayString(pushbackReader, jsonListener);
                 break;
             default:
                 throw new InvalidSyntaxException("Expected either [ or { but got [" + nextChar + "].");
@@ -46,7 +43,7 @@ public final class Tokenizer {
         jsonListener.endDocument();
     }
 
-    private void arrayString(final PushbackReader pushbackReader) throws IOException {
+    private void arrayString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException {
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '[') {
             throw new InvalidSyntaxException("Expected object to start with [ but got [" + firstChar + "].");
@@ -55,14 +52,14 @@ public final class Tokenizer {
         final char secondChar = (char) readNextNonWhitespaceChar(pushbackReader);
         pushbackReader.unread(secondChar);
         if (secondChar != ']') {
-            aJsonValue(pushbackReader);
+            aJsonValue(pushbackReader, jsonListener);
         }
         boolean gotEndOfArray = false;
         while (!gotEndOfArray) {
             final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
             switch (nextChar) {
                 case ',':
-                    aJsonValue(pushbackReader);
+                    aJsonValue(pushbackReader, jsonListener);
                     break;
                 case ']':
                     gotEndOfArray = true;
@@ -74,7 +71,7 @@ public final class Tokenizer {
         jsonListener.endArray();
     }
 
-    private void objectString(final PushbackReader pushbackReader) throws IOException {
+    private void objectString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException {
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '{') {
             throw new InvalidSyntaxException("Expected object to start with { but got [" + firstChar + "].");
@@ -83,14 +80,14 @@ public final class Tokenizer {
         final char secondChar = (char) readNextNonWhitespaceChar(pushbackReader);
         pushbackReader.unread(secondChar);
         if (secondChar != '}') {
-            aFieldToken(pushbackReader);
+            aFieldToken(pushbackReader, jsonListener);
         }
         boolean gotEndOfObject = false;
         while (!gotEndOfObject) {
             final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
             switch (nextChar) {
                 case ',':
-                    aFieldToken(pushbackReader);
+                    aFieldToken(pushbackReader, jsonListener);
                     break;
                 case '}':
                     gotEndOfObject = true;
@@ -102,7 +99,7 @@ public final class Tokenizer {
         jsonListener.endObject();
     }
 
-    private void aFieldToken(final PushbackReader pushbackReader) throws IOException {
+    private void aFieldToken(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
             throw new InvalidSyntaxException("Expected object identifier to begin with [\"] but got [" + nextChar + "].");
@@ -113,11 +110,11 @@ public final class Tokenizer {
         if (separatorChar != ':') {
             throw new InvalidSyntaxException("Expected object identifier to be followed by : but got [" + separatorChar + "].");
         }
-        aJsonValue(pushbackReader);
+        aJsonValue(pushbackReader, jsonListener);
         jsonListener.endField();
     }
 
-    private void aJsonValue(final PushbackReader pushbackReader) throws IOException {
+    private void aJsonValue(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
@@ -167,11 +164,11 @@ public final class Tokenizer {
                 break;
             case '{':
                 pushbackReader.unread(nextChar);
-                objectString(pushbackReader);
+                objectString(pushbackReader, jsonListener);
                 break;
             case '[':
                 pushbackReader.unread(nextChar);
-                arrayString(pushbackReader);
+                arrayString(pushbackReader, jsonListener);
                 break;
             default:
                 throw new InvalidSyntaxException("Invalid character at start of value [" + nextChar + "].");
