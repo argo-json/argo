@@ -153,14 +153,10 @@ public final class TokenizerTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
+            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
         final String inputString = "{}";
         new Tokenizer(jsonListener).json(new StringReader(inputString));
@@ -172,28 +168,17 @@ public final class TokenizerTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Test");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Inner test");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
+            oneOf(jsonListener).startField("Test"); inSequence(expectedSequence);
+            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
+            oneOf(jsonListener).startField("Inner test"); inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
+            oneOf(jsonListener).endField(); inSequence(expectedSequence);
+            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
+            oneOf(jsonListener).endField(); inSequence(expectedSequence);
+            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
         final String inputString = "{\"Test\":{\"Inner test\":12}}";
         new Tokenizer(jsonListener).json(new StringReader(inputString));
@@ -201,31 +186,69 @@ public final class TokenizerTest {
     }
 
     @Test
-    public void testTokenizesEmptyArray() throws Exception {
+    public void tokenizesEmptyArray() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+        }});
         final String inputString = "[]";
-        final JsonValue result = tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.<JsonValue>emptyList()), result);
+        new Tokenizer(jsonListener).json(new StringReader(inputString));
+        context.assertIsSatisfied();
     }
 
     @Test
-    public void testTokenizesSingleElementArray() throws Exception {
+    public void tokenizesSingleElementArray() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
+            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+        }});
         final String inputString = "[12]";
-        final JsonValue result = tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.singletonList((JsonValue) new JsonNumber("12"))), result);
+        new Tokenizer(jsonListener).json(new StringReader(inputString));
+        context.assertIsSatisfied();
     }
 
     @Test
-    public void testTokenizesMultiElementArray() throws Exception {
+    public void tokenizesMultiElementArray() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
+            oneOf(jsonListener).stringValue("test"); inSequence(expectedSequence);
+            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+        }});
         final String inputString = "[12,\"test\"]";
-        final JsonValue result = tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Arrays.asList(new JsonNumber("12"), new JsonString("test"))), result);
+        new Tokenizer(jsonListener).json(new StringReader(inputString));
+        context.assertIsSatisfied();
     }
 
     @Test
-    public void testTokenizesNestedArray() throws Exception {
+    public void tokenizesNestedArray() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
+            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+        }});
         final String inputString = "[[12]]";
-        final JsonValue result = tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.singletonList((JsonValue) new JsonArray(Collections.singletonList((JsonValue) new JsonNumber("12"))))), result);
+        new Tokenizer(jsonListener).json(new StringReader(inputString));
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -243,7 +266,7 @@ public final class TokenizerTest {
     }
 
     @Test
-    public void testRejectsTrailingNonWhitespaceCharacters() throws Exception {
+    public void rejectsTrailingNonWhitespaceCharacters() throws Exception {
         final String inputString = "[]whoops";
         try {
             tokenizer.json(new StringReader(inputString));
@@ -254,10 +277,18 @@ public final class TokenizerTest {
     }
 
     @Test
-    public void testTokenizesObjectTrailingWhitespaceCharacters() throws Exception {
+    public void tokenizesObjectTrailingWhitespaceCharacters() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+        }});
         final String inputString = "[] ";
-        final JsonValue result = tokenizer.json(new StringReader(inputString));
-        assertEquals("Tokenizing String [" + inputString + "].", new JsonArray(Collections.<JsonValue>emptyList()), result);
+        new Tokenizer(jsonListener).json(new StringReader(inputString));
+        context.assertIsSatisfied();
     }
 
 }
