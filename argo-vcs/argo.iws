@@ -66,7 +66,7 @@
   </component>
   <component name="DebuggerManager">
     <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/argo/token/Tokenizer.java" line="99" class="argo.token.Tokenizer" package="argo.token">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/argo/token/Tokenizer.java" line="92" class="argo.token.Tokenizer" package="argo.token">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -150,28 +150,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="JsonListenerToJdomAdapter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/argo/dom/JsonListenerToJdomAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Tokenizer.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Tokenizer.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/Tokenizer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="16" selection-start="1242" selection-end="1242" vertical-scroll-proportion="0.0">
+            <state line="410" column="0" selection-start="15698" selection-end="15698" vertical-scroll-proportion="0.8274112">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TokenizerTest.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="TokenizerTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/argo/token/TokenizerTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="19" selection-start="243" selection-end="243" vertical-scroll-proportion="0.30858085">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -507,7 +498,7 @@
     <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish switching Tokenizer test over." />
+    <option name="LAST_COMMIT_MESSAGE" value="Start picking object instantiation out of Tokenizer." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
@@ -539,6 +530,7 @@
     <MESSAGE value="Start switching Tokenizer over to be purely event based." />
     <MESSAGE value="Switch some more Tokenizer tests over to be purely event based." />
     <MESSAGE value="Finish switching Tokenizer test over." />
+    <MESSAGE value="Start picking object instantiation out of Tokenizer." />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -692,19 +684,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/Tokenizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="16" selection-start="1242" selection-end="1242" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/argo/token/TokenizerTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="19" selection-start="243" selection-end="243" vertical-scroll-proportion="0.30858085">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/Tokenizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="410" column="0" selection-start="15698" selection-end="15698" vertical-scroll-proportion="0.8274112">
+          <folding />
         </state>
       </provider>
     </entry>
