@@ -37,7 +37,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\projects\argo\src\main\java\argo\token\JsonOutJsonListener.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/argo/token/JsonObjectTest.java" afterPath="$PROJECT_DIR$/src/test/java/argo/token/JsonObjectTest.java" />
+      <change type="DELETED" beforePath="C:\projects\argo\src\main\java\argo\token\JsonObject.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/argo/token/MockJsonValue.java" afterPath="$PROJECT_DIR$/src/test/java/argo/token/MockJsonValue.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/argo/dom/JsonObject.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/argo/dom/JsonConstants.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/argo/dom/JsonString.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/argo/token/JsonNumberTest.java" afterPath="$PROJECT_DIR$/src/test/java/argo/token/JsonNumberTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/argo/dom/JsonNumber.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/argo/token/JsonStringTest.java" afterPath="$PROJECT_DIR$/src/test/java/argo/token/JsonStringTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/argo/dom/JsonArray.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/argo.iws" afterPath="$PROJECT_DIR$/argo.iws" />
+      <change type="DELETED" beforePath="C:\projects\argo\src\main\java\argo\token\JsonListenerToStajAdapter.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\projects\argo\src\main\java\argo\token\JsonArray.java" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/argo/dom/JsonValue.java" />
+      <change type="DELETED" beforePath="C:\projects\argo\src\main\java\argo\token\JsonField.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/argo/dom/JsonListenerToJdomAdapterTest.java" afterPath="$PROJECT_DIR$/src/test/java/argo/dom/JsonListenerToJdomAdapterTest.java" />
+      <change type="DELETED" beforePath="C:\projects\argo\src\main\java\argo\token\JsonString.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\projects\argo\src\main\java\argo\token\JsonConstants.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/argo/token/JsonArrayTest.java" afterPath="$PROJECT_DIR$/src/test/java/argo/token/JsonArrayTest.java" />
+      <change type="DELETED" beforePath="C:\projects\argo\src\main\java\argo\token\JsonValue.java" afterPath="" />
+      <change type="DELETED" beforePath="C:\projects\argo\src\main\java\argo\token\JsonNumber.java" afterPath="" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="siren.iws" />
@@ -159,10 +179,37 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SystemOutJsonListener.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="SystemOutJsonListener.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/SystemOutJsonListener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="6" selection-start="27" selection-end="27" vertical-scroll-proportion="0.05610561">
+            <state line="2" column="6" selection-start="27" selection-end="27" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JsonStreamReaderTokenizerTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/argo/staj/JsonStreamReaderTokenizerTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="14" column="79" selection-start="466" selection-end="466" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JsonStreamReaderTokenizer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/argo/staj/JsonStreamReaderTokenizer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="9" column="11" selection-start="199" selection-end="199" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JsonListenerToJdomAdapterTest.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/argo/dom/JsonListenerToJdomAdapterTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="95" column="0" selection-start="4417" selection-end="4417" vertical-scroll-proportion="0.9407666">
               <folding />
             </state>
           </provider>
@@ -388,6 +435,24 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="argo" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="argo" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="argo" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="build" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
     </subPane>
   </component>
   <component name="ProjectReloadState">
@@ -443,6 +508,7 @@
       <recent name="argo.token" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="argo.dom" />
       <recent name="argo.token" />
     </key>
   </component>
@@ -634,12 +700,12 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="786" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32941177" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32753164" sideWeight="0.5" order="1" side_tool="false" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.10117773" sideWeight="0.6637255" order="1" side_tool="false" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.10113268" sideWeight="0.6598101" order="1" side_tool="false" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3990196" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32976654" sideWeight="0.5" order="8" side_tool="false" />
@@ -647,7 +713,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32847896" sideWeight="0.6613924" order="0" side_tool="false" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32847896" sideWeight="0.6598101" order="0" side_tool="false" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Web Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
@@ -677,7 +743,7 @@
     <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish removing object instantiation from Tokenizer." />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove an unused class." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
@@ -711,6 +777,7 @@
     <MESSAGE value="Finish switching Tokenizer test over." />
     <MESSAGE value="Start picking object instantiation out of Tokenizer." />
     <MESSAGE value="Finish removing object instantiation from Tokenizer." />
+    <MESSAGE value="Remove an unused class." />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -773,44 +840,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/JsonValue.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/argo/dom/JsonValue.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="0" selection-start="93" selection-end="93" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/JsonString.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/argo/dom/JsonString.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="19" selection-start="207" selection-end="207" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/JsonNumber.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/argo/dom/JsonNumber.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="19" selection-start="207" selection-end="207" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/argo/dom/JsonListenerToJdomAdapterTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="9" selection-start="888" selection-end="888" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/JsonObject.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/argo/dom/JsonObject.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="9" column="19" selection-start="256" selection-end="256" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/JsonListenerToStajAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="16" selection-start="610" selection-end="610" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -818,20 +871,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/JsonListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="10" column="4" selection-start="134" selection-end="134" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/argo/staj/JsonStreamReaderTokenizerTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="16" selection-start="267" selection-end="267" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/argo/staj/JsonStreamReaderTokenizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="0" selection-start="3044" selection-end="3044" vertical-scroll-proportion="0.94227505">
           <folding />
         </state>
       </provider>
@@ -870,7 +909,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/argo/token/SystemOutJsonListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="6" selection-start="27" selection-end="27" vertical-scroll-proportion="0.05610561">
+        <state line="2" column="6" selection-start="27" selection-end="27" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/argo/staj/JsonStreamReaderTokenizerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="79" selection-start="466" selection-end="466" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/argo/staj/JsonStreamReaderTokenizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="11" selection-start="199" selection-end="199" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/argo/dom/JsonListenerToJdomAdapterTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="95" column="0" selection-start="4417" selection-end="4417" vertical-scroll-proportion="0.9407666">
           <folding />
         </state>
       </provider>

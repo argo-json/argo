@@ -1,5 +1,6 @@
 package argo.token;
 
+import argo.dom.JsonNumber;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
