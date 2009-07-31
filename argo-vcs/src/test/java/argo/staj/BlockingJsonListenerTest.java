@@ -20,6 +20,7 @@ public final class BlockingJsonListenerTest {
         final Element secondElement = blockingJsonListener.getNext();
         assertThat(secondElement.getJsonStreamElementType(), equalTo(JsonStreamElementType.END_DOCUMENT));
         assertThat(eventFeedingThread.hasEndedDocument(), equalTo(true));
+        Thread.sleep(10);
     }
 
     private static final class EventFeedingThread implements Runnable {
@@ -47,6 +48,8 @@ public final class BlockingJsonListenerTest {
                 hasEndedDocument = true;
             } catch (final JsonListenerException e) {
                 fail("A JsonListenerException was thrown when none was expected [" + e + "].");
+            } finally {
+                blockingJsonListener.close();
             }
         }
     }

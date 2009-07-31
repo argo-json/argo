@@ -9,15 +9,19 @@ final class BlockingJsonListener implements JsonListener {
 
     private Element currentElement;
     private boolean hasNext;
+    private boolean closed = false;
 
     Element getNext() {
         final Element result;
         synchronized (lock) {
+            if (closed) {
+                throw new IllegalStateException("Illegal call to get next element when already closed.");
+            }
             while (!hasNext) {
                 try {
                     lock.wait();
                 } catch (final InterruptedException e) {
-                    throw new RuntimeException("Coding failure in Argo:  Interrupted waiting for request for next element;");
+                    throw new RuntimeException("Coding failure in Argo:  Interrupted waiting with request for next element;");
                 }
             }
             result = currentElement;
@@ -33,12 +37,26 @@ final class BlockingJsonListener implements JsonListener {
                 try {
                     lock.wait();
                 } catch (final InterruptedException e) {
-                    throw new RuntimeException("Coding failure in Argo:  Interrupted waiting for next element;");
+                    throw new RuntimeException("Coding failure in Argo:  Interrupted waiting with next element;");
                 }
             }
             currentElement = element;
             hasNext = true;
             lock.notify();
+        }
+    }
+
+    void close() {
+        synchronized (lock) {
+            while (hasNext) {
+                try {
+                    lock.wait();
+                } catch (final InterruptedException e) {
+                    throw new RuntimeException("Coding failure in Argo:  Interrupted waiting to apply close;");
+                }
+                closed = true;
+                lock.notify();
+            }
         }
     }
 
