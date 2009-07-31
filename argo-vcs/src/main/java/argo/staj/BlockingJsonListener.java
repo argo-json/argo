@@ -8,7 +8,7 @@ final class BlockingJsonListener implements JsonListener {
     private final Object lock = new Object();
 
     private Element currentElement;
-    private boolean hasNext;
+    private boolean hasNext = false;
     private boolean closed = false;
 
     Element getNext() {
@@ -54,9 +54,9 @@ final class BlockingJsonListener implements JsonListener {
                 } catch (final InterruptedException e) {
                     throw new RuntimeException("Coding failure in Argo:  Interrupted waiting to apply close;");
                 }
-                closed = true;
-                lock.notify();
             }
+            closed = true;
+            lock.notify();
         }
     }
 

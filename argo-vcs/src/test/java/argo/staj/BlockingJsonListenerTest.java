@@ -20,7 +20,13 @@ public final class BlockingJsonListenerTest {
         final Element secondElement = blockingJsonListener.getNext();
         assertThat(secondElement.getJsonStreamElementType(), equalTo(JsonStreamElementType.END_DOCUMENT));
         assertThat(eventFeedingThread.hasEndedDocument(), equalTo(true));
-        Thread.sleep(10);
+    }
+
+    @Test(expected = java.lang.IllegalStateException.class)
+    public void throwsExceptionIfNextIsCalledAfterClose() throws Exception {
+        final BlockingJsonListener blockingJsonListener = new BlockingJsonListener();
+        blockingJsonListener.close();
+        blockingJsonListener.getNext();
     }
 
     private static final class EventFeedingThread implements Runnable {
