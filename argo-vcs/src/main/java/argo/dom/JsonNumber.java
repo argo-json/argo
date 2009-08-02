@@ -1,9 +1,5 @@
 package argo.dom;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 public final class JsonNumber implements JsonValue {
 
     private final String value;
@@ -25,22 +21,20 @@ public final class JsonNumber implements JsonValue {
         if (that == null || getClass() != that.getClass()) return false;
 
         final JsonNumber thatJsonNumber = (JsonNumber) that;
-        return new EqualsBuilder()
-                .append(this.value, thatJsonNumber.value)
-                .isEquals();
+        return this.value.equals(thatJsonNumber.value);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(value)
-                .toHashCode();
+        return value.hashCode();
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("value", value)
+        return new StringBuilder()
+                .append("JsonNumber value:[")
+                .append(value)
+                .append("]")
                 .toString();
     }
 }

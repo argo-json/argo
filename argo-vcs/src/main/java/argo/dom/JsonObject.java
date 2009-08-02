@@ -1,9 +1,5 @@
 package argo.dom;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,22 +21,20 @@ public final class JsonObject implements JsonValue {
         if (that == null || getClass() != that.getClass()) return false;
 
         final JsonObject thatJsonObject = (JsonObject) that;
-        return new EqualsBuilder()
-                .append(this.fields, thatJsonObject.fields)
-                .isEquals();
+        return this.fields.equals(thatJsonObject.fields);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(fields)
-                .toHashCode();
+        return fields.hashCode();
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("fields", fields)
+        return new StringBuilder()
+                .append("JsonObject fields:[")
+                .append(fields)
+                .append("]")
                 .toString();
     }
 }

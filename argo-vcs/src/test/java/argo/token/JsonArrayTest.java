@@ -18,14 +18,14 @@ public final class JsonArrayTest {
         final JsonValue baseJsonValue = new MockJsonValue(0);
         final List<JsonValue> baseElements = new LinkedList<JsonValue>(Arrays.<JsonValue>asList(baseJsonValue));
         final JsonArray jsonArray = new JsonArray(baseElements);
-        assertEquals(1, jsonArray.getValues().size());
-        assertEquals(baseJsonValue, jsonArray.getValues().get(0));
+        assertEquals(1, jsonArray.getElements().size());
+        assertEquals(baseJsonValue, jsonArray.getElements().get(0));
         baseElements.add(new MockJsonValue(1));
-        assertEquals(1, jsonArray.getValues().size());
-        assertEquals(baseJsonValue, jsonArray.getValues().get(0));
-        jsonArray.getValues().add(new MockJsonValue(1));
-        assertEquals(1, jsonArray.getValues().size());
-        assertEquals(baseJsonValue, jsonArray.getValues().get(0));
+        assertEquals(1, jsonArray.getElements().size());
+        assertEquals(baseJsonValue, jsonArray.getElements().get(0));
+        jsonArray.getElements().add(new MockJsonValue(1));
+        assertEquals(1, jsonArray.getElements().size());
+        assertEquals(baseJsonValue, jsonArray.getElements().get(0));
     }
 
     @Test

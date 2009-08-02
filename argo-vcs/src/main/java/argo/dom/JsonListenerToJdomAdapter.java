@@ -1,7 +1,6 @@
 package argo.dom;
 
-import argo.token.*;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import argo.token.JsonListener;
 
 import java.util.*;
 
@@ -97,8 +96,10 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
         @Override
         public String toString() {
-            return new ToStringBuilder(this)
-                    .append("elements", elements)
+            return new StringBuilder()
+                    .append("MutableJsonArray elements:[")
+                    .append(elements)
+                    .append("]")
                     .toString();
         }
     }
@@ -124,8 +125,10 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
         @Override
         public String toString() {
-            return new ToStringBuilder(this)
-                    .append("fields", fields)
+            return new StringBuilder()
+                    .append("MutableJsonObject fields:[")
+                    .append(fields)
+                    .append("]")
                     .toString();
         }
     }
@@ -156,9 +159,12 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
         @Override
         public String toString() {
-            return new ToStringBuilder(this)
-                    .append("name", name)
-                    .append("value", value)
+            return new StringBuilder()
+                    .append("MutableJsonField name:[")
+                    .append(name)
+                    .append("], value:[")
+                    .append(value)
+                    .append("]")
                     .toString();
         }
     }
@@ -180,8 +186,10 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
         @Override
         public String toString() {
-            return new ToStringBuilder(this)
-                    .append("value", value)
+            return new StringBuilder()
+                    .append("MutableJsonDocument value:[")
+                    .append(value)
+                    .append("]")
                     .toString();
         }
     }

@@ -1,22 +1,18 @@
 package argo.dom;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public final class JsonArray implements JsonValue {
 
-    private final List<JsonValue> values;
+    private final List<JsonValue> elements;
 
-    public JsonArray(final List<JsonValue> values) {
-        this.values = new ArrayList<JsonValue>(values);
+    public JsonArray(final List<JsonValue> elements) {
+        this.elements = new ArrayList<JsonValue>(elements);
     }
 
-    public List<JsonValue> getValues() {
-        return new ArrayList<JsonValue>(values);
+    public List<JsonValue> getElements() {
+        return new ArrayList<JsonValue>(elements);
     }
 
     @Override
@@ -25,22 +21,20 @@ public final class JsonArray implements JsonValue {
         if (that == null || getClass() != that.getClass()) return false;
 
         final JsonArray thatJsonArray = (JsonArray) that;
-        return new EqualsBuilder()
-                .append(this.values, thatJsonArray.values)
-                .isEquals();
+        return this.elements.equals(thatJsonArray.elements);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(values)
-                .toHashCode();
+        return elements.hashCode();
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("values", values)
+        return new StringBuilder()
+                .append("JsonArray elements:[")
+                .append(elements)
+                .append("]")
                 .toString();
     }
 }
