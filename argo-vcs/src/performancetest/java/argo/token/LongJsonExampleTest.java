@@ -1,5 +1,7 @@
 package argo.token;
 
+import argo.dom.JdomParser;
+import argo.staj.ParserToJsonStreamReaderAdapter;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -57,10 +59,35 @@ public final class LongJsonExampleTest {
     }
 
     @Test
-    public void testArgo() throws Exception {
+    public void testArgoJax() throws Exception {
         final JsonParser jsonParser = new JsonParser();
         for (final Reader reader : jsonReaders) {
             jsonParser.parse(reader, BLACK_HOLE_JSON_LISTENER);
+        }
+    }
+
+    @Test
+    public void testArgoStaj() throws Exception {
+        for (final Reader reader : jsonReaders) {
+            ParserToJsonStreamReaderAdapter parserToJsonStreamReaderAdapter = null;
+            try {
+                parserToJsonStreamReaderAdapter = new ParserToJsonStreamReaderAdapter(reader);
+                while(parserToJsonStreamReaderAdapter.hasNext()) {
+                    parserToJsonStreamReaderAdapter.next();
+                }
+            } finally {
+                if (parserToJsonStreamReaderAdapter != null) {
+                    parserToJsonStreamReaderAdapter.close();
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testArgoJdom() throws Exception {
+        final JdomParser jdomParser = new JdomParser();
+        for (final Reader reader : jsonReaders) {
+            jdomParser.parse(reader);
         }
     }
 }

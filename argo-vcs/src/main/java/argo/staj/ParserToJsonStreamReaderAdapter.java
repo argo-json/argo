@@ -47,7 +47,7 @@ public final class ParserToJsonStreamReaderAdapter implements JsonStreamReader {
     }
 
     public boolean hasNext() throws JsonStreamException {
-        return JsonStreamElementType.END_DOCUMENT == next.getJsonStreamElementType();
+        return next == null || JsonStreamElementType.END_DOCUMENT != next.getJsonStreamElementType();
     }
 
     public void close() throws JsonStreamException {
