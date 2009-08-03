@@ -1,6 +1,6 @@
 package argo.token;
 
-import argo.dom.JsonValue;
+import argo.jdom.JsonValue;
 
 /**
  * Test JsonValue that determines equality based on equality of an int field provided in the constructor.  Immutable.

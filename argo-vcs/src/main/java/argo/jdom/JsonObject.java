@@ -1,4 +1,4 @@
-package argo.dom;
+package argo.jdom;
 
 import java.util.HashMap;
 import java.util.Map;

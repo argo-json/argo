@@ -1,6 +1,6 @@
 package argo.token;
 
-import argo.dom.JdomParser;
+import argo.jdom.JdomParser;
 import argo.staj.ParserToJsonStreamReaderAdapter;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;

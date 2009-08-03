@@ -1,4 +1,4 @@
-package argo.dom;
+package argo.jdom;
 
 import java.util.ArrayList;
 import java.util.List;

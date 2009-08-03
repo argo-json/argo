@@ -1,4 +1,4 @@
-package argo.dom;
+package argo.jdom;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;

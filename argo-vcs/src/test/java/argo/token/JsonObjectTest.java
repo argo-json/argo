@@ -1,8 +1,8 @@
 package argo.token;
 
-import argo.dom.JsonObject;
-import argo.dom.JsonString;
-import argo.dom.JsonValue;
+import argo.jdom.JsonObject;
+import argo.jdom.JsonString;
+import argo.jdom.JsonValue;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

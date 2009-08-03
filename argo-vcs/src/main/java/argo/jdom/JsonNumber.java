@@ -1,4 +1,4 @@
-package argo.dom;
+package argo.jdom;
 
 public final class JsonNumber implements JsonValue {
 
