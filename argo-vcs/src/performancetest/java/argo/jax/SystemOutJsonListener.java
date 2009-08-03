@@ -1,4 +1,4 @@
-package argo.token;
+package argo.jax;
 
 class SystemOutJsonListener implements JsonListener {
     public void startDocument() {

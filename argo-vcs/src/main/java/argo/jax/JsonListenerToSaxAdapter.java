@@ -1,4 +1,4 @@
-package argo.token;
+package argo.jax;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;

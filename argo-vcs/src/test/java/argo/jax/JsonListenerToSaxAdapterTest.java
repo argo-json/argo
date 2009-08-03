@@ -1,4 +1,4 @@
-package argo.token;
+package argo.jax;
 
 import org.hamcrest.Description;
 import static org.hamcrest.Matchers.equalTo;

@@ -1,4 +1,4 @@
-package argo.token;
+package argo.jax;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;

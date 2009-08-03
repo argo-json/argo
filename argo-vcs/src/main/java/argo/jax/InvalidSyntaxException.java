@@ -1,4 +1,4 @@
-package argo.token;
+package argo.jax;
 
 final class InvalidSyntaxException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package argo.token;
+package argo.jax;
 
 public final class JsonListenerException extends Exception {
     public JsonListenerException() {

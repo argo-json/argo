@@ -1,7 +1,7 @@
 package argo.staj;
 
-import argo.token.JsonListener;
-import argo.token.JsonListenerException;
+import argo.jax.JsonListener;
+import argo.jax.JsonListenerException;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package argo.token;
+package argo.jax;
 
 import argo.jdom.JsonObject;
 import argo.jdom.JsonString;

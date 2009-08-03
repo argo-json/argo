@@ -1,4 +1,4 @@
-package argo.token;
+package argo.jax;
 
 import argo.jdom.JsonNumber;
 import static org.junit.Assert.*;
