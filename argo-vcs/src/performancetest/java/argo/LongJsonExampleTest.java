@@ -1,5 +1,8 @@
-package argo.jax;
+package argo;
 
+import argo.jax.JsonListener;
+import argo.jax.JsonListenerException;
+import argo.jax.JsonParser;
 import argo.jdom.JdomParser;
 import argo.staj.StajParser;
 import net.sf.json.JSONObject;
