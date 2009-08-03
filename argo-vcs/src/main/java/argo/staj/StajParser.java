@@ -1,7 +1,7 @@
 package argo.staj;
 
+import argo.jax.JaxParser;
 import argo.jax.JsonListenerException;
-import argo.jax.JsonParser;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -17,7 +17,7 @@ public final class StajParser implements JsonStreamReader {
             @Override
             public void run() {
                 try {
-                    new JsonParser().parse(in, blockingJsonListener);
+                    new JaxParser().parse(in, blockingJsonListener);
                 } catch (final JsonListenerException e) {
                     blockingJsonListener.jsonListenerException(e);
                 } catch (final IOException e) {

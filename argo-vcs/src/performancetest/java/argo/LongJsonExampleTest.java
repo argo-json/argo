@@ -1,8 +1,8 @@
 package argo;
 
+import argo.jax.JaxParser;
 import argo.jax.JsonListener;
 import argo.jax.JsonListenerException;
-import argo.jax.JsonParser;
 import argo.jdom.JdomParser;
 import argo.staj.StajParser;
 import net.sf.json.JSONObject;
@@ -63,9 +63,9 @@ public final class LongJsonExampleTest {
 
     @Test
     public void testArgoJax() throws Exception {
-        final JsonParser jsonParser = new JsonParser();
+        final JaxParser jaxParser = new JaxParser();
         for (final Reader reader : jsonReaders) {
-            jsonParser.parse(reader, BLACK_HOLE_JSON_LISTENER);
+            jaxParser.parse(reader, BLACK_HOLE_JSON_LISTENER);
         }
     }
 

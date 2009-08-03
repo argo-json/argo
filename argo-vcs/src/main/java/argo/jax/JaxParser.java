@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Arrays;
 
-public final class JsonParser {
+public final class JaxParser {
 
     private static final char DOUBLE_QUOTE = '"';
     private static final char BACK_SLASH = '\\';
@@ -16,7 +16,7 @@ public final class JsonParser {
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
 
-    public JsonParser() {
+    public JaxParser() {
     }
 
     public void parse(final Reader in, final JsonListener jsonListener) throws IOException, JsonListenerException {
