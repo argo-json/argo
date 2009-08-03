@@ -18,10 +18,12 @@ public final class ParserToJsonStreamReaderAdapter implements JsonStreamReader {
             public void run() {
                 try {
                     new JsonParser().parse(in, blockingJsonListener);
-                } catch (JsonListenerException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (final JsonListenerException e) {
+                    blockingJsonListener.jsonListenerException(e);
+                } catch (final IOException e) {
+                    blockingJsonListener.ioException(e);
+                } catch (final RuntimeException e) {
+                    blockingJsonListener.runtimeException(e);
                 } finally {
                     blockingJsonListener.close();
                 }
@@ -30,7 +32,13 @@ public final class ParserToJsonStreamReaderAdapter implements JsonStreamReader {
     }
 
     public JsonStreamElementType next() throws JsonStreamException {
-        next = blockingJsonListener.getNext();
+        try {
+            next = blockingJsonListener.getNext();
+        } catch (JsonListenerException e) {
+            throw new JsonStreamException(e);
+        } catch (IOException e) {
+            throw new JsonStreamException(e);
+        }
         return next.getJsonStreamElementType();
     }
 
