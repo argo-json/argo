@@ -6,12 +6,12 @@ import argo.token.JsonParser;
 import java.io.IOException;
 import java.io.Reader;
 
-public final class ParserToJsonStreamReaderAdapter implements JsonStreamReader {
+public final class StajParser implements JsonStreamReader {
     
     private final BlockingJsonListener blockingJsonListener;
     private Element next;
 
-    public ParserToJsonStreamReaderAdapter(final Reader in) throws JsonListenerException, IOException {
+    public StajParser(final Reader in) throws JsonListenerException, IOException {
         blockingJsonListener = new BlockingJsonListener();
         new Thread("Argo parser") {
             @Override
