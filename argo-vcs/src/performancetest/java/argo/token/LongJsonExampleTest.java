@@ -6,21 +6,43 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.net.URL;
 
 public final class LongJsonExampleTest {
 
     private Reader[] jsonReaders = new Reader[10000];
+    private static final JsonListener BLACK_HOLE_JSON_LISTENER = new JsonListener() {
+        public void startDocument() throws JsonListenerException { }
+
+        public void endDocument() throws JsonListenerException { }
+
+        public void startArray() throws JsonListenerException { }
+
+        public void endArray() throws JsonListenerException { }
+
+        public void startObject() throws JsonListenerException { }
+
+        public void endObject() throws JsonListenerException { }
+
+        public void startField(String name) throws JsonListenerException { }
+
+        public void endField() throws JsonListenerException { }
+
+        public void stringValue(String value) throws JsonListenerException { }
+
+        public void numberValue(String value) throws JsonListenerException { }
+
+        public void trueValue() throws JsonListenerException { }
+
+        public void falseValue() throws JsonListenerException { }
+
+        public void nullValue() throws JsonListenerException { }
+    };
 
     @Before
     public void getJson() throws Exception {
-        final URL resource = this.getClass().getResource("LongJsonExample.parse");
-        final File longJsonExample = new File(resource.getFile());
-        final ClassLoader loader = this.getClass().getClassLoader();
-        final InputStream stream = loader.getResourceAsStream("argo.token.LongJsonExample.parse");
+        final File longJsonExample = new File(this.getClass().getResource("LongJsonExample.json").getFile());
         final String json = FileUtils.readFileToString(longJsonExample);
         for (int i = 0; i < jsonReaders.length; i++) {
             jsonReaders[i] = new StringReader(json);
@@ -28,17 +50,17 @@ public final class LongJsonExampleTest {
     }
 
     @Test
-    public void testArgo() throws Exception {
+    public void testJsonLib() throws Exception {
         for (final Reader reader : jsonReaders) {
-            JsonParser jsonParser = new JsonParser();
-            jsonParser.parse(reader, new SystemOutJsonListener());
+            JSONObject.toBean(JSONObject.fromObject(reader));
         }
     }
 
     @Test
-    public void testJsonLib() throws Exception {
+    public void testArgo() throws Exception {
+        final JsonParser jsonParser = new JsonParser();
         for (final Reader reader : jsonReaders) {
-            JSONObject.toBean(JSONObject.fromObject(reader));
+            jsonParser.parse(reader, BLACK_HOLE_JSON_LISTENER);
         }
     }
 }
