@@ -11,6 +11,7 @@
 
     <property name="location.build" value="build"/>
     <property name="location.classes" value="${location.build}/classes"/>
+    <property name="location.optimisedclasses" value="${location.build}/optimised-classes"/>
     <property name="location.testclasses" value="${location.build}/test-classes"/>
     <property name="location.testresources" value="${location.src.test}/resources"/>
     <property name="location.performancetestclasses" value="${location.build}/performance-test-classes"/>
@@ -58,12 +59,19 @@
         <echo message="Starting compile"/>
         <delete dir="${location.classes}"/>
         <mkdir dir="${location.classes}"/>
+        <delete dir="${location.optimisedclasses}"/>
+        <mkdir dir="${location.optimisedclasses}"/>
         <delete dir="${location.testclasses}"/>
         <mkdir dir="${location.testclasses}"/>
         <delete dir="${location.performancetestclasses}"/>
         <mkdir dir="${location.performancetestclasses}"/>
 
         <javac destdir="${location.classes}" debug="on" source="1.6" target="1.6">
+            <src path="${location.src}"/>
+            <classpath refid="main-compile-libs"/>
+        </javac>
+
+        <javac destdir="${location.optimisedclasses}" debug="on" optimize="true" source="1.6" target="1.6">
             <src path="${location.src}"/>
             <classpath refid="main-compile-libs"/>
         </javac>
@@ -82,7 +90,7 @@
         </javac>
 
         <copy todir="${location.classes}">
-            <fileset dir="src/main">
+            <fileset dir="src/main/java">
                 <include name="**/*.java"/>
             </fileset>
         </copy>
@@ -148,6 +156,7 @@
         <mkdir dir="${location.dist}"/>
 
         <jar basedir="${location.classes}" destfile="${location.dist}/argo-${version}.jar"/>
+        <jar basedir="${location.optimisedclasses}" destfile="${location.dist}/argo-small-${version}.jar"/>
 
     </target>
 
