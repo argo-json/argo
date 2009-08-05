@@ -1,7 +1,5 @@
 package argo.staj;
 
-import argo.jax.JsonListenerException;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
@@ -52,8 +50,6 @@ public final class BlockingJsonListenerTest {
                 hasStartedDocument = true;
                 blockingJsonListener.endDocument();
                 hasEndedDocument = true;
-            } catch (final JsonListenerException e) {
-                fail("A JsonListenerException was thrown when none was expected [" + e + "].");
             } finally {
                 blockingJsonListener.close();
             }

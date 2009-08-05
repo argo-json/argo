@@ -1,6 +1,6 @@
-package argo.jax;
+package argo.xml;
 
-public final class JsonListenerException extends Exception {
+public final class JsonListenerException extends RuntimeException {
     public JsonListenerException() {
         super();
     }

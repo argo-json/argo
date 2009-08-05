@@ -2,29 +2,29 @@ package argo.jax;
 
 public interface JsonListener {
 
-    void startDocument() throws JsonListenerException;
+    void startDocument();
 
-    void endDocument() throws JsonListenerException;
+    void endDocument();
 
-    void startArray() throws JsonListenerException;
+    void startArray();
 
-    void endArray() throws JsonListenerException;
+    void endArray();
 
-    void startObject() throws JsonListenerException;
+    void startObject();
 
-    void endObject() throws JsonListenerException;
+    void endObject();
 
-    void startField(String name) throws JsonListenerException;
+    void startField(String name);
 
-    void endField() throws JsonListenerException;
+    void endField();
 
-    void stringValue(String value) throws JsonListenerException;
+    void stringValue(String value);
 
-    void numberValue(String value) throws JsonListenerException;
+    void numberValue(String value);
 
-    void trueValue() throws JsonListenerException;
+    void trueValue();
 
-    void falseValue() throws JsonListenerException;
+    void falseValue();
 
-    void nullValue() throws JsonListenerException;
+    void nullValue();
 }

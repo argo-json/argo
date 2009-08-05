@@ -1,7 +1,6 @@
 package argo.xml;
 
 import argo.jax.JsonListener;
-import argo.jax.JsonListenerException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -20,7 +19,7 @@ public final class JsonListenerToSaxAdapter implements JsonListener {
         this.contentHandler = contentHandler;
     }
 
-    public void startDocument() throws JsonListenerException {
+    public void startDocument() {
         try {
             contentHandler.startDocument();
         } catch (final SAXException e) {
@@ -28,7 +27,7 @@ public final class JsonListenerToSaxAdapter implements JsonListener {
         }
     }
 
-    public void endDocument() throws JsonListenerException {
+    public void endDocument() {
         try {
             contentHandler.endDocument();
         } catch (final SAXException e) {
@@ -52,7 +51,7 @@ public final class JsonListenerToSaxAdapter implements JsonListener {
         //do nothing
     }
 
-    public void startField(final String name) throws JsonListenerException {
+    public void startField(final String name) {
         fieldNames.push(name);
         try {
             contentHandler.startElement("", name, name, new AttributesImpl());
@@ -61,7 +60,7 @@ public final class JsonListenerToSaxAdapter implements JsonListener {
         }
     }
 
-    public void endField() throws JsonListenerException {
+    public void endField() {
         final String name = fieldNames.pop();
         try {
             contentHandler.endElement("", name, name);
@@ -70,27 +69,27 @@ public final class JsonListenerToSaxAdapter implements JsonListener {
         }
     }
 
-    public void stringValue(final String value) throws JsonListenerException {
+    public void stringValue(final String value) {
         aValue(value, "string");
     }
 
-    public void numberValue(final String value) throws JsonListenerException {
+    public void numberValue(final String value) {
         aValue(value, "number");
     }
 
-    public void trueValue() throws JsonListenerException {
+    public void trueValue() {
         aValue("true", "true");
     }
 
-    public void falseValue() throws JsonListenerException {
+    public void falseValue() {
         aValue("false", "false");
     }
 
-    public void nullValue() throws JsonListenerException {
+    public void nullValue() {
         aValue("null", "null");
     }
 
-    private void aValue(final String value, final String type) throws JsonListenerException {
+    private void aValue(final String value, final String type) {
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute("", "type", "type", "CDATA", type);
         try {

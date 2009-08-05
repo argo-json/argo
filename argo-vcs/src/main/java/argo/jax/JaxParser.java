@@ -19,7 +19,7 @@ public final class JaxParser {
     public JaxParser() {
     }
 
-    public void parse(final Reader in, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
+    public void parse(final Reader in, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final PushbackReader pushbackReader = new PushbackReader(in);
         final char nextChar = (char) pushbackReader.read();
         switch (nextChar) {
@@ -43,7 +43,7 @@ public final class JaxParser {
         jsonListener.endDocument();
     }
 
-    private void arrayString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
+    private void arrayString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '[') {
             throw new InvalidSyntaxException("Expected object to start with [ but got [" + firstChar + "].");
@@ -71,7 +71,7 @@ public final class JaxParser {
         jsonListener.endArray();
     }
 
-    private void objectString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
+    private void objectString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '{') {
             throw new InvalidSyntaxException("Expected object to start with { but got [" + firstChar + "].");
@@ -99,7 +99,7 @@ public final class JaxParser {
         jsonListener.endObject();
     }
 
-    private void aFieldToken(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
+    private void aFieldToken(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
             throw new InvalidSyntaxException("Expected object identifier to begin with [\"] but got [" + nextChar + "].");
@@ -114,7 +114,7 @@ public final class JaxParser {
         jsonListener.endField();
     }
 
-    private void aJsonValue(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
+    private void aJsonValue(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':

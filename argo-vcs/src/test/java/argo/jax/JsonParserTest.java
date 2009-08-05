@@ -424,7 +424,7 @@ public final class JsonParserTest {
         context.assertIsSatisfied();
     }
 
-    private void assertJsonValueFragmentResultsInStringValue(final String jsonFragment, final String expectedStringValue) throws IOException, JsonListenerException, InvalidSyntaxException {
+    private void assertJsonValueFragmentResultsInStringValue(final String jsonFragment, final String expectedStringValue) throws IOException, InvalidSyntaxException {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{

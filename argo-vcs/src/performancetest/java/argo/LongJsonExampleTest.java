@@ -2,7 +2,6 @@ package argo;
 
 import argo.jax.JaxParser;
 import argo.jax.JsonListener;
-import argo.jax.JsonListenerException;
 import argo.jdom.JdomParser;
 import argo.staj.StajParser;
 import net.sf.json.JSONObject;
@@ -18,31 +17,31 @@ public final class LongJsonExampleTest {
 
     private Reader[] jsonReaders = new Reader[10000];
     private static final JsonListener BLACK_HOLE_JSON_LISTENER = new JsonListener() {
-        public void startDocument() throws JsonListenerException { }
+        public void startDocument() { }
 
-        public void endDocument() throws JsonListenerException { }
+        public void endDocument() { }
 
-        public void startArray() throws JsonListenerException { }
+        public void startArray() { }
 
-        public void endArray() throws JsonListenerException { }
+        public void endArray() { }
 
-        public void startObject() throws JsonListenerException { }
+        public void startObject() { }
 
-        public void endObject() throws JsonListenerException { }
+        public void endObject() { }
 
-        public void startField(String name) throws JsonListenerException { }
+        public void startField(String name) { }
 
-        public void endField() throws JsonListenerException { }
+        public void endField() { }
 
-        public void stringValue(String value) throws JsonListenerException { }
+        public void stringValue(String value) { }
 
-        public void numberValue(String value) throws JsonListenerException { }
+        public void numberValue(String value) { }
 
-        public void trueValue() throws JsonListenerException { }
+        public void trueValue() { }
 
-        public void falseValue() throws JsonListenerException { }
+        public void falseValue() { }
 
-        public void nullValue() throws JsonListenerException { }
+        public void nullValue() { }
     };
 
     @Before
