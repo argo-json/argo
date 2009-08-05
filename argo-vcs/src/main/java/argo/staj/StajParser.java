@@ -1,5 +1,6 @@
 package argo.staj;
 
+import argo.jax.InvalidSyntaxException;
 import argo.jax.JaxParser;
 import argo.jax.JsonListenerException;
 
@@ -18,6 +19,8 @@ public final class StajParser implements JsonStreamReader {
             public void run() {
                 try {
                     new JaxParser().parse(in, blockingJsonListener);
+                } catch (final InvalidSyntaxException e) {
+                    blockingJsonListener.invalidSyntaxException(e);
                 } catch (final JsonListenerException e) {
                     blockingJsonListener.jsonListenerException(e);
                 } catch (final IOException e) {
@@ -34,9 +37,11 @@ public final class StajParser implements JsonStreamReader {
     public JsonStreamElementType next() throws JsonStreamException {
         try {
             next = blockingJsonListener.getNext();
-        } catch (JsonListenerException e) {
+        } catch (final JsonListenerException e) {
             throw new JsonStreamException(e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
+            throw new JsonStreamException(e);
+        } catch (final InvalidSyntaxException e) {
             throw new JsonStreamException(e);
         }
         return next.getJsonStreamElementType();

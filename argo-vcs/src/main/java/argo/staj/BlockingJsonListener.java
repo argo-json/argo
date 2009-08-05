@@ -1,5 +1,6 @@
 package argo.staj;
 
+import argo.jax.InvalidSyntaxException;
 import argo.jax.JsonListener;
 import argo.jax.JsonListenerException;
 
@@ -15,8 +16,9 @@ final class BlockingJsonListener implements JsonListener {
     private IOException ioException;
     private JsonListenerException jsonListenerException;
     private RuntimeException runtimeException;
+    private InvalidSyntaxException invalidSyntaxException;
 
-    Element getNext() throws JsonListenerException, IOException {
+    Element getNext() throws JsonListenerException, IOException, InvalidSyntaxException {
         final Element result;
         synchronized (lock) {
             while (!hasNext && !terminated()) {
@@ -57,7 +59,7 @@ final class BlockingJsonListener implements JsonListener {
         return State.IN_PROGRESS != state;
     }
 
-    private Element handleTermination() throws IOException, JsonListenerException {
+    private Element handleTermination() throws IOException, JsonListenerException, InvalidSyntaxException {
         switch (state) {
             case IO_EXCEPTION:
                 throw ioException;
@@ -65,6 +67,8 @@ final class BlockingJsonListener implements JsonListener {
                 throw jsonListenerException;
             case RUNTIME_EXCEPTION:
                 throw runtimeException;
+            case INVALID_SYNTAX_EXCEPTION:
+                throw invalidSyntaxException;
             case CLOSED:
                 throw new IllegalStateException("Illegal call after already closed.");
             default:
@@ -170,7 +174,17 @@ final class BlockingJsonListener implements JsonListener {
         }
     }
 
+    public void invalidSyntaxException(final InvalidSyntaxException e) {
+        synchronized (lock) {
+            if (!terminated()) {
+                state = State.INVALID_SYNTAX_EXCEPTION;
+                this.invalidSyntaxException = e;
+                lock.notifyAll();
+            }
+        }
+    }
+
     private static enum State {
-        IN_PROGRESS, CLOSED, IO_EXCEPTION, JSON_LISTENER_EXCEPTION, RUNTIME_EXCEPTION
+        IN_PROGRESS, CLOSED, IO_EXCEPTION, JSON_LISTENER_EXCEPTION, INVALID_SYNTAX_EXCEPTION, RUNTIME_EXCEPTION
     }
 }

@@ -1,6 +1,6 @@
 package argo.jax;
 
-final class InvalidSyntaxException extends RuntimeException {
+public final class InvalidSyntaxException extends Exception {
 
     InvalidSyntaxException() {
     }

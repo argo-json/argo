@@ -19,7 +19,7 @@ public final class JaxParser {
     public JaxParser() {
     }
 
-    public void parse(final Reader in, final JsonListener jsonListener) throws IOException, JsonListenerException {
+    public void parse(final Reader in, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
         final PushbackReader pushbackReader = new PushbackReader(in);
         final char nextChar = (char) pushbackReader.read();
         switch (nextChar) {
@@ -43,7 +43,7 @@ public final class JaxParser {
         jsonListener.endDocument();
     }
 
-    private void arrayString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException {
+    private void arrayString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '[') {
             throw new InvalidSyntaxException("Expected object to start with [ but got [" + firstChar + "].");
@@ -71,7 +71,7 @@ public final class JaxParser {
         jsonListener.endArray();
     }
 
-    private void objectString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException {
+    private void objectString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '{') {
             throw new InvalidSyntaxException("Expected object to start with { but got [" + firstChar + "].");
@@ -99,7 +99,7 @@ public final class JaxParser {
         jsonListener.endObject();
     }
 
-    private void aFieldToken(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException {
+    private void aFieldToken(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
             throw new InvalidSyntaxException("Expected object identifier to begin with [\"] but got [" + nextChar + "].");
@@ -114,7 +114,7 @@ public final class JaxParser {
         jsonListener.endField();
     }
 
-    private void aJsonValue(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException {
+    private void aJsonValue(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, JsonListenerException, InvalidSyntaxException {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
@@ -175,7 +175,7 @@ public final class JaxParser {
         }
     }
 
-    private String numberToken(final PushbackReader in) throws IOException {
+    private String numberToken(final PushbackReader in) throws IOException, InvalidSyntaxException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if ('-' == firstChar) {
@@ -187,7 +187,7 @@ public final class JaxParser {
         return result.toString();
     }
 
-    private String nonNegativeNumberToken(final PushbackReader in) throws IOException {
+    private String nonNegativeNumberToken(final PushbackReader in) throws IOException, InvalidSyntaxException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if ('0' == firstChar) {
@@ -202,7 +202,7 @@ public final class JaxParser {
         return result.toString();
     }
 
-    private char nonZeroDigitToken(final PushbackReader in) throws IOException {
+    private char nonZeroDigitToken(final PushbackReader in) throws IOException, InvalidSyntaxException {
         final char result;
         final char nextChar = (char) in.read();
         switch (nextChar) {
@@ -223,7 +223,7 @@ public final class JaxParser {
         return result;
     }
 
-    private char digitToken(final PushbackReader in) throws IOException {
+    private char digitToken(final PushbackReader in) throws IOException, InvalidSyntaxException {
         final char result;
         final char nextChar = (char) in.read();
         switch (nextChar) {
@@ -271,7 +271,7 @@ public final class JaxParser {
         return result.toString();
     }
 
-    private String possibleFractionalComponent(final PushbackReader pushbackReader) throws IOException {
+    private String possibleFractionalComponent(final PushbackReader pushbackReader) throws IOException, InvalidSyntaxException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '.') {
@@ -284,7 +284,7 @@ public final class JaxParser {
         return result.toString();
     }
 
-    private String possibleExponent(final PushbackReader pushbackReader) throws IOException {
+    private String possibleExponent(final PushbackReader pushbackReader) throws IOException, InvalidSyntaxException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '.' || firstChar == 'E') {
@@ -310,7 +310,7 @@ public final class JaxParser {
     }
 
 
-    private String stringToken(final Reader in) throws IOException {
+    private String stringToken(final Reader in) throws IOException, InvalidSyntaxException {
         final StringWriter result = new StringWriter();
         final char firstChar = (char) in.read();
         if (DOUBLE_QUOTE != firstChar) {
@@ -334,7 +334,7 @@ public final class JaxParser {
         return result.toString();
     }
 
-    private char escapedStringChar(final Reader in) throws IOException {
+    private char escapedStringChar(final Reader in) throws IOException, InvalidSyntaxException {
         final char result;
         final char firstChar = (char) in.read();
         switch (firstChar) {
@@ -371,7 +371,7 @@ public final class JaxParser {
         return result;
     }
 
-    private int hexidecimalNumber(final Reader in) throws IOException {
+    private int hexidecimalNumber(final Reader in) throws IOException, InvalidSyntaxException {
         final char[] resultCharArray = new char[4];
         final int readSize = in.read(resultCharArray);
         if (readSize != 4) {
