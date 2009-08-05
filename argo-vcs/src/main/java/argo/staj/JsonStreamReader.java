@@ -72,10 +72,8 @@ public interface JsonStreamReader {
      * return buf.toString();
      * </pre>
      *
-     * @throws JsonStreamException if the current event is not a START_ELEMENT
-     *                             or if a non text element is encountered
      */
-    public String getElementText() throws JsonStreamException;
+    public String getElementText();
 
     /**
      * Returns true if there are more parsing events and false
@@ -84,17 +82,14 @@ public interface JsonStreamReader {
      * END_DOCUMENT
      *
      * @return true if there are more events, false otherwise
-     * @throws JsonStreamException if there is a fatal error detecting the next state
      */
-    public boolean hasNext() throws JsonStreamException;
+    public boolean hasNext();
 
     /**
      * Frees any resources associated with this Reader.  This method does not close the
      * underlying input source.
-     *
-     * @throws JsonStreamException if there are errors freeing associated resources
      */
-    public void close() throws JsonStreamException;
+    public void close();
 
     public JsonStreamElementType getEventType();
 

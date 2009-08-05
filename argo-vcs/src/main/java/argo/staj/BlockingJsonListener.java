@@ -57,7 +57,7 @@ final class BlockingJsonListener implements JsonListener {
         return State.IN_PROGRESS != state;
     }
 
-    private Element handleTermination() throws IOException, InvalidSyntaxException {
+    private void handleTermination() throws IOException, InvalidSyntaxException {
         switch (state) {
             case IO_EXCEPTION:
                 throw ioException;

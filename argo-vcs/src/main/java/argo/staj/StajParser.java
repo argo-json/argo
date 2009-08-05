@@ -42,15 +42,15 @@ public final class StajParser implements JsonStreamReader {
         return next.getJsonStreamElementType();
     }
 
-    public String getElementText() throws JsonStreamException {
+    public String getElementText() {
         return next.getText();
     }
 
-    public boolean hasNext() throws JsonStreamException {
+    public boolean hasNext() {
         return next == null || JsonStreamElementType.END_DOCUMENT != next.getJsonStreamElementType();
     }
 
-    public void close() throws JsonStreamException {
+    public void close() {
         blockingJsonListener.close();
     }
 
