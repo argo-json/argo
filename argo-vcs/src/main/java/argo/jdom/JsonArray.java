@@ -2,17 +2,38 @@ package argo.jdom;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public final class JsonArray implements JsonValue {
+public final class JsonArray implements JsonRootNode {
 
-    private final List<JsonValue> elements;
+    private final List<JsonNode> elements;
 
-    public JsonArray(final List<JsonValue> elements) {
-        this.elements = new ArrayList<JsonValue>(elements);
+    public JsonArray(final List<JsonNode> elements) {
+        this.elements = new ArrayList<JsonNode>(elements);
     }
 
-    public List<JsonValue> getElements() {
-        return new ArrayList<JsonValue>(elements);
+    public List<JsonNode> getElements() {
+        return new ArrayList<JsonNode>(elements);
+    }
+
+    public boolean hasText() {
+        return false;
+    }
+
+    public String getText() {
+        throw new RuntimeException("Attempt to get text on a JsonNode without text.");
+    }
+
+    public boolean hasFields() {
+        return false;
+    }
+
+    public Map<JsonString, JsonNode> getFields() {
+        throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
+    }
+
+    public boolean hasElements() {
+        return true;
     }
 
     @Override

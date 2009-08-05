@@ -1,6 +1,9 @@
 package argo.jdom;
 
-public final class JsonNumber implements JsonValue {
+import java.util.List;
+import java.util.Map;
+
+public final class JsonNumber implements JsonNode {
 
     private final String value;
 
@@ -13,6 +16,30 @@ public final class JsonNumber implements JsonValue {
 
     public String getValue() {
         return value;
+    }
+
+    public boolean hasText() {
+        return true;
+    }
+
+    public String getText() {
+        return getValue();
+    }
+
+    public boolean hasFields() {
+        return false;
+    }
+
+    public Map<JsonString, JsonNode> getFields() {
+        throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
+    }
+
+    public boolean hasElements() {
+        return false;
+    }
+
+    public List<JsonNode> getElements() {
+        throw new RuntimeException("Attempt to get elements on a JsonNode without elements.");
     }
 
     @Override

@@ -7,12 +7,12 @@ import org.junit.Test;
 public final class MockJsonValueTest {
     @Test
     public void testEquals() {
-        assertEquals(new MockJsonValue(0), new MockJsonValue(0));
-        assertFalse(new MockJsonValue(0).equals(new MockJsonValue(1)));
+        assertEquals(new MockJsonNode(0), new MockJsonNode(0));
+        assertFalse(new MockJsonNode(0).equals(new MockJsonNode(1)));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(new MockJsonValue(0).hashCode(), new MockJsonValue(0).hashCode());
+        assertEquals(new MockJsonNode(0).hashCode(), new MockJsonNode(0).hashCode());
     }
 }

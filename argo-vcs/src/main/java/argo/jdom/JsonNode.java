@@ -1,0 +1,19 @@
+package argo.jdom;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * An node (leaf or otherwise) in a json document.
+ */
+public interface JsonNode {
+    boolean hasText();
+    String getText();
+
+    boolean hasFields();
+    Map<JsonString, JsonNode> getFields();
+    
+    boolean hasElements();
+    List<JsonNode> getElements();
+
+}

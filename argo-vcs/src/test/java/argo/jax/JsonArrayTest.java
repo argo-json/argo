@@ -1,7 +1,7 @@
 package argo.jax;
 
 import argo.jdom.JsonArray;
-import argo.jdom.JsonValue;
+import argo.jdom.JsonNode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import org.junit.Test;
@@ -15,34 +15,34 @@ public final class JsonArrayTest {
 
     @Test
     public void testImmutablility() {
-        final JsonValue baseJsonValue = new MockJsonValue(0);
-        final List<JsonValue> baseElements = new LinkedList<JsonValue>(Arrays.<JsonValue>asList(baseJsonValue));
+        final JsonNode baseJsonNode = new MockJsonNode(0);
+        final List<JsonNode> baseElements = new LinkedList<JsonNode>(Arrays.<JsonNode>asList(baseJsonNode));
         final JsonArray jsonArray = new JsonArray(baseElements);
         assertEquals(1, jsonArray.getElements().size());
-        assertEquals(baseJsonValue, jsonArray.getElements().get(0));
-        baseElements.add(new MockJsonValue(1));
+        assertEquals(baseJsonNode, jsonArray.getElements().get(0));
+        baseElements.add(new MockJsonNode(1));
         assertEquals(1, jsonArray.getElements().size());
-        assertEquals(baseJsonValue, jsonArray.getElements().get(0));
-        jsonArray.getElements().add(new MockJsonValue(1));
+        assertEquals(baseJsonNode, jsonArray.getElements().get(0));
+        jsonArray.getElements().add(new MockJsonNode(1));
         assertEquals(1, jsonArray.getElements().size());
-        assertEquals(baseJsonValue, jsonArray.getElements().get(0));
+        assertEquals(baseJsonNode, jsonArray.getElements().get(0));
     }
 
     @Test
     public void testEquals() {
-        assertEquals(new JsonArray(new LinkedList<JsonValue>()), new JsonArray(new LinkedList<JsonValue>()));
-        assertEquals(new JsonArray(Collections.<JsonValue>singletonList(new MockJsonValue(0))), new JsonArray(Collections.<JsonValue>singletonList(new MockJsonValue(0))));
-        assertFalse(new JsonArray(Collections.<JsonValue>singletonList(new MockJsonValue(0))).equals(new JsonArray(Collections.<JsonValue>singletonList(new MockJsonValue(1)))));
+        assertEquals(new JsonArray(new LinkedList<JsonNode>()), new JsonArray(new LinkedList<JsonNode>()));
+        assertEquals(new JsonArray(Collections.<JsonNode>singletonList(new MockJsonNode(0))), new JsonArray(Collections.<JsonNode>singletonList(new MockJsonNode(0))));
+        assertFalse(new JsonArray(Collections.<JsonNode>singletonList(new MockJsonNode(0))).equals(new JsonArray(Collections.<JsonNode>singletonList(new MockJsonNode(1)))));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(new JsonArray(new LinkedList<JsonValue>()).hashCode(), new JsonArray(new LinkedList<JsonValue>()).hashCode());
-        assertEquals(new JsonArray(Collections.<JsonValue>singletonList(new MockJsonValue(0))).hashCode(), new JsonArray(Collections.<JsonValue>singletonList(new MockJsonValue(0))).hashCode());
+        assertEquals(new JsonArray(new LinkedList<JsonNode>()).hashCode(), new JsonArray(new LinkedList<JsonNode>()).hashCode());
+        assertEquals(new JsonArray(Collections.<JsonNode>singletonList(new MockJsonNode(0))).hashCode(), new JsonArray(Collections.<JsonNode>singletonList(new MockJsonNode(0))).hashCode());
     }
 
     @Test
     public void testToString() {
-        new JsonArray(Collections.<JsonValue>singletonList(new MockJsonValue(0))).toString();
+        new JsonArray(Collections.<JsonNode>singletonList(new MockJsonNode(0))).toString();
     }
 }

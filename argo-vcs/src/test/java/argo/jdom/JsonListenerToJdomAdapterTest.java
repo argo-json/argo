@@ -19,7 +19,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endField();
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonValue expected = new JsonObject(new HashMap<JsonString, JsonValue>() {{
+        final JsonNode expected = new JsonObject(new HashMap<JsonString, JsonNode>() {{
             put(new JsonString("Hello"), new JsonString("World"));
         }});
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
@@ -35,7 +35,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endField();
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonValue expected = new JsonObject(new HashMap<JsonString, JsonValue>() {{
+        final JsonNode expected = new JsonObject(new HashMap<JsonString, JsonNode>() {{
             put(new JsonString("Gigawatts"), new JsonNumber("1.21"));
         }});
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
@@ -50,7 +50,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.stringValue("World");
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonValue expected = new JsonArray(Arrays.asList((JsonValue) new JsonString("Hello"), new JsonString("World")));
+        final JsonNode expected = new JsonArray(Arrays.asList((JsonNode) new JsonString("Hello"), new JsonString("World")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -63,7 +63,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.numberValue("42");
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonValue expected = new JsonArray(Arrays.asList((JsonValue) new JsonNumber("1.21"), new JsonNumber("42")));
+        final JsonNode expected = new JsonArray(Arrays.asList((JsonNode) new JsonNumber("1.21"), new JsonNumber("42")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -82,8 +82,8 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.falseValue();
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonValue expected = new JsonArray(Arrays.asList(
-                new JsonObject(new HashMap<JsonString, JsonValue>() {{
+        final JsonNode expected = new JsonArray(Arrays.asList(
+                new JsonObject(new HashMap<JsonString, JsonNode>() {{
                     put(new JsonString("anObject"), new JsonString("objectValue"));
                 }})
                 , JsonConstants.NULL

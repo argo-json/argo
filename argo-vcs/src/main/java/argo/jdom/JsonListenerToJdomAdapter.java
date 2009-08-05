@@ -9,7 +9,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     private final Stack stack = new Stack();
     private JsonValueGenerator document;
 
-    public JsonValue getDocument() {
+    public JsonNode getDocument() {
         return document.generateJsonValue();
     }
 
@@ -86,12 +86,12 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             return elements;
         }
 
-        public JsonValue generateJsonValue() {
-            final List<JsonValue> jsonValueElements = new ArrayList<JsonValue>(elements.size());
+        public JsonNode generateJsonValue() {
+            final List<JsonNode> jsonNodeElements = new ArrayList<JsonNode>(elements.size());
             for (Object element : elements) {
-                jsonValueElements.add(JsonListenerToJdomAdapter.generateJsonValue(element));
+                jsonNodeElements.add(JsonListenerToJdomAdapter.generateJsonValue(element));
             }
-            return new JsonArray(jsonValueElements);
+            return new JsonArray(jsonNodeElements);
         }
 
         @Override
@@ -115,8 +115,8 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             return fields;
         }
 
-        public JsonValue generateJsonValue() {
-            final Map<JsonString, JsonValue> jsonStringJsonValueHashMap = new HashMap<JsonString, JsonValue>();
+        public JsonNode generateJsonValue() {
+            final Map<JsonString, JsonNode> jsonStringJsonValueHashMap = new HashMap<JsonString, JsonNode>();
             for (MutableField field : fields) {
                 jsonStringJsonValueHashMap.put(new JsonString(field.getName()), JsonListenerToJdomAdapter.generateJsonValue(field.getValue()));
             }
@@ -153,7 +153,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             this.value = value;
         }
 
-        public JsonValue generateJsonValue() {
+        public JsonNode generateJsonValue() {
             return JsonListenerToJdomAdapter.generateJsonValue(value);
         }
 
@@ -180,7 +180,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             return value;
         }
 
-        public JsonValue generateJsonValue() {
+        public JsonNode generateJsonValue() {
             return JsonListenerToJdomAdapter.generateJsonValue(value);
         }
 
@@ -200,13 +200,13 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     private static interface JsonValueGenerator {
-        JsonValue generateJsonValue();
+        JsonNode generateJsonValue();
     }
 
-    private static JsonValue generateJsonValue(final Object value) {
-        final JsonValue result;
-        if (value instanceof JsonValue) {
-            result = (JsonValue) value;
+    private static JsonNode generateJsonValue(final Object value) {
+        final JsonNode result;
+        if (value instanceof JsonNode) {
+            result = (JsonNode) value;
         } else {
             result = ((JsonValueGenerator) value).generateJsonValue();
         }
