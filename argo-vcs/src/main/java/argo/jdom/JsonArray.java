@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public final class JsonArray implements JsonRootNode {
+final class JsonArray implements JsonRootNode {
 
     private final List<JsonNode> elements;
 
-    public JsonNodeType getType() {
-        return JsonNodeType.ARRAY;
+    JsonArray(final List<JsonNode> elements) {
+        this.elements = new ArrayList<JsonNode>(elements);
     }
 
-    public JsonArray(final List<JsonNode> elements) {
-        this.elements = new ArrayList<JsonNode>(elements);
+    public JsonNodeType getType() {
+        return JsonNodeType.ARRAY;
     }
 
     public List<JsonNode> getElements() {
@@ -32,7 +32,7 @@ public final class JsonArray implements JsonRootNode {
         return false;
     }
 
-    public Map<JsonString, JsonNode> getFields() {
+    public Map<JsonNode, JsonNode> getFields() {
         throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
     }
 

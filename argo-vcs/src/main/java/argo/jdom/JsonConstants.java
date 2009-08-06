@@ -3,7 +3,8 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
-public enum JsonConstants implements JsonNode {
+enum JsonConstants implements JsonNode {
+
     NULL(JsonNodeType.NULL), TRUE(JsonNodeType.TRUE), FALSE(JsonNodeType.FALSE);
 
     private final JsonNodeType jsonNodeType;
@@ -28,7 +29,7 @@ public enum JsonConstants implements JsonNode {
         return false;
     }
 
-    public Map<JsonString, JsonNode> getFields() {
+    public Map<JsonNode, JsonNode> getFields() {
         throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
     }
 

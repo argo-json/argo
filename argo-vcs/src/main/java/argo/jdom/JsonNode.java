@@ -13,7 +13,7 @@ public interface JsonNode {
     String getText();
 
     boolean hasFields();
-    Map<JsonString, JsonNode> getFields();
+    Map<JsonNode, JsonNode> getFields();
     
     boolean hasElements();
     List<JsonNode> getElements();

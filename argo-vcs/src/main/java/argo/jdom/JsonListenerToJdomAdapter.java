@@ -1,16 +1,17 @@
 package argo.jdom;
 
 import argo.jax.JsonListener;
+import static argo.jdom.JsonNodeFactory.*;
 
 import java.util.*;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
 
     private final Stack stack = new Stack();
-    private JsonValueGenerator document;
+    private JsonNodeGenerator document;
 
-    public JsonNode getDocument() {
-        return document.generateJsonValue();
+    public JsonRootNode getDocument() {
+        return (JsonRootNode)document.generateJsonValue();
     }
 
     public void startDocument() {
@@ -18,8 +19,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void endDocument() {
-        // TODO check type?
-        document = (JsonValueGenerator) stack.pop();
+        document = (JsonNodeGenerator) stack.pop();
     }
 
     public void startArray() {
@@ -29,7 +29,6 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void endArray() {
-        // TODO check type?
         stack.pop();
     }
 
@@ -40,28 +39,27 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void endObject() {
-        // TODO check type?
         stack.pop();
     }
 
     public void numberValue(final String value) {
-        ((ThingWithValues) stack.peek()).addValue(new JsonNumber(value));
+        ((ThingWithValues) stack.peek()).addValue(JsonNodeFactory.aJsonNumber(value));
     }
 
     public void trueValue() {
-        ((ThingWithValues) stack.peek()).addValue(JsonConstants.TRUE);
+        ((ThingWithValues) stack.peek()).addValue(aTrue());
     }
 
     public void falseValue() {
-        ((ThingWithValues) stack.peek()).addValue(JsonConstants.FALSE);
+        ((ThingWithValues) stack.peek()).addValue(aFalse());
     }
 
     public void nullValue() {
-        ((ThingWithValues) stack.peek()).addValue(JsonConstants.NULL);
+        ((ThingWithValues) stack.peek()).addValue(aNull());
     }
 
     public void stringValue(final String value) {
-        ((ThingWithValues) stack.peek()).addValue(new JsonString(value));
+        ((ThingWithValues) stack.peek()).addValue(JsonNodeFactory.aJsonStringNode(value));
     }
 
     public void startField(final String name) {
@@ -71,11 +69,10 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void endField() {
-        // TODO check type?
         stack.pop();
     }
 
-    private static final class MutableJsonArray implements ThingWithValues, JsonValueGenerator {
+    private static final class MutableJsonArray implements ThingWithValues, JsonNodeGenerator {
         private final List<Object> elements = new LinkedList<Object>();
 
         public void addValue(final Object element) {
@@ -91,7 +88,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             for (Object element : elements) {
                 jsonNodeElements.add(JsonListenerToJdomAdapter.generateJsonValue(element));
             }
-            return new JsonArray(jsonNodeElements);
+            return JsonNodeFactory.aJsonArray(jsonNodeElements);
         }
 
         @Override
@@ -104,7 +101,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
     }
 
-    private static final class MutableJsonObject implements JsonValueGenerator {
+    private static final class MutableJsonObject implements JsonNodeGenerator {
         private final List<MutableField> fields = new LinkedList<MutableField>();
 
         void addField(final MutableField field) {
@@ -116,11 +113,11 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
 
         public JsonNode generateJsonValue() {
-            final Map<JsonString, JsonNode> jsonStringJsonValueHashMap = new HashMap<JsonString, JsonNode>();
+            final Map<String, JsonNode> jsonStringJsonValueHashMap = new HashMap<String, JsonNode>();
             for (MutableField field : fields) {
-                jsonStringJsonValueHashMap.put(new JsonString(field.getName()), JsonListenerToJdomAdapter.generateJsonValue(field.getValue()));
+                jsonStringJsonValueHashMap.put(field.getName(), JsonListenerToJdomAdapter.generateJsonValue(field.getValue()));
             }
-            return new JsonObject(jsonStringJsonValueHashMap);
+            return JsonNodeFactory.aJsonObject(jsonStringJsonValueHashMap);
         }
 
         @Override
@@ -133,7 +130,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
     }
 
-    private static final class MutableField implements ThingWithValues, JsonValueGenerator {
+    private static final class MutableField implements ThingWithValues, JsonNodeGenerator {
         final String name;
         Object value;
 
@@ -169,7 +166,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
     }
 
-    private static final class MutableJsonDocument implements ThingWithValues, JsonValueGenerator {
+    private static final class MutableJsonDocument implements ThingWithValues, JsonNodeGenerator {
         Object value;
 
         public void addValue(final Object value) {
@@ -199,7 +196,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         void addValue(Object value);
     }
 
-    private static interface JsonValueGenerator {
+    private static interface JsonNodeGenerator {
         JsonNode generateJsonValue();
     }
 
@@ -208,7 +205,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         if (value instanceof JsonNode) {
             result = (JsonNode) value;
         } else {
-            result = ((JsonValueGenerator) value).generateJsonValue();
+            result = ((JsonNodeGenerator) value).generateJsonValue();
         }
         return result;
     }

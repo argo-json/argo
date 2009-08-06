@@ -1,6 +1,7 @@
 package argo.format;
 
-import argo.jdom.*;
+import argo.jdom.JsonNode;
+import argo.jdom.JsonRootNode;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -20,49 +21,51 @@ public final class CompactJsonFormat implements JsonFormat {
     }
 
     private void formatJsonNode(final JsonNode jsonNode, final Writer writer) throws IOException {
-        if (jsonNode.hasElements()) {
-            writer.append('[');
-            boolean first = true;
-            for (final JsonNode node : jsonNode.getElements()) {
-                if (!first) {
-                    writer.append(',');
+        boolean first = true;
+        switch(jsonNode.getType()) {
+            case ARRAY:
+                writer.append('[');
+                for (final JsonNode node : jsonNode.getElements()) {
+                    if (!first) {
+                        writer.append(',');
+                    }
+                    first = false;
+                    formatJsonNode(node, writer);
                 }
-                first = false;
-                formatJsonNode(node, writer);
-            }
-            writer.append(']');
-        }
-        if (jsonNode.hasFields()) {
-            writer.append('{');
-            boolean first = true;
-            for (final Map.Entry<JsonString, JsonNode> field : jsonNode.getFields().entrySet()) {
-                if (!first) {
-                    writer.append(',');
+                writer.append(']');
+                break;
+            case OBJECT:
+                writer.append('{');
+                for (final Map.Entry<JsonNode, JsonNode> field : jsonNode.getFields().entrySet()) {
+                    if (!first) {
+                        writer.append(',');
+                    }
+                    first = false;
+                    formatJsonNode(field.getKey(), writer);
+                    writer.append(':');
+                    formatJsonNode(field.getValue(), writer);
                 }
-                first = false;
-                formatJsonNode(field.getKey(), writer);
-                writer.append(':');
-                formatJsonNode(field.getValue(), writer);
-            }
-            writer.append('}');
-        }
-        if (jsonNode.hasText()) {
-            if (jsonNode instanceof JsonNumber) {
+                writer.append('}');
+                break;
+            case STRING:
+                writer.append('"')
+                        .append(jsonNode.getText())
+                        .append('"');
+                break;
+            case NUMBER:
                 writer.append(jsonNode.getText());
-            } else if (jsonNode instanceof JsonString) {
-                writer.append('"');
-                writer.append(jsonNode.getText());
-                writer.append('"');
-            }
-        }
-        if (jsonNode == JsonConstants.FALSE) {
-            writer.append("false");
-        }
-        if (jsonNode == JsonConstants.TRUE) {
-            writer.append("true");
-        }
-        if (jsonNode == JsonConstants.NULL) {
-            writer.append("null");
+                break;
+            case FALSE:
+                writer.append("false");
+                break;
+            case TRUE:
+                writer.append("true");
+                break;
+            case NULL:
+                writer.append("null");
+                break;
+            default:
+                throw new RuntimeException("Coding failure in Argo:  Attempt to format a JsonNode of unknown type [" + jsonNode.getType() + "];");
         }
     }
 }

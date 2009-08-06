@@ -2,7 +2,6 @@ package argo.jax;
 
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeType;
-import argo.jdom.JsonString;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,7 @@ final class MockJsonNode implements JsonNode {
         return false;
     }
 
-    public Map<JsonString, JsonNode> getFields() {
+    public Map<JsonNode, JsonNode> getFields() {
         throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
     }
 

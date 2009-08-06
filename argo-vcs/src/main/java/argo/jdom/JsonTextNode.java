@@ -3,23 +3,21 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
-public final class JsonString implements JsonNode {
+final class JsonTextNode implements JsonNode {
 
     private final String value;
+    private final JsonNodeType jsonNodeType;
 
-    public JsonString(final String value) {
+    JsonTextNode(final String value, final JsonNodeType jsonNodeType) {
         if (value == null) {
             throw new NullPointerException("Attempt to construct a JsonNumber with a null value.");
         }
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
+        this.jsonNodeType = jsonNodeType;
     }
 
     public JsonNodeType getType() {
-        return JsonNodeType.STRING;
+        return jsonNodeType;
     }
 
     public boolean hasText() {
@@ -27,14 +25,14 @@ public final class JsonString implements JsonNode {
     }
 
     public String getText() {
-        return getValue();
+        return value;
     }
 
     public boolean hasFields() {
         return false;
     }
 
-    public Map<JsonString, JsonNode> getFields() {
+    public Map<JsonNode, JsonNode> getFields() {
         throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
     }
 
@@ -51,19 +49,24 @@ public final class JsonString implements JsonNode {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        final JsonString thatJsonString = (JsonString) that;
-        return this.value.equals(thatJsonString.value);
+        final JsonTextNode thatJsonTextNode = (JsonTextNode) that;
+        return this.jsonNodeType == thatJsonTextNode.jsonNodeType && this.value.equals(thatJsonTextNode.value);
     }
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        int result = 17;
+        result = 37 * result + jsonNodeType.hashCode();
+        result = 37 * result + value.hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("JsonString value:[")
+                .append("JsonTextNode jsonNodeType:[")
+                .append(jsonNodeType)
+                .append("], value:[")
                 .append(value)
                 .append("]")
                 .toString();

@@ -1,5 +1,6 @@
 package argo.jdom;
 
+import static argo.jdom.JsonNodeFactory.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
@@ -19,8 +20,8 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endField();
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = new JsonObject(new HashMap<JsonString, JsonNode>() {{
-            put(new JsonString("Hello"), new JsonString("World"));
+        final JsonNode expected = aJsonObject(new HashMap<String, JsonNode>() {{
+            put("Hello", aJsonStringNode("World"));
         }});
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
@@ -35,8 +36,8 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endField();
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = new JsonObject(new HashMap<JsonString, JsonNode>() {{
-            put(new JsonString("Gigawatts"), new JsonNumber("1.21"));
+        final JsonNode expected = aJsonObject(new HashMap<String, JsonNode>() {{
+            put("Gigawatts", JsonNodeFactory.aJsonNumber("1.21"));
         }});
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
@@ -50,7 +51,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.stringValue("World");
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = new JsonArray(Arrays.asList((JsonNode) new JsonString("Hello"), new JsonString("World")));
+        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(aJsonStringNode("Hello"), aJsonStringNode("World")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -63,7 +64,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.numberValue("42");
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = new JsonArray(Arrays.asList((JsonNode) new JsonNumber("1.21"), new JsonNumber("42")));
+        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(JsonNodeFactory.aJsonNumber("1.21"), JsonNodeFactory.aJsonNumber("42")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -82,13 +83,13 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.falseValue();
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = new JsonArray(Arrays.asList(
-                new JsonObject(new HashMap<JsonString, JsonNode>() {{
-                    put(new JsonString("anObject"), new JsonString("objectValue"));
+        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(
+                aJsonObject(new HashMap<String, JsonNode>() {{
+                    put("anObject", aJsonStringNode("objectValue"));
                 }})
-                , JsonConstants.NULL
-                , JsonConstants.TRUE
-                , JsonConstants.FALSE
+                , aNull()
+                , aTrue()
+                , aFalse()
         ));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }

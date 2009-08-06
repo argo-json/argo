@@ -1,6 +1,6 @@
 package argo.jax;
 
-import argo.jdom.JsonString;
+import argo.jdom.JsonNodeFactory;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -9,8 +9,8 @@ public final class JsonStringTest {
     @Test
     public void testConstructorRejectsNullValue() {
         try {
-            new JsonString(null);
-            fail("Constructing a JsonString with a null argument should throw an IllegalArgumentException.");
+            JsonNodeFactory.aJsonStringNode(null);
+            fail("Constructing a JsonTextNode with a null argument should throw an IllegalArgumentException.");
         } catch (final NullPointerException e) {
             // expect to end up here
         }
@@ -18,17 +18,17 @@ public final class JsonStringTest {
 
     @Test
     public void testEquals() {
-        assertEquals(new JsonString("co"), new JsonString("co"));
-        assertFalse(new JsonString("ho").equals(new JsonString("bo")));
+        assertEquals(JsonNodeFactory.aJsonStringNode("co"), JsonNodeFactory.aJsonStringNode("co"));
+        assertFalse(JsonNodeFactory.aJsonStringNode("ho").equals(JsonNodeFactory.aJsonStringNode("bo")));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(new JsonString("po").hashCode(), new JsonString("po").hashCode());
+        assertEquals(JsonNodeFactory.aJsonStringNode("po").hashCode(), JsonNodeFactory.aJsonStringNode("po").hashCode());
     }
 
     @Test
     public void testToString() {
-        new JsonString("lo");
+        JsonNodeFactory.aJsonStringNode("lo");
     }
 }

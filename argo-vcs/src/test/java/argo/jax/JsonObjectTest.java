@@ -1,8 +1,9 @@
 package argo.jax;
 
 import argo.jdom.JsonNode;
-import argo.jdom.JsonObject;
-import argo.jdom.JsonString;
+import static argo.jdom.JsonNodeFactory.aJsonObject;
+import static argo.jdom.JsonNodeFactory.aJsonStringNode;
+import argo.jdom.JsonRootNode;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -14,19 +15,20 @@ public final class JsonObjectTest {
 
     @Test
     public void testImmutablility() {
-        final JsonString baseJsonKey = new JsonString("Test");
+        final String baseKey = "Test";
+        final JsonNode baseJsonKey = aJsonStringNode(baseKey);
         final JsonNode baseJsonNode = new MockJsonNode(0);
-        final Map<JsonString, JsonNode> baseElements = new HashMap<JsonString, JsonNode>();
-        baseElements.put(baseJsonKey, baseJsonNode);
-        final JsonObject jsonObject = new JsonObject(baseElements);
+        final Map<String, JsonNode> baseElements = new HashMap<String, JsonNode>();
+        baseElements.put(baseKey, baseJsonNode);
+        final JsonRootNode jsonObject = aJsonObject(baseElements);
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
-        baseElements.put(new JsonString("Another key"), new MockJsonNode(1));
+        baseElements.put("Another key", new MockJsonNode(1));
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
-        jsonObject.getFields().put(new JsonString("Another key"), new MockJsonNode(1));
+        jsonObject.getFields().put(aJsonStringNode("Another key"), new MockJsonNode(1));
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
@@ -34,20 +36,20 @@ public final class JsonObjectTest {
 
     @Test
     public void testEquals() {
-        assertEquals(new JsonObject(new HashMap<JsonString, JsonNode>()), new JsonObject(new HashMap<JsonString, JsonNode>()));
-        assertEquals(new JsonObject(Collections.<JsonString, JsonNode>singletonMap(new JsonString("Test"), new MockJsonNode(0))), new JsonObject(Collections.<JsonString, JsonNode>singletonMap(new JsonString("Test"), new MockJsonNode(0))));
-        assertFalse(new JsonObject(Collections.<JsonString, JsonNode>singletonMap(new JsonString("Test"), new MockJsonNode(0))).equals(new JsonObject(Collections.<JsonString, JsonNode>singletonMap(new JsonString("Test"), new MockJsonNode(1)))));
-        assertFalse(new JsonObject(Collections.<JsonString, JsonNode>singletonMap(new JsonString("Test"), new MockJsonNode(0))).equals(new JsonObject(Collections.<JsonString, JsonNode>singletonMap(new JsonString("Another test"), new MockJsonNode(0)))));
+        assertEquals(aJsonObject(new HashMap<String, JsonNode>()), aJsonObject(new HashMap<String, JsonNode>()));
+        assertEquals(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", new MockJsonNode(0))), aJsonObject(Collections.<String, JsonNode>singletonMap("Test", new MockJsonNode(0))));
+        assertFalse(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", new MockJsonNode(0))).equals(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", new MockJsonNode(1)))));
+        assertFalse(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", new MockJsonNode(0))).equals(aJsonObject(Collections.<String, JsonNode>singletonMap("Another test", new MockJsonNode(0)))));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(new JsonObject(new HashMap<JsonString, JsonNode>()), new JsonObject(new HashMap<JsonString, JsonNode>()));
-        assertEquals(new JsonObject(Collections.<JsonString, JsonNode>singletonMap(new JsonString("Test"), new MockJsonNode(0))).hashCode(), new JsonObject(Collections.<JsonString, JsonNode>singletonMap(new JsonString("Test"), new MockJsonNode(0))).hashCode());
+        assertEquals(aJsonObject(new HashMap<String, JsonNode>()), aJsonObject(new HashMap<String, JsonNode>()));
+        assertEquals(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", new MockJsonNode(0))).hashCode(), aJsonObject(Collections.<String, JsonNode>singletonMap("Test", new MockJsonNode(0))).hashCode());
     }
 
     @Test
     public void testToString() {
-        new JsonObject(Collections.<JsonString, JsonNode>singletonMap(new JsonString("Test"), new MockJsonNode(0))).toString();
+        aJsonObject(Collections.<String, JsonNode>singletonMap("Test", new MockJsonNode(0))).toString();
     }
 }
