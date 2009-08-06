@@ -9,7 +9,7 @@ public final class JsonStringTest {
     @Test
     public void testConstructorRejectsNullValue() {
         try {
-            JsonNodeFactory.aJsonStringNode(null);
+            JsonNodeFactory.aJsonString(null);
             fail("Constructing a JsonTextNode with a null argument should throw an IllegalArgumentException.");
         } catch (final NullPointerException e) {
             // expect to end up here
@@ -18,17 +18,17 @@ public final class JsonStringTest {
 
     @Test
     public void testEquals() {
-        assertEquals(JsonNodeFactory.aJsonStringNode("co"), JsonNodeFactory.aJsonStringNode("co"));
-        assertFalse(JsonNodeFactory.aJsonStringNode("ho").equals(JsonNodeFactory.aJsonStringNode("bo")));
+        assertEquals(JsonNodeFactory.aJsonString("co"), JsonNodeFactory.aJsonString("co"));
+        assertFalse(JsonNodeFactory.aJsonString("ho").equals(JsonNodeFactory.aJsonString("bo")));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(JsonNodeFactory.aJsonStringNode("po").hashCode(), JsonNodeFactory.aJsonStringNode("po").hashCode());
+        assertEquals(JsonNodeFactory.aJsonString("po").hashCode(), JsonNodeFactory.aJsonString("po").hashCode());
     }
 
     @Test
     public void testToString() {
-        JsonNodeFactory.aJsonStringNode("lo");
+        JsonNodeFactory.aJsonString("lo");
     }
 }

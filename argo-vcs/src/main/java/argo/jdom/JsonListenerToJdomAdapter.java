@@ -59,7 +59,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void stringValue(final String value) {
-        ((ThingWithValues) stack.peek()).addValue(JsonNodeFactory.aJsonStringNode(value));
+        ((ThingWithValues) stack.peek()).addValue(JsonNodeFactory.aJsonString(value));
     }
 
     public void startField(final String name) {

@@ -20,7 +20,7 @@ public final class JsonNodeFactory {
         return JsonConstants.FALSE;
     }
 
-    public static JsonNode aJsonStringNode(final String value) {
+    public static JsonNode aJsonString(final String value) {
         return new JsonTextNode(value, STRING);
     }
 

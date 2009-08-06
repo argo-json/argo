@@ -1,6 +1,6 @@
 package argo.jdom;
 
-import static argo.jdom.JsonNodeFactory.aJsonStringNode;
+import static argo.jdom.JsonNodeFactory.aJsonString;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +13,7 @@ final class JsonObject implements JsonRootNode {
     JsonObject(final Map<String, JsonNode> fields) {
         this.fields = new HashMap<JsonNode, JsonNode>();
         for (Map.Entry<String, JsonNode> stringJsonNodeEntry : fields.entrySet()) {
-            this.fields.put(aJsonStringNode(stringJsonNodeEntry.getKey()), stringJsonNodeEntry.getValue());
+            this.fields.put(aJsonString(stringJsonNodeEntry.getKey()), stringJsonNodeEntry.getValue());
         }
     }
 

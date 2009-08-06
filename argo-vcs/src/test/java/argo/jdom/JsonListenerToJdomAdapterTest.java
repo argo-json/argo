@@ -21,7 +21,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
         final JsonNode expected = aJsonObject(new HashMap<String, JsonNode>() {{
-            put("Hello", aJsonStringNode("World"));
+            put("Hello", aJsonString("World"));
         }});
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
@@ -51,7 +51,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.stringValue("World");
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(aJsonStringNode("Hello"), aJsonStringNode("World")));
+        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(aJsonString("Hello"), aJsonString("World")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -85,7 +85,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endDocument();
         final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(
                 aJsonObject(new HashMap<String, JsonNode>() {{
-                    put("anObject", aJsonStringNode("objectValue"));
+                    put("anObject", aJsonString("objectValue"));
                 }})
                 , aNull()
                 , aTrue()

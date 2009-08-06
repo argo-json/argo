@@ -2,7 +2,7 @@ package argo.jax;
 
 import argo.jdom.JsonNode;
 import static argo.jdom.JsonNodeFactory.aJsonObject;
-import static argo.jdom.JsonNodeFactory.aJsonStringNode;
+import static argo.jdom.JsonNodeFactory.aJsonString;
 import argo.jdom.JsonRootNode;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -16,7 +16,7 @@ public final class JsonObjectTest {
     @Test
     public void testImmutablility() {
         final String baseKey = "Test";
-        final JsonNode baseJsonKey = aJsonStringNode(baseKey);
+        final JsonNode baseJsonKey = aJsonString(baseKey);
         final JsonNode baseJsonNode = new MockJsonNode(0);
         final Map<String, JsonNode> baseElements = new HashMap<String, JsonNode>();
         baseElements.put(baseKey, baseJsonNode);
@@ -28,7 +28,7 @@ public final class JsonObjectTest {
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
-        jsonObject.getFields().put(aJsonStringNode("Another key"), new MockJsonNode(1));
+        jsonObject.getFields().put(aJsonString("Another key"), new MockJsonNode(1));
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
