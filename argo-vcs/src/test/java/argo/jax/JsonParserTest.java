@@ -3,7 +3,6 @@ package argo.jax;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
-import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,26 +41,16 @@ public final class JsonParserTest {
         assertJsonValueFragmentResultsInStringValue("\"hello world \\uF001\"", "hello world \uF001");
     }
 
-    @Test
+    @Test(expected = InvalidSyntaxException.class)
     public void rejectsStringWithInvalidEscapedUnicodeChars() throws Exception {
         final String inputString = "[\"hello world \\uF0\"]";
-        try {
-            new JaxParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
-            fail("Attempting to parse an invalid String [" + inputString + "] should throw an InvalidSyntaxException.");
-        } catch (final InvalidSyntaxException e) {
-            // expect to end up here
-        }
+        new JaxParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
     }
 
-    @Test
+    @Test(expected = InvalidSyntaxException.class)
     public void rejectsInvalidString() throws Exception {
         final String inputString = "[hello world\"]";
-        try {
-            new JaxParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
-            fail("Attempting to parse an invalid String [" + inputString + "] should throw an InvalidSyntaxException.");
-        } catch (final InvalidSyntaxException e) {
-            // expect to end up here
-        }
+        new JaxParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
     }
 
     @Test
@@ -398,15 +387,10 @@ public final class JsonParserTest {
         context.assertIsSatisfied();
     }
 
-    @Test
+    @Test(expected = InvalidSyntaxException.class)
     public void rejectsTrailingNonWhitespaceCharacters() throws Exception {
         final String inputString = "[]whoops";
-        try {
-            new JaxParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
-            fail("Attempting to parse an String with trailing characters [" + inputString + "] should throw an InvalidSyntaxException.");
-        } catch (final InvalidSyntaxException e) {
-            // expect to end up here
-        }
+        new JaxParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
     }
 
     @Test
