@@ -18,6 +18,10 @@ public final class JsonString implements JsonNode {
         return value;
     }
 
+    public JsonNodeType getType() {
+        return JsonNodeType.STRING;
+    }
+
     public boolean hasText() {
         return true;
     }

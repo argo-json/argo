@@ -1,6 +1,7 @@
 package argo.jax;
 
 import argo.jdom.JsonNode;
+import argo.jdom.JsonNodeType;
 import argo.jdom.JsonString;
 
 import java.util.List;
@@ -15,6 +16,10 @@ final class MockJsonNode implements JsonNode {
 
     MockJsonNode(final int equalityValue) {
         this.equalityValue = equalityValue;
+    }
+
+    public JsonNodeType getType() {
+        return null;
     }
 
     public boolean hasText() {

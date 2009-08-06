@@ -14,6 +14,10 @@ public final class JsonNumber implements JsonNode {
         this.value = value;
     }
 
+    public JsonNodeType getType() {
+        return JsonNodeType.NUMBER;
+    }
+
     public String getValue() {
         return value;
     }

@@ -16,6 +16,10 @@ public final class JsonObject implements JsonRootNode {
         return new HashMap<JsonString, JsonNode>(fields);
     }
 
+    public JsonNodeType getType() {
+        return JsonNodeType.OBJECT;
+    }
+
     public boolean hasText() {
         return false;
     }

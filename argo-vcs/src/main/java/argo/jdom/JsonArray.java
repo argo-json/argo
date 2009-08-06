@@ -8,6 +8,10 @@ public final class JsonArray implements JsonRootNode {
 
     private final List<JsonNode> elements;
 
+    public JsonNodeType getType() {
+        return JsonNodeType.ARRAY;
+    }
+
     public JsonArray(final List<JsonNode> elements) {
         this.elements = new ArrayList<JsonNode>(elements);
     }

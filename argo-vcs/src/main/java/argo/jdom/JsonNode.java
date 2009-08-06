@@ -7,6 +7,8 @@ import java.util.Map;
  * An node (leaf or otherwise) in a json document.
  */
 public interface JsonNode {
+    JsonNodeType getType();
+
     boolean hasText();
     String getText();
 

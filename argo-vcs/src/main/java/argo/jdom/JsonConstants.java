@@ -4,7 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 public enum JsonConstants implements JsonNode {
-    NULL, TRUE, FALSE;
+    NULL(JsonNodeType.NULL), TRUE(JsonNodeType.TRUE), FALSE(JsonNodeType.FALSE);
+
+    private final JsonNodeType jsonNodeType;
+
+    JsonConstants(JsonNodeType jsonNodeType) {
+        this.jsonNodeType = jsonNodeType;
+    }
+
+    public JsonNodeType getType() {
+        return jsonNodeType;
+    }
 
     public boolean hasText() {
         return false;
