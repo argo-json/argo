@@ -106,10 +106,10 @@
         </junit>
 
         <junitreport todir="${location.testresults}">
-          <fileset dir="${location.testresults}">
-            <include name="TEST-*.xml" />
-          </fileset>
-          <report todir="${location.testresults}" />
+            <fileset dir="${location.testresults}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${location.testresults}"/>
         </junitreport>
     </target>
 
@@ -134,14 +134,14 @@
         </junit>
 
         <junitreport todir="${location.performancetestresults}">
-          <fileset dir="${location.performancetestresults}">
-            <include name="TEST-*.xml" />
-          </fileset>
-          <report todir="${location.performancetestresults}" />
+            <fileset dir="${location.performancetestresults}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${location.performancetestresults}"/>
         </junitreport>
     </target>
 
-    <target  name="javadoc">
+    <target name="javadoc">
         <mkdir dir="${location.dist}/javadoc"/>
         <javadoc destdir="${location.dist}/javadoc">
             <sourcepath path="${location.src}/java"/>

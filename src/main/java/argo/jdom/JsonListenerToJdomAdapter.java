@@ -7,11 +7,11 @@ import java.util.*;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
 
-    private final Stack stack = new Stack();
+    private final Stack<MutableJsonNode> stack = new Stack<MutableJsonNode>();
     private JsonNodeGenerator document;
 
     public JsonRootNode getDocument() {
-        return (JsonRootNode)document.generateJsonValue();
+        return (JsonRootNode) document.generateJsonValue();
     }
 
     public void startDocument() {
@@ -24,7 +24,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
     public void startArray() {
         final MutableJsonArray mutableJsonArray = new MutableJsonArray();
-        ((ThingWithValues) stack.peek()).addValue(mutableJsonArray);
+        stack.peek().addValue(mutableJsonArray);
         stack.push(mutableJsonArray);
     }
 
@@ -34,7 +34,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
     public void startObject() {
         final MutableJsonObject jsonObject = new MutableJsonObject();
-        ((ThingWithValues) stack.peek()).addValue(jsonObject);
+        stack.peek().addValue(jsonObject);
         stack.push(jsonObject);
     }
 
@@ -43,28 +43,28 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void numberValue(final String value) {
-        ((ThingWithValues) stack.peek()).addValue(JsonNodeFactory.aJsonNumber(value));
+        stack.peek().addValue(JsonNodeFactory.aJsonNumber(value));
     }
 
     public void trueValue() {
-        ((ThingWithValues) stack.peek()).addValue(aTrue());
+        stack.peek().addValue(aTrue());
     }
 
     public void falseValue() {
-        ((ThingWithValues) stack.peek()).addValue(aFalse());
+        stack.peek().addValue(aFalse());
     }
 
     public void nullValue() {
-        ((ThingWithValues) stack.peek()).addValue(aNull());
+        stack.peek().addValue(aNull());
     }
 
     public void stringValue(final String value) {
-        ((ThingWithValues) stack.peek()).addValue(JsonNodeFactory.aJsonString(value));
+        stack.peek().addValue(JsonNodeFactory.aJsonString(value));
     }
 
     public void startField(final String name) {
-        final MutableField field = new MutableField(name);
-        ((MutableJsonObject) stack.peek()).addField(field);
+        final MutableJsonField field = new MutableJsonField(name);
+        stack.peek().addField(field);
         stack.push(field);
     }
 
@@ -72,11 +72,15 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         stack.pop();
     }
 
-    private static final class MutableJsonArray implements ThingWithValues, JsonNodeGenerator {
+    private static final class MutableJsonArray implements MutableJsonNode, JsonNodeGenerator {
         private final List<Object> elements = new LinkedList<Object>();
 
         public void addValue(final Object element) {
             elements.add(element);
+        }
+
+        public void addField(final MutableJsonField field) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field [" + field + "] to a MutableJsonArray.");
         }
 
         List<Object> getElements() {
@@ -101,20 +105,24 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
     }
 
-    private static final class MutableJsonObject implements JsonNodeGenerator {
-        private final List<MutableField> fields = new LinkedList<MutableField>();
+    private static final class MutableJsonObject implements MutableJsonNode, JsonNodeGenerator {
+        private final List<MutableJsonField> fields = new LinkedList<MutableJsonField>();
 
-        void addField(final MutableField field) {
+        public void addField(final MutableJsonField field) {
             fields.add(field);
         }
 
-        public List<MutableField> getFields() {
+        public void addValue(final Object value) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a value [" + value + "] to a MutableJsonObject.");
+        }
+
+        public List<MutableJsonField> getFields() {
             return fields;
         }
 
         public JsonNode generateJsonValue() {
             final Map<String, JsonNode> jsonStringJsonValueHashMap = new HashMap<String, JsonNode>();
-            for (MutableField field : fields) {
+            for (MutableJsonField field : fields) {
                 jsonStringJsonValueHashMap.put(field.getName(), JsonListenerToJdomAdapter.generateJsonValue(field.getValue()));
             }
             return JsonNodeFactory.aJsonObject(jsonStringJsonValueHashMap);
@@ -130,11 +138,11 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
     }
 
-    private static final class MutableField implements ThingWithValues, JsonNodeGenerator {
+    private static final class MutableJsonField implements MutableJsonNode, JsonNodeGenerator {
         final String name;
         Object value;
 
-        MutableField(final String name) {
+        MutableJsonField(final String name) {
             this.name = name;
         }
 
@@ -148,6 +156,10 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
         public void addValue(final Object value) {
             this.value = value;
+        }
+
+        public void addField(final MutableJsonField field) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field [" + field + "] to a MutableJsonField.");
         }
 
         public JsonNode generateJsonValue() {
@@ -166,11 +178,15 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
     }
 
-    private static final class MutableJsonDocument implements ThingWithValues, JsonNodeGenerator {
+    private static final class MutableJsonDocument implements MutableJsonNode, JsonNodeGenerator {
         Object value;
 
         public void addValue(final Object value) {
             this.value = value;
+        }
+
+        public void addField(final MutableJsonField field) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field [" + field + "] to a MutableJsonDocument.");
         }
 
         Object getValue() {
@@ -192,8 +208,10 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
 
-    private static interface ThingWithValues {
+    private static interface MutableJsonNode {
         void addValue(Object value);
+
+        void addField(MutableJsonField field);
     }
 
     private static interface JsonNodeGenerator {
