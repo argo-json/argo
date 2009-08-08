@@ -1,7 +1,7 @@
 package argo.staj;
 
 /**
- * A <code>JsonStreamReader</code> provides methods to read from a JsonStream.
+ * A <code>JsonStreamReader</code> provides methods to read from a JSON stream.
  */
 public interface JsonStreamReader {
 
@@ -14,8 +14,6 @@ public interface JsonStreamReader {
      */
     public JsonStreamElementType next() throws JsonStreamException;
 
-    public String getElementText();
-
     /**
      * Determines whether there are any more elements.
      *
@@ -24,35 +22,31 @@ public interface JsonStreamReader {
     public boolean hasNext();
 
     /**
-     * Frees any resources associated with this Reader.  This method does not close the
-     * underlying input source.
+     * Frees resources associate with this reader.  It is important that this method is called after finishing with an instace.
      */
     public void close();
 
-    public JsonStreamElementType getEventType();
-
     /**
-     * Returns the current value of the parse event as a string,
-     * this returns the string value of a CHARACTERS event,
-     * returns the value of a COMMENT, the replacement value
-     * for an ENTITY_REFERENCE, the string value of a CDATA section,
-     * the string value for a SPACE event,
-     * or the String value of the internal subset of the DTD.
-     * If an ENTITY_REFERENCE has been resolved, any character data
-     * will be reported as CHARACTERS events.
+     * Returns the type of the current element, in other words, what the previous call to <code>next</code> returned.
      *
-     * @return the current text or null
-     * @throws java.lang.IllegalStateException
-     *          if this state is not
-     *          a valid text state.
+     * @return the type of the current element.
      */
-    public String getText();
+    public JsonStreamElementType getElementType();
 
     /**
-     * Return true if the current event has text, false otherwise
-     * The following events have text:
-     * CHARACTERS,DTD ,ENTITY_REFERENCE, COMMENT, SPACE
+     * Determine whether the current element has text.
+     *
+     * @return true if the current element has text.
+     * @throws IllegalStateException if there is no current element.
      */
     public boolean hasText();
+
+    /**
+     * Get the text associated with this element.
+     *
+     * @return the text associated with this element.
+     * @throws IllegalStateException if there is no current element, or the current element doesn't have text.
+     */
+    public String getText();
 
 }

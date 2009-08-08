@@ -6,11 +6,19 @@ import argo.saj.SajParser;
 import java.io.IOException;
 import java.io.Reader;
 
+/**
+ * Implementation of <code>JsonStreamReader</code> based on a character stream of JSON.
+ */
 public final class StajParser implements JsonStreamReader {
     
     private final BlockingJsonListener blockingJsonListener;
     private Element next;
 
+    /**
+     * Constructs a StajParser reading from the specified Reader.
+     *
+     * @param in the reader to convert into JSON elements.
+     */
     public StajParser(final Reader in) {
         blockingJsonListener = new BlockingJsonListener();
         new Thread("Argo StajParser") {
@@ -42,10 +50,6 @@ public final class StajParser implements JsonStreamReader {
         return next.getJsonStreamElementType();
     }
 
-    public String getElementText() {
-        return next.getText();
-    }
-
     public boolean hasNext() {
         return next == null || JsonStreamElementType.END_DOCUMENT != next.getJsonStreamElementType();
     }
@@ -54,7 +58,7 @@ public final class StajParser implements JsonStreamReader {
         blockingJsonListener.close();
     }
 
-    public JsonStreamElementType getEventType() {
+    public JsonStreamElementType getElementType() {
         return next.getJsonStreamElementType();
     }
 
