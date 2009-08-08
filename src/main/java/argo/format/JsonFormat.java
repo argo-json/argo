@@ -5,9 +5,27 @@ import argo.jdom.JsonRootNode;
 import java.io.IOException;
 import java.io.Writer;
 
+/**
+ * A <code>JsonFormat</code> provides operations to turn <code>JsonRootNode</code>s into valid JSON text.
+ */
 public interface JsonFormat {
 
+    /**
+     * Returns the specified <code>JsonRootNode</code> formatted as a String.
+     *
+     * @param jsonRootNode the <code>JsonRootNode</code> to format.
+     * @return the specified <code>JsonRootNode</code> formatted as a String.
+     * @throws IOException if there was a problem outputting to the String.
+     */
     String format(JsonRootNode jsonRootNode) throws IOException;
+
+    /**
+     * Streams the specified <code>JsonRootNode</code> formatted to the specified <code>Writer</code>.
+     *
+     * @param jsonRootNode the <code>JsonRootNode</code> to format.
+     * @param writer the <code>Writer</code> to stream the formatted <code>JsonRootNode</code> to.
+     * @throws IOException if there was a problem writing to the <code>Writer</code>. 
+     */
     void format(JsonRootNode jsonRootNode, Writer writer) throws IOException;
 
 }

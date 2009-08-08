@@ -1,7 +1,7 @@
 package argo.staj;
 
 /**
- * A <code>JsonStreamReader</code> provides methods to read from a JSON stream.
+ * A <code>JsonStreamReader</code> provides operations to read from a JSON stream.
  */
 public interface JsonStreamReader {
 

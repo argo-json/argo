@@ -8,6 +8,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
+/**
+ * JsonFormat that formats json as compactly as possible.
+ */
 public final class CompactJsonFormat implements JsonFormat {
 
     public String format(final JsonRootNode jsonNode) throws IOException {
