@@ -3,6 +3,7 @@ package argo.format;
 import argo.jdom.JsonNode;
 import static argo.jdom.JsonNodeFactory.*;
 import static org.hamcrest.CoreMatchers.equalTo;
+import org.hamcrest.Matchers;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
@@ -15,7 +16,10 @@ public final class CompactJsonFormatTest {
         assertThat(new CompactJsonFormat().format(aJsonObject(new HashMap<String, JsonNode>(){{
             put("Hello", aJsonString("World"));
             put("Foo", aJsonString("Bar"));
-        }})), equalTo("{\"Hello\":\"World\",\"Foo\":\"Bar\"}"));
+        }})), Matchers.anyOf(
+                equalTo("{\"Hello\":\"World\",\"Foo\":\"Bar\"}")
+                , equalTo("{\"Foo\":\"Bar\",\"Hello\":\"World\"}")
+        ));
     }
 
     @Test
