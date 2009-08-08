@@ -6,6 +6,9 @@ import static argo.jdom.JsonNodeType.STRING;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Factory for <code>JsonNode</code>s.
+ */
 public final class JsonNodeFactory {
 
     public static JsonNode aNull() {

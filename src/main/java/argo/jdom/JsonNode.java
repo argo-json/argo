@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An node (leaf or otherwise) in a json document.
+ * An node (leaf or otherwise) in a JSON document.
  */
 public interface JsonNode {
     JsonNodeType getType();
