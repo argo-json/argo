@@ -14,7 +14,9 @@
     <property name="location.optimisedclasses" value="${location.build}/optimised-classes"/>
     <property name="location.testclasses" value="${location.build}/test-classes"/>
     <property name="location.testresources" value="${location.src.test}/resources"/>
+    <property name="location.testresults" value="${location.build}/test-results"/>
     <property name="location.performancetestclasses" value="${location.build}/performance-test-classes"/>
+    <property name="location.performancetestresults" value="${location.build}/performance-test-results"/>
 
     <property name="location.dist" value="${location.build}/dist"/>
 
@@ -42,7 +44,7 @@
         </fileset>
     </path>
 
-    <target name="compile">
+    <target name="compile" description="compiles all classes">
         <echo message="Starting compile"/>
         <delete dir="${location.classes}"/>
         <mkdir dir="${location.classes}"/>
@@ -85,26 +87,36 @@
         <echo message="Finished compile"/>
     </target>
 
-    <target name="test" depends="compile">
-        <junit printsummary="yes" haltonfailure="yes">
-            <formatter type="plain" usefile="false"/>
+    <target name="test" depends="compile" description="builds and runs unit tests">
+        <delete dir="${location.testresults}"/>
+        <mkdir dir="${location.testresults}"/>
+        <junit printsummary="yes">
             <classpath>
                 <pathelement location="${location.testclasses}"/>
                 <pathelement location="${location.classes}"/>
                 <path refid="test-compile-libs"/>
                 <pathelement location="${location.testresources}"/>
             </classpath>
-            <batchtest fork="yes">
+            <batchtest fork="yes" todir="${location.testresults}">
                 <fileset dir="${location.testclasses}">
                     <include name="**/*Test.class"/>
                 </fileset>
+                <formatter type="xml"/>
             </batchtest>
         </junit>
+
+        <junitreport todir="${location.testresults}">
+          <fileset dir="${location.testresults}">
+            <include name="TEST-*.xml" />
+          </fileset>
+          <report todir="${location.testresults}" />
+        </junitreport>
     </target>
 
-    <target name="performance-test" depends="compile">
-        <junit printsummary="yes" haltonfailure="yes">
-            <formatter type="plain" usefile="false"/>
+    <target name="performance-test" depends="compile" description="builds and runs performance tests">
+        <delete dir="${location.performancetestresults}"/>
+        <mkdir dir="${location.performancetestresults}"/>
+        <junit printsummary="yes">
             <classpath>
                 <pathelement location="${location.performancetestclasses}"/>
                 <pathelement location="${location.classes}"/>
@@ -113,12 +125,20 @@
                 <path refid="performance-test-run-libs"/>
                 <pathelement location="${location.src.performancetest}"/>
             </classpath>
-            <batchtest fork="yes">
+            <batchtest fork="yes" todir="${location.performancetestresults}">
                 <fileset dir="${location.performancetestclasses}">
                     <include name="**/*Test.class"/>
                 </fileset>
+                <formatter type="xml"/>
             </batchtest>
         </junit>
+
+        <junitreport todir="${location.performancetestresults}">
+          <fileset dir="${location.performancetestresults}">
+            <include name="TEST-*.xml" />
+          </fileset>
+          <report todir="${location.performancetestresults}" />
+        </junitreport>
     </target>
 
     <target  name="javadoc">
