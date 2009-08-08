@@ -1,86 +1,25 @@
 package argo.staj;
 
-import java.util.NoSuchElementException;
-
+/**
+ * A <code>JsonStreamReader</code> provides methods to read from a JsonStream.
+ */
 public interface JsonStreamReader {
 
     /**
-     * Get next parsing event - a processor may return all contiguous
-     * character data in a single chunk, or it may split it into several chunks.
-     * <p/>
-     * If element content is empty (i.e. content is "") then no CHARACTERS event will be reported.
-     * <p/>
-     * <p>Given the following XML:<br>
-     * &lt;foo>&lt;!--description-->content text&lt;![CDATA[&lt;greeting>Hello&lt;/greeting>]]>other content&lt;/foo><br>
-     * The behavior of calling next() when being on foo will be:<br>
-     * 1- the comment (COMMENT)<br>
-     * 2- then the characters section (CHARACTERS)<br>
-     * 3- then the CDATA section (another CHARACTERS)<br>
-     * 4- then the next characters section (another CHARACTERS)<br>
-     * 5- then the END_ELEMENT<br>
-     * <p/>
-     * <p><b>NOTE:</b> empty element (such as &lt;tag/>) will be reported
-     * with  two separate events: START_ELEMENT, END_ELEMENT - This preserves
-     * parsing equivalency of empty element to &lt;tag>&lt;/tag>.
-     * <p/>
-     * This method will throw an IllegalStateException if it is called after hasNext() returns false.
+     * Moves to the next JSON element from the stream.
      *
-     * @return the integer code corresponding to the current parse event
-     * @throws NoSuchElementException if this is called when hasNext() returns false
-     * @throws JsonStreamException    if there is an error processing the underlying XML source
+     * @return the type of the next element.
+     * @throws JsonStreamException if the next element could not be read, for example if the next element turns out not to be valid JSON
+     * @throws IllegalStateException if the stream is already closed.
      */
     public JsonStreamElementType next() throws JsonStreamException;
 
-    /**
-     * Reads the content of a text-only element, an exception is thrown if this is
-     * not a text-only element.
-     * Regardless of value of javax.xml.stream.isCoalescing this method always returns coalesced content.
-     * <br /> Precondition: the current event is START_ELEMENT.
-     * <br /> Postcondition: the current event is the corresponding END_ELEMENT.
-     * <p/>
-     * <br />The method does the following (implementations are free to optimized
-     * but must do equivalent processing):
-     * <pre>
-     * if(getEventType() != XMLStreamConstants.START_ELEMENT) {
-     * throw new XMLStreamException(
-     * "parser must be on START_ELEMENT to read next text", getLocation());
-     * }
-     * int eventType = next();
-     * StringBuffer content = new StringBuffer();
-     * while(eventType != XMLStreamConstants.END_ELEMENT ) {
-     * if(eventType == XMLStreamConstants.CHARACTERS
-     * || eventType == XMLStreamConstants.CDATA
-     * || eventType == XMLStreamConstants.SPACE
-     * || eventType == XMLStreamConstants.ENTITY_REFERENCE) {
-     * buf.append(getText());
-     * } else if(eventType == XMLStreamConstants.PROCESSING_INSTRUCTION
-     * || eventType == XMLStreamConstants.COMMENT) {
-     * // skipping
-     * } else if(eventType == XMLStreamConstants.END_DOCUMENT) {
-     * throw new XMLStreamException(
-     * "unexpected end of document when reading element text content", this);
-     * } else if(eventType == XMLStreamConstants.START_ELEMENT) {
-     * throw new XMLStreamException(
-     * "element text content may not contain START_ELEMENT", getLocation());
-     * } else {
-     * throw new XMLStreamException(
-     * "Unexpected event type "+eventType, getLocation());
-     * }
-     * eventType = next();
-     * }
-     * return buf.toString();
-     * </pre>
-     *
-     */
     public String getElementText();
 
     /**
-     * Returns true if there are more parsing events and false
-     * if there are no more events.  This method will return
-     * false if the current state of the XMLStreamReader is
-     * END_DOCUMENT
+     * Determines whether there are any more elements.
      *
-     * @return true if there are more events, false otherwise
+     * @return true if there are more elements.
      */
     public boolean hasNext();
 
