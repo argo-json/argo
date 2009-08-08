@@ -1,4 +1,4 @@
-package argo.jax;
+package argo.saj;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -44,13 +44,13 @@ public final class JsonParserTest {
     @Test(expected = InvalidSyntaxException.class)
     public void rejectsStringWithInvalidEscapedUnicodeChars() throws Exception {
         final String inputString = "[\"hello world \\uF0\"]";
-        new JaxParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+        new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
     }
 
     @Test(expected = InvalidSyntaxException.class)
     public void rejectsInvalidString() throws Exception {
         final String inputString = "[hello world\"]";
-        new JaxParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+        new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
     }
 
     @Test
@@ -64,7 +64,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endArray(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("[12.123E-2]"), jsonListener);
+        new SajParser().parse(new StringReader("[12.123E-2]"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -81,7 +81,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"hello\":\"world\"}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"hello\":\"world\"}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -98,7 +98,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"hello\": \"world\"}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"hello\": \"world\"}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -114,7 +114,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endArray(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("[ 1, 2 ]"), jsonListener);
+        new SajParser().parse(new StringReader("[ 1, 2 ]"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -134,7 +134,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"hello\":\"world\",\"foo\":\"bar\"}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"hello\":\"world\",\"foo\":\"bar\"}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -151,7 +151,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"room\":101}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"room\":101}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -168,7 +168,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"points\":null}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"points\":null}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -185,7 +185,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"points\":true}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"points\":true}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -202,7 +202,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"points\":false}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"points\":false}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -222,7 +222,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"room\":101,\"answer\":42}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"room\":101,\"answer\":42}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -242,7 +242,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"room\":101,\"foo\":\"bar\"}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"room\":101,\"foo\":\"bar\"}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -257,7 +257,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
         final String inputString = "{}";
-        new JaxParser().parse(new StringReader(inputString), jsonListener);
+        new SajParser().parse(new StringReader(inputString), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -279,7 +279,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
         final String inputString = "{\"Test\":{\"Inner test\":12}}";
-        new JaxParser().parse(new StringReader(inputString), jsonListener);
+        new SajParser().parse(new StringReader(inputString), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -294,7 +294,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
         final String inputString = "[]";
-        new JaxParser().parse(new StringReader(inputString), jsonListener);
+        new SajParser().parse(new StringReader(inputString), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -310,7 +310,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
         final String inputString = "[12]";
-        new JaxParser().parse(new StringReader(inputString), jsonListener);
+        new SajParser().parse(new StringReader(inputString), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -327,7 +327,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
         final String inputString = "[12,\"test\"]";
-        new JaxParser().parse(new StringReader(inputString), jsonListener);
+        new SajParser().parse(new StringReader(inputString), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -345,7 +345,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
         final String inputString = "[[12]]";
-        new JaxParser().parse(new StringReader(inputString), jsonListener);
+        new SajParser().parse(new StringReader(inputString), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -364,7 +364,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endObject(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("{\"Test\":[12]}"), jsonListener);
+        new SajParser().parse(new StringReader("{\"Test\":[12]}"), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -383,14 +383,14 @@ public final class JsonParserTest {
             oneOf(jsonListener).endArray(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("[{\"Test\":12}]"), jsonListener);
+        new SajParser().parse(new StringReader("[{\"Test\":12}]"), jsonListener);
         context.assertIsSatisfied();
     }
 
     @Test(expected = InvalidSyntaxException.class)
     public void rejectsTrailingNonWhitespaceCharacters() throws Exception {
         final String inputString = "[]whoops";
-        new JaxParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+        new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
     }
 
     @Test
@@ -404,7 +404,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
         final String inputString = "[] ";
-        new JaxParser().parse(new StringReader(inputString), jsonListener);
+        new SajParser().parse(new StringReader(inputString), jsonListener);
         context.assertIsSatisfied();
     }
 
@@ -418,7 +418,7 @@ public final class JsonParserTest {
             oneOf(jsonListener).endArray(); inSequence(expectedSequence);
             oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
         }});
-        new JaxParser().parse(new StringReader("[" + jsonFragment + "]"), jsonListener);
+        new SajParser().parse(new StringReader("[" + jsonFragment + "]"), jsonListener);
         context.assertIsSatisfied();
     }
 

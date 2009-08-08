@@ -1,4 +1,4 @@
-package argo.jax;
+package argo.saj;
 
 /**
  * Thrown to indicate a given character stream is not valid JSON.

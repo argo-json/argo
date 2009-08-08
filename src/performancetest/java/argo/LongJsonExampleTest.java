@@ -1,7 +1,7 @@
 package argo;
 
-import argo.jax.JaxParser;
-import argo.jax.JsonListener;
+import argo.saj.SajParser;
+import argo.saj.JsonListener;
 import argo.jdom.JdomParser;
 import argo.staj.StajParser;
 import net.sf.json.JSONObject;
@@ -62,10 +62,10 @@ public final class LongJsonExampleTest {
     }
 
     @Test
-    public void testArgoJax() throws Exception {
-        final JaxParser jaxParser = new JaxParser();
+    public void testArgoSaj() throws Exception {
+        final SajParser sajParser = new SajParser();
         for (final Reader reader : jsonReaders) {
-            jaxParser.parse(reader, BLACK_HOLE_JSON_LISTENER);
+            sajParser.parse(reader, BLACK_HOLE_JSON_LISTENER);
         }
     }
 

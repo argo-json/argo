@@ -1,6 +1,6 @@
 package argo.xml;
 
-import argo.jax.JsonListener;
+import argo.saj.JsonListener;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;

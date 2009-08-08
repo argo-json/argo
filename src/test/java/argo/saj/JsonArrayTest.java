@@ -1,4 +1,4 @@
-package argo.jax;
+package argo.saj;
 
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactory;

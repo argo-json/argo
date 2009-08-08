@@ -1,4 +1,4 @@
-package argo.jax;
+package argo.saj;
 
 import argo.jdom.JsonNodeFactory;
 import static org.junit.Assert.*;

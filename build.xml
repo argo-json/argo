@@ -165,11 +165,12 @@
         <echo message="Version for build is: ${version}"/>
     </target>
 
-    <target name="distribute" depends="compile, javadoc, determine-version">
+    <target name="distribute" depends="compile, determine-version">
         <echo message="Creating release structure"/>
         <delete dir="${location.dist}"/>
         <mkdir dir="${location.dist}"/>
 
+        <antcall target="javadoc"/>
         <jar basedir="${location.classes}" destfile="${location.dist}/argo-${version}.jar"/>
         <jar basedir="${location.optimisedclasses}" destfile="${location.dist}/argo-small-${version}.jar"/>
 

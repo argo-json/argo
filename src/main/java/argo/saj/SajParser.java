@@ -1,4 +1,4 @@
-package argo.jax;
+package argo.saj;
 
 import java.io.IOException;
 import java.io.PushbackReader;
@@ -9,12 +9,12 @@ import java.util.Arrays;
 /**
  * Converts a character stream into calls to a <code>JsonListener</code>.
  *
- * Instances of <code>JaxParser</code> are threadsafe in that concurrent calls to <code>parse</code> are safe, provided
+ * Instances of <code>SajParser</code> are threadsafe in that concurrent calls to <code>parse</code> are safe, provided
  * each call is made with a different <code>Reader</code> and a different <code>JsonListener</code>.
  *
  * @see JsonListener
  */
-public final class JaxParser {
+public final class SajParser {
 
     private static final char DOUBLE_QUOTE = '"';
     private static final char BACK_SLASH = '\\';
@@ -24,9 +24,17 @@ public final class JaxParser {
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
 
-    public JaxParser() {
+    public SajParser() {
     }
 
+    /**
+     * Parses the given character stream into calls to the given JsonListener.
+     *
+     * @param in the character stream to parse
+     * @param jsonListener the JsonListener to notify of parsing events
+     * @throws IOException bubbled up from exceptions thrown reading from <code>in</code>
+     * @throws InvalidSyntaxException thrown to indicate the characters read from <code>in</code> did not constitute valid JSON.
+     */
     public void parse(final Reader in, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final PushbackReader pushbackReader = new PushbackReader(in);
         final char nextChar = (char) pushbackReader.read();

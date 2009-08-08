@@ -1,7 +1,7 @@
 package argo.jdom;
 
-import argo.jax.InvalidSyntaxException;
-import argo.jax.JaxParser;
+import argo.saj.InvalidSyntaxException;
+import argo.saj.SajParser;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -9,7 +9,7 @@ import java.io.Reader;
 public final class JdomParser {
     public JsonRootNode parse(final Reader reader) throws IOException, InvalidSyntaxException {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
-        new JaxParser().parse(reader, jsonListenerToJdomAdapter);
+        new SajParser().parse(reader, jsonListenerToJdomAdapter);
         return jsonListenerToJdomAdapter.getDocument();
     }
 }

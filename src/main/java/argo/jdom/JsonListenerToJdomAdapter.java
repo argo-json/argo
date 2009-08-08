@@ -1,6 +1,6 @@
 package argo.jdom;
 
-import argo.jax.JsonListener;
+import argo.saj.JsonListener;
 import static argo.jdom.JsonNodeFactory.*;
 
 import java.util.*;

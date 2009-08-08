@@ -1,7 +1,7 @@
 package argo.staj;
 
-import argo.jax.InvalidSyntaxException;
-import argo.jax.JsonListener;
+import argo.saj.InvalidSyntaxException;
+import argo.saj.JsonListener;
 
 import java.io.IOException;
 
