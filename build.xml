@@ -15,7 +15,6 @@
     <property name="location.testclasses" value="${location.build}/test-classes"/>
     <property name="location.testresources" value="${location.src.test}/resources"/>
     <property name="location.performancetestclasses" value="${location.build}/performance-test-classes"/>
-    <property name="location.performancetestresources" value="${location.src.performancetest}/resources"/>
 
     <property name="location.dist" value="${location.build}/dist"/>
 
@@ -76,10 +75,13 @@
         </javac>
 
         <copy todir="${location.classes}">
-            <fileset dir="src/main/java">
-                <include name="**/*.java"/>
-            </fileset>
+            <fileset dir="src/main/java"/>
         </copy>
+
+        <copy todir="${location.performancetestclasses}">
+            <fileset dir="src/performancetest/java"/>
+        </copy>
+
         <echo message="Finished compile"/>
     </target>
 
@@ -109,7 +111,7 @@
                 <path refid="performance-test-compile-libs"/>
                 <path refid="test-compile-libs"/>
                 <path refid="performance-test-run-libs"/>
-                <pathelement location="${location.performancetestresources}"/>
+                <pathelement location="${location.src.performancetest}"/>
             </classpath>
             <batchtest fork="yes">
                 <fileset dir="${location.performancetestclasses}">
