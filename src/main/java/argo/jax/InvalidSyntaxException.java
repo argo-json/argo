@@ -1,5 +1,8 @@
 package argo.jax;
 
+/**
+ * Thrown to indicate a given character stream is not valid JSON.
+ */
 public final class InvalidSyntaxException extends Exception {
 
     InvalidSyntaxException() {
