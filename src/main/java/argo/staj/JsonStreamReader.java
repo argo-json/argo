@@ -28,7 +28,6 @@ public interface JsonStreamReader {
      * @return the integer code corresponding to the current parse event
      * @throws NoSuchElementException if this is called when hasNext() returns false
      * @throws JsonStreamException    if there is an error processing the underlying XML source
-     * @see javax.xml.stream.events.XMLEvent
      */
     public JsonStreamElementType next() throws JsonStreamException;
 

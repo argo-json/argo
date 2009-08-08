@@ -121,6 +121,13 @@
         </junit>
     </target>
 
+    <target  name="javadoc">
+        <mkdir dir="${location.dist}/javadoc"/>
+        <javadoc destdir="${location.dist}/javadoc">
+            <sourcepath path="${location.src}/java"/>
+        </javadoc>
+    </target>
+
     <target name="development-version" unless="release">
         <property file="version.properties"/>
         <tstamp>
@@ -138,7 +145,7 @@
         <echo message="Version for build is: ${version}"/>
     </target>
 
-    <target name="distribute" depends="compile, determine-version">
+    <target name="distribute" depends="compile, javadoc, determine-version">
         <echo message="Creating release structure"/>
         <delete dir="${location.dist}"/>
         <mkdir dir="${location.dist}"/>
