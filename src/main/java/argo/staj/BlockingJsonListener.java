@@ -36,6 +36,29 @@ final class BlockingJsonListener implements JsonListener {
         return result;
     }
 
+    boolean hasNext() throws IOException, InvalidSyntaxException {
+        final boolean result;
+        synchronized (lock) {
+            while (!hasNext && !terminated()) {
+                try {
+                    lock.wait();
+                } catch (final InterruptedException e) {
+                    throw new RuntimeException("Coding failure in Argo:  Interrupted waiting with request for has next element;");
+                }
+            }
+            if (state == State.CLOSED) {
+                result = false;
+            } else if (hasNext) {
+                result = true;
+            } else {
+                handleTermination();
+                result = false;
+            }
+            lock.notifyAll();
+        }
+        return result;
+    }
+
     private void gotNext(final Element element) {
         synchronized (lock) {
             while (hasNext && !terminated()) {

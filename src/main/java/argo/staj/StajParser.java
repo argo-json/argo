@@ -50,8 +50,14 @@ public final class StajParser implements JsonStreamReader {
         return next.getJsonStreamElementType();
     }
 
-    public boolean hasNext() {
-        return next == null || JsonStreamElementType.END_DOCUMENT != next.getJsonStreamElementType();
+    public boolean hasNext() throws JsonStreamException {
+        try {
+            return blockingJsonListener.hasNext();
+        } catch (final IOException e) {
+            throw new JsonStreamException(e);
+        } catch (final InvalidSyntaxException e) {
+            throw new JsonStreamException(e);
+        }
     }
 
     public void close() {
@@ -59,14 +65,23 @@ public final class StajParser implements JsonStreamReader {
     }
 
     public JsonStreamElementType getElementType() {
+        if (next == null) {
+            throw new IllegalStateException("Attempt to get element type of current element before first call to next().");
+        }
         return next.getJsonStreamElementType();
     }
 
     public String getText() {
+        if (next == null) {
+            throw new IllegalStateException("Attempt to get text of current element before first call to next().");
+        }
         return next.getText();
     }
 
     public boolean hasText() {
+        if (next == null) {
+            throw new IllegalStateException("Attempt to determine whether current element has text before first call to next().");
+        }
         return next.hasText();
     }
 }

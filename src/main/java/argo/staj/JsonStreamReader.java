@@ -18,8 +18,9 @@ public interface JsonStreamReader {
      * Determines whether there are any more elements.
      *
      * @return true if there are more elements.
+     * @throws JsonStreamException if the next element could not be read, for example if the next element turns out not to be valid JSON
      */
-    public boolean hasNext();
+    public boolean hasNext() throws JsonStreamException;
 
     /**
      * Frees resources associate with this reader.  It is important that this method is called after finishing with an instace.
