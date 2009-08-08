@@ -90,7 +90,7 @@
     <target name="test" depends="compile" description="builds and runs unit tests">
         <delete dir="${location.testresults}"/>
         <mkdir dir="${location.testresults}"/>
-        <junit printsummary="yes">
+        <junit printsummary="yes" errorproperty="unittestfailure">
             <classpath>
                 <pathelement location="${location.testclasses}"/>
                 <pathelement location="${location.classes}"/>
@@ -111,12 +111,14 @@
             </fileset>
             <report todir="${location.testresults}"/>
         </junitreport>
+
+        <fail if="unittestfailure" message="Unit tests failed."/>
     </target>
 
     <target name="performance-test" depends="compile" description="builds and runs performance tests">
         <delete dir="${location.performancetestresults}"/>
         <mkdir dir="${location.performancetestresults}"/>
-        <junit printsummary="yes">
+        <junit printsummary="yes" errorproperty="performancetestfailure">
             <classpath>
                 <pathelement location="${location.performancetestclasses}"/>
                 <pathelement location="${location.classes}"/>
@@ -139,6 +141,8 @@
             </fileset>
             <report todir="${location.performancetestresults}"/>
         </junitreport>
+
+        <fail if="performancetestfailure" message="Performance tests failed."/>
     </target>
 
     <target name="javadoc">
