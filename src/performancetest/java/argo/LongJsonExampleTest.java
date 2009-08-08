@@ -15,7 +15,6 @@ import java.io.StringReader;
 
 public final class LongJsonExampleTest {
 
-    private Reader[] jsonReaders = new Reader[10000];
     private static final JsonListener BLACK_HOLE_JSON_LISTENER = new JsonListener() {
         public void startDocument() { }
 
@@ -43,6 +42,8 @@ public final class LongJsonExampleTest {
 
         public void nullValue() { }
     };
+
+    private final Reader[] jsonReaders = new Reader[10000];
 
     @Before
     public void getJson() throws Exception {

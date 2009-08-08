@@ -11,9 +11,9 @@ public final class StajParser implements JsonStreamReader {
     private final BlockingJsonListener blockingJsonListener;
     private Element next;
 
-    public StajParser(final Reader in) throws IOException {
+    public StajParser(final Reader in) {
         blockingJsonListener = new BlockingJsonListener();
-        new Thread("Argo parser") {
+        new Thread("Argo StajParser") {
             @Override
             public void run() {
                 try {
