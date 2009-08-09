@@ -1,8 +1,5 @@
 package argo.jdom;
 
-import static argo.jdom.JsonNodeType.NUMBER;
-import static argo.jdom.JsonNodeType.STRING;
-
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +21,11 @@ public final class JsonNodeFactory {
     }
 
     public static JsonNode aJsonString(final String value) {
-        return new JsonTextNode(value, STRING);
+        return new JsonStringNode(value);
     }
 
     public static JsonNode aJsonNumber(final String value) {
-        return new JsonTextNode(value, NUMBER);
+        return new JsonNumberNode(value);
     }
 
     public static JsonRootNode aJsonArray(final List<JsonNode> elements) {

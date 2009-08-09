@@ -3,21 +3,19 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
-final class JsonTextNode extends JsonNode {
+public final class JsonStringNode extends JsonNode {
 
     private final String value;
-    private final JsonNodeType jsonNodeType;
 
-    JsonTextNode(final String value, final JsonNodeType jsonNodeType) {
+    JsonStringNode(final String value) {
         if (value == null) {
             throw new NullPointerException("Attempt to construct a JsonNumber with a null value.");
         }
         this.value = value;
-        this.jsonNodeType = jsonNodeType;
     }
 
     public JsonNodeType getType() {
-        return jsonNodeType;
+        return JsonNodeType.STRING;
     }
 
     public boolean hasText() {
@@ -49,24 +47,19 @@ final class JsonTextNode extends JsonNode {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        final JsonTextNode thatJsonTextNode = (JsonTextNode) that;
-        return this.jsonNodeType == thatJsonTextNode.jsonNodeType && this.value.equals(thatJsonTextNode.value);
+        final JsonStringNode thatJsonTextNode = (JsonStringNode) that;
+        return this.value.equals(thatJsonTextNode.value);
     }
 
     @Override
     public int hashCode() {
-        int result = 17;
-        result = 37 * result + jsonNodeType.hashCode();
-        result = 37 * result + value.hashCode();
-        return result;
+        return value.hashCode();
     }
 
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("JsonTextNode jsonNodeType:[")
-                .append(jsonNodeType)
-                .append("], value:[")
+                .append("JsonNumberNode value:[")
                 .append(value)
                 .append("]")
                 .toString();
