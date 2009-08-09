@@ -1,7 +1,7 @@
 package argo.jdom;
 
-import argo.saj.JsonListener;
 import static argo.jdom.JsonNodeFactory.*;
+import argo.saj.JsonListener;
 
 import java.util.*;
 
@@ -121,11 +121,11 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
 
         public JsonNode generateJsonValue() {
-            final Map<String, JsonNode> jsonStringJsonValueHashMap = new HashMap<String, JsonNode>();
+            final Map<JsonStringNode, JsonNode> jsonStringJsonValueHashMap = new HashMap<JsonStringNode, JsonNode>();
             for (MutableJsonField field : fields) {
-                jsonStringJsonValueHashMap.put(field.getName(), JsonListenerToJdomAdapter.generateJsonValue(field.getValue()));
+                jsonStringJsonValueHashMap.put(aJsonString(field.getName()), JsonListenerToJdomAdapter.generateJsonValue(field.getValue()));
             }
-            return JsonNodeFactory.aJsonObject(jsonStringJsonValueHashMap);
+            return aJsonObject(jsonStringJsonValueHashMap);
         }
 
         @Override

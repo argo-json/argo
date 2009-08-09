@@ -3,6 +3,7 @@ package argo.saj;
 import argo.jdom.JsonNode;
 import static argo.jdom.JsonNodeFactory.*;
 import argo.jdom.JsonRootNode;
+import argo.jdom.JsonStringNode;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -14,16 +15,15 @@ public final class JsonObjectTest {
 
     @Test
     public void testImmutablility() {
-        final String baseKey = "Test";
-        final JsonNode baseJsonKey = aJsonString(baseKey);
+        final JsonStringNode baseJsonKey = aJsonString("Test");
         final JsonNode baseJsonNode = aJsonNumber("0");
-        final Map<String, JsonNode> baseElements = new HashMap<String, JsonNode>();
-        baseElements.put(baseKey, baseJsonNode);
+        final Map<JsonStringNode, JsonNode> baseElements = new HashMap<JsonStringNode, JsonNode>();
+        baseElements.put(baseJsonKey, baseJsonNode);
         final JsonRootNode jsonObject = aJsonObject(baseElements);
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
-        baseElements.put("Another key", aJsonNumber("1"));
+        baseElements.put(aJsonString("Another key"), aJsonNumber("1"));
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
@@ -35,20 +35,20 @@ public final class JsonObjectTest {
 
     @Test
     public void testEquals() {
-        assertEquals(aJsonObject(new HashMap<String, JsonNode>()), aJsonObject(new HashMap<String, JsonNode>()));
-        assertEquals(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", aJsonNumber("0"))), aJsonObject(Collections.<String, JsonNode>singletonMap("Test", aJsonNumber("0"))));
-        assertFalse(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", aJsonNumber("0"))).equals(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", aJsonNumber("1")))));
-        assertFalse(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", aJsonNumber("0"))).equals(aJsonObject(Collections.<String, JsonNode>singletonMap("Another test", aJsonNumber("0")))));
+        assertEquals(aJsonObject(new HashMap<JsonStringNode, JsonNode>()), aJsonObject(new HashMap<JsonStringNode, JsonNode>()));
+        assertEquals(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))), aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))));
+        assertFalse(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).equals(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("1")))));
+        assertFalse(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).equals(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Another test"), aJsonNumber("0")))));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(aJsonObject(new HashMap<String, JsonNode>()), aJsonObject(new HashMap<String, JsonNode>()));
-        assertEquals(aJsonObject(Collections.<String, JsonNode>singletonMap("Test", aJsonNumber("0"))).hashCode(), aJsonObject(Collections.<String, JsonNode>singletonMap("Test", aJsonNumber("0"))).hashCode());
+        assertEquals(aJsonObject(new HashMap<JsonStringNode, JsonNode>()), aJsonObject(new HashMap<JsonStringNode, JsonNode>()));
+        assertEquals(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).hashCode(), aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).hashCode());
     }
 
     @Test
     public void testToString() {
-        aJsonObject(Collections.<String, JsonNode>singletonMap("Test", aJsonNumber("0"))).toString();
+        aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).toString();
     }
 }

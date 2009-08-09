@@ -18,7 +18,7 @@ public abstract class JsonNode {
     public abstract String getText();
 
     public abstract boolean hasFields();
-    public abstract Map<JsonNode, JsonNode> getFields();
+    public abstract Map<JsonStringNode, JsonNode> getFields();
     
     public abstract boolean hasElements();
     public abstract List<JsonNode> getElements();

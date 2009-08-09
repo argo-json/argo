@@ -1,24 +1,19 @@
 package argo.jdom;
 
-import static argo.jdom.JsonNodeFactory.aJsonString;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 final class JsonObject extends JsonRootNode {
 
-    private final Map<JsonNode, JsonNode> fields;
+    private final Map<JsonStringNode, JsonNode> fields;
 
-    JsonObject(final Map<String, JsonNode> fields) {
-        this.fields = new HashMap<JsonNode, JsonNode>();
-        for (Map.Entry<String, JsonNode> stringJsonNodeEntry : fields.entrySet()) {
-            this.fields.put(aJsonString(stringJsonNodeEntry.getKey()), stringJsonNodeEntry.getValue());
-        }
+    JsonObject(final Map<JsonStringNode, JsonNode> fields) {
+        this.fields = new HashMap<JsonStringNode, JsonNode>(fields);
     }
 
-    public Map<JsonNode, JsonNode> getFields() {
-        return new HashMap<JsonNode, JsonNode>(fields);
+    public Map<JsonStringNode, JsonNode> getFields() {
+        return new HashMap<JsonStringNode, JsonNode>(fields);
     }
 
     public JsonNodeType getType() {

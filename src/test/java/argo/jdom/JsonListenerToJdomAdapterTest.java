@@ -20,8 +20,8 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endField();
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = aJsonObject(new HashMap<String, JsonNode>() {{
-            put("Hello", aJsonString("World"));
+        final JsonNode expected = aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+            put(aJsonString("Hello"), aJsonString("World"));
         }});
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
@@ -36,8 +36,8 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endField();
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = aJsonObject(new HashMap<String, JsonNode>() {{
-            put("Gigawatts", JsonNodeFactory.aJsonNumber("1.21"));
+        final JsonNode expected = aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+            put(aJsonString("Gigawatts"), JsonNodeFactory.aJsonNumber("1.21"));
         }});
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
@@ -51,7 +51,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.stringValue("World");
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(aJsonString("Hello"), aJsonString("World")));
+        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList((JsonNode)aJsonString("Hello"), aJsonString("World")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -84,8 +84,8 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
         final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(
-                aJsonObject(new HashMap<String, JsonNode>() {{
-                    put("anObject", aJsonString("objectValue"));
+                aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(aJsonString("anObject"), aJsonString("objectValue"));
                 }})
                 , aNull()
                 , aTrue()

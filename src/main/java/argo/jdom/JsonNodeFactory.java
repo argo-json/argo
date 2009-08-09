@@ -20,7 +20,7 @@ public final class JsonNodeFactory {
         return JsonConstants.FALSE;
     }
 
-    public static JsonNode aJsonString(final String value) {
+    public static JsonStringNode aJsonString(final String value) {
         return new JsonStringNode(value);
     }
 
@@ -32,7 +32,7 @@ public final class JsonNodeFactory {
         return new JsonArray(elements);
     }
 
-    public static JsonRootNode aJsonObject(final Map<String, JsonNode> fields) {
+    public static JsonRootNode aJsonObject(final Map<JsonStringNode, JsonNode> fields) {
         return new JsonObject(fields);
     }
 

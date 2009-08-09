@@ -2,6 +2,7 @@ package argo.format;
 
 import argo.jdom.JsonNode;
 import static argo.jdom.JsonNodeFactory.*;
+import argo.jdom.JsonStringNode;
 import static org.hamcrest.CoreMatchers.equalTo;
 import org.hamcrest.Matchers;
 import static org.junit.Assert.assertThat;
@@ -13,9 +14,9 @@ import java.util.HashMap;
 public final class CompactJsonFormatTest {
     @Test
     public void formatsAJsonObject() throws Exception {
-        assertThat(new CompactJsonFormat().format(aJsonObject(new HashMap<String, JsonNode>(){{
-            put("Hello", aJsonString("World"));
-            put("Foo", aJsonString("Bar"));
+        assertThat(new CompactJsonFormat().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>(){{
+            put(aJsonString("Hello"), aJsonString("World"));
+            put(aJsonString("Foo"), aJsonString("Bar"));
         }})), Matchers.anyOf(
                 equalTo("{\"Hello\":\"World\",\"Foo\":\"Bar\"}")
                 , equalTo("{\"Foo\":\"Bar\",\"Hello\":\"World\"}")
@@ -24,8 +25,8 @@ public final class CompactJsonFormatTest {
 
     @Test
     public void formatsAJsonNumber() throws Exception {
-        assertThat(new CompactJsonFormat().format(aJsonObject(new HashMap<String, JsonNode>(){{
-            put("S", aJsonNumber("7"));
+        assertThat(new CompactJsonFormat().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>(){{
+            put(aJsonString("S"), aJsonNumber("7"));
         }})), equalTo("{\"S\":7}"));
     }
 

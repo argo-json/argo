@@ -2,6 +2,7 @@ package argo.format;
 
 import argo.jdom.JsonNode;
 import argo.jdom.JsonRootNode;
+import argo.jdom.JsonStringNode;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -39,7 +40,7 @@ public final class CompactJsonFormat implements JsonFormat {
                 break;
             case OBJECT:
                 writer.append('{');
-                for (final Map.Entry<JsonNode, JsonNode> field : jsonNode.getFields().entrySet()) {
+                for (final Map.Entry<JsonStringNode, JsonNode> field : jsonNode.getFields().entrySet()) {
                     if (!first) {
                         writer.append(',');
                     }

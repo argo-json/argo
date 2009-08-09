@@ -32,7 +32,7 @@ final class JsonNumberNode extends JsonNode {
         return false;
     }
 
-    public Map<JsonNode, JsonNode> getFields() {
+    public Map<JsonStringNode, JsonNode> getFields() {
         throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
     }
 
