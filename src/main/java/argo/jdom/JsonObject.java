@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class JsonObject implements JsonRootNode {
+final class JsonObject extends JsonRootNode {
 
     private final Map<JsonNode, JsonNode> fields;
 

@@ -6,16 +6,21 @@ import java.util.Map;
 /**
  * An node (leaf or otherwise) in a JSON document.
  */
-public interface JsonNode {
-    JsonNodeType getType();
+public abstract class JsonNode {
 
-    boolean hasText();
-    String getText();
+    // Only extendable by classes in this package
+    JsonNode() {
+    }
 
-    boolean hasFields();
-    Map<JsonNode, JsonNode> getFields();
+    public abstract JsonNodeType getType();
+
+    public abstract boolean hasText();
+    public abstract String getText();
+
+    public abstract boolean hasFields();
+    public abstract Map<JsonNode, JsonNode> getFields();
     
-    boolean hasElements();
-    List<JsonNode> getElements();
+    public abstract boolean hasElements();
+    public abstract List<JsonNode> getElements();
 
 }

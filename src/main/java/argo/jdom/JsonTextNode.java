@@ -3,7 +3,7 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
-final class JsonTextNode implements JsonNode {
+final class JsonTextNode extends JsonNode {
 
     private final String value;
     private final JsonNodeType jsonNodeType;

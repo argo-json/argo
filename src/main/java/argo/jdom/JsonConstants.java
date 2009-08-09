@@ -3,13 +3,15 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
-enum JsonConstants implements JsonNode {
+final class JsonConstants extends JsonNode {
 
-    NULL(JsonNodeType.NULL), TRUE(JsonNodeType.TRUE), FALSE(JsonNodeType.FALSE);
+    static final JsonConstants NULL = new JsonConstants(JsonNodeType.NULL);
+    static final JsonConstants TRUE = new JsonConstants(JsonNodeType.TRUE);
+    static final JsonConstants FALSE = new JsonConstants(JsonNodeType.FALSE);
 
     private final JsonNodeType jsonNodeType;
 
-    JsonConstants(JsonNodeType jsonNodeType) {
+    private JsonConstants(JsonNodeType jsonNodeType) {
         this.jsonNodeType = jsonNodeType;
     }
 
