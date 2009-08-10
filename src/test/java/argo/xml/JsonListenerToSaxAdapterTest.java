@@ -1,3 +1,13 @@
+/*
+ * Copyright 2009 Mark Slater
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package argo.xml;
 
 import org.hamcrest.Description;
@@ -29,8 +39,10 @@ public final class JsonListenerToSaxAdapterTest {
         final JsonListenerToSaxAdapter jsonListenerToSaxAdapter = new JsonListenerToSaxAdapter(contentHandler);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("Mary")), with(equalTo("Mary")), with(EMPTY_ATTRIBUTES_MATCHER)); inSequence(expectedSequence);
-            oneOf(contentHandler).endElement("", "Mary", "Mary"); inSequence(expectedSequence);
+            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("Mary")), with(equalTo("Mary")), with(EMPTY_ATTRIBUTES_MATCHER));
+            inSequence(expectedSequence);
+            oneOf(contentHandler).endElement("", "Mary", "Mary");
+            inSequence(expectedSequence);
         }});
         jsonListenerToSaxAdapter.startField("Mary");
         jsonListenerToSaxAdapter.endField();
@@ -43,10 +55,14 @@ public final class JsonListenerToSaxAdapterTest {
         final JsonListenerToSaxAdapter jsonListenerToSaxAdapter = new JsonListenerToSaxAdapter(contentHandler);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("Mary")), with(equalTo("Mary")), with(EMPTY_ATTRIBUTES_MATCHER)); inSequence(expectedSequence);
-            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("Martha")), with(equalTo("Martha")), with(EMPTY_ATTRIBUTES_MATCHER)); inSequence(expectedSequence);
-            oneOf(contentHandler).endElement("", "Martha", "Martha"); inSequence(expectedSequence);
-            oneOf(contentHandler).endElement("", "Mary", "Mary"); inSequence(expectedSequence);
+            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("Mary")), with(equalTo("Mary")), with(EMPTY_ATTRIBUTES_MATCHER));
+            inSequence(expectedSequence);
+            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("Martha")), with(equalTo("Martha")), with(EMPTY_ATTRIBUTES_MATCHER));
+            inSequence(expectedSequence);
+            oneOf(contentHandler).endElement("", "Martha", "Martha");
+            inSequence(expectedSequence);
+            oneOf(contentHandler).endElement("", "Mary", "Mary");
+            inSequence(expectedSequence);
         }});
         jsonListenerToSaxAdapter.startField("Mary");
         jsonListenerToSaxAdapter.startField("Martha");
@@ -61,8 +77,10 @@ public final class JsonListenerToSaxAdapterTest {
         final JsonListenerToSaxAdapter jsonListenerToSaxAdapter = new JsonListenerToSaxAdapter(contentHandler);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("Foo")), with(equalTo("Foo")), with(new SingleAttributeMatcher("type", "string"))); inSequence(expectedSequence);
-            oneOf(contentHandler).endElement("", "Foo", "Foo"); inSequence(expectedSequence);
+            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("Foo")), with(equalTo("Foo")), with(new SingleAttributeMatcher("type", "string")));
+            inSequence(expectedSequence);
+            oneOf(contentHandler).endElement("", "Foo", "Foo");
+            inSequence(expectedSequence);
         }});
         jsonListenerToSaxAdapter.stringValue("Foo");
         context.assertIsSatisfied();
@@ -74,8 +92,10 @@ public final class JsonListenerToSaxAdapterTest {
         final JsonListenerToSaxAdapter jsonListenerToSaxAdapter = new JsonListenerToSaxAdapter(contentHandler);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("12")), with(equalTo("12")), with(new SingleAttributeMatcher("type", "number"))); inSequence(expectedSequence);
-            oneOf(contentHandler).endElement("", "12", "12"); inSequence(expectedSequence);
+            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("12")), with(equalTo("12")), with(new SingleAttributeMatcher("type", "number")));
+            inSequence(expectedSequence);
+            oneOf(contentHandler).endElement("", "12", "12");
+            inSequence(expectedSequence);
         }});
         jsonListenerToSaxAdapter.numberValue("12");
         context.assertIsSatisfied();
@@ -87,8 +107,10 @@ public final class JsonListenerToSaxAdapterTest {
         final JsonListenerToSaxAdapter jsonListenerToSaxAdapter = new JsonListenerToSaxAdapter(contentHandler);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("null")), with(equalTo("null")), with(new SingleAttributeMatcher("type", "null"))); inSequence(expectedSequence);
-            oneOf(contentHandler).endElement("", "null", "null"); inSequence(expectedSequence);
+            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("null")), with(equalTo("null")), with(new SingleAttributeMatcher("type", "null")));
+            inSequence(expectedSequence);
+            oneOf(contentHandler).endElement("", "null", "null");
+            inSequence(expectedSequence);
         }});
         jsonListenerToSaxAdapter.nullValue();
         context.assertIsSatisfied();
@@ -100,8 +122,10 @@ public final class JsonListenerToSaxAdapterTest {
         final JsonListenerToSaxAdapter jsonListenerToSaxAdapter = new JsonListenerToSaxAdapter(contentHandler);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("true")), with(equalTo("true")), with(new SingleAttributeMatcher("type", "true"))); inSequence(expectedSequence);
-            oneOf(contentHandler).endElement("", "true", "true"); inSequence(expectedSequence);
+            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("true")), with(equalTo("true")), with(new SingleAttributeMatcher("type", "true")));
+            inSequence(expectedSequence);
+            oneOf(contentHandler).endElement("", "true", "true");
+            inSequence(expectedSequence);
         }});
         jsonListenerToSaxAdapter.trueValue();
         context.assertIsSatisfied();
@@ -113,8 +137,10 @@ public final class JsonListenerToSaxAdapterTest {
         final JsonListenerToSaxAdapter jsonListenerToSaxAdapter = new JsonListenerToSaxAdapter(contentHandler);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("false")), with(equalTo("false")), with(new SingleAttributeMatcher("type", "false"))); inSequence(expectedSequence);
-            oneOf(contentHandler).endElement("", "false", "false"); inSequence(expectedSequence);
+            oneOf(contentHandler).startElement(with(equalTo("")), with(equalTo("false")), with(equalTo("false")), with(new SingleAttributeMatcher("type", "false")));
+            inSequence(expectedSequence);
+            oneOf(contentHandler).endElement("", "false", "false");
+            inSequence(expectedSequence);
         }});
         jsonListenerToSaxAdapter.falseValue();
         context.assertIsSatisfied();

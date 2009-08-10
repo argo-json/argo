@@ -1,3 +1,13 @@
+/*
+ * Copyright 2009 Mark Slater
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package argo.saj;
 
 import org.jmock.Expectations;
@@ -10,19 +20,44 @@ import java.io.StringReader;
 
 public final class JsonParserTest {
     private static final JsonListener BLACK_HOLE_LISTENER = new JsonListener() {
-        public void startDocument() { }
-        public void endDocument() { }
-        public void startArray() { }
-        public void endArray() { }
-        public void startObject() { }
-        public void endObject() { }
-        public void startField(String name) { }
-        public void endField() { }
-        public void stringValue(String value) { }
-        public void numberValue(String value) { }
-        public void trueValue() { }
-        public void falseValue() { }
-        public void nullValue() { }
+        public void startDocument() {
+        }
+
+        public void endDocument() {
+        }
+
+        public void startArray() {
+        }
+
+        public void endArray() {
+        }
+
+        public void startObject() {
+        }
+
+        public void endObject() {
+        }
+
+        public void startField(String name) {
+        }
+
+        public void endField() {
+        }
+
+        public void stringValue(String value) {
+        }
+
+        public void numberValue(String value) {
+        }
+
+        public void trueValue() {
+        }
+
+        public void falseValue() {
+        }
+
+        public void nullValue() {
+        }
     };
     private final Mockery context = new Mockery();
 
@@ -58,11 +93,16 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12.123E-2"); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12.123E-2");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("[12.123E-2]"), jsonListener);
         context.assertIsSatisfied();
@@ -73,13 +113,20 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("hello"); inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("world"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("hello");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).stringValue("world");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"hello\":\"world\"}"), jsonListener);
         context.assertIsSatisfied();
@@ -90,13 +137,20 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("hello"); inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("world"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("hello");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).stringValue("world");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"hello\": \"world\"}"), jsonListener);
         context.assertIsSatisfied();
@@ -107,12 +161,18 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("1"); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("2"); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("1");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("2");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("[ 1, 2 ]"), jsonListener);
         context.assertIsSatisfied();
@@ -123,16 +183,26 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("hello"); inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("world"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("foo"); inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("bar"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("hello");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).stringValue("world");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("foo");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).stringValue("bar");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"hello\":\"world\",\"foo\":\"bar\"}"), jsonListener);
         context.assertIsSatisfied();
@@ -143,13 +213,20 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("room"); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("101"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("room");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("101");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"room\":101}"), jsonListener);
         context.assertIsSatisfied();
@@ -160,13 +237,20 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("points"); inSequence(expectedSequence);
-            oneOf(jsonListener).nullValue(); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("points");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).nullValue();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"points\":null}"), jsonListener);
         context.assertIsSatisfied();
@@ -177,13 +261,20 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("points"); inSequence(expectedSequence);
-            oneOf(jsonListener).trueValue(); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("points");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).trueValue();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"points\":true}"), jsonListener);
         context.assertIsSatisfied();
@@ -194,13 +285,20 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("points"); inSequence(expectedSequence);
-            oneOf(jsonListener).falseValue(); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("points");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).falseValue();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"points\":false}"), jsonListener);
         context.assertIsSatisfied();
@@ -211,16 +309,26 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("room"); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("101"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("answer"); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("42"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("room");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("101");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("answer");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("42");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"room\":101,\"answer\":42}"), jsonListener);
         context.assertIsSatisfied();
@@ -231,16 +339,26 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("room"); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("101"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("foo"); inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("bar"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("room");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("101");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("foo");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).stringValue("bar");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"room\":101,\"foo\":\"bar\"}"), jsonListener);
         context.assertIsSatisfied();
@@ -251,10 +369,14 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         final String inputString = "{}";
         new SajParser().parse(new StringReader(inputString), jsonListener);
@@ -266,17 +388,28 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Test"); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Inner test"); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("Test");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("Inner test");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         final String inputString = "{\"Test\":{\"Inner test\":12}}";
         new SajParser().parse(new StringReader(inputString), jsonListener);
@@ -288,10 +421,14 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         final String inputString = "[]";
         new SajParser().parse(new StringReader(inputString), jsonListener);
@@ -303,11 +440,16 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         final String inputString = "[12]";
         new SajParser().parse(new StringReader(inputString), jsonListener);
@@ -319,12 +461,18 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("test"); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).stringValue("test");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         final String inputString = "[12,\"test\"]";
         new SajParser().parse(new StringReader(inputString), jsonListener);
@@ -336,13 +484,20 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         final String inputString = "[[12]]";
         new SajParser().parse(new StringReader(inputString), jsonListener);
@@ -354,15 +509,24 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Test"); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("Test");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"Test\":[12]}"), jsonListener);
         context.assertIsSatisfied();
@@ -373,15 +537,24 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).startObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Test"); inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12"); inSequence(expectedSequence);
-            oneOf(jsonListener).endField(); inSequence(expectedSequence);
-            oneOf(jsonListener).endObject(); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("Test");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("[{\"Test\":12}]"), jsonListener);
         context.assertIsSatisfied();
@@ -398,10 +571,14 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         final String inputString = "[] ";
         new SajParser().parse(new StringReader(inputString), jsonListener);
@@ -412,11 +589,16 @@ public final class JsonParserTest {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument(); inSequence(expectedSequence);
-            oneOf(jsonListener).startArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue(expectedStringValue); inSequence(expectedSequence);
-            oneOf(jsonListener).endArray(); inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument(); inSequence(expectedSequence);
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).stringValue(expectedStringValue);
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("[" + jsonFragment + "]"), jsonListener);
         context.assertIsSatisfied();
