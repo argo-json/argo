@@ -13,6 +13,9 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <code>JsonNode</code> that explicitly represents a JSON String.
+ */
 public final class JsonStringNode extends JsonNode {
 
     private final String value;
