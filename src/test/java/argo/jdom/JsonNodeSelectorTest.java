@@ -18,9 +18,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
+import java.io.StringReader;
 import java.util.*;
 
-public final class JsonNodeSelecterTest {
+public final class JsonNodeSelectorTest {
 
     @Test
     public void matchesABooleanNode() throws Exception {
@@ -74,6 +75,16 @@ public final class JsonNodeSelecterTest {
     }
 
     @Test
+    public void matchesAnObjectWithField() throws Exception {
+        final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = anObjectNodeWithField("Wobbly");
+        final JsonNode node = aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+            put(aJsonString("Wobbly"), aJsonString("Bob"));
+        }});
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode)aJsonString("Bob")));
+    }
+
+    @Test
     public void rejectsAFieldOfAnObjectNodeThatDoesNotExist() throws Exception {
         final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = aField("Golden");
         final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
@@ -108,6 +119,14 @@ public final class JsonNodeSelecterTest {
     }
 
     @Test
+    public void matchesAnArrayWithElement() throws Exception {
+        final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = anArrayWithElement(0);
+        final JsonNode node = aJsonArray(Arrays.asList((JsonNode) aJsonString("hello")));
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode)aJsonString("hello")));
+    }
+
+    @Test
     public void rejectsAnElementOfAnArrayNodeGreaterThanArraySize() throws Exception {
         final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = anElement(0);
         assertFalse(jsonNodeSelector.matches(new LinkedList<JsonNode>()));
@@ -130,5 +149,16 @@ public final class JsonNodeSelecterTest {
         );
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo(aJsonNumber("12.5")));
+    }
+
+    @Test
+    public void javadocExampleWorks() throws Exception {
+        final String json = "{\"Fee\":{\"fi\":\"fo\"}}";
+        final JsonNode jsonNode = new JdomParser().parse(new StringReader(json));
+        final String result = anObjectNodeWithField("Fee")
+                .withChild(anObjectNodeWithField("fi"))
+                .withChild(aStringNode())
+                .getValue(jsonNode);
+        assertThat(result, equalTo("fo"));
     }
 }

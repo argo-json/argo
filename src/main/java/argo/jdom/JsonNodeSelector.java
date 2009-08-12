@@ -16,6 +16,22 @@ import static argo.jdom.JsonNodeType.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <p>Factories for working with a tree of <code>JsonNode</code>s. The various factory methods on this class return
+ * instances of <code>JsonNodeSelector</code> that can be chained together to check for the existence of,
+ * and value of, particular nodes in a tree.</p>
+ *
+ * <p>For example, given a <code>JsonNode</code> representing <code>{"Fee":{"fi":"fo"}}</code>,
+ * <pre>
+    anObjectNodeWithField("Fee")
+        .withChild(anObjectNodeWithField("fi"))
+        .withChild(aStringNode())
+        .getValue(jsonNode)
+ * </pre> will return the <code>String</code> "fo".</p>
+ *
+ * @param <T> The type of Object worked on.
+ * @param <U> The type of Object returned.
+ */
 public final class JsonNodeSelector<T, U> {
 
     private final Functor<T, U> valueGetter;
@@ -109,16 +125,27 @@ public final class JsonNodeSelector<T, U> {
     }
 
     public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final String fieldName) {
-        final JsonStringNode jsonStringFieldName = aJsonString(fieldName);
+        return aField(aJsonString(fieldName));
+    }
+
+    public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final JsonStringNode fieldName) {
         return new JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode>(new Functor<Map<JsonStringNode, JsonNode>, JsonNode>() {
             public boolean matchesValue(Map<JsonStringNode, JsonNode> jsonNode) {
-                return jsonNode.containsKey(jsonStringFieldName);
+                return jsonNode.containsKey(fieldName);
             }
 
             public JsonNode getValue(Map<JsonStringNode, JsonNode> jsonNode) {
-                return jsonNode.get(jsonStringFieldName);
+                return jsonNode.get(fieldName);
             }
         });
+    }
+
+    public static JsonNodeSelector<JsonNode, JsonNode> anObjectNodeWithField(final JsonStringNode fieldName) {
+        return anObjectNode().withChild(aField(fieldName));
+    }
+
+    public static JsonNodeSelector<JsonNode, JsonNode> anObjectNodeWithField(final String fieldName) {
+        return anObjectNode().withChild(aField(fieldName));
     }
 
     public static JsonNodeSelector<List<JsonNode>, JsonNode> anElement(final int index) {
@@ -131,6 +158,10 @@ public final class JsonNodeSelector<T, U> {
                 return jsonNode.get(index);
             }
         });
+    }
+
+    public static JsonNodeSelector<JsonNode, JsonNode> anArrayWithElement(final int index) {
+        return anArrayNode().withChild(anElement(index));
     }
 
     public <V> JsonNodeSelector<T, V> withChild(final JsonNodeSelector<U, V> childJsonNodeSelector) {
