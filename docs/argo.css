@@ -78,3 +78,7 @@ div#footer {
 a img {
     border: none;
 }
+
+#footer a {
+    text-decoration: none;
+}
