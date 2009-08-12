@@ -11,78 +11,124 @@
 package argo.jdom;
 
 import static argo.jdom.JsonNodeFactory.*;
-import static argo.jdom.JsonNodeSelecter.aNumberNode;
-import static argo.jdom.JsonNodeSelecter.anArrayNode;
+import static argo.jdom.JsonNodeSelector.*;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public final class JsonNodeSelecterTest {
 
     @Test
-    public void matchesAStringNode() throws Exception {
-        final JsonNodeSelecter<String> jsonNodeSelecter = JsonNodeSelecter.aStringNode();
-        assertTrue(jsonNodeSelecter.matches(aJsonString("hello")));
+    public void matchesABooleanNode() throws Exception {
+        final JsonNodeSelector<JsonNode, Boolean> jsonNodeSelector = JsonNodeSelector.aBooleanNode();
+        assertTrue(jsonNodeSelector.matches(aJsonTrue()));
+        assertTrue(jsonNodeSelector.matches(aJsonFalse()));
+        assertThat(jsonNodeSelector.getValue(aJsonTrue()), equalTo(Boolean.TRUE));
+        assertThat(jsonNodeSelector.getValue(aJsonFalse()), equalTo(Boolean.FALSE));
     }
 
     @Test
-    public void getsValueOfAStringNode() throws Exception {
-        final JsonNodeSelecter<String> jsonNodeSelecter = JsonNodeSelecter.aStringNode();
-        assertThat(jsonNodeSelecter.getValue(aJsonString("hello")), equalTo("hello"));
+    public void matchesAStringNode() throws Exception {
+        final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelector.aStringNode();
+        final JsonStringNode node = aJsonString("hello");
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo("hello"));
     }
 
     @Test
     public void matchesANumberNode() throws Exception {
-        final JsonNodeSelecter<String> jsonNodeSelecter = aNumberNode();
-        assertTrue(jsonNodeSelecter.matches(aJsonNumber("12.1")));
+        final JsonNodeSelector<JsonNode, String> jsonNodeSelector = aNumberNode();
+        final JsonNode node = aJsonNumber("12.1");
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo("12.1"));
     }
 
     @Test
-    public void getsValueOfANumberNode() throws Exception {
-        final JsonNodeSelecter<String> jsonNodeSelecter = aNumberNode();
-        assertThat(jsonNodeSelecter.getValue(aJsonNumber("12.1")), equalTo("12.1"));
+    public void matchesANullNode() throws Exception {
+        final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = aNullNode();
+        final JsonNode node = aJsonNull();
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo(node));
+    }
+
+    @Test
+    public void matchesAnObjectNode() throws Exception {
+        final JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> jsonNodeSelector = anObjectNode();
+        final JsonRootNode node = aJsonObject(new HashMap<JsonStringNode, JsonNode>());
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo((Map<JsonStringNode, JsonNode>)new HashMap<JsonStringNode, JsonNode>()));
+    }
+
+    @Test
+    public void matchesAFieldOfAnObjectNode() throws Exception {
+        final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = aField("Wobbly");
+        final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
+            put(aJsonString("Wobbly"), aJsonString("Bob"));
+        }};
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode)aJsonString("Bob")));
+    }
+
+    @Test
+    public void rejectsAFieldOfAnObjectNodeThatDoesNotExist() throws Exception {
+        final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = aField("Golden");
+        final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
+            put(aJsonString("Wobbly"), aJsonString("Bob"));
+        }};
+        assertFalse(jsonNodeSelector.matches(node));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void doesNotGetAFieldOfAnObjectNodeThatDoesNotExist() throws Exception {
+        final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = aField("Golden");
+        final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
+            put(aJsonString("Wobbly"), aJsonString("Bob"));
+        }};
+        assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode)aJsonString("Bob")));
     }
 
     @Test
     public void matchesAnArrayNode() throws Exception {
-        final JsonNodeSelecter<List<JsonNode>> jsonNodeSelecter = anArrayNode();
-        assertTrue(jsonNodeSelecter.matches(aJsonArray(new LinkedList<JsonNode>())));
-    }
-
-    @Test
-    public void getsValueOfAnArrayNode() throws Exception {
-        final JsonNodeSelecter<List<JsonNode>> jsonNodeSelecter = anArrayNode();
-        assertThat(jsonNodeSelecter.getValue(aJsonArray(new LinkedList<JsonNode>())), equalTo((List<JsonNode>)new LinkedList<JsonNode>()));
+        final JsonNodeSelector<JsonNode, List<JsonNode>> jsonNodeSelector = anArrayNode();
+        final JsonRootNode node = aJsonArray(new LinkedList<JsonNode>());
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo((List<JsonNode>)new LinkedList<JsonNode>()));
     }
 
     @Test
     public void matchesAnElementOfAnArrayNode() throws Exception {
-        final JsonNodeSelecter<JsonNode> jsonNodeSelecter = anArrayNode(0);
-        assertTrue(jsonNodeSelecter.matches(aJsonArray(new LinkedList<JsonNode>(Arrays.asList(aJsonString("hello"))))));
-    }
-
-    @Test
-    public void getsValueOfAnElementOfAnArrayNode() throws Exception {
-        final JsonNodeSelecter<JsonNode> jsonNodeSelecter = JsonNodeSelecter.anArrayNode(0);
-        assertThat(jsonNodeSelecter.getValue(aJsonArray(new LinkedList<JsonNode>(Arrays.asList(aJsonString("hello"))))), equalTo((JsonNode)aJsonString("hello")));
+        final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = anElement(0);
+        final List<JsonNode> node = Arrays.asList((JsonNode) aJsonString("hello"));
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode)aJsonString("hello")));
     }
 
     @Test
     public void rejectsAnElementOfAnArrayNodeGreaterThanArraySize() throws Exception {
-        final JsonNodeSelecter<JsonNode> jsonNodeSelecter = anArrayNode(0);
-        assertFalse(jsonNodeSelecter.matches(aJsonArray(new LinkedList<JsonNode>(new LinkedList<JsonNode>()))));
+        final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = anElement(0);
+        assertFalse(jsonNodeSelector.matches(new LinkedList<JsonNode>()));
     }
 
     @Test (expected = IllegalArgumentException.class)
-    public void getsValueOfAnElementOfAnArrayNodeGreaterThanArraySize() throws Exception {
-        final JsonNodeSelecter<JsonNode> jsonNodeSelecter = JsonNodeSelecter.anArrayNode(0);
-        jsonNodeSelecter.getValue(aJsonArray(new LinkedList<JsonNode>()));
+    public void doesNotGetValueOfAnElementOfAnArrayNodeGreaterThanArraySize() throws Exception {
+        final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = anElement(0);
+        jsonNodeSelector.getValue(new LinkedList<JsonNode>());
     }
 
+    @Test
+    public void chainingUsingWithChildMatches() throws Exception {
+        final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = anObjectNode()
+                .withChild(aField("Hello"));
+        final JsonRootNode node = aJsonObject(
+                new HashMap<JsonStringNode, JsonNode>() {{
+                    put(aJsonString("Hello"), aJsonNumber("12.5"));
+                }}
+        );
+        assertTrue(jsonNodeSelector.matches(node));
+        assertThat(jsonNodeSelector.getValue(node), equalTo(aJsonNumber("12.5")));
+    }
 }

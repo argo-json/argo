@@ -97,9 +97,9 @@ public final class JsonListenerToJdomAdapterTest {
                 aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
                     put(aJsonString("anObject"), aJsonString("objectValue"));
                 }})
-                , aNull()
-                , aTrue()
-                , aFalse()
+                , aJsonNull()
+                , aJsonTrue()
+                , aJsonFalse()
         ));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }

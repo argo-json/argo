@@ -57,15 +57,15 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void trueValue() {
-        stack.peek().addValue(aTrue());
+        stack.peek().addValue(aJsonTrue());
     }
 
     public void falseValue() {
-        stack.peek().addValue(aFalse());
+        stack.peek().addValue(aJsonFalse());
     }
 
     public void nullValue() {
-        stack.peek().addValue(aNull());
+        stack.peek().addValue(aJsonNull());
     }
 
     public void stringValue(final String value) {

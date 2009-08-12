@@ -51,9 +51,9 @@ public final class CompactJsonFormatTest {
     @Test
     public void formatsTheJsonConstants() throws Exception {
         assertThat(new CompactJsonFormat().format(aJsonArray(Arrays.asList(
-                aNull()
-                , aTrue()
-                , aFalse()
+                aJsonNull()
+                , aJsonTrue()
+                , aJsonFalse()
         ))), equalTo("[null,true,false]"));
     }
 }

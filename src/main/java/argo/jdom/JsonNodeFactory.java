@@ -18,15 +18,15 @@ import java.util.Map;
  */
 public final class JsonNodeFactory {
 
-    public static JsonNode aNull() {
+    public static JsonNode aJsonNull() {
         return JsonConstants.NULL;
     }
 
-    public static JsonNode aTrue() {
+    public static JsonNode aJsonTrue() {
         return JsonConstants.TRUE;
     }
 
-    public static JsonNode aFalse() {
+    public static JsonNode aJsonFalse() {
         return JsonConstants.FALSE;
     }
 
