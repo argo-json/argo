@@ -141,7 +141,7 @@ public final class JsonNodeSelectorTest {
     @Test
     public void chainingUsingWithChildMatches() throws Exception {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = anObjectNode()
-                .withChild(aField("Hello"));
+                .with(aField("Hello"));
         final JsonRootNode node = aJsonObject(
                 new HashMap<JsonStringNode, JsonNode>() {{
                     put(aJsonString("Hello"), aJsonNumber("12.5"));
@@ -156,8 +156,8 @@ public final class JsonNodeSelectorTest {
         final String json = "{\"Fee\":{\"fi\":\"fo\"}}";
         final JsonNode jsonNode = new JdomParser().parse(new StringReader(json));
         final String result = anObjectNodeWithField("Fee")
-                .withChild(anObjectNodeWithField("fi"))
-                .withChild(aStringNode())
+                .with(anObjectNodeWithField("fi"))
+                .with(aStringNode())
                 .getValue(jsonNode);
         assertThat(result, equalTo("fo"));
     }

@@ -25,9 +25,8 @@ public interface JsonFormat {
      *
      * @param jsonRootNode the <code>JsonRootNode</code> to format.
      * @return the specified <code>JsonRootNode</code> formatted as a String.
-     * @throws IOException if there was a problem outputting to the String.
      */
-    String format(JsonRootNode jsonRootNode) throws IOException;
+    String format(JsonRootNode jsonRootNode);
 
     /**
      * Streams the specified <code>JsonRootNode</code> formatted to the specified <code>Writer</code>.

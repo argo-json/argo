@@ -141,11 +141,11 @@ public final class JsonNodeSelector<T, U> {
     }
 
     public static JsonNodeSelector<JsonNode, JsonNode> anObjectNodeWithField(final JsonStringNode fieldName) {
-        return anObjectNode().withChild(aField(fieldName));
+        return anObjectNode().with(aField(fieldName));
     }
 
     public static JsonNodeSelector<JsonNode, JsonNode> anObjectNodeWithField(final String fieldName) {
-        return anObjectNode().withChild(aField(fieldName));
+        return anObjectNode().with(aField(fieldName));
     }
 
     public static JsonNodeSelector<List<JsonNode>, JsonNode> anElement(final int index) {
@@ -161,10 +161,10 @@ public final class JsonNodeSelector<T, U> {
     }
 
     public static JsonNodeSelector<JsonNode, JsonNode> anArrayWithElement(final int index) {
-        return anArrayNode().withChild(anElement(index));
+        return anArrayNode().with(anElement(index));
     }
 
-    public <V> JsonNodeSelector<T, V> withChild(final JsonNodeSelector<U, V> childJsonNodeSelector) {
+    public <V> JsonNodeSelector<T, V> with(final JsonNodeSelector<U, V> childJsonNodeSelector) {
         return new JsonNodeSelector<T,V>(new chainedFunctor<T, V, U>(this, childJsonNodeSelector));
     }
 

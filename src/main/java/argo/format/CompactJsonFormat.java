@@ -24,9 +24,13 @@ import java.util.Map;
  */
 public final class CompactJsonFormat implements JsonFormat {
 
-    public String format(final JsonRootNode jsonNode) throws IOException {
+    public String format(final JsonRootNode jsonNode) {
         final StringWriter stringWriter = new StringWriter();
-        format(jsonNode, stringWriter);
+        try {
+            format(jsonNode, stringWriter);
+        } catch (final IOException e) {
+            throw new RuntimeException("Coding failure in Argo:  StringWriter gave an IOException", e);
+        }
         return stringWriter.toString();
     }
 
