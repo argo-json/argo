@@ -22,7 +22,7 @@ public final class JsonStringNode extends JsonNode {
 
     JsonStringNode(final String value) {
         if (value == null) {
-            throw new NullPointerException("Attempt to construct a JsonNumber with a null value.");
+            throw new NullPointerException("Attempt to construct a JsonString with a null value.");
         }
         this.value = value;
     }
@@ -72,7 +72,7 @@ public final class JsonStringNode extends JsonNode {
     @Override
     public String toString() {
         return new StringBuilder()
-                .append("JsonNumberNode value:[")
+                .append("JsonStringNode value:[")
                 .append(value)
                 .append("]")
                 .toString();
