@@ -23,32 +23,32 @@ public final class JsonNodeBuildersTest {
 
     @Test
     public void nullBuilderBuildsNull() throws Exception {
-        assertThat(aJsonNull().build(), equalTo(JsonNodeFactory.aJsonNull()));
+        assertThat(aJsonNull().build(), equalTo(JsonNodeFactories.aJsonNull()));
     }
 
     @Test
     public void trueBuilderBuildsTrue() throws Exception {
-        assertThat(aJsonTrue().build(), equalTo(JsonNodeFactory.aJsonTrue()));
+        assertThat(aJsonTrue().build(), equalTo(JsonNodeFactories.aJsonTrue()));
     }
 
     @Test
     public void falseBuilderBuildsFalse() throws Exception {
-        assertThat(aJsonFalse().build(), equalTo(JsonNodeFactory.aJsonFalse()));
+        assertThat(aJsonFalse().build(), equalTo(JsonNodeFactories.aJsonFalse()));
     }
 
     @Test
     public void numberBuilderBuildsANumber() throws Exception {
-        assertThat(aJsonNumber("10.1").build(), equalTo(JsonNodeFactory.aJsonNumber("10.1")));
+        assertThat(aJsonNumber("10.1").build(), equalTo(JsonNodeFactories.aJsonNumber("10.1")));
     }
 
     @Test
     public void stringBuilderBuildsAString() throws Exception {
-        assertThat(aJsonString("Hello").build(), equalTo(JsonNodeFactory.aJsonString("Hello")));
+        assertThat(aJsonString("Hello").build(), equalTo(JsonNodeFactories.aJsonString("Hello")));
     }
 
     @Test
     public void arrayBuilderBuildsAnArrayWithNoElements() throws Exception {
-        assertThat(aJsonArray().build(), equalTo(JsonNodeFactory.aJsonArray(new LinkedList<JsonNode>())));
+        assertThat(aJsonArray().build(), equalTo(JsonNodeFactories.aJsonArray(new LinkedList<JsonNode>())));
     }
 
     @Test
@@ -58,9 +58,9 @@ public final class JsonNodeBuildersTest {
                         .withElement(aJsonString("Bob"))
                         .build()
                 , equalTo(
-                        JsonNodeFactory.aJsonArray(
+                        JsonNodeFactories.aJsonArray(
                                 new LinkedList<JsonNode>(
-                                        Arrays.asList(JsonNodeFactory.aJsonString("Bob"))
+                                        Arrays.asList(JsonNodeFactories.aJsonString("Bob"))
                                 )
                         )
                 ));
@@ -68,7 +68,7 @@ public final class JsonNodeBuildersTest {
 
     @Test
     public void objectBuilderBuildsAnOjectWithNoFields() throws Exception {
-        assertThat(aJsonObject().build(), equalTo(JsonNodeFactory.aJsonObject(new HashMap<JsonStringNode, JsonNode>())));
+        assertThat(aJsonObject().build(), equalTo(JsonNodeFactories.aJsonObject(new HashMap<JsonStringNode, JsonNode>())));
     }
 
     @Test
@@ -78,9 +78,9 @@ public final class JsonNodeBuildersTest {
                         .withField("Hunky", aJsonString("dory"))
                         .build()
                 , equalTo(
-                        JsonNodeFactory.aJsonObject(
+                        JsonNodeFactories.aJsonObject(
                                 new HashMap<JsonStringNode, JsonNode>() {{
-                                    put(JsonNodeFactory.aJsonString("Hunky"), JsonNodeFactory.aJsonString("dory"));
+                                    put(JsonNodeFactories.aJsonString("Hunky"), JsonNodeFactories.aJsonString("dory"));
                                 }}
                         )
                 ));

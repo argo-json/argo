@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Factory for <code>JsonNode</code>s.
+ * Factories for <code>JsonNode</code>s.
  */
-public final class JsonNodeFactory {
+public final class JsonNodeFactories {
 
     public static JsonNode aJsonNull() {
         return JsonConstants.NULL;

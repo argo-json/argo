@@ -10,6 +10,9 @@
 
 package argo.jdom;
 
+/**
+ * Builders for JsonNodes.
+ */
 public final class JsonNodeBuilders {
 
     private JsonNodeBuilders() {}
@@ -17,7 +20,7 @@ public final class JsonNodeBuilders {
     public static JsonNodeBuilder<JsonNode> aJsonNull() {
         return new JsonNodeBuilder<JsonNode>() {
             public JsonNode build() {
-                return JsonNodeFactory.aJsonNull();
+                return JsonNodeFactories.aJsonNull();
             }
         };
     }
@@ -25,7 +28,7 @@ public final class JsonNodeBuilders {
     public static JsonNodeBuilder<JsonNode> aJsonTrue() {
         return new JsonNodeBuilder<JsonNode>() {
             public JsonNode build() {
-                return JsonNodeFactory.aJsonTrue();
+                return JsonNodeFactories.aJsonTrue();
             }
         };
     }
@@ -33,7 +36,7 @@ public final class JsonNodeBuilders {
     public static JsonNodeBuilder<JsonNode> aJsonFalse() {
         return new JsonNodeBuilder<JsonNode>() {
             public JsonNode build() {
-                return JsonNodeFactory.aJsonFalse();
+                return JsonNodeFactories.aJsonFalse();
             }
         };
     }

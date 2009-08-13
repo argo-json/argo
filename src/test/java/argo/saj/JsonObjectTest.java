@@ -11,7 +11,7 @@
 package argo.saj;
 
 import argo.jdom.JsonNode;
-import static argo.jdom.JsonNodeFactory.*;
+import static argo.jdom.JsonNodeFactories.*;
 import argo.jdom.JsonRootNode;
 import argo.jdom.JsonStringNode;
 import static org.junit.Assert.*;

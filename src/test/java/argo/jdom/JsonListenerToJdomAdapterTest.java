@@ -10,7 +10,7 @@
 
 package argo.jdom;
 
-import static argo.jdom.JsonNodeFactory.*;
+import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
         final JsonNode expected = aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
-            put(aJsonString("Gigawatts"), JsonNodeFactory.aJsonNumber("1.21"));
+            put(aJsonString("Gigawatts"), JsonNodeFactories.aJsonNumber("1.21"));
         }});
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
@@ -61,7 +61,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.stringValue("World");
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList((JsonNode) aJsonString("Hello"), aJsonString("World")));
+        final JsonNode expected = JsonNodeFactories.aJsonArray(Arrays.asList((JsonNode) aJsonString("Hello"), aJsonString("World")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -74,7 +74,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.numberValue("42");
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(JsonNodeFactory.aJsonNumber("1.21"), JsonNodeFactory.aJsonNumber("42")));
+        final JsonNode expected = JsonNodeFactories.aJsonArray(Arrays.asList(JsonNodeFactories.aJsonNumber("1.21"), JsonNodeFactories.aJsonNumber("42")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -93,7 +93,7 @@ public final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.falseValue();
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = JsonNodeFactory.aJsonArray(Arrays.asList(
+        final JsonNode expected = JsonNodeFactories.aJsonArray(Arrays.asList(
                 aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
                     put(aJsonString("anObject"), aJsonString("objectValue"));
                 }})

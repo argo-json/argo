@@ -10,7 +10,7 @@
 
 package argo.jdom;
 
-import static argo.jdom.JsonNodeFactory.*;
+import static argo.jdom.JsonNodeFactories.*;
 import argo.saj.JsonListener;
 
 import java.util.*;
@@ -53,7 +53,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void numberValue(final String value) {
-        stack.peek().addValue(JsonNodeFactory.aJsonNumber(value));
+        stack.peek().addValue(JsonNodeFactories.aJsonNumber(value));
     }
 
     public void trueValue() {
@@ -69,7 +69,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void stringValue(final String value) {
-        stack.peek().addValue(JsonNodeFactory.aJsonString(value));
+        stack.peek().addValue(JsonNodeFactories.aJsonString(value));
     }
 
     public void startField(final String name) {
@@ -102,7 +102,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             for (Object element : elements) {
                 jsonNodeElements.add(JsonListenerToJdomAdapter.generateJsonValue(element));
             }
-            return JsonNodeFactory.aJsonArray(jsonNodeElements);
+            return JsonNodeFactories.aJsonArray(jsonNodeElements);
         }
 
         @Override

@@ -33,6 +33,6 @@ public final class JsonObjectBuilder implements JsonNodeBuilder<JsonRootNode> {
         for (Map.Entry<JsonNodeBuilder<JsonStringNode>, JsonNodeBuilder> fieldBuilder : fieldBuilders.entrySet()) {
             fields.put(fieldBuilder.getKey().build(), fieldBuilder.getValue().build());
         }
-        return JsonNodeFactory.aJsonObject(fields);
+        return JsonNodeFactories.aJsonObject(fields);
     }
 }

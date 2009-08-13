@@ -10,7 +10,7 @@
 
 package argo.jdom;
 
-import static argo.jdom.JsonNodeFactory.aJsonString;
+import static argo.jdom.JsonNodeFactories.aJsonString;
 import static argo.jdom.JsonNodeType.*;
 
 import java.util.List;

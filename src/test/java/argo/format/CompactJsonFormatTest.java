@@ -11,7 +11,7 @@
 package argo.format;
 
 import argo.jdom.JsonNode;
-import static argo.jdom.JsonNodeFactory.*;
+import static argo.jdom.JsonNodeFactories.*;
 import argo.jdom.JsonStringNode;
 import static org.hamcrest.CoreMatchers.equalTo;
 import org.hamcrest.Matchers;

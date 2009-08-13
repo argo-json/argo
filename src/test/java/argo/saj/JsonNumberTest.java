@@ -10,7 +10,7 @@
 
 package argo.saj;
 
-import argo.jdom.JsonNodeFactory;
+import argo.jdom.JsonNodeFactories;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public final class JsonNumberTest {
     @Test
     public void testConstructorRejectsNullValue() {
         try {
-            JsonNodeFactory.aJsonNumber(null);
+            JsonNodeFactories.aJsonNumber(null);
             fail("Constructing a JsonNumber with a null argument should throw an IllegalArgumentException.");
         } catch (final NullPointerException e) {
             // expect to end up here
@@ -28,17 +28,17 @@ public final class JsonNumberTest {
 
     @Test
     public void testEquals() {
-        assertEquals(JsonNodeFactory.aJsonNumber("0"), JsonNodeFactory.aJsonNumber("0"));
-        assertFalse(JsonNodeFactory.aJsonNumber("0").equals(JsonNodeFactory.aJsonNumber("1")));
+        assertEquals(JsonNodeFactories.aJsonNumber("0"), JsonNodeFactories.aJsonNumber("0"));
+        assertFalse(JsonNodeFactories.aJsonNumber("0").equals(JsonNodeFactories.aJsonNumber("1")));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(JsonNodeFactory.aJsonNumber("0").hashCode(), JsonNodeFactory.aJsonNumber("0").hashCode());
+        assertEquals(JsonNodeFactories.aJsonNumber("0").hashCode(), JsonNodeFactories.aJsonNumber("0").hashCode());
     }
 
     @Test
     public void testToString() {
-        JsonNodeFactory.aJsonNumber("0").toString();
+        JsonNodeFactories.aJsonNumber("0").toString();
     }
 }

@@ -10,7 +10,7 @@
 
 package argo.jdom;
 
-import static argo.jdom.JsonNodeFactory.*;
+import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeSelector.*;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;

@@ -19,6 +19,6 @@ public final class JsonNumberNodeBuilder implements JsonNodeBuilder<JsonNode> {
     }
 
     public JsonNode build() {
-        return JsonNodeFactory.aJsonNumber(value);
+        return JsonNodeFactories.aJsonNumber(value);
     }
 }
