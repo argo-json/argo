@@ -471,6 +471,41 @@
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="https://argo.svn.sourceforge.net/svnroot/argo/branches">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://argo.svn.sourceforge.net/svnroot/argo/tags">
+                    <value>
+                      <list>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1250112214992" />
+                          <option name="revision" value="99" />
+                          <option name="url" value="https://argo.svn.sourceforge.net/svnroot/argo/tags/0.7" />
+                        </SvnBranchItem>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1249855655116" />
+                          <option name="revision" value="88" />
+                          <option name="url" value="https://argo.svn.sourceforge.net/svnroot/argo/tags/0.6" />
+                        </SvnBranchItem>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1249766098097" />
+                          <option name="revision" value="81" />
+                          <option name="url" value="https://argo.svn.sourceforge.net/svnroot/argo/tags/0.5" />
+                        </SvnBranchItem>
+                        <SvnBranchItem>
+                          <option name="creationDateMillis" value="1226828996000" />
+                          <option name="revision" value="4" />
+                          <option name="url" value="https://argo.svn.sourceforge.net/svnroot/argo/tags/Start" />
+                        </SvnBranchItem>
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://argo.svn.sourceforge.net/svnroot/argo/branches" />
