@@ -15,6 +15,7 @@ import argo.saj.SajParser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 
 /**
  * Parses a JSON character stream into a <code>JsonRootNode</code> object.
@@ -33,5 +34,22 @@ public final class JdomParser {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         new SajParser().parse(reader, jsonListenerToJdomAdapter);
         return jsonListenerToJdomAdapter.getDocument();
+    }
+
+    /**
+     * Parse the specified JSON <code>String</code> into a <code>JsonRootNode</code> object.
+     *
+     * @param json the <code>String</code> to parse.
+     * @return a <code>JsonRootNode</code> representing the JSON read from the specified <code>String</code>.
+     * @throws InvalidSyntaxException if the characters streamed from the specified <code>String</code> does not represent valid JSON.
+     */
+    public JsonRootNode parse(final String json) throws InvalidSyntaxException {
+        final JsonRootNode result;
+        try {
+            result = parse(new StringReader(json));
+        } catch (final IOException e) {
+            throw new RuntimeException("Coding failure in Argo:  StringWriter gave an IOException", e);
+        }
+        return result;
     }
 }
