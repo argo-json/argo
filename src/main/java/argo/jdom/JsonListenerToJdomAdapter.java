@@ -11,6 +11,7 @@
 package argo.jdom;
 
 import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
+import static argo.jdom.JsonNodeBuilders.*;
 import argo.saj.JsonListener;
 
 import java.util.Stack;
@@ -29,7 +30,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     public void endDocument() { }
 
     public void startArray() {
-        final JsonArrayNodeBuilder arrayBuilder = JsonNodeBuilders.aJsonArray();
+        final JsonArrayNodeBuilder arrayBuilder = aJsonArray();
         addRootNode(arrayBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -46,7 +47,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startObject() {
-        final JsonObjectBuilder objectBuilder = JsonNodeBuilders.aJsonObject();
+        final JsonObjectBuilder objectBuilder = aJsonObject();
         addRootNode(objectBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -63,7 +64,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final String name) {
-        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(JsonNodeBuilders.aJsonString(name));
+        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(aJsonString(name));
         stack.peek().addField(fieldBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -80,23 +81,23 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void numberValue(final String value) {
-        addValue(JsonNodeBuilders.aJsonNumber(value));
+        addValue(aJsonNumber(value));
     }
 
     public void trueValue() {
-        addValue(JsonNodeBuilders.aJsonTrue());
+        addValue(aJsonTrue());
     }
 
     public void stringValue(final String value) {
-        addValue(JsonNodeBuilders.aJsonString(value));
+        addValue(aJsonString(value));
     }
 
     public void falseValue() {
-        addValue(JsonNodeBuilders.aJsonFalse());
+        addValue(aJsonFalse());
     }
 
     public void nullValue() {
-        addValue(JsonNodeBuilders.aJsonNull());
+        addValue(aJsonNull());
     }
 
     private void addRootNode(final JsonNodeBuilder<JsonRootNode> rootNodeBuilder) {
