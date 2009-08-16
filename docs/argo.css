@@ -39,6 +39,7 @@ div#header {
 div#navigation {
     float: left;
     width: 10em;
+    font-size: 1em
 }
 
 #navigation ul {
