@@ -10,12 +10,15 @@
 
 package argo.jdom;
 
+import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
+
 import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class JsonObjectBuilder implements JsonNodeBuilder<JsonRootNode> {
 
-    private final Map<JsonNodeBuilder<JsonStringNode>, JsonNodeBuilder> fieldBuilders = new HashMap<JsonNodeBuilder<JsonStringNode>, JsonNodeBuilder>();
+    private final List<JsonFieldBuilder> fieldBuilders = new LinkedList<JsonFieldBuilder>();
 
     JsonObjectBuilder() {}
 
@@ -24,14 +27,18 @@ public final class JsonObjectBuilder implements JsonNodeBuilder<JsonRootNode> {
     }
 
     public JsonObjectBuilder withField(final JsonNodeBuilder<JsonStringNode> name, final JsonNodeBuilder value) {
-        fieldBuilders.put(name, value);
+        return withFieldBuilder(aJsonFieldBuilder().withKey(name).withValue(value));
+    }
+
+    public JsonObjectBuilder withFieldBuilder(final JsonFieldBuilder jsonFieldBuilder) {
+        fieldBuilders.add(jsonFieldBuilder);
         return this;
     }
 
     public JsonRootNode build() {
         final HashMap<JsonStringNode, JsonNode> fields = new HashMap<JsonStringNode, JsonNode>();
-        for (Map.Entry<JsonNodeBuilder<JsonStringNode>, JsonNodeBuilder> fieldBuilder : fieldBuilders.entrySet()) {
-            fields.put(fieldBuilder.getKey().build(), fieldBuilder.getValue().build());
+        for (JsonFieldBuilder fieldBuilder : fieldBuilders) {
+            fields.put(fieldBuilder.buildKey(), fieldBuilder.buildValue());
         }
         return JsonNodeFactories.aJsonObject(fields);
     }

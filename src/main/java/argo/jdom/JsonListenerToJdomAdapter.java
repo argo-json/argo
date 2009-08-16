@@ -10,32 +10,35 @@
 
 package argo.jdom;
 
-import static argo.jdom.JsonNodeFactories.*;
+import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
 import argo.saj.JsonListener;
 
-import java.util.*;
+import java.util.Stack;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
 
-    private final Stack<MutableJsonNode> stack = new Stack<MutableJsonNode>();
-    private JsonNodeGenerator document;
+    private final Stack<NodeContainer> stack = new Stack<NodeContainer>();
+    private JsonNodeBuilder<JsonRootNode> root;
 
     public JsonRootNode getDocument() {
-        return (JsonRootNode) document.generateJsonValue();
+        return root.build();
     }
 
-    public void startDocument() {
-        stack.push(new MutableJsonDocument());
-    }
+    public void startDocument() { }
 
-    public void endDocument() {
-        document = (JsonNodeGenerator) stack.pop();
-    }
+    public void endDocument() { }
 
     public void startArray() {
-        final MutableJsonArray mutableJsonArray = new MutableJsonArray();
-        stack.peek().addValue(mutableJsonArray);
-        stack.push(mutableJsonArray);
+        final JsonArrayNodeBuilder arrayBuilder = JsonNodeBuilders.aJsonArray();
+        addRootNode(arrayBuilder);
+        stack.push(new NodeContainer() {
+            public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
+                arrayBuilder.withElement(jsonNodeBuilder);
+            }
+            public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+                throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array.");
+            }
+        });
     }
 
     public void endArray() {
@@ -43,198 +46,76 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startObject() {
-        final MutableJsonObject jsonObject = new MutableJsonObject();
-        stack.peek().addValue(jsonObject);
-        stack.push(jsonObject);
+        final JsonObjectBuilder objectBuilder = JsonNodeBuilders.aJsonObject();
+        addRootNode(objectBuilder);
+        stack.push(new NodeContainer() {
+            public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
+                throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object.");
+            }
+            public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+                objectBuilder.withFieldBuilder(jsonFieldBuilder);
+            }
+        });
     }
 
     public void endObject() {
         stack.pop();
     }
 
-    public void numberValue(final String value) {
-        stack.peek().addValue(JsonNodeFactories.aJsonNumber(value));
-    }
-
-    public void trueValue() {
-        stack.peek().addValue(aJsonTrue());
-    }
-
-    public void falseValue() {
-        stack.peek().addValue(aJsonFalse());
-    }
-
-    public void nullValue() {
-        stack.peek().addValue(aJsonNull());
-    }
-
-    public void stringValue(final String value) {
-        stack.peek().addValue(JsonNodeFactories.aJsonString(value));
-    }
-
     public void startField(final String name) {
-        final MutableJsonField field = new MutableJsonField(name);
-        stack.peek().addField(field);
-        stack.push(field);
+        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(JsonNodeBuilders.aJsonString(name));
+        stack.peek().addField(fieldBuilder);
+        stack.push(new NodeContainer() {
+            public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
+                fieldBuilder.withValue(jsonNodeBuilder);
+            }
+            public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+                throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field.");
+            }
+        });
     }
 
     public void endField() {
         stack.pop();
     }
 
-    private static final class MutableJsonArray implements MutableJsonNode, JsonNodeGenerator {
-        private final List<Object> elements = new LinkedList<Object>();
-
-        public void addValue(final Object element) {
-            elements.add(element);
-        }
-
-        public void addField(final MutableJsonField field) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field [" + field + "] to a MutableJsonArray.");
-        }
-
-        List<Object> getElements() {
-            return elements;
-        }
-
-        public JsonNode generateJsonValue() {
-            final List<JsonNode> jsonNodeElements = new ArrayList<JsonNode>(elements.size());
-            for (Object element : elements) {
-                jsonNodeElements.add(JsonListenerToJdomAdapter.generateJsonValue(element));
-            }
-            return JsonNodeFactories.aJsonArray(jsonNodeElements);
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder()
-                    .append("MutableJsonArray elements:[")
-                    .append(elements)
-                    .append("]")
-                    .toString();
-        }
+    public void numberValue(final String value) {
+        addValue(JsonNodeBuilders.aJsonNumber(value));
     }
 
-    private static final class MutableJsonObject implements MutableJsonNode, JsonNodeGenerator {
-        private final List<MutableJsonField> fields = new LinkedList<MutableJsonField>();
-
-        public void addField(final MutableJsonField field) {
-            fields.add(field);
-        }
-
-        public void addValue(final Object value) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to add a value [" + value + "] to a MutableJsonObject.");
-        }
-
-        public List<MutableJsonField> getFields() {
-            return fields;
-        }
-
-        public JsonNode generateJsonValue() {
-            final Map<JsonStringNode, JsonNode> jsonStringJsonValueHashMap = new HashMap<JsonStringNode, JsonNode>();
-            for (MutableJsonField field : fields) {
-                jsonStringJsonValueHashMap.put(aJsonString(field.getName()), JsonListenerToJdomAdapter.generateJsonValue(field.getValue()));
-            }
-            return aJsonObject(jsonStringJsonValueHashMap);
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder()
-                    .append("MutableJsonObject fields:[")
-                    .append(fields)
-                    .append("]")
-                    .toString();
-        }
+    public void trueValue() {
+        addValue(JsonNodeBuilders.aJsonTrue());
     }
 
-    private static final class MutableJsonField implements MutableJsonNode, JsonNodeGenerator {
-        final String name;
-        Object value;
-
-        MutableJsonField(final String name) {
-            this.name = name;
-        }
-
-        String getName() {
-            return name;
-        }
-
-        Object getValue() {
-            return value;
-        }
-
-        public void addValue(final Object value) {
-            this.value = value;
-        }
-
-        public void addField(final MutableJsonField field) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field [" + field + "] to a MutableJsonField.");
-        }
-
-        public JsonNode generateJsonValue() {
-            return JsonListenerToJdomAdapter.generateJsonValue(value);
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder()
-                    .append("MutableJsonField name:[")
-                    .append(name)
-                    .append("], value:[")
-                    .append(value)
-                    .append("]")
-                    .toString();
-        }
+    public void stringValue(final String value) {
+        addValue(JsonNodeBuilders.aJsonString(value));
     }
 
-    private static final class MutableJsonDocument implements MutableJsonNode, JsonNodeGenerator {
-        Object value;
-
-        public void addValue(final Object value) {
-            this.value = value;
-        }
-
-        public void addField(final MutableJsonField field) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field [" + field + "] to a MutableJsonDocument.");
-        }
-
-        Object getValue() {
-            return value;
-        }
-
-        public JsonNode generateJsonValue() {
-            return JsonListenerToJdomAdapter.generateJsonValue(value);
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder()
-                    .append("MutableJsonDocument value:[")
-                    .append(value)
-                    .append("]")
-                    .toString();
-        }
+    public void falseValue() {
+        addValue(JsonNodeBuilders.aJsonFalse());
     }
 
-
-    private static interface MutableJsonNode {
-        void addValue(Object value);
-
-        void addField(MutableJsonField field);
+    public void nullValue() {
+        addValue(JsonNodeBuilders.aJsonNull());
     }
 
-    private static interface JsonNodeGenerator {
-        JsonNode generateJsonValue();
-    }
-
-    private static JsonNode generateJsonValue(final Object value) {
-        final JsonNode result;
-        if (value instanceof JsonNode) {
-            result = (JsonNode) value;
+    private void addRootNode(final JsonNodeBuilder<JsonRootNode> rootNodeBuilder) {
+        if (root == null) {
+            root = rootNodeBuilder;
         } else {
-            result = ((JsonNodeGenerator) value).generateJsonValue();
+            addValue(rootNodeBuilder);
         }
-        return result;
+    }
+
+    private void addValue(final JsonNodeBuilder nodeBuilder) {
+        stack.peek().addNode(nodeBuilder);
+    }
+
+    private static interface NodeContainer {
+
+        void addNode(JsonNodeBuilder jsonNodeBuilder);
+
+        void addField(JsonFieldBuilder jsonFieldBuilder);
+
     }
 }
