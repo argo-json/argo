@@ -11,7 +11,6 @@
 package argo.saj;
 
 import java.io.IOException;
-import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -46,7 +45,7 @@ public final class SajParser {
      * @throws InvalidSyntaxException thrown to indicate the characters read from <code>in</code> did not constitute valid JSON.
      */
     public void parse(final Reader in, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
-        final PushbackReader pushbackReader = new PushbackReader(in);
+        final PositionTrackingPushbackReader pushbackReader = new PositionTrackingPushbackReader(in);
         final char nextChar = (char) pushbackReader.read();
         switch (nextChar) {
             case '{':
@@ -60,19 +59,19 @@ public final class SajParser {
                 arrayString(pushbackReader, jsonListener);
                 break;
             default:
-                throw new InvalidSyntaxException("Expected either [ or { but got [" + nextChar + "].");
+                throw new InvalidSyntaxException("Expected either [ or { but got [" + nextChar + "].", pushbackReader);
         }
         final int trailingCharacter = readNextNonWhitespaceChar(pushbackReader);
         if (trailingCharacter != -1) {
-            throw new InvalidSyntaxException("Got unexpected trailing character [" + trailingCharacter + "].");
+            throw new InvalidSyntaxException("Got unexpected trailing character [" + (char)trailingCharacter + "].", pushbackReader);
         }
         jsonListener.endDocument();
     }
 
-    private void arrayString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
+    private void arrayString(final PositionTrackingPushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '[') {
-            throw new InvalidSyntaxException("Expected object to start with [ but got [" + firstChar + "].");
+            throw new InvalidSyntaxException("Expected object to start with [ but got [" + firstChar + "].", pushbackReader);
         }
         jsonListener.startArray();
         final char secondChar = (char) readNextNonWhitespaceChar(pushbackReader);
@@ -91,16 +90,16 @@ public final class SajParser {
                     gotEndOfArray = true;
                     break;
                 default:
-                    throw new InvalidSyntaxException("Expected either , or ] but got [" + nextChar + "].");
+                    throw new InvalidSyntaxException("Expected either , or ] but got [" + nextChar + "].", pushbackReader);
             }
         }
         jsonListener.endArray();
     }
 
-    private void objectString(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
+    private void objectString(final PositionTrackingPushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final char firstChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (firstChar != '{') {
-            throw new InvalidSyntaxException("Expected object to start with { but got [" + firstChar + "].");
+            throw new InvalidSyntaxException("Expected object to start with { but got [" + firstChar + "].", pushbackReader);
         }
         jsonListener.startObject();
         final char secondChar = (char) readNextNonWhitespaceChar(pushbackReader);
@@ -119,28 +118,28 @@ public final class SajParser {
                     gotEndOfObject = true;
                     break;
                 default:
-                    throw new InvalidSyntaxException("Expected either , or } but got [" + nextChar + "].");
+                    throw new InvalidSyntaxException("Expected either , or } but got [" + nextChar + "].", pushbackReader);
             }
         }
         jsonListener.endObject();
     }
 
-    private void aFieldToken(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
+    private void aFieldToken(final PositionTrackingPushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
-            throw new InvalidSyntaxException("Expected object identifier to begin with [\"] but got [" + nextChar + "].");
+            throw new InvalidSyntaxException("Expected object identifier to begin with [\"] but got [" + nextChar + "].", pushbackReader);
         }
         pushbackReader.unread(nextChar);
         jsonListener.startField(stringToken(pushbackReader));
         final char separatorChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (separatorChar != ':') {
-            throw new InvalidSyntaxException("Expected object identifier to be followed by : but got [" + separatorChar + "].");
+            throw new InvalidSyntaxException("Expected object identifier to be followed by : but got [" + separatorChar + "].", pushbackReader);
         }
         aJsonValue(pushbackReader, jsonListener);
         jsonListener.endField();
     }
 
-    private void aJsonValue(final PushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
+    private void aJsonValue(final PositionTrackingPushbackReader pushbackReader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
@@ -151,7 +150,8 @@ public final class SajParser {
                 final char[] remainingTrueTokenCharacters = new char[3];
                 final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
                 if (trueTokenCharactersRead != 3 || remainingTrueTokenCharacters[0] != 'r' || remainingTrueTokenCharacters[1] != 'u' || remainingTrueTokenCharacters[2] != 'e') {
-                    throw new InvalidSyntaxException("Expected 't' to be followed by [[r, u, e]], but got [" + Arrays.toString(remainingTrueTokenCharacters) + "].");
+                    pushbackReader.uncount(remainingTrueTokenCharacters);
+                    throw new InvalidSyntaxException("Expected 't' to be followed by [[r, u, e]], but got [" + Arrays.toString(remainingTrueTokenCharacters) + "].", pushbackReader);
                 } else {
                     jsonListener.trueValue();
                 }
@@ -160,7 +160,8 @@ public final class SajParser {
                 final char[] remainingFalseTokenCharacters = new char[4];
                 final int falseTokenCharactersRead = pushbackReader.read(remainingFalseTokenCharacters);
                 if (falseTokenCharactersRead != 4 || remainingFalseTokenCharacters[0] != 'a' || remainingFalseTokenCharacters[1] != 'l' || remainingFalseTokenCharacters[2] != 's' || remainingFalseTokenCharacters[3] != 'e') {
-                    throw new InvalidSyntaxException("Expected 'f' to be followed by [[a, l, s, e]], but got [" + Arrays.toString(remainingFalseTokenCharacters) + "].");
+                    pushbackReader.uncount(remainingFalseTokenCharacters);
+                    throw new InvalidSyntaxException("Expected 'f' to be followed by [[a, l, s, e]], but got [" + Arrays.toString(remainingFalseTokenCharacters) + "].", pushbackReader);
                 } else {
                     jsonListener.falseValue();
                 }
@@ -169,7 +170,8 @@ public final class SajParser {
                 final char[] remainingNullTokenCharacters = new char[3];
                 final int nullTokenCharactersRead = pushbackReader.read(remainingNullTokenCharacters);
                 if (nullTokenCharactersRead != 3 || remainingNullTokenCharacters[0] != 'u' || remainingNullTokenCharacters[1] != 'l' || remainingNullTokenCharacters[2] != 'l') {
-                    throw new InvalidSyntaxException("Expected 'n' to be followed by [[u, l, l]], but got [" + Arrays.toString(remainingNullTokenCharacters) + "].");
+                    pushbackReader.uncount(remainingNullTokenCharacters);
+                    throw new InvalidSyntaxException("Expected 'n' to be followed by [[u, l, l]], but got [" + Arrays.toString(remainingNullTokenCharacters) + "].", pushbackReader);
                 } else {
                     jsonListener.nullValue();
                 }
@@ -197,11 +199,11 @@ public final class SajParser {
                 arrayString(pushbackReader, jsonListener);
                 break;
             default:
-                throw new InvalidSyntaxException("Invalid character at start of value [" + nextChar + "].");
+                throw new InvalidSyntaxException("Invalid character at start of value [" + nextChar + "].", pushbackReader);
         }
     }
 
-    private String numberToken(final PushbackReader in) throws IOException, InvalidSyntaxException {
+    private String numberToken(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if ('-' == firstChar) {
@@ -213,7 +215,7 @@ public final class SajParser {
         return result.toString();
     }
 
-    private String nonNegativeNumberToken(final PushbackReader in) throws IOException, InvalidSyntaxException {
+    private String nonNegativeNumberToken(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if ('0' == firstChar) {
@@ -228,7 +230,7 @@ public final class SajParser {
         return result.toString();
     }
 
-    private char nonZeroDigitToken(final PushbackReader in) throws IOException, InvalidSyntaxException {
+    private char nonZeroDigitToken(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
         final char result;
         final char nextChar = (char) in.read();
         switch (nextChar) {
@@ -244,12 +246,12 @@ public final class SajParser {
                 result = nextChar;
                 break;
             default:
-                throw new InvalidSyntaxException("Expected a digit 1 - 9 but got [" + nextChar + "].");
+                throw new InvalidSyntaxException("Expected a digit 1 - 9 but got [" + nextChar + "].", in);
         }
         return result;
     }
 
-    private char digitToken(final PushbackReader in) throws IOException, InvalidSyntaxException {
+    private char digitToken(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
         final char result;
         final char nextChar = (char) in.read();
         switch (nextChar) {
@@ -266,12 +268,12 @@ public final class SajParser {
                 result = nextChar;
                 break;
             default:
-                throw new InvalidSyntaxException("Expected a digit 1 - 9 but got [" + nextChar + "].");
+                throw new InvalidSyntaxException("Expected a digit 1 - 9 but got [" + nextChar + "].", in);
         }
         return result;
     }
 
-    private String digitString(final PushbackReader in) throws IOException {
+    private String digitString(final PositionTrackingPushbackReader in) throws IOException {
         final StringBuilder result = new StringBuilder();
         boolean gotANonDigit = false;
         while (!gotANonDigit) {
@@ -297,7 +299,7 @@ public final class SajParser {
         return result.toString();
     }
 
-    private String possibleFractionalComponent(final PushbackReader pushbackReader) throws IOException, InvalidSyntaxException {
+    private String possibleFractionalComponent(final PositionTrackingPushbackReader pushbackReader) throws IOException, InvalidSyntaxException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '.') {
@@ -310,7 +312,7 @@ public final class SajParser {
         return result.toString();
     }
 
-    private String possibleExponent(final PushbackReader pushbackReader) throws IOException, InvalidSyntaxException {
+    private String possibleExponent(final PositionTrackingPushbackReader pushbackReader) throws IOException, InvalidSyntaxException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '.' || firstChar == 'E') {
@@ -324,7 +326,7 @@ public final class SajParser {
         return result.toString();
     }
 
-    private String possibleSign(final PushbackReader pushbackReader) throws IOException {
+    private String possibleSign(final PositionTrackingPushbackReader pushbackReader) throws IOException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '+' || firstChar == '-') {
@@ -336,11 +338,11 @@ public final class SajParser {
     }
 
 
-    private String stringToken(final Reader in) throws IOException, InvalidSyntaxException {
+    private String stringToken(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
         final StringWriter result = new StringWriter();
         final char firstChar = (char) in.read();
         if (DOUBLE_QUOTE != firstChar) {
-            throw new InvalidSyntaxException("Expected [" + DOUBLE_QUOTE + "] but got [" + firstChar + "].");
+            throw new InvalidSyntaxException("Expected [" + DOUBLE_QUOTE + "] but got [" + firstChar + "].", in);
         }
         boolean stringClosed = false;
         while (!stringClosed) {
@@ -360,7 +362,7 @@ public final class SajParser {
         return result.toString();
     }
 
-    private char escapedStringChar(final Reader in) throws IOException, InvalidSyntaxException {
+    private char escapedStringChar(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
         final char result;
         final char firstChar = (char) in.read();
         switch (firstChar) {
@@ -392,27 +394,28 @@ public final class SajParser {
                 result = (char) hexidecimalNumber(in);
                 break;
             default:
-                throw new InvalidSyntaxException("Unrecognised escape character [" + firstChar + "].");
+                throw new InvalidSyntaxException("Unrecognised escape character [" + firstChar + "].", in);
         }
         return result;
     }
 
-    private int hexidecimalNumber(final Reader in) throws IOException, InvalidSyntaxException {
+    private int hexidecimalNumber(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
         final char[] resultCharArray = new char[4];
         final int readSize = in.read(resultCharArray);
         if (readSize != 4) {
-            throw new InvalidSyntaxException("Expected a 4 digit hexidecimal number but got only [" + readSize + "], namely [" + String.valueOf(resultCharArray, 0, readSize) + "].");
+            throw new InvalidSyntaxException("Expected a 4 digit hexidecimal number but got only [" + readSize + "], namely [" + String.valueOf(resultCharArray, 0, readSize) + "].", in);
         }
         int result;
         try {
             result = Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
-            throw new InvalidSyntaxException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexidecimal number.", e);
+            in.uncount(resultCharArray);
+            throw new InvalidSyntaxException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexidecimal number.", e, in);
         }
         return result;
     }
 
-    private int readNextNonWhitespaceChar(final Reader in) throws IOException {
+    private int readNextNonWhitespaceChar(final PositionTrackingPushbackReader in) throws IOException {
         int nextChar;
         boolean gotNonWhitespace = false;
         do {

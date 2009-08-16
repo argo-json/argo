@@ -10,15 +10,18 @@
 
 package argo.saj;
 
+import static argo.saj.InvalidSyntaxExceptionMatcher.anInvalidSyntaxExceptionAtPosition;
+import static junit.framework.Assert.fail;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-public final class JsonParserTest {
+public final class SajParserTest {
     private static final JsonListener BLACK_HOLE_LISTENER = new JsonListener() {
         public void startDocument() {
         }
@@ -76,16 +79,26 @@ public final class JsonParserTest {
         assertJsonValueFragmentResultsInStringValue("\"hello world \\uF001\"", "hello world \uF001");
     }
 
-    @Test(expected = InvalidSyntaxException.class)
+    @Test
     public void rejectsStringWithInvalidEscapedUnicodeChars() throws Exception {
         final String inputString = "[\"hello world \\uF0\"]";
-        new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e, anInvalidSyntaxExceptionAtPosition(16, 1));
+        }
     }
 
-    @Test(expected = InvalidSyntaxException.class)
+    @Test
     public void rejectsInvalidString() throws Exception {
         final String inputString = "[hello world\"]";
-        new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e, anInvalidSyntaxExceptionAtPosition(2, 1));
+        }
     }
 
     @Test
@@ -560,10 +573,26 @@ public final class JsonParserTest {
         context.assertIsSatisfied();
     }
 
-    @Test(expected = InvalidSyntaxException.class)
+    @Test
     public void rejectsTrailingNonWhitespaceCharacters() throws Exception {
         final String inputString = "[]whoops";
-        new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e, anInvalidSyntaxExceptionAtPosition(3, 1));
+        }
+    }
+
+    @Test
+    public void rejectsTrailingNonWhitespaceCharactersWithNewLines() throws Exception {
+        final String inputString = "[\n]\nwhoops";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e, anInvalidSyntaxExceptionAtPosition(1, 3));
+        }
     }
 
     @Test
