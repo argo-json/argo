@@ -23,7 +23,6 @@
     <property name="location.classes" value="${location.build}/classes"/>
     <property name="location.optimisedclasses" value="${location.build}/optimised-classes"/>
     <property name="location.testclasses" value="${location.build}/test-classes"/>
-    <property name="location.testresources" value="${location.src.test}/resources"/>
     <property name="location.testresults" value="${location.build}/test-results"/>
     <property name="location.performancetestclasses" value="${location.build}/performance-test-classes"/>
     <property name="location.performancetestresults" value="${location.build}/performance-test-results"/>
@@ -90,6 +89,10 @@
             <fileset dir="src/main/java"/>
         </copy>
 
+        <copy todir="${location.testclasses}">
+            <fileset dir="src/test/java"/>
+        </copy>
+
         <copy todir="${location.performancetestclasses}">
             <fileset dir="src/performancetest/java"/>
         </copy>
@@ -105,7 +108,6 @@
                 <pathelement location="${location.testclasses}"/>
                 <pathelement location="${location.classes}"/>
                 <path refid="test-compile-libs"/>
-                <pathelement location="${location.testresources}"/>
             </classpath>
             <batchtest fork="yes" todir="${location.testresults}">
                 <fileset dir="${location.testclasses}">
@@ -179,7 +181,7 @@
         <echo message="Version for build is: ${version}"/>
     </target>
 
-    <target name="distribute" depends="compile, determine-version">
+    <target name="distribute" depends="compile, test, performance-test, determine-version">
         <echo message="Creating release structure"/>
         <delete dir="${location.dist}"/>
         <mkdir dir="${location.dist}"/>
