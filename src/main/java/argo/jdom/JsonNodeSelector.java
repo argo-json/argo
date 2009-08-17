@@ -160,7 +160,7 @@ public final class JsonNodeSelector<T, U> {
         });
     }
 
-    public static JsonNodeSelector<JsonNode, JsonNode> anArrayWithElement(final int index) {
+    public static JsonNodeSelector<JsonNode, JsonNode> anArrayNodeWithElement(final int index) {
         return anArrayNode().with(anElement(index));
     }
 

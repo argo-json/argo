@@ -49,8 +49,8 @@ public final class JsonNodeBuilders {
         return new JsonStringNodeBuilder(value);
     }
 
-    public static JsonObjectBuilder aJsonObject() {
-        return new JsonObjectBuilder();
+    public static JsonObjectNodeBuilder aJsonObject() {
+        return new JsonObjectNodeBuilder();
     }
 
     public static JsonArrayNodeBuilder aJsonArray() {

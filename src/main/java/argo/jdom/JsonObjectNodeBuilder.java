@@ -16,21 +16,21 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class JsonObjectBuilder implements JsonNodeBuilder<JsonRootNode> {
+public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode> {
 
     private final List<JsonFieldBuilder> fieldBuilders = new LinkedList<JsonFieldBuilder>();
 
-    JsonObjectBuilder() {}
+    JsonObjectNodeBuilder() {}
 
-    public JsonObjectBuilder withField(final String name, final JsonNodeBuilder value) {
+    public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder value) {
         return withField(JsonNodeBuilders.aJsonString(name), value);
     }
 
-    public JsonObjectBuilder withField(final JsonNodeBuilder<JsonStringNode> name, final JsonNodeBuilder value) {
+    public JsonObjectNodeBuilder withField(final JsonNodeBuilder<JsonStringNode> name, final JsonNodeBuilder value) {
         return withFieldBuilder(aJsonFieldBuilder().withKey(name).withValue(value));
     }
 
-    public JsonObjectBuilder withFieldBuilder(final JsonFieldBuilder jsonFieldBuilder) {
+    public JsonObjectNodeBuilder withFieldBuilder(final JsonFieldBuilder jsonFieldBuilder) {
         fieldBuilders.add(jsonFieldBuilder);
         return this;
     }

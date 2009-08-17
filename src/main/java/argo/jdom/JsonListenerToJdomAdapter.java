@@ -47,14 +47,14 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startObject() {
-        final JsonObjectBuilder objectBuilder = aJsonObject();
-        addRootNode(objectBuilder);
+        final JsonObjectNodeBuilder objectNodeBuilder = aJsonObject();
+        addRootNode(objectNodeBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object.");
             }
             public void addField(final JsonFieldBuilder jsonFieldBuilder) {
-                objectBuilder.withFieldBuilder(jsonFieldBuilder);
+                objectNodeBuilder.withFieldBuilder(jsonFieldBuilder);
             }
         });
     }

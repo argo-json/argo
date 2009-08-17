@@ -120,7 +120,7 @@ public final class JsonNodeSelectorTest {
 
     @Test
     public void matchesAnArrayWithElement() throws Exception {
-        final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = anArrayWithElement(0);
+        final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = anArrayNodeWithElement(0);
         final JsonNode node = aJsonArray(Arrays.asList((JsonNode) aJsonString("hello")));
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode)aJsonString("hello")));
