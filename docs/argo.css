@@ -39,11 +39,14 @@ div#header {
 div#navigation {
     float: left;
     width: 10em;
-    font-size: 1em
+    font-size: 1em;
+    padding-top: 1em;
 }
 
 #navigation ul {
     list-style: none;
+    margin: 0;
+    padding: 1em;
 }
 
 #navigation li {
@@ -56,8 +59,15 @@ div#content {
     width: 40em;
 }
 
-code {
+div.code {
     white-space: pre;
+    border-color: gray;
+    border-style: dashed;
+    border-width: 0.2em;
+    font-family: monospace;
+    padding: 1em;
+    margin-left: 2em;
+    margin-right: 2em;
 }
 
 div#footer {

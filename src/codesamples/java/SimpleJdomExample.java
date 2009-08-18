@@ -8,8 +8,24 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+import argo.jdom.JdomParser;
+import argo.jdom.JsonNode;
+import static argo.jdom.JsonNodeSelector.*;
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+
+import java.io.File;
+
 public final class SimpleJdomExample {
-    public static void main(String[] args) {
-        
+    @Test
+    public void ParseSimpleExample() throws Exception {
+        final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+        JsonNode json = new JdomParser().parse(jsonText);
+        String secondSingle =
+                anObjectNodeWithField("singles")
+                        .with(anArrayNodeWithElement(1)
+                                .with(aStringNode()))
+                        .getValue(json);
+        System.out.println("secondSingle = " + secondSingle);
     }
 }
