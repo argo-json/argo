@@ -41,6 +41,11 @@ public final class JsonNodeBuildersTest {
         assertThat(aJsonNumber("10.1").build(), equalTo(JsonNodeFactories.aJsonNumber("10.1")));
     }
 
+    @Test (expected = IllegalArgumentException.class)
+    public void numberBuilderFailsEarlyOnAnInvalidNumber() throws Exception {
+        assertThat(aJsonNumber("-010.1e12").build(), equalTo(JsonNodeFactories.aJsonNumber("10.1")));
+    }
+
     @Test
     public void stringBuilderBuildsAString() throws Exception {
         assertThat(aJsonString("Hello").build(), equalTo(JsonNodeFactories.aJsonString("Hello")));

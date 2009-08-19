@@ -12,13 +12,13 @@ package argo.jdom;
 
 public final class JsonNumberNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
-    private final String value;
+    private final JsonNode value;
 
     JsonNumberNodeBuilder(final String value) {
-        this.value = value;
+        this.value = JsonNodeFactories.aJsonNumber(value);
     }
 
     public JsonNode build() {
-        return JsonNodeFactories.aJsonNumber(value);
+        return value;
     }
 }
