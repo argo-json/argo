@@ -152,6 +152,14 @@ public final class JsonNodeSelectorTest {
     }
 
     @Test
+    public void toStringProducesSomethingIntelligable() throws Exception {
+        final JsonNodeSelector<JsonNode, String> jsonNodeSelector = anObjectNodeWithField("Hello")
+                .with(anArrayNodeWithElement(2))
+                .with(aNumberNode());
+        assertThat(jsonNodeSelector.toString(), equalTo("an object, with a field called [Hello], with an array, with an element at index [2], with a value that is a number"));
+    }
+
+    @Test
     public void javadocExampleWorks() throws Exception {
         final String json = "{\"Fee\":{\"fi\":\"fo\"}}";
         final JsonNode jsonNode = new JdomParser().parse(new StringReader(json));

@@ -52,6 +52,11 @@ public final class JsonNodeSelector<T, U> {
         }
     }
 
+    @Override
+    public String toString() {
+        return valueGetter.toString();
+    }
+
     public static JsonNodeSelector<JsonNode, String> aStringNode() {
         return new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
             public boolean matchesValue(final JsonNode jsonNode) {
@@ -60,6 +65,11 @@ public final class JsonNodeSelector<T, U> {
 
             public String getValue(final JsonNode jsonNode) {
                 return jsonNode.getText();
+            }
+
+            @Override
+            public String toString() {
+                return ("a value that is a string");
             }
         });
     }
@@ -73,6 +83,11 @@ public final class JsonNodeSelector<T, U> {
             public String getValue(final JsonNode jsonNode) {
                 return jsonNode.getText();
             }
+
+            @Override
+            public String toString() {
+                return ("a value that is a number");
+            }
         });
     }
 
@@ -84,6 +99,11 @@ public final class JsonNodeSelector<T, U> {
 
             public Boolean getValue(final JsonNode jsonNode) {
                 return TRUE == jsonNode.getType();
+            }
+
+            @Override
+            public String toString() {
+                return ("a true or false");
             }
         });
     }
@@ -97,6 +117,11 @@ public final class JsonNodeSelector<T, U> {
             public JsonNode getValue(final JsonNode jsonNode) {
                 return jsonNode;
             }
+
+            @Override
+            public String toString() {
+                return ("a null");
+            }
         });
     }
 
@@ -109,6 +134,11 @@ public final class JsonNodeSelector<T, U> {
             public List<JsonNode> getValue(final JsonNode jsonNode) {
                 return jsonNode.getElements();
             }
+
+            @Override
+            public String toString() {
+                return "an array";
+            }
         });
     }
 
@@ -120,6 +150,11 @@ public final class JsonNodeSelector<T, U> {
 
             public Map<JsonStringNode, JsonNode> getValue(final JsonNode jsonNode) {
                 return jsonNode.getFields();
+            }
+
+            @Override
+            public String toString() {
+                return "an object";
             }
         });
     }
@@ -136,6 +171,11 @@ public final class JsonNodeSelector<T, U> {
 
             public JsonNode getValue(Map<JsonStringNode, JsonNode> jsonNode) {
                 return jsonNode.get(fieldName);
+            }
+
+            @Override
+            public String toString() {
+                return "a field called [" + fieldName.getText() + "]";
             }
         });
     }
@@ -156,6 +196,11 @@ public final class JsonNodeSelector<T, U> {
 
             public JsonNode getValue(final List<JsonNode> jsonNode) {
                 return jsonNode.get(index);
+            }
+
+            @Override
+            public String toString() {
+                return "an element at index [" + index + "]";
             }
         });
     }
@@ -189,6 +234,11 @@ public final class JsonNodeSelector<T, U> {
 
         public V getValue(final T jsonNode) {
             return childJsonNodeSelector.getValue(parentJsonNodeSelector.getValue(jsonNode));
+        }
+
+        @Override
+        public String toString() {
+            return parentJsonNodeSelector.toString() + ", with " + childJsonNodeSelector.toString();
         }
     }
 }
