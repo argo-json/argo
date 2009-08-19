@@ -95,6 +95,20 @@ public final class PrettyJsonFormatTest {
     }
 
     @Test
+    public void formatsAJsonStringWithEscapedCharacters() throws Exception {
+        assertThat(new PrettyJsonFormat().format(aJsonArray(Arrays.asList(
+                (JsonNode)aJsonString("\" \\ / \b \f \n \r \t"))
+        )), equalTo(
+                aJsonStringResultBuilder()
+                        .println("[")
+                        .println("\t\"\\\" \\\\ \\/ \\b \\f \\n \\r \\t\"")
+                        .print("]")
+                        .build()
+        )
+        );
+    }
+
+    @Test
     public void testRoundtrip() throws Exception {
         final File longJsonExample = new File(this.getClass().getResource("Sample.json").getFile());
         final String json = readFileToString(longJsonExample);

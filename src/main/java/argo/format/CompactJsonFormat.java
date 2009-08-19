@@ -67,8 +67,7 @@ public final class CompactJsonFormat implements JsonFormat {
                 break;
             case STRING:
                 writer.append('"')
-                        .append(jsonNode.getText())
-                        .append('"');
+                        .append(new JsonEscapedString(jsonNode.getText()).toString()).append('"');
                 break;
             case NUMBER:
                 writer.append(jsonNode.getText());

@@ -56,4 +56,11 @@ public final class CompactJsonFormatTest {
                 , aJsonFalse()
         ))), equalTo("[null,true,false]"));
     }
+
+    @Test
+    public void formatsAJsonStringWithEscapedCharacters() throws Exception {
+        assertThat(new CompactJsonFormat().format(aJsonArray(Arrays.asList(
+                (JsonNode)aJsonString("\" \\ / \b \f \n \r \t"))
+        )), equalTo("[\"\\\" \\\\ \\/ \\b \\f \\n \\r \\t\"]"));
+    }
 }

@@ -77,7 +77,7 @@ public final class PrettyJsonFormat implements JsonFormat {
                 break;
             case STRING:
                 writer.append('"')
-                        .append(jsonNode.getText())
+                        .append(new JsonEscapedString(jsonNode.getText()).toString())
                         .append('"');
                 break;
             case NUMBER:
