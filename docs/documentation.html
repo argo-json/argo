@@ -20,41 +20,8 @@
         </ul>
     </div>
     <div id="content">
-        <h2>Introduction</h2>
-        <p>Argo is a JSON parser and generator for Java. It offers three parse interfaces - a push parser, a pull parser, and a DOM syle
-            parser. It is open source, and free for you to use.</p>
-
-        <p>The latest version of Argo available for download is <a
-                href="https://sourceforge.net/projects/argo/files/latest">0.10</a>.
-            The <a href="javadoc/0.10/">javadoc</a> is also available online.</p>
-        <h2>Example</h2>
-        <p>A brief example demonstrates the DOM style parser.  The example is based on the following JSON, which is
-        assumed to be available in a <code>String</code> called <code>jsonText</code>.</p>
-        <div class="code">{
-    "name":"Black Lace",
-    "sales": 110921,
-    "singles":[
-        "Superman", "Agadoo"
-    ]
-}</div>
-        <p>We can use Argo to get the second single like this:</p>
-        <div class="code">JsonNode json = new JdomParser().parse(jsonText);
-String secondSingle =
-        anObjectNodeWithField("singles")
-            .with(anArrayNodeWithElement(1)
-                .with(aStringNode()))
-        .getValue(json);</div>
-        <p>On the first line, we parse the JSON text into an object hierarchy.  We could have navigated this ourselves,
-            but in this case, it's easier to let a <code>JsonNodeSelector</code> take the strain.</p>
-        <p>We build up a selector:</p>
-        <ol>
-            <li>that matches a JSON object (the root of the example) with a field called <code>singles</code>,</li>
-            <li>we specify that <code>singles</code> contains an array, and we select the second element,</li>
-            <li>we specify that the element should be a string,</li>
-            <li>and finally, we get the value of our string</li>
-        </ol>
-        <p>If we check the <code>secondSingle</code> variable, we will find, as expected, it contains the <code>String</code> "<code>Agadoo</code>".
-        </p>
+        <h2>Documentation</h2>
+        <p>In-depth documentation will be added shortly.</p>
     </div>
     <div id="footer">
         <ul>
