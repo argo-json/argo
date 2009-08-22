@@ -17,7 +17,7 @@ public final class JsonNodeBuilders {
 
     private JsonNodeBuilders() {}
 
-    public static JsonNodeBuilder<JsonNode> aJsonNull() {
+    public static JsonNodeBuilder<JsonNode> aNullBuilder() {
         return new JsonNodeBuilder<JsonNode>() {
             public JsonNode build() {
                 return JsonNodeFactories.aJsonNull();
@@ -25,7 +25,7 @@ public final class JsonNodeBuilders {
         };
     }
 
-    public static JsonNodeBuilder<JsonNode> aJsonTrue() {
+    public static JsonNodeBuilder<JsonNode> aTrueBuilder() {
         return new JsonNodeBuilder<JsonNode>() {
             public JsonNode build() {
                 return JsonNodeFactories.aJsonTrue();
@@ -33,7 +33,7 @@ public final class JsonNodeBuilders {
         };
     }
 
-    public static JsonNodeBuilder<JsonNode> aJsonFalse() {
+    public static JsonNodeBuilder<JsonNode> aFalseBuilder() {
         return new JsonNodeBuilder<JsonNode>() {
             public JsonNode build() {
                 return JsonNodeFactories.aJsonFalse();
@@ -41,19 +41,19 @@ public final class JsonNodeBuilders {
         };
     }
 
-    public static JsonNumberNodeBuilder aJsonNumber(final String value) {
+    public static JsonNumberNodeBuilder aNumberBuilder(final String value) {
         return new JsonNumberNodeBuilder(value);
     }
 
-    public static JsonStringNodeBuilder aJsonString(final String value) {
+    public static JsonStringNodeBuilder aStringBuilder(final String value) {
         return new JsonStringNodeBuilder(value);
     }
 
-    public static JsonObjectNodeBuilder aJsonObject() {
+    public static JsonObjectNodeBuilder anObjectBuilder() {
         return new JsonObjectNodeBuilder();
     }
 
-    public static JsonArrayNodeBuilder aJsonArray() {
+    public static JsonArrayNodeBuilder anArrayBuilder() {
         return new JsonArrayNodeBuilder();
     }
 }

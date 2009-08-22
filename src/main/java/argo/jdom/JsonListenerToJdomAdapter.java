@@ -30,7 +30,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     public void endDocument() { }
 
     public void startArray() {
-        final JsonArrayNodeBuilder arrayBuilder = aJsonArray();
+        final JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
         addRootNode(arrayBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -47,7 +47,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startObject() {
-        final JsonObjectNodeBuilder objectNodeBuilder = aJsonObject();
+        final JsonObjectNodeBuilder objectNodeBuilder = anObjectBuilder();
         addRootNode(objectNodeBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -64,7 +64,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final String name) {
-        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(aJsonString(name));
+        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(aStringBuilder(name));
         stack.peek().addField(fieldBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -81,23 +81,23 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void numberValue(final String value) {
-        addValue(aJsonNumber(value));
+        addValue(aNumberBuilder(value));
     }
 
     public void trueValue() {
-        addValue(aJsonTrue());
+        addValue(aTrueBuilder());
     }
 
     public void stringValue(final String value) {
-        addValue(aJsonString(value));
+        addValue(aStringBuilder(value));
     }
 
     public void falseValue() {
-        addValue(aJsonFalse());
+        addValue(aFalseBuilder());
     }
 
     public void nullValue() {
-        addValue(aJsonNull());
+        addValue(aNullBuilder());
     }
 
     private void addRootNode(final JsonNodeBuilder<JsonRootNode> rootNodeBuilder) {

@@ -23,44 +23,44 @@ public final class JsonNodeBuildersTest {
 
     @Test
     public void nullBuilderBuildsNull() throws Exception {
-        assertThat(aJsonNull().build(), equalTo(JsonNodeFactories.aJsonNull()));
+        assertThat(aNullBuilder().build(), equalTo(JsonNodeFactories.aJsonNull()));
     }
 
     @Test
     public void trueBuilderBuildsTrue() throws Exception {
-        assertThat(aJsonTrue().build(), equalTo(JsonNodeFactories.aJsonTrue()));
+        assertThat(aTrueBuilder().build(), equalTo(JsonNodeFactories.aJsonTrue()));
     }
 
     @Test
     public void falseBuilderBuildsFalse() throws Exception {
-        assertThat(aJsonFalse().build(), equalTo(JsonNodeFactories.aJsonFalse()));
+        assertThat(aFalseBuilder().build(), equalTo(JsonNodeFactories.aJsonFalse()));
     }
 
     @Test
     public void numberBuilderBuildsANumber() throws Exception {
-        assertThat(aJsonNumber("10.1").build(), equalTo(JsonNodeFactories.aJsonNumber("10.1")));
+        assertThat(aNumberBuilder("10.1").build(), equalTo(JsonNodeFactories.aJsonNumber("10.1")));
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void numberBuilderFailsEarlyOnAnInvalidNumber() throws Exception {
-        assertThat(aJsonNumber("-010.1e12").build(), equalTo(JsonNodeFactories.aJsonNumber("10.1")));
+        assertThat(aNumberBuilder("-010.1e12").build(), equalTo(JsonNodeFactories.aJsonNumber("10.1")));
     }
 
     @Test
     public void stringBuilderBuildsAString() throws Exception {
-        assertThat(aJsonString("Hello").build(), equalTo(JsonNodeFactories.aJsonString("Hello")));
+        assertThat(aStringBuilder("Hello").build(), equalTo(JsonNodeFactories.aJsonString("Hello")));
     }
 
     @Test
     public void arrayBuilderBuildsAnArrayWithNoElements() throws Exception {
-        assertThat(aJsonArray().build(), equalTo(JsonNodeFactories.aJsonArray(new LinkedList<JsonNode>())));
+        assertThat(anArrayBuilder().build(), equalTo(JsonNodeFactories.aJsonArray(new LinkedList<JsonNode>())));
     }
 
     @Test
     public void arrayBuilderBuildsAnArrayWithElements() throws Exception {
         assertThat(
-                aJsonArray()
-                        .withElement(aJsonString("Bob"))
+                anArrayBuilder()
+                        .withElement(aStringBuilder("Bob"))
                         .build()
                 , equalTo(
                         JsonNodeFactories.aJsonArray(
@@ -73,14 +73,14 @@ public final class JsonNodeBuildersTest {
 
     @Test
     public void objectBuilderBuildsAnOjectWithNoFields() throws Exception {
-        assertThat(aJsonObject().build(), equalTo(JsonNodeFactories.aJsonObject(new HashMap<JsonStringNode, JsonNode>())));
+        assertThat(anObjectBuilder().build(), equalTo(JsonNodeFactories.aJsonObject(new HashMap<JsonStringNode, JsonNode>())));
     }
 
     @Test
     public void objectBuilderBuildsAnObjectWithFields() throws Exception {
         assertThat(
-                aJsonObject()
-                        .withField("Hunky", aJsonString("dory"))
+                anObjectBuilder()
+                        .withField("Hunky", aStringBuilder("dory"))
                         .build()
                 , equalTo(
                         JsonNodeFactories.aJsonObject(

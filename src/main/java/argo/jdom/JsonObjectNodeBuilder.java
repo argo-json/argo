@@ -23,7 +23,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
     JsonObjectNodeBuilder() {}
 
     public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder value) {
-        return withField(JsonNodeBuilders.aJsonString(name), value);
+        return withField(JsonNodeBuilders.aStringBuilder(name), value);
     }
 
     public JsonObjectNodeBuilder withField(final JsonNodeBuilder<JsonStringNode> name, final JsonNodeBuilder value) {
