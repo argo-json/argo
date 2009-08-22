@@ -39,10 +39,7 @@
 }</div>
         <p>We can use Argo to get the second single like this:</p>
         <div class="code">JsonNode json = new JdomParser().parse(jsonText);
-String secondSingle =
-        anObjectNodeWithField("singles")
-            .with(anArrayNodeWithElement(1)
-                .with(aStringNode()))
+String secondSingle = JsonNodeSelectors.aStringNode("singles", 1)
         .getValue(json);</div>
         <p>On the first line, we parse the JSON text into an object hierarchy.  We could have navigated this ourselves,
             but in this case, it's easier to let a <code>JsonNodeSelector</code> take the strain.</p>

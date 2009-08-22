@@ -20,12 +20,9 @@ public final class SimpleJdomExample {
     @Test
     public void ParseSimpleExample() throws Exception {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
-        JsonNode json = new JdomParser().parse(jsonText);
-        String secondSingle =
-                JsonNodeSelectors.anObjectNodeWithField("singles")
-                        .with(JsonNodeSelectors.anArrayNodeWithElement(1)
-                                .with(JsonNodeSelectors.aStringNode()))
-                        .getValue(json);
+JsonNode json = new JdomParser().parse(jsonText);
+String secondSingle = JsonNodeSelectors.aStringNode("singles", 1)
+        .getValue(json);
         System.out.println("secondSingle = " + secondSingle);
     }
 }

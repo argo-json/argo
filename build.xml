@@ -18,6 +18,7 @@
     <property name="location.src" value="src/main"/>
     <property name="location.src.test" value="src/test"/>
     <property name="location.src.performancetest" value="src/performancetest"/>
+    <property name="location.src.codesample" value="src/codesamples"/>
 
     <property name="location.build" value="build"/>
     <property name="location.classes" value="${location.build}/classes"/>
@@ -26,6 +27,8 @@
     <property name="location.testresults" value="${location.build}/test-results"/>
     <property name="location.performancetestclasses" value="${location.build}/performance-test-classes"/>
     <property name="location.performancetestresults" value="${location.build}/performance-test-results"/>
+    <property name="location.codesampletestclasses" value="${location.build}/codesample-classes"/>
+    <property name="location.codesampletestresults" value="${location.build}/codesample-results"/>
 
     <property name="location.dist" value="${location.build}/dist"/>
 
@@ -63,6 +66,8 @@
         <mkdir dir="${location.testclasses}"/>
         <delete dir="${location.performancetestclasses}"/>
         <mkdir dir="${location.performancetestclasses}"/>
+        <delete dir="${location.codesampletestclasses}"/>
+        <mkdir dir="${location.codesampletestclasses}"/>
 
         <javac destdir="${location.classes}" debug="on" source="1.6" target="1.6">
             <src path="${location.src}"/>
@@ -85,6 +90,12 @@
             <classpath location="${location.classes}"/>
         </javac>
 
+        <javac destdir="${location.codesampletestclasses}" debug="on" source="1.6" target="1.6">
+            <src path="${location.src.codesample}"/>
+            <classpath refid="test-compile-libs"/>
+            <classpath location="${location.classes}"/>
+        </javac>
+
         <copy todir="${location.classes}">
             <fileset dir="src/main/java"/>
         </copy>
@@ -95,6 +106,10 @@
 
         <copy todir="${location.performancetestclasses}">
             <fileset dir="src/performancetest/java"/>
+        </copy>
+
+        <copy todir="${location.codesampletestclasses}">
+            <fileset dir="src/codesamples/java"/>
         </copy>
 
         <echo message="Finished compile"/>
@@ -157,6 +172,34 @@
         <fail if="performancetestfailure" message="Performance tests failed."/>
     </target>
 
+    <target name="codesample-test" depends="compile" description="builds and runs code samples">
+        <delete dir="${location.codesampletestresults}"/>
+        <mkdir dir="${location.codesampletestresults}"/>
+        <junit printsummary="yes" errorproperty="codesamplefailure">
+            <classpath>
+                <pathelement location="${location.codesampletestclasses}"/>
+                <pathelement location="${location.classes}"/>
+                <path refid="test-compile-libs"/>
+                <pathelement location="${location.src.codesample}"/>
+            </classpath>
+            <batchtest fork="yes" todir="${location.codesampletestresults}">
+                <fileset dir="${location.codesampletestclasses}">
+                    <include name="**/*.class"/>
+                </fileset>
+                <formatter type="xml"/>
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${location.codesampletestresults}">
+            <fileset dir="${location.codesampletestresults}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${location.codesampletestresults}"/>
+        </junitreport>
+
+        <fail if="codesamplefailure" message="Code samples failed."/>
+    </target>
+
     <target name="javadoc">
         <mkdir dir="${location.dist}/javadoc"/>
         <javadoc destdir="${location.dist}/javadoc">
@@ -181,7 +224,7 @@
         <echo message="Version for build is: ${version}"/>
     </target>
 
-    <target name="distribute" depends="compile, test, performance-test, determine-version">
+    <target name="distribute" depends="compile, test, performance-test, codesample-test, determine-version">
         <echo message="Creating release structure"/>
         <delete dir="${location.dist}"/>
         <mkdir dir="${location.dist}"/>
