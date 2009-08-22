@@ -10,6 +10,8 @@
 
 package argo.jdom;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +44,23 @@ public final class JsonNodeFactories {
         return new JsonArray(elements);
     }
 
+    public static JsonRootNode aJsonArray(final JsonNode... nodes) {
+        return aJsonArray(Arrays.asList(nodes));
+    }
+
     public static JsonRootNode aJsonObject(final Map<JsonStringNode, JsonNode> fields) {
         return new JsonObject(fields);
     }
 
+    public static JsonRootNode aJsonObject(final JsonField... jsonField) {
+        return aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+            for (final JsonField field : jsonField) {
+                put(field.getName(), field.getValue());
+            }
+        }});
+    }
+
+    public static JsonField aJsonField(final String name, final JsonNode value) {
+        return new JsonField(aJsonString(name), value);
+    }
 }
