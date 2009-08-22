@@ -18,7 +18,7 @@ import java.io.Writer;
 /**
  * A <code>JsonFormat</code> provides operations to turn <code>JsonRootNode</code>s into valid JSON text.
  */
-public interface JsonFormat {
+public interface JsonFormatter {
 
     /**
      * Returns the specified <code>JsonRootNode</code> formatted as a String.

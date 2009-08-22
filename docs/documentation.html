@@ -21,14 +21,68 @@
     </div>
     <div id="content">
         <h2>Documentation</h2>
+
         <h3>Introduction</h3>
-        <p>The structure of JSON is well described at <a href="http://www.json.org/">http://www.json.org/</a>.
-            JSON documents are made up of five types of entity:</p>
+        <p>There is a good explanation of the structure of JSON at <a
+                href="http://www.json.org/">http://www.json.org/</a>.
+            Argo models JSON using five types of entity - two that can have children:</p>
         <ul>
             <li>Objects - pairs of a string and any entity type.</li>
             <li>Arrays - sequences of any entity type.</li>
-            <li>Strings - a sequence of characters</li>
         </ul>
+        <p>and three types of leaf entity:</p>
+        <ul>
+            <li>Strings - essentially the same a Java Strings.</li>
+            <li>Numbers - an unlimited precision number.</li>
+            <li>Constants - true, false, and null.</li>
+        </ul>
+
+        <h3>Producing JSON</h3>
+        <p>There are two steps to producing JSON using Argo: First, an instance of <code>JsonRootNode</code>
+            representing the JSON is built, and then an instance of <code>JsonFormatter</code> is used to turn
+            that into a <code>String</code> representation.</p>
+        <p>A <code>JsonRootNode</code> represents either a JSON object or a JSON array.  They can have fields and
+            elements consisting of instances <code>JsonNode</code>, which is the superclass of
+            <code>JsonRootNode</code>.  A number of factory methods are provided for constructing <code>JsonNode</code>s
+            and <code>JsonRootNode</code>s in the <code>JsonNodeFactories</code> class:</p> 
+        <div class="code">import static argo.jdom.JsonNodeFactories.*;
+            
+...
+            
+JsonRootNode json = aJsonObject(
+        aJsonField("name", aJsonString("Black Lace"))
+        , aJsonField("sales", aJsonNumber("110921"))
+        , aJsonField("singles", aJsonArray(
+                aJsonString("Superman")
+                , aJsonString("Agadoo")
+        ))
+);</div>
+        <p>All implementations of <code>JsonNode</code> and <code>JsonRootNode</code> are immutable.  The same
+            <code>JsonRootNode</code> could have been built up in a mutable manner using the methods in
+            <code>JsonNodeBuilders</code> class:</p>
+        <div class="code">import static argo.jdom.JsonNodeBuilders.*;
+
+...
+
+JsonObjectNodeBuilder builder = anObjectBuilder()
+        .withField("name", aStringBuilder("Black Lace"))
+        .withField("sales", aNumberBuilder("110921"))
+        .withField("singles", anArrayBuilder()
+                .withElement(aStringBuilder("Superman"))
+                .withElement(aStringBuilder("Agadoo"))
+        );
+JsonRootNode json = builder.build();</div>
+        <p>Finally, an instance of <code>JsonFormatter</code> is needed to produce JSON text from the
+            <code>JsonRootNode</code>.  The two implementations provided are <code>PrettyJsonFormatter</code>, which
+            produces easy to read JSON, and <code>CompactJsonFormatter</code>, which produces very brief JSON.
+            Instances of both classes can safely be shared between threads.</p>
+        <div class="code">private static final JsonFormatter JSON_FORMATTER
+        = new PrettyJsonFormatter();
+
+...
+
+String jsonText = JSON_FORMATTER.format(json);</div>
+        <h3>Parsing JSON into an Object</h3>
     </div>
     <div id="footer">
         <ul>

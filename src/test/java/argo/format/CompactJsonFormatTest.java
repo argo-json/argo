@@ -24,7 +24,7 @@ import java.util.HashMap;
 public final class CompactJsonFormatTest {
     @Test
     public void formatsAJsonObject() throws Exception {
-        assertThat(new CompactJsonFormat().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+        assertThat(new CompactJsonFormatter().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
             put(aJsonString("Hello"), aJsonString("World"));
             put(aJsonString("Foo"), aJsonString("Bar"));
         }})), Matchers.anyOf(
@@ -35,14 +35,14 @@ public final class CompactJsonFormatTest {
 
     @Test
     public void formatsAJsonNumber() throws Exception {
-        assertThat(new CompactJsonFormat().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+        assertThat(new CompactJsonFormatter().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
             put(aJsonString("S"), aJsonNumber("7"));
         }})), equalTo("{\"S\":7}"));
     }
 
     @Test
     public void formatsAJsonArray() throws Exception {
-        assertThat(new CompactJsonFormat().format(aJsonArray(Arrays.asList(
+        assertThat(new CompactJsonFormatter().format(aJsonArray(Arrays.asList(
                 aJsonNumber("12")
                 , aJsonString("tie")
         ))), equalTo("[12,\"tie\"]"));
@@ -50,7 +50,7 @@ public final class CompactJsonFormatTest {
 
     @Test
     public void formatsTheJsonConstants() throws Exception {
-        assertThat(new CompactJsonFormat().format(aJsonArray(Arrays.asList(
+        assertThat(new CompactJsonFormatter().format(aJsonArray(Arrays.asList(
                 aJsonNull()
                 , aJsonTrue()
                 , aJsonFalse()
@@ -59,7 +59,7 @@ public final class CompactJsonFormatTest {
 
     @Test
     public void formatsAJsonStringWithEscapedCharacters() throws Exception {
-        assertThat(new CompactJsonFormat().format(aJsonArray(Arrays.asList(
+        assertThat(new CompactJsonFormatter().format(aJsonArray(Arrays.asList(
                 (JsonNode)aJsonString("\" \\ / \b \f \n \r \t"))
         )), equalTo("[\"\\\" \\\\ \\/ \\b \\f \\n \\r \\t\"]"));
     }

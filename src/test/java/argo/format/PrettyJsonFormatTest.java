@@ -30,7 +30,7 @@ import java.util.HashMap;
 public final class PrettyJsonFormatTest {
     @Test
     public void formatsAJsonObject() throws Exception {
-        assertThat(new PrettyJsonFormat().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+        assertThat(new PrettyJsonFormatter().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
             put(aJsonString("Hello"), aJsonString("World"));
             put(aJsonString("Foo"), aJsonString("Bar"));
         }})), Matchers.anyOf(
@@ -55,7 +55,7 @@ public final class PrettyJsonFormatTest {
 
     @Test
     public void formatsAnEmptyJsonObject() throws Exception {
-        assertThat(new PrettyJsonFormat().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+        assertThat(new PrettyJsonFormatter().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
             put(aJsonString("Hello"), aJsonObject(new HashMap<JsonStringNode, JsonNode>()));
         }})), equalTo(
                 aJsonStringResultBuilder()
@@ -69,7 +69,7 @@ public final class PrettyJsonFormatTest {
 
     @Test
     public void formatsAJsonArray() throws Exception {
-        assertThat(new PrettyJsonFormat().format(aJsonArray(Arrays.asList(
+        assertThat(new PrettyJsonFormatter().format(aJsonArray(Arrays.asList(
                 aJsonString("BobBob")
                 , aJsonNumber("23")
         ))), equalTo(
@@ -85,7 +85,7 @@ public final class PrettyJsonFormatTest {
 
     @Test
     public void formatsAnEmptyJsonArray() throws Exception {
-        assertThat(new PrettyJsonFormat().format(aJsonArray(Collections.<JsonNode>emptyList()
+        assertThat(new PrettyJsonFormatter().format(aJsonArray(Collections.<JsonNode>emptyList()
         )), equalTo(
                 aJsonStringResultBuilder()
                         .print("[]")
@@ -96,7 +96,7 @@ public final class PrettyJsonFormatTest {
 
     @Test
     public void formatsAJsonStringWithEscapedCharacters() throws Exception {
-        assertThat(new PrettyJsonFormat().format(aJsonArray(Arrays.asList(
+        assertThat(new PrettyJsonFormatter().format(aJsonArray(Arrays.asList(
                 (JsonNode)aJsonString("\" \\ / \b \f \n \r \t"))
         )), equalTo(
                 aJsonStringResultBuilder()
@@ -114,8 +114,8 @@ public final class PrettyJsonFormatTest {
         final String json = readFileToString(longJsonExample);
         final JdomParser jdomParser = new JdomParser();
         final JsonRootNode node = jdomParser.parse(json);
-        final JsonFormat jsonFormat = new PrettyJsonFormat();
-        final String expected = jsonFormat.format(node);
+        final JsonFormatter jsonFormatter = new PrettyJsonFormatter();
+        final String expected = jsonFormatter.format(node);
         assertThat(jdomParser.parse(expected), Matchers.equalTo(node));
     }
 

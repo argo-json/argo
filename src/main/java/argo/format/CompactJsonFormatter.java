@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * JsonFormat that formats json as compactly as possible.
  */
-public final class CompactJsonFormat implements JsonFormat {
+public final class CompactJsonFormatter implements JsonFormatter {
 
     public String format(final JsonRootNode jsonNode) {
         final StringWriter stringWriter = new StringWriter();

@@ -20,7 +20,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-public final class PrettyJsonFormat implements JsonFormat {
+public final class PrettyJsonFormatter implements JsonFormatter {
 
     public String format(final JsonRootNode jsonNode) {
         final StringWriter stringWriter = new StringWriter();
