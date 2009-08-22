@@ -10,6 +10,8 @@
 
 package argo.jdom;
 
+import static argo.jdom.JsonNodeType.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,7 @@ public final class JsonNodeSelectors {
     public static JsonNodeSelector<JsonNode, String> aStringNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
             public boolean matchesValue(final JsonNode jsonNode) {
-                return argo.jdom.JsonNodeType.STRING == jsonNode.getType();
+                return STRING == jsonNode.getType();
             }
 
             public String getValue(final JsonNode jsonNode) {
@@ -35,10 +37,27 @@ public final class JsonNodeSelectors {
         }));
     }
 
+    public static JsonNodeSelector<JsonNode, String> aNullableStringNode(final Object... pathElements) {
+        return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
+            public boolean matchesValue(final JsonNode jsonNode) {
+                return STRING == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public String getValue(final JsonNode jsonNode) {
+                return NULL == jsonNode.getType() ? null : jsonNode.getText();
+            }
+
+            @Override
+            public String toString() {
+                return ("a value that is a string");
+            }
+        }));
+    }
+
     public static JsonNodeSelector<JsonNode, String> aNumberNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
             public boolean matchesValue(final JsonNode jsonNode) {
-                return argo.jdom.JsonNodeType.NUMBER == jsonNode.getType();
+                return NUMBER == jsonNode.getType();
             }
 
             public String getValue(final JsonNode jsonNode) {
@@ -52,14 +71,56 @@ public final class JsonNodeSelectors {
         }));
     }
 
+    public static JsonNodeSelector<JsonNode, String> aNullableNumberNode(final Object... pathElements) {
+        return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
+            public boolean matchesValue(final JsonNode jsonNode) {
+                return NUMBER == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public String getValue(final JsonNode jsonNode) {
+                return NULL == jsonNode.getType() ? null : jsonNode.getText();
+            }
+
+            @Override
+            public String toString() {
+                return ("a value that is a number");
+            }
+        }));
+    }
+
     public static JsonNodeSelector<JsonNode, Boolean> aBooleanNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, Boolean>(new Functor<JsonNode, Boolean>() {
             public boolean matchesValue(final JsonNode jsonNode) {
-                return argo.jdom.JsonNodeType.TRUE == jsonNode.getType() || argo.jdom.JsonNodeType.FALSE == jsonNode.getType();
+                return TRUE == jsonNode.getType() || FALSE == jsonNode.getType();
             }
 
             public Boolean getValue(final JsonNode jsonNode) {
-                return argo.jdom.JsonNodeType.TRUE == jsonNode.getType();
+                return TRUE == jsonNode.getType();
+            }
+
+            @Override
+            public String toString() {
+                return ("a true or false");
+            }
+        }));
+    }
+
+    public static JsonNodeSelector<JsonNode, Boolean> aNullableBooleanNode(final Object... pathElements) {
+        return chainOn(pathElements, new JsonNodeSelector<JsonNode, Boolean>(new Functor<JsonNode, Boolean>() {
+            public boolean matchesValue(final JsonNode jsonNode) {
+                return TRUE == jsonNode.getType() || FALSE == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public Boolean getValue(final JsonNode jsonNode) {
+                final Boolean result;
+                if (TRUE == jsonNode.getType()) {
+                    result = Boolean.TRUE;
+                } else if (FALSE == jsonNode.getType()) {
+                    result = Boolean.FALSE;
+                } else {
+                    result = null;
+                }
+                return result;
             }
 
             @Override
