@@ -10,12 +10,6 @@
 
 package argo.jdom;
 
-import static argo.jdom.JsonNodeFactories.aJsonString;
-import static argo.jdom.JsonNodeType.*;
-
-import java.util.List;
-import java.util.Map;
-
 /**
  * <p>Factories for working with a tree of <code>JsonNode</code>s. The various factory methods on this class return
  * instances of <code>JsonNodeSelector</code> that can be chained together to check for the existence of,
@@ -36,7 +30,7 @@ public final class JsonNodeSelector<T, U> {
 
     private final Functor<T, U> valueGetter;
 
-    private JsonNodeSelector(final Functor<T, U> valueGetter) {
+    JsonNodeSelector(final Functor<T, U> valueGetter) {
         this.valueGetter = valueGetter;
     }
 
@@ -52,193 +46,13 @@ public final class JsonNodeSelector<T, U> {
         }
     }
 
+    public <V> JsonNodeSelector<T, V> with(final JsonNodeSelector<U, V> childJsonNodeSelector) {
+        return new JsonNodeSelector<T,V>(new ChainedFunctor<T, U, V>(this, childJsonNodeSelector));
+    }
+
     @Override
     public String toString() {
         return valueGetter.toString();
     }
 
-    public static JsonNodeSelector<JsonNode, String> aStringNode() {
-        return new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
-                return STRING == jsonNode.getType();
-            }
-
-            public String getValue(final JsonNode jsonNode) {
-                return jsonNode.getText();
-            }
-
-            @Override
-            public String toString() {
-                return ("a value that is a string");
-            }
-        });
-    }
-
-    public static JsonNodeSelector<JsonNode, String> aNumberNode() {
-        return new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
-                return NUMBER == jsonNode.getType();
-            }
-
-            public String getValue(final JsonNode jsonNode) {
-                return jsonNode.getText();
-            }
-
-            @Override
-            public String toString() {
-                return ("a value that is a number");
-            }
-        });
-    }
-
-    public static JsonNodeSelector<JsonNode, Boolean> aBooleanNode() {
-        return new JsonNodeSelector<JsonNode, Boolean>(new Functor<JsonNode, Boolean>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
-                return TRUE == jsonNode.getType() || FALSE == jsonNode.getType();
-            }
-
-            public Boolean getValue(final JsonNode jsonNode) {
-                return TRUE == jsonNode.getType();
-            }
-
-            @Override
-            public String toString() {
-                return ("a true or false");
-            }
-        });
-    }
-
-    public static JsonNodeSelector<JsonNode, JsonNode> aNullNode() {
-        return new JsonNodeSelector<JsonNode, JsonNode>(new Functor<JsonNode, JsonNode>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
-                return NULL == jsonNode.getType();
-            }
-
-            public JsonNode getValue(final JsonNode jsonNode) {
-                return jsonNode;
-            }
-
-            @Override
-            public String toString() {
-                return ("a null");
-            }
-        });
-    }
-
-    public static JsonNodeSelector<JsonNode, List<JsonNode>> anArrayNode() {
-        return new JsonNodeSelector<JsonNode, List<JsonNode>>(new Functor<JsonNode, List<JsonNode>>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
-                return ARRAY == jsonNode.getType();
-            }
-
-            public List<JsonNode> getValue(final JsonNode jsonNode) {
-                return jsonNode.getElements();
-            }
-
-            @Override
-            public String toString() {
-                return "an array";
-            }
-        });
-    }
-
-    public static JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> anObjectNode() {
-        return new JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>>(new Functor<JsonNode, Map<JsonStringNode, JsonNode>>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
-                return OBJECT == jsonNode.getType();
-            }
-
-            public Map<JsonStringNode, JsonNode> getValue(final JsonNode jsonNode) {
-                return jsonNode.getFields();
-            }
-
-            @Override
-            public String toString() {
-                return "an object";
-            }
-        });
-    }
-
-    public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final String fieldName) {
-        return aField(aJsonString(fieldName));
-    }
-
-    public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final JsonStringNode fieldName) {
-        return new JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode>(new Functor<Map<JsonStringNode, JsonNode>, JsonNode>() {
-            public boolean matchesValue(Map<JsonStringNode, JsonNode> jsonNode) {
-                return jsonNode.containsKey(fieldName);
-            }
-
-            public JsonNode getValue(Map<JsonStringNode, JsonNode> jsonNode) {
-                return jsonNode.get(fieldName);
-            }
-
-            @Override
-            public String toString() {
-                return "a field called [" + fieldName.getText() + "]";
-            }
-        });
-    }
-
-    public static JsonNodeSelector<JsonNode, JsonNode> anObjectNodeWithField(final JsonStringNode fieldName) {
-        return anObjectNode().with(aField(fieldName));
-    }
-
-    public static JsonNodeSelector<JsonNode, JsonNode> anObjectNodeWithField(final String fieldName) {
-        return anObjectNode().with(aField(fieldName));
-    }
-
-    public static JsonNodeSelector<List<JsonNode>, JsonNode> anElement(final int index) {
-        return new JsonNodeSelector<List<JsonNode>, JsonNode>(new Functor<List<JsonNode>, JsonNode>() {
-            public boolean matchesValue(final List<JsonNode> jsonNode) {
-                return jsonNode.size() > index;
-            }
-
-            public JsonNode getValue(final List<JsonNode> jsonNode) {
-                return jsonNode.get(index);
-            }
-
-            @Override
-            public String toString() {
-                return "an element at index [" + index + "]";
-            }
-        });
-    }
-
-    public static JsonNodeSelector<JsonNode, JsonNode> anArrayNodeWithElement(final int index) {
-        return anArrayNode().with(anElement(index));
-    }
-
-    public <V> JsonNodeSelector<T, V> with(final JsonNodeSelector<U, V> childJsonNodeSelector) {
-        return new JsonNodeSelector<T,V>(new chainedFunctor<T, V, U>(this, childJsonNodeSelector));
-    }
-
-    private interface Functor<W, X> {
-
-        boolean matchesValue(W jsonNode);
-        X getValue(W jsonNode);
-    }
-
-    private static final class chainedFunctor<T, V, U> implements Functor<T, V> {
-        private final JsonNodeSelector<T, U> parentJsonNodeSelector;
-        private final JsonNodeSelector<U, V> childJsonNodeSelector;
-
-        public chainedFunctor(final JsonNodeSelector<T, U> parentJsonNodeSelector, final JsonNodeSelector<U, V> childJsonNodeSelector) {
-            this.parentJsonNodeSelector = parentJsonNodeSelector;
-            this.childJsonNodeSelector = childJsonNodeSelector;
-        }
-
-        public boolean matchesValue(final T jsonNode) {
-            return parentJsonNodeSelector.matches(jsonNode) && childJsonNodeSelector.matches(parentJsonNodeSelector.getValue(jsonNode));
-        }
-
-        public V getValue(final T jsonNode) {
-            return childJsonNodeSelector.getValue(parentJsonNodeSelector.getValue(jsonNode));
-        }
-
-        @Override
-        public String toString() {
-            return parentJsonNodeSelector.toString() + ", with " + childJsonNodeSelector.toString();
-        }
-    }
 }

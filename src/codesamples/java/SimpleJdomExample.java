@@ -10,7 +10,7 @@
 
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
-import static argo.jdom.JsonNodeSelector.*;
+import argo.jdom.JsonNodeSelectors;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
@@ -22,9 +22,9 @@ public final class SimpleJdomExample {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
         JsonNode json = new JdomParser().parse(jsonText);
         String secondSingle =
-                anObjectNodeWithField("singles")
-                        .with(anArrayNodeWithElement(1)
-                                .with(aStringNode()))
+                JsonNodeSelectors.anObjectNodeWithField("singles")
+                        .with(JsonNodeSelectors.anArrayNodeWithElement(1)
+                                .with(JsonNodeSelectors.aStringNode()))
                         .getValue(json);
         System.out.println("secondSingle = " + secondSingle);
     }

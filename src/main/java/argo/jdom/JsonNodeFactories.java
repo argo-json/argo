@@ -20,6 +20,8 @@ import java.util.Map;
  */
 public final class JsonNodeFactories {
 
+    private JsonNodeFactories() {}
+
     public static JsonNode aJsonNull() {
         return JsonConstants.NULL;
     }
