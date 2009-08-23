@@ -16,6 +16,7 @@
     <orderEntry type="library" name="performance test compile" level="project" />
     <orderEntry type="library" name="test run" level="project" />
     <orderEntry type="library" name="performance test run" level="project" />
+    <orderEntry type="library" name="code sample compile" level="project" />
   </component>
 </module>
 

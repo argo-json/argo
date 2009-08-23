@@ -147,8 +147,8 @@ public final class JsonNodeSelectors {
         }));
     }
 
-    public static JsonNodeSelector<JsonNode, List<JsonNode>> anArrayNode() {
-        return new JsonNodeSelector<JsonNode, List<JsonNode>>(new Functor<JsonNode, List<JsonNode>>() {
+    public static JsonNodeSelector<JsonNode, List<JsonNode>> anArrayNode(final Object... pathElements) {
+        return chainOn(pathElements, new JsonNodeSelector<JsonNode, List<JsonNode>>(new Functor<JsonNode, List<JsonNode>>() {
             public boolean matchesValue(final JsonNode jsonNode) {
                 return argo.jdom.JsonNodeType.ARRAY == jsonNode.getType();
             }
@@ -161,11 +161,11 @@ public final class JsonNodeSelectors {
             public String toString() {
                 return "an array";
             }
-        });
+        }));
     }
 
-    public static JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> anObjectNode() {
-        return new JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>>(new Functor<JsonNode, Map<JsonStringNode, JsonNode>>() {
+    public static JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> anObjectNode(final Object... pathElements) {
+        return chainOn(pathElements, new JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>>(new Functor<JsonNode, Map<JsonStringNode, JsonNode>>() {
             public boolean matchesValue(final JsonNode jsonNode) {
                 return argo.jdom.JsonNodeType.OBJECT == jsonNode.getType();
             }
@@ -178,7 +178,7 @@ public final class JsonNodeSelectors {
             public String toString() {
                 return "an object";
             }
-        });
+        }));
     }
 
     public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final String fieldName) {

@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-public final class SimpleJdomExample {
+public final class SimpleJdomExamples {
     @Test
     public void ParseSimpleExample() throws Exception {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));

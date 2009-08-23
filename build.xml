@@ -184,7 +184,7 @@
             </classpath>
             <batchtest fork="yes" todir="${location.codesampletestresults}">
                 <fileset dir="${location.codesampletestclasses}">
-                    <include name="**/*.class"/>
+                    <include name="**/*Examples.class"/>
                 </fileset>
                 <formatter type="xml"/>
             </batchtest>
