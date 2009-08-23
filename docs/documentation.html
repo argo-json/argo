@@ -82,7 +82,31 @@ JsonRootNode json = builder.build();</div>
 ...
 
 String jsonText = JSON_FORMATTER.format(json);</div>
+
         <h3>Parsing JSON into an Object</h3>
+        <p>All the examples in this section are based on the following JSON, which is
+        assumed to be available in a <code>String</code> called <code>jsonText</code>.</p>
+        <div class="code">{
+    "name": "Black Lace",
+    "sales": 110921,
+    "singles": [
+        "Superman", "Agadoo"
+    ]
+}</div>
+        <p>The <code>JdomParser</code> class is used to generate a <code>JsonRootNode</code> from JSON text.  Instances
+        of <code>JdomParser</code> can safely be shared between threads.</p>
+        <div class="code">private static final JdomParser JDOM_PARSER = new JdomParser();
+
+...
+
+JsonRootNode json = JDOM_PARSER.parse(jsonText);</div>
+        <p>Instances of <code>JsonRootNode</code> are immutable.  <code>JsonRootNode</code> and its parent
+        <code>JsonNode</code> provide methods for exploring the generated structure, as specified in the javadoc.
+        Alternatively, <code>JsonNodeSelector</code>s can be used to extract data from the <code>JsonRootNode</code>
+        in a typesafe manner.</p>
+
+        <p>The <code>JsonNodeSelectors</code> class provides a number of factory methods for constructing instances of
+            <code>JsonNodeSelector</code>.</p>
     </div>
     <div id="footer">
         <ul>

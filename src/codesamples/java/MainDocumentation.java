@@ -15,9 +15,12 @@ import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.*;
 import argo.jdom.JsonObjectNodeBuilder;
 import argo.jdom.JsonRootNode;
+import org.apache.commons.io.FileUtils;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
+
+import java.io.File;
 
 public final class MainDocumentation {
 
@@ -32,6 +35,8 @@ private static final JsonFormatter JSON_FORMATTER
                     , aJsonString("Agadoo")
             ))
     );
+
+    private static final JdomParser JDOM_PARSER = new JdomParser();
 
     @Test
     public void producesJsonFromFactory() throws Exception {
@@ -63,6 +68,13 @@ private static final JsonFormatter JSON_FORMATTER
     public void formatsJson() throws Exception {
         final JsonRootNode json = SAMPLE_JSON;
         String jsonText = JSON_FORMATTER.format(json);
-        assertThat(new JdomParser().parse(jsonText), equalTo(SAMPLE_JSON));
+        System.out.println("jsonText = " + jsonText);
+        assertThat(JDOM_PARSER.parse(jsonText), equalTo(SAMPLE_JSON));
+    }
+
+    @Test
+    public void parsesJson() throws Exception {
+        final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+        JsonRootNode json = JDOM_PARSER.parse(jsonText);
     }
 }
