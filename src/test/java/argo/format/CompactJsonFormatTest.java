@@ -63,4 +63,11 @@ public final class CompactJsonFormatTest {
                 (JsonNode)aJsonString("\" \\ / \b \f \n \r \t"))
         )), equalTo("[\"\\\" \\\\ \\/ \\b \\f \\n \\r \\t\"]"));
     }
+
+    @Test
+    public void formatsAStringWithinAString() throws Exception {
+        assertThat(new CompactJsonFormatter().format(aJsonArray(Arrays.asList(
+                (JsonNode)aJsonString("\"\\\"A String\\\" within a String\""))
+        )), equalTo("[\"\\\"\\\\\\\"A String\\\\\\\" within a String\\\"\"]"));
+    }
 }

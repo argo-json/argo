@@ -109,6 +109,19 @@ public final class PrettyJsonFormatTest {
     }
 
     @Test
+    public void formatsAStringWithinAString() throws Exception {
+        assertThat(new PrettyJsonFormatter().format(aJsonArray(Arrays.asList(
+                (JsonNode)aJsonString("\"\\\"A String\\\" within a String\""))
+        )), equalTo(
+                aJsonStringResultBuilder()
+                        .println("[")
+                        .println("\t\"\\\"\\\\\\\"A String\\\\\\\" within a String\\\"\"")
+                        .print("]")
+                        .build()
+        ));
+    }
+
+    @Test
     public void testRoundtrip() throws Exception {
         final File longJsonExample = new File(this.getClass().getResource("Sample.json").getFile());
         final String json = readFileToString(longJsonExample);
