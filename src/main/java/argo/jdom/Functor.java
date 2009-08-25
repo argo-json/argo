@@ -11,7 +11,6 @@
 package argo.jdom;
 
 interface Functor<T, V> {
-
     boolean matchesNode(T jsonNode);
     V applyTo(T jsonNode);
 }
