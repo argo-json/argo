@@ -18,7 +18,8 @@ import java.io.Reader;
 import java.io.StringReader;
 
 /**
- * Parses a JSON character stream into a <code>JsonRootNode</code> object.
+ * Parses a JSON character stream into a <code>JsonRootNode</code> object.  Instances of this class can safely be shared
+ * between threads.
  */
 public final class JdomParser {
 
