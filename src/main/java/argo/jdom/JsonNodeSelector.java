@@ -11,9 +11,7 @@
 package argo.jdom;
 
 /**
- * <p>Factories for working with a tree of <code>JsonNode</code>s. The various factory methods on this class return
- * instances of <code>JsonNodeSelector</code> that can be chained together to check for the existence of,
- * and value of, particular nodes in a tree.</p>
+ * Instances of <code>JsonNodeSelector</code> extract values from <code>Object</code>s of a specified type.
  *
  * <p>For example, given a <code>JsonNode</code> representing <code>{"Fee":{"fi":"fo"}}</code>,
  * <pre>

@@ -13,12 +13,21 @@ package argo.jdom;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Builder for <code>JsonRootNode</code>s representing JSON arrays.
+ */
 public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonRootNode> {
 
     private final List<JsonNodeBuilder> elementBuilders = new LinkedList<JsonNodeBuilder>();
 
     JsonArrayNodeBuilder() { }
 
+    /**
+     * Adds the given element to the array that will be built.
+     *
+     * @param elementBuilder a builder for the element to add to the array.
+     * @return the modified builder.
+     */
     public JsonArrayNodeBuilder withElement(final JsonNodeBuilder elementBuilder) {
         elementBuilders.add(elementBuilder);
         return this;

@@ -11,7 +11,7 @@
 package argo.jdom;
 
 /**
- * Builders for JsonNodes.
+ * Builders for <code>JsonNode</code>s.
  */
 public final class JsonNodeBuilders {
 
