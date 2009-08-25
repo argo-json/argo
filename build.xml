@@ -202,7 +202,7 @@
 
     <target name="javadoc">
         <mkdir dir="${location.dist}/javadoc"/>
-        <javadoc destdir="${location.dist}/javadoc">
+        <javadoc destdir="${location.dist}/javadoc" windowtitle="Argo version ${argo.version}" doctitle="Argo version ${argo.version}">
             <sourcepath path="${location.src}/java"/>
         </javadoc>
     </target>
