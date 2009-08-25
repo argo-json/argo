@@ -15,15 +15,18 @@ import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeSelectors.aStringNode;
 import static argo.jdom.JsonNodeSelectors.anArrayNode;
+import argo.saj.JsonListener;
+import argo.saj.SajParser;
+import argo.staj.JsonStreamElementType;
+import argo.staj.StajParser;
 import org.apache.commons.io.FileUtils;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.AbstractList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.FileReader;
+import java.util.*;
 
 public final class MainDocumentationExamples {
 
@@ -47,6 +50,8 @@ public final class MainDocumentationExamples {
             = anArrayNode("singles");
     private static final JsonNodeSelector<JsonNode, String> SINGLE_NAME
             = aStringNode();
+    private static final SajParser SAJ_PARSER
+            = new SajParser();
 
     @Test
     public void producesJsonFromFactory() throws Exception {
@@ -108,5 +113,49 @@ public final class MainDocumentationExamples {
         System.out.println("simpleExample.getName() = " + simpleExample.getName());
         System.out.println("simpleExample.getSales() = " + simpleExample.getSales());
         System.out.println("simpleExample.getSingles() = " + simpleExample.getSingles());
+    }
+
+    @Test
+    public void parsesUsingSaj() throws Exception {
+        final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+        final Set<String> fieldNames = new HashSet<String>();
+        SAJ_PARSER.parse(jsonReader, new JsonListener() {
+            public void startField(String name) {
+                fieldNames.add(name);
+            }
+            public void startDocument() { }
+            public void endDocument() { }
+            public void startArray() { }
+            public void endArray() { }
+            public void startObject() { }
+            public void endObject() { }
+            public void endField() { }
+            public void stringValue(final String value) { }
+            public void numberValue(final String value) { }
+            public void trueValue() { }
+            public void falseValue() { }
+            public void nullValue() { }
+        });
+        assertThat(fieldNames, equalTo((Set<String>)new HashSet<String>(Arrays.asList("name", "sales", "singles"))));
+    }
+
+    @Test
+    public void parsesUsingStaj() throws Exception {
+        final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+Set<String> fieldNames = new HashSet<String>();
+StajParser stajParser = null;
+try {
+    stajParser = new StajParser(jsonReader);
+    while (stajParser.hasNext()) {
+        if (stajParser.next() == JsonStreamElementType.START_FIELD) {
+            fieldNames.add(stajParser.getText());
+        }
+    }
+} finally {
+    if (stajParser != null) {
+        stajParser.close();
+    }
+}
+        assertThat(fieldNames, equalTo((Set<String>)new HashSet<String>(Arrays.asList("name", "sales", "singles"))));
     }
 }

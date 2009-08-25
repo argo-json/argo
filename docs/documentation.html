@@ -133,7 +133,50 @@ List&lt;String&gt; singles = new AbstractList&lt;String&gt;() {
     }
 };</div>
         <h3>Parsing JSON into events</h3>
-        <p>The <code>SajParser</code> class offers a SAX style interface for parsing JSON.</p>
+        <p>The <code>SajParser</code> class offers a SAX style interface for parsing JSON.  Given a <code>Reader</code>
+            of a stream of JSON text, and an implementation of <code>JsonListener</code>, the <code>parse</code> method
+            will parse the JSON from the <code>Reader</code>, and call methods on the <code>JsonListener</code> as it
+            encounters parse events, such as the start of the document, the start of a field, or a JSON string.</p>
+            <p>The following code extracts the names of all the fields in a piece of JSON.  It assumes
+            <code>jsonReader</code> refers to a <code>Reader</code> of the example JSON in the previous section.</p>
+        <div class="code">private static final SajParser SAJ_PARSER
+        = new SajParser();
+
+...
+
+final Set&lt;String&gt; fieldNames = new HashSet&lt;String&gt;();
+SAJ_PARSER.parse(jsonReader, new JsonListener() {
+    public void startField(String name) {
+        fieldNames.add(name);
+    }
+    public void startDocument() { }
+    public void endDocument() { }
+
+...
+
+}); </div>
+        <h3>Parsing JSON through iteration</h3>
+        <p>The <code>StajParser</code> class allows the calling code to request parsing events from a stream of JSON
+        text, similar to how the StAX parser works for XML.</p>
+        <p>The following code gets the names of all the fields in a piece of JSON using the <code>StajParser</code>.
+        Again, it assumes <code>jsonReader</code> refers to a <code>Reader</code> of the example JSON in the previous
+            section.</p>
+        <div class="code">Set&lt;String&gt; fieldNames = new HashSet&lt;String&gt;();
+StajParser stajParser = null;
+try {
+    stajParser = new StajParser(jsonReader);
+    while (stajParser.hasNext()) {
+        if (stajParser.next() == JsonStreamElementType.START_FIELD) {
+            fieldNames.add(stajParser.getText());
+        }
+    }
+} finally {
+    if (stajParser != null) {
+        stajParser.close();
+    }
+}</div>
+        <p>Note that it is important to call <code>close()</code> when finished with an instance of
+            <code>StajParser</code> to free up resource associated with it.</p>
     </div>
     <div id="footer">
         <ul>
