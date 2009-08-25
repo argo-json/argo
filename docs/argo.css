@@ -61,10 +61,9 @@ div#content {
 
 div.code {
     white-space: pre;
-    border-color: gray;
-    border-style: dashed;
-    border-width: 0.2em;
-    font-family: monospace;
+    border: 0.2em dashed gray;
+    font-family: "Monospace font handling in Firefox is braindead", monospace;
+    font-size: 80%;
     padding: 1em;
     margin-left: 2em;
     margin-right: 2em;
