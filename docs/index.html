@@ -22,8 +22,9 @@
     </div>
     <div id="content">
         <h2>Introduction</h2>
-        <p>Argo is a JSON parser and generator for Java. It offers three parse interfaces - a push parser, a pull parser, and a DOM syle
-            parser. It is open source, and free for you to use.</p>
+        <p>Argo is a JSON parser and generator for Java. It offers three parse interfaces - a push parser, a pull
+            parser, and a DOM syle parser.  It is written to be easy to use, typesafe, and fast.  It is open source, and
+            free for you to use.</p>
 
         <p>The latest version of Argo available for download is <a
                 href="https://sourceforge.net/projects/argo/files/latest">0.11</a>.
@@ -44,14 +45,11 @@ String secondSingle = JsonNodeSelectors.aStringNode("singles", 1)
         .getValue(json);</div>
         <p>On the first line, we parse the JSON text into an object hierarchy.  We could have navigated this ourselves,
             but in this case, it's easier to let a <code>JsonNodeSelector</code> take the strain.</p>
-        <p>We build up a selector:</p>
-        <ol>
-            <li>that matches a JSON object (the root of the example) with a field called <code>singles</code>,</li>
-            <li>we specify that <code>singles</code> contains an array, and we select the second element,</li>
-            <li>we specify that the element should be a string,</li>
-            <li>and finally, we get the value of our string</li>
-        </ol>
-        <p>If we check the <code>secondSingle</code> variable, we will find, as expected, it contains the <code>String</code> "<code>Agadoo</code>".
+        <p>On line two, we make a selector that selects the JSON string at index 1 of the array in the
+            <code>singles</code> field. We then apply this selector to the root object to get back the value of the
+            string.</p>
+        <p>If we check the <code>secondSingle</code> variable, we will find, as expected, it contains the
+            <code>String</code> "<code>Agadoo</code>".
         </p>
     </div>
     <div id="footer">
