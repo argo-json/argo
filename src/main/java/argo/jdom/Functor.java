@@ -10,8 +10,8 @@
 
 package argo.jdom;
 
-interface Functor<W, X> {
+interface Functor<T, V> {
 
-    boolean matchesValue(W jsonNode);
-    X getValue(W jsonNode);
+    boolean matchesNode(T jsonNode);
+    V applyTo(T jsonNode);
 }

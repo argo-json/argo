@@ -19,11 +19,11 @@ final class ChainedFunctor<T, U, V> implements Functor<T, V> {
         this.childJsonNodeSelector = childJsonNodeSelector;
     }
 
-    public boolean matchesValue(final T jsonNode) {
+    public boolean matchesNode(final T jsonNode) {
         return parentJsonNodeSelector.matches(jsonNode) && childJsonNodeSelector.matches(parentJsonNodeSelector.getValue(jsonNode));
     }
 
-    public V getValue(final T jsonNode) {
+    public V applyTo(final T jsonNode) {
         return childJsonNodeSelector.getValue(parentJsonNodeSelector.getValue(jsonNode));
     }
 

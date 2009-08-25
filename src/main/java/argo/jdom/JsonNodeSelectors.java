@@ -22,11 +22,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<JsonNode, String> aStringNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
+            public boolean matchesNode(final JsonNode jsonNode) {
                 return STRING == jsonNode.getType();
             }
 
-            public String getValue(final JsonNode jsonNode) {
+            public String applyTo(final JsonNode jsonNode) {
                 return jsonNode.getText();
             }
 
@@ -39,11 +39,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<JsonNode, String> aNullableStringNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
+            public boolean matchesNode(final JsonNode jsonNode) {
                 return STRING == jsonNode.getType() || NULL == jsonNode.getType();
             }
 
-            public String getValue(final JsonNode jsonNode) {
+            public String applyTo(final JsonNode jsonNode) {
                 return NULL == jsonNode.getType() ? null : jsonNode.getText();
             }
 
@@ -56,11 +56,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<JsonNode, String> aNumberNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
+            public boolean matchesNode(final JsonNode jsonNode) {
                 return NUMBER == jsonNode.getType();
             }
 
-            public String getValue(final JsonNode jsonNode) {
+            public String applyTo(final JsonNode jsonNode) {
                 return jsonNode.getText();
             }
 
@@ -73,11 +73,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<JsonNode, String> aNullableNumberNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new Functor<JsonNode, String>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
+            public boolean matchesNode(final JsonNode jsonNode) {
                 return NUMBER == jsonNode.getType() || NULL == jsonNode.getType();
             }
 
-            public String getValue(final JsonNode jsonNode) {
+            public String applyTo(final JsonNode jsonNode) {
                 return NULL == jsonNode.getType() ? null : jsonNode.getText();
             }
 
@@ -90,11 +90,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<JsonNode, Boolean> aBooleanNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, Boolean>(new Functor<JsonNode, Boolean>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
+            public boolean matchesNode(final JsonNode jsonNode) {
                 return TRUE == jsonNode.getType() || FALSE == jsonNode.getType();
             }
 
-            public Boolean getValue(final JsonNode jsonNode) {
+            public Boolean applyTo(final JsonNode jsonNode) {
                 return TRUE == jsonNode.getType();
             }
 
@@ -107,11 +107,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<JsonNode, Boolean> aNullableBooleanNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, Boolean>(new Functor<JsonNode, Boolean>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
+            public boolean matchesNode(final JsonNode jsonNode) {
                 return TRUE == jsonNode.getType() || FALSE == jsonNode.getType() || NULL == jsonNode.getType();
             }
 
-            public Boolean getValue(final JsonNode jsonNode) {
+            public Boolean applyTo(final JsonNode jsonNode) {
                 final Boolean result;
                 if (TRUE == jsonNode.getType()) {
                     result = Boolean.TRUE;
@@ -132,11 +132,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<JsonNode, JsonNode> aNullNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, JsonNode>(new Functor<JsonNode, JsonNode>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
+            public boolean matchesNode(final JsonNode jsonNode) {
                 return argo.jdom.JsonNodeType.NULL == jsonNode.getType();
             }
 
-            public JsonNode getValue(final JsonNode jsonNode) {
+            public JsonNode applyTo(final JsonNode jsonNode) {
                 return jsonNode;
             }
 
@@ -149,11 +149,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<JsonNode, List<JsonNode>> anArrayNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, List<JsonNode>>(new Functor<JsonNode, List<JsonNode>>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
+            public boolean matchesNode(final JsonNode jsonNode) {
                 return argo.jdom.JsonNodeType.ARRAY == jsonNode.getType();
             }
 
-            public List<JsonNode> getValue(final JsonNode jsonNode) {
+            public List<JsonNode> applyTo(final JsonNode jsonNode) {
                 return jsonNode.getElements();
             }
 
@@ -166,11 +166,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> anObjectNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>>(new Functor<JsonNode, Map<JsonStringNode, JsonNode>>() {
-            public boolean matchesValue(final JsonNode jsonNode) {
+            public boolean matchesNode(final JsonNode jsonNode) {
                 return argo.jdom.JsonNodeType.OBJECT == jsonNode.getType();
             }
 
-            public Map<JsonStringNode, JsonNode> getValue(final JsonNode jsonNode) {
+            public Map<JsonStringNode, JsonNode> applyTo(final JsonNode jsonNode) {
                 return jsonNode.getFields();
             }
 
@@ -187,11 +187,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final JsonStringNode fieldName) {
         return new JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode>(new Functor<Map<JsonStringNode, JsonNode>, JsonNode>() {
-            public boolean matchesValue(Map<JsonStringNode, JsonNode> jsonNode) {
+            public boolean matchesNode(Map<JsonStringNode, JsonNode> jsonNode) {
                 return jsonNode.containsKey(fieldName);
             }
 
-            public JsonNode getValue(Map<JsonStringNode, JsonNode> jsonNode) {
+            public JsonNode applyTo(Map<JsonStringNode, JsonNode> jsonNode) {
                 return jsonNode.get(fieldName);
             }
 
@@ -212,11 +212,11 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<List<JsonNode>, JsonNode> anElement(final int index) {
         return new JsonNodeSelector<List<JsonNode>, JsonNode>(new Functor<List<JsonNode>, JsonNode>() {
-            public boolean matchesValue(final List<JsonNode> jsonNode) {
+            public boolean matchesNode(final List<JsonNode> jsonNode) {
                 return jsonNode.size() > index;
             }
 
-            public JsonNode getValue(final List<JsonNode> jsonNode) {
+            public JsonNode applyTo(final List<JsonNode> jsonNode) {
                 return jsonNode.get(index);
             }
 

@@ -35,14 +35,14 @@ public final class JsonNodeSelector<T, U> {
     }
 
     public boolean matches(final T jsonNode) {
-        return valueGetter.matchesValue(jsonNode);
+        return valueGetter.matchesNode(jsonNode);
     }
 
     public U getValue(final T argument) {
         if (!matches(argument)) {
             throw new IllegalArgumentException("Argument [" + argument + "] does not match the requirments of this selector.");
         } else {
-            return valueGetter.getValue(argument);
+            return valueGetter.applyTo(argument);
         }
     }
 
