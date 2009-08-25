@@ -10,22 +10,25 @@
 
 import argo.format.JsonFormatter;
 import argo.format.PrettyJsonFormatter;
-import argo.jdom.JdomParser;
+import argo.jdom.*;
 import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.*;
-import argo.jdom.JsonObjectNodeBuilder;
-import argo.jdom.JsonRootNode;
+import static argo.jdom.JsonNodeSelectors.aStringNode;
+import static argo.jdom.JsonNodeSelectors.anArrayNode;
 import org.apache.commons.io.FileUtils;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.AbstractList;
+import java.util.Arrays;
+import java.util.List;
 
 public final class MainDocumentationExamples {
 
-private static final JsonFormatter JSON_FORMATTER
-        = new PrettyJsonFormatter();
+    private static final JsonFormatter JSON_FORMATTER
+            = new PrettyJsonFormatter();
 
     private static final JsonRootNode SAMPLE_JSON = aJsonObject(
             aJsonField("name", aJsonString("Black Lace"))
@@ -37,6 +40,13 @@ private static final JsonFormatter JSON_FORMATTER
     );
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
+    private static final JsonNodeSelector<JsonNode, String> SECOND_SINGLE
+            = JsonNodeSelectors.aStringNode("singles", 1);
+
+    private static final JsonNodeSelector<JsonNode, List<JsonNode>> SINGLES
+            = anArrayNode("singles");
+    private static final JsonNodeSelector<JsonNode, String> SINGLE_NAME
+            = aStringNode();
 
     @Test
     public void producesJsonFromFactory() throws Exception {
@@ -73,9 +83,21 @@ private static final JsonFormatter JSON_FORMATTER
     }
 
     @Test
-    public void parsesJson() throws Exception {
+    public void parsesJsonAndGetsElements() throws Exception {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
-        JsonRootNode json = JDOM_PARSER.parse(jsonText);
+        final JsonRootNode json = JDOM_PARSER.parse(jsonText);
+        String secondSingle = SECOND_SINGLE.getValue(json);
+        List<String> singles = new AbstractList<String>() {
+            public String get(int index) {
+                return SINGLE_NAME.getValue(SINGLES.getValue(json).get(index));
+            }
+
+            public int size() {
+                return SINGLES.getValue(json).size();
+            }
+        };
+        assertThat(secondSingle, equalTo("Agadoo"));
+        assertThat(singles, equalTo(Arrays.asList("Superman", "Agadoo")));
     }
 
     @Test
