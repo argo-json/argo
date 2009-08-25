@@ -41,10 +41,21 @@ public final class JsonNodeBuilders {
         };
     }
 
+    /**
+     * Builder for a JSON number.  This method will throw an illegal argument exception if the <code>String</code> specified does not conform to the JSON number specification.
+     * @param value a String representing a JSON number.
+     * @throws IllegalArgumentException if the given <code>String</code> does not conform to the JSON number specification.
+     * @return a builder for a <code>JsonNode</code> representing the number given.
+     */
     public static JsonNumberNodeBuilder aNumberBuilder(final String value) {
         return new JsonNumberNodeBuilder(value);
     }
 
+    /**
+     * Builder for a JSON string.
+     * @param value a String to convert into a JSON string.
+     * @return a builder for a <code>JsonNode</code> representing the string given.
+     */
     public static JsonStringNodeBuilder aStringBuilder(final String value) {
         return new JsonStringNodeBuilder(value);
     }

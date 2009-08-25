@@ -10,6 +10,15 @@
 
 package argo.jdom;
 
+/**
+ * Classes that implement <code>JsonNodeBuilder</code> provide methods for specifying details of a <code>JsonNode</code> and then constructing it.
+ * @param <T> the type of <code>JsonNode</code> that will be built.
+ */
 public interface JsonNodeBuilder<T extends JsonNode> {
+
+    /**
+     * Generates an instance of <code>T</code>, as specified by calls to any other methods provided by implementations of <code>JsonNodeBuilder</code>.
+     * @return an instance of <code>T</code>.
+     */
     T build();
 }
