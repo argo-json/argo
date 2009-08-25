@@ -10,7 +10,7 @@
 
 package argo.jdom;
 
-public final class JsonNumberNodeBuilder implements JsonNodeBuilder<JsonNode> {
+final class JsonNumberNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
     private final JsonNode value;
 
