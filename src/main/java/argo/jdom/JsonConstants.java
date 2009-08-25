@@ -34,7 +34,7 @@ final class JsonConstants extends JsonNode {
     }
 
     public String getText() {
-        throw new RuntimeException("Attempt to get text on a JsonNode without text.");
+        throw new IllegalStateException("Attempt to get text on a JsonNode without text.");
     }
 
     public boolean hasFields() {
@@ -42,7 +42,7 @@ final class JsonConstants extends JsonNode {
     }
 
     public Map<JsonStringNode, JsonNode> getFields() {
-        throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
+        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
     }
 
     public boolean hasElements() {
@@ -50,7 +50,7 @@ final class JsonConstants extends JsonNode {
     }
 
     public List<JsonNode> getElements() {
-        throw new RuntimeException("Attempt to get elements on a JsonNode without elements.");
+        throw new IllegalStateException("Attempt to get elements on a JsonNode without elements.");
     }
 
 }

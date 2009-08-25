@@ -44,7 +44,7 @@ public final class JsonStringNode extends JsonNode {
     }
 
     public Map<JsonStringNode, JsonNode> getFields() {
-        throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
+        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
     }
 
     public boolean hasElements() {
@@ -52,7 +52,7 @@ public final class JsonStringNode extends JsonNode {
     }
 
     public List<JsonNode> getElements() {
-        throw new RuntimeException("Attempt to get elements on a JsonNode without elements.");
+        throw new IllegalStateException("Attempt to get elements on a JsonNode without elements.");
     }
 
     @Override

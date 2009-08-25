@@ -35,7 +35,7 @@ final class JsonArray extends JsonRootNode {
     }
 
     public String getText() {
-        throw new RuntimeException("Attempt to get text on a JsonNode without text.");
+        throw new IllegalStateException("Attempt to get text on a JsonNode without text.");
     }
 
     public boolean hasFields() {
@@ -43,7 +43,7 @@ final class JsonArray extends JsonRootNode {
     }
 
     public Map<JsonStringNode, JsonNode> getFields() {
-        throw new RuntimeException("Attempt to get fields on a JsonNode without fields.");
+        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
     }
 
     public boolean hasElements() {

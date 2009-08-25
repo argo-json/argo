@@ -26,14 +26,26 @@ public abstract class JsonNode {
 
     public abstract boolean hasText();
 
+    /**
+     * @return the text associated with this node
+     * @throws IllegalStateException if hasText() returns false, indicating this type of node doesn't have text.
+     */
     public abstract String getText();
 
     public abstract boolean hasFields();
 
+    /**
+     * @return the fields associated with this node
+     * @throws IllegalStateException if hasFields() returns false, indicating this type of node doesn't support fields.
+     */
     public abstract Map<JsonStringNode, JsonNode> getFields();
 
     public abstract boolean hasElements();
 
+    /**
+     * @return the elements associated with this node
+     * @throws IllegalStateException if hasElements() returns false, indicating this type of node doesn't support elements.
+     */
     public abstract List<JsonNode> getElements();
 
 }

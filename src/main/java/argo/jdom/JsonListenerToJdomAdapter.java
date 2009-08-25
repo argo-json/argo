@@ -21,7 +21,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     private final Stack<NodeContainer> stack = new Stack<NodeContainer>();
     private JsonNodeBuilder<JsonRootNode> root;
 
-    public JsonRootNode getDocument() {
+    JsonRootNode getDocument() {
         return root.build();
     }
 

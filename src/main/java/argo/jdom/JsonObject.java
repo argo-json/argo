@@ -35,7 +35,7 @@ final class JsonObject extends JsonRootNode {
     }
 
     public String getText() {
-        throw new RuntimeException("Attempt to get text on a JsonNode without text.");
+        throw new IllegalStateException("Attempt to get text on a JsonNode without text.");
     }
 
     public boolean hasFields() {
@@ -47,7 +47,7 @@ final class JsonObject extends JsonRootNode {
     }
 
     public List<JsonNode> getElements() {
-        throw new RuntimeException("Attempt to get elements on a JsonNode without elements.");
+        throw new IllegalStateException("Attempt to get elements on a JsonNode without elements.");
     }
 
     @Override
