@@ -20,6 +20,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
+/**
+ * JsonFormat that formats JSON in a human-readable form.  Instances of this class can safely be shared between threads.
+ */
 public final class PrettyJsonFormatter implements JsonFormatter {
 
     public String format(final JsonRootNode jsonNode) {

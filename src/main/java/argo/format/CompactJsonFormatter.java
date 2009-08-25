@@ -20,7 +20,7 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * JsonFormat that formats json as compactly as possible.
+ * JsonFormat that formats JSON as compactly as possible.  Instances of this class can safely be shared between threads.
  */
 public final class CompactJsonFormatter implements JsonFormatter {
 
