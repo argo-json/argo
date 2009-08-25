@@ -10,6 +10,9 @@
 
 package argo.jdom;
 
+/**
+ * Builder for <code>JsonStringNode</code>s.
+ */
 public final class JsonStringNodeBuilder implements JsonNodeBuilder<JsonStringNode> {
 
     private final String value;

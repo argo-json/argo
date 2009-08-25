@@ -16,20 +16,43 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Builder for <code>JsonRootNode</code>s representing JSON objects.
+ */
 public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode> {
 
     private final List<JsonFieldBuilder> fieldBuilders = new LinkedList<JsonFieldBuilder>();
 
     JsonObjectNodeBuilder() {}
 
+    /**
+     * Adds a field to the object that will be built.
+     *
+     * @param name the name of the field
+     * @param value a builder for the value of the field.
+     * @return the modified object builder.
+     */
     public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder value) {
         return withField(JsonNodeBuilders.aStringBuilder(name), value);
     }
 
+    /**
+     * Adds a field to the object that will be built.
+     *
+     * @param name a builder for the name of the field
+     * @param value a builder for the value of the field.
+     * @return the modified object builder.
+     */
     public JsonObjectNodeBuilder withField(final JsonNodeBuilder<JsonStringNode> name, final JsonNodeBuilder value) {
         return withFieldBuilder(aJsonFieldBuilder().withKey(name).withValue(value));
     }
 
+    /**
+     * Adds a field to the object that will be built.
+     *
+     * @param jsonFieldBuilder a builder for the field.
+     * @return the modified object builder.
+     */
     public JsonObjectNodeBuilder withFieldBuilder(final JsonFieldBuilder jsonFieldBuilder) {
         fieldBuilders.add(jsonFieldBuilder);
         return this;
