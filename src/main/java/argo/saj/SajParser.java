@@ -220,6 +220,8 @@ public final class SajParser {
         final char firstChar = (char) in.read();
         if ('0' == firstChar) {
             result.append('0');
+            result.append(possibleFractionalComponent(in));
+            result.append(possibleExponent(in));
         } else {
             in.unread(firstChar);
             result.append(nonZeroDigitToken(in));
