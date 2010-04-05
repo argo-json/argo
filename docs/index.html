@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2010 Mark Slater
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~
+  ~ 	http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -42,14 +52,12 @@
     ]
 }</div>
         <p>We can use Argo to get the second single like this:</p>
-        <div class="code">JsonNode json = new JdomParser().parse(jsonText);
-String secondSingle = JsonNodeSelectors.aStringNode("singles", 1)
-        .getValue(json);</div>
-        <p>On the first line, we parse the JSON text into an object hierarchy.  We could have navigated this ourselves,
-            but in this case, it's easier to let a <code>JsonNodeSelector</code> take the strain.</p>
-        <p>On line two, we make a selector that selects the JSON string at index 1 of the array in the
-            <code>singles</code> field. We then apply this selector to the root object to get back the value of the
-            string.</p>
+        <div class="code">String secondSingle = new JdomParser().parse(jsonText)
+    .aStringValue("singles", 1);</div>
+        <p>On the first line, we parse the JSON text into an object hierarchy.  There are various options for navigating
+            this, but the simplest is just to give the path and type of node we expect.</p>
+        <p>On line two, we ask for the JSON string at index 1 of the array in the
+            <code>singles</code> field.</p>
         <p>If we check the <code>secondSingle</code> variable, we will find, as expected, it contains the
             <code>String</code> "<code>Agadoo</code>".
         </p>

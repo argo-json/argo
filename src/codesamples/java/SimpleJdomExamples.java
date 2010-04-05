@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Mark Slater
+ * Copyright 2010 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -9,20 +9,17 @@
  */
 
 import argo.jdom.JdomParser;
-import argo.jdom.JsonNode;
-import argo.jdom.JsonNodeSelectors;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.File;
 
 public final class SimpleJdomExamples {
+
     @Test
     public void ParseSimpleExample() throws Exception {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
-JsonNode json = new JdomParser().parse(jsonText);
-String secondSingle = JsonNodeSelectors.aStringNode("singles", 1)
-        .getValue(json);
+String secondSingle = new JdomParser().parse(jsonText).aStringValue("singles", 1);
         System.out.println("secondSingle = " + secondSingle);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Mark Slater
+ * Copyright 2010 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -48,4 +48,39 @@ public abstract class JsonNode {
      */
     public abstract List<JsonNode> getElements();
 
+    public String aStringValue(final Object... pathElements) {
+        return JsonNodeSelectors.aStringNode(pathElements).getValue(this);
+    }
+
+    public String aNullableStringValue(final Object... pathElements) {
+        return JsonNodeSelectors.aNullableStringNode(pathElements).getValue(this);
+    }
+
+    public Boolean aBooleanValue(final Object... pathElements) {
+        return JsonNodeSelectors.aBooleanNode(pathElements).getValue(this);
+    }
+
+    public Boolean aNullableBooleanValue(final Object... pathElements) {
+        return JsonNodeSelectors.aNullableBooleanNode(pathElements).getValue(this);
+    }
+
+    public String aNumberValue(final Object... pathElements) {
+        return JsonNodeSelectors.aNumberNode(pathElements).getValue(this);
+    }
+
+    public String aNullableNumberValue(final Object... pathElements) {
+        return JsonNodeSelectors.aNullableNumberNode(pathElements).getValue(this);
+    }
+
+    public JsonNode aNullNode(final Object... pathElements) {
+        return JsonNodeSelectors.aNullNode(pathElements).getValue(this);
+    }
+
+    public Map<JsonStringNode, JsonNode> anObjectNode(final Object... pathElements) {
+        return JsonNodeSelectors.anObjectNode(pathElements).getValue(this);
+    }
+
+    public List<JsonNode> anArrayNode(final Object... pathElements) {
+        return JsonNodeSelectors.anArrayNode(pathElements).getValue(this);
+    }
 }

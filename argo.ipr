@@ -72,6 +72,15 @@
   <component name="CodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
       <value>
+        <ADDITIONAL_INDENT_OPTIONS fileType="">
+          <option name="INDENT_SIZE" value="4" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="java">
           <option name="INDENT_SIZE" value="4" />
           <option name="CONTINUATION_INDENT_SIZE" value="8" />
@@ -224,13 +233,6 @@
     <option name="PROJECT_PROFILE" value="Project Default" />
     <option name="USE_PROJECT_PROFILE" value="true" />
     <version value="1.0" />
-  </component>
-  <component name="JavacSettings">
-    <option name="DEBUGGING_INFO" value="true" />
-    <option name="GENERATE_NO_WARNINGS" value="false" />
-    <option name="DEPRECATION" value="true" />
-    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
-    <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />
@@ -432,13 +434,6 @@
       </value>
     </option>
   </component>
-  <component name="RmicSettings">
-    <option name="IS_EANABLED" value="false" />
-    <option name="DEBUGGING_INFO" value="true" />
-    <option name="GENERATE_NO_WARNINGS" value="false" />
-    <option name="GENERATE_IIOP_STUBS" value="false" />
-    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
-  </component>
   <component name="Struts Assistant">
     <option name="showInputs" value="true" />
     <option name="resources">
@@ -460,6 +455,20 @@
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="https://argo.svn.sourceforge.net/svnroot/argo/branches">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://argo.svn.sourceforge.net/svnroot/argo/tags">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                </map>
+              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://argo.svn.sourceforge.net/svnroot/argo/branches" />

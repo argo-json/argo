@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Mark Slater
+ * Copyright 2010 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,15 +10,16 @@
 
 package argo.jdom;
 
+import org.junit.Test;
+
+import java.io.StringReader;
+import java.util.*;
+
 import static argo.jdom.JsonNodeFactories.*;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import org.junit.Test;
-
-import java.io.StringReader;
-import java.util.*;
 
 public final class JsonNodeSelectorsTest {
 
@@ -30,6 +31,7 @@ public final class JsonNodeSelectorsTest {
                     , aJsonNumber("2004")
                     , aJsonNumber("2005")
                     , aJsonNumber("2008")
+                    , aJsonNumber("2009")
             ))
             ,aJsonField("retirement age", aJsonNull())
     );
@@ -41,6 +43,7 @@ public final class JsonNodeSelectorsTest {
         assertTrue(jsonNodeSelector.matches(aJsonFalse()));
         assertThat(jsonNodeSelector.getValue(aJsonTrue()), equalTo(Boolean.TRUE));
         assertThat(jsonNodeSelector.getValue(aJsonFalse()), equalTo(Boolean.FALSE));
+        assertThat(aJsonTrue().aBooleanValue(), equalTo(Boolean.TRUE));
     }
 
     @Test
@@ -48,6 +51,7 @@ public final class JsonNodeSelectorsTest {
         final JsonNodeSelector<JsonNode, Boolean> jsonNodeSelector = JsonNodeSelectors.aNullableBooleanNode("retirement age");
         assertTrue(jsonNodeSelector.matches(SAMPLE_JSON));
         assertThat(jsonNodeSelector.getValue(SAMPLE_JSON), equalTo(null));
+        assertThat(SAMPLE_JSON.aNullableBooleanValue("retirement age"), equalTo(null));
     }
 
     @Test
@@ -56,6 +60,7 @@ public final class JsonNodeSelectorsTest {
         final JsonStringNode node = aJsonString("hello");
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo("hello"));
+        assertThat(node.aStringValue(), equalTo("hello"));
     }
 
     @Test
@@ -63,6 +68,7 @@ public final class JsonNodeSelectorsTest {
         final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelectors.aNullableStringNode("retirement age");
         assertTrue(jsonNodeSelector.matches(SAMPLE_JSON));
         assertThat(jsonNodeSelector.getValue(SAMPLE_JSON), equalTo(null));
+        assertThat(SAMPLE_JSON.aNullableStringValue("retirement age"), equalTo(null));
     }
 
     @Test
@@ -71,6 +77,7 @@ public final class JsonNodeSelectorsTest {
         final JsonNode node = aJsonNumber("12.1");
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo("12.1"));
+        assertThat(node.aNumberValue(), equalTo("12.1"));
     }
 
     @Test
@@ -78,6 +85,7 @@ public final class JsonNodeSelectorsTest {
         final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelectors.aNullableNumberNode("retirement age");
         assertTrue(jsonNodeSelector.matches(SAMPLE_JSON));
         assertThat(jsonNodeSelector.getValue(SAMPLE_JSON), equalTo(null));
+        assertThat(SAMPLE_JSON.aNullableNumberValue("retirement age"), equalTo(null));
     }
 
     @Test
@@ -86,6 +94,7 @@ public final class JsonNodeSelectorsTest {
         final JsonNode node = aJsonNull();
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo(node));
+        assertThat(node.aNullNode(), equalTo(aJsonNull()));
     }
 
     @Test
@@ -93,7 +102,9 @@ public final class JsonNodeSelectorsTest {
         final JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> jsonNodeSelector = JsonNodeSelectors.anObjectNode();
         final JsonRootNode node = aJsonObject(new HashMap<JsonStringNode, JsonNode>());
         assertTrue(jsonNodeSelector.matches(node));
-        assertThat(jsonNodeSelector.getValue(node), equalTo((Map<JsonStringNode, JsonNode>) new HashMap<JsonStringNode, JsonNode>()));
+        final Map<JsonStringNode, JsonNode> expectedMap = new HashMap<JsonStringNode, JsonNode>();
+        assertThat(jsonNodeSelector.getValue(node), equalTo(expectedMap));
+        assertThat(node.anObjectNode(), equalTo(expectedMap));
     }
 
     @Test
@@ -139,7 +150,9 @@ public final class JsonNodeSelectorsTest {
         final JsonNodeSelector<JsonNode, List<JsonNode>> jsonNodeSelector = JsonNodeSelectors.anArrayNode();
         final JsonRootNode node = aJsonArray(new LinkedList<JsonNode>());
         assertTrue(jsonNodeSelector.matches(node));
-        assertThat(jsonNodeSelector.getValue(node), equalTo((List<JsonNode>) new LinkedList<JsonNode>()));
+        final List<JsonNode> expectedList = new LinkedList<JsonNode>();
+        assertThat(jsonNodeSelector.getValue(node), equalTo(expectedList));
+        assertThat(node.anArrayNode(), equalTo(expectedList));
     }
 
     @Test
@@ -175,14 +188,15 @@ public final class JsonNodeSelectorsTest {
         final JsonNodeSelector<JsonNode, String> selector = JsonNodeSelectors.aStringNode("name");
         assertTrue(selector.matches(SAMPLE_JSON));
         assertThat(selector.getValue(SAMPLE_JSON), equalTo("Rossi"));
+        assertThat(SAMPLE_JSON.aStringValue("name"), equalTo("Rossi"));
     }
 
     @Test
     public void shorthandChainedNumberSelectorGetsAValue() throws Exception {
         final JsonNodeSelector<JsonNode, String> selector = JsonNodeSelectors.aNumberNode("championships", 3);
-        System.out.println("selector = " + selector);
         assertTrue(selector.matches(SAMPLE_JSON));
         assertThat(selector.getValue(SAMPLE_JSON), equalTo("2005"));
+        assertThat(SAMPLE_JSON.aNumberValue("championships", 3), equalTo("2005"));
     }
 
     @Test
