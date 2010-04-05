@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Mark Slater
+ * Copyright 2010 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -11,22 +11,23 @@
 import argo.format.JsonFormatter;
 import argo.format.PrettyJsonFormatter;
 import argo.jdom.*;
-import static argo.jdom.JsonNodeBuilders.*;
-import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeSelectors.aStringNode;
-import static argo.jdom.JsonNodeSelectors.anArrayNode;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
 import argo.staj.JsonStreamElementType;
 import argo.staj.StajParser;
 import org.apache.commons.io.FileUtils;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileReader;
 import java.util.*;
+
+import static argo.jdom.JsonNodeBuilders.*;
+import static argo.jdom.JsonNodeFactories.*;
+import static argo.jdom.JsonNodeSelectors.aStringNode;
+import static argo.jdom.JsonNodeSelectors.anArrayNode;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public final class MainDocumentationExamples {
 
@@ -88,7 +89,15 @@ public final class MainDocumentationExamples {
     }
 
     @Test
-    public void parsesJsonAndGetsElements() throws Exception {
+    public void parsesJsonAndGetsElementsWithCallToJsonNode() throws Exception {
+        final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+        final JsonRootNode json = JDOM_PARSER.parse(jsonText);
+        String secondSingle = json.aStringValue("singles", 1);
+        assertThat(secondSingle, equalTo("Agadoo"));
+    }
+
+    @Test
+    public void parsesJsonAndGetsElementsWithJsonNodeSelector() throws Exception {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
         final JsonRootNode json = JDOM_PARSER.parse(jsonText);
         String secondSingle = SECOND_SINGLE.getValue(json);

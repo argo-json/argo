@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2010 Mark Slater
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~
+  ~ 	http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -106,11 +116,12 @@ String jsonText = JSON_FORMATTER.format(json);</div>
 
 JsonRootNode json = JDOM_PARSER.parse(jsonText);</div>
         <p>Instances of <code>JsonRootNode</code> are immutable.  <code>JsonRootNode</code> and its parent
-        <code>JsonNode</code> provide methods for exploring the generated structure, as specified in the javadoc.
-        Alternatively, <code>JsonNodeSelector</code>s can be used to extract data from the <code>JsonRootNode</code>
-        in a typesafe manner.</p>
+        <code>JsonNode</code> provide methods for exploring the generated structure, as specified in the javadoc.  The
+        simplest of these are the <code>aXXXValue(Object... pathElements)</code> methods, which are used as follows:</p>
+        <div class="code">String secondSingle = json.aStringValue("singles", 1);</div>
 
-        <p><code>JsonNodeSelector</code>s are functions that can be applied to <code>JsonNode</code>s to extract a value
+        <p>Alternatively, <code>JsonNodeSelector</code>s can be used to extract data from the <code>JsonRootNode</code>
+        in a typesafe manner.<code>JsonNodeSelector</code>s are functions that can be applied to <code>JsonNode</code>s to extract a value
             or a child <code>JsonNode</code>.  The <code>JsonNodeSelectors</code> class provides a number of factory
             methods for constructing instances of <code>JsonNodeSelector</code>.  The following code gets the name of
         the second single (note that like arrays, the index of the first element is zero):</p>
