@@ -242,6 +242,7 @@
     <target name="startSession" description="Does a real release">
         <input addproperty="ssh.username" message="SSH username"/>
         <input addproperty="ssh.password" message="SSH password"/>
-        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="touch somefile" trust="true"/>
+        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>
+        <scp todir="${ssh.username}@shell.sourceforge.net:/home/users/m/mo/mos20" password="${ssh.password}" localfile="${location.dist}/argo-1.2.jar" trust="true"/>
     </target>
 </project>
