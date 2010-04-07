@@ -240,6 +240,8 @@
     </target>
 
     <target name="startSession" description="Does a real release">
-        <sshexec host="shell.sourceforge.net" username="mos20,argo" command="touch somefile" trust="true"/>
+        <input addproperty="ssh.username" message="SSH username"/>
+        <input addproperty="ssh.password" message="SSH password"/>
+        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="touch somefile" trust="true"/>
     </target>
 </project>
