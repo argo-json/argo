@@ -3,7 +3,10 @@
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
     <buildFile url="file://$PROJECT_DIR$/build.xml">
-      <additionalClassPath />
+      <additionalClassPath>
+        <entry path="file://$PROJECT_DIR$/lib/build/ant-jsch-1.6.5.jar" />
+        <entry path="file://$PROJECT_DIR$/lib/build/jsch-0.1.42.jar" />
+      </additionalClassPath>
       <antReference projectDefault="true" />
       <customJdkName value="" />
       <maximumHeapSize value="128" />
@@ -562,6 +565,14 @@
       <JAVADOC />
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib/codesamples/compile" recursive="false" />
+    </library>
+    <library name="build run">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/build" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/build" recursive="false" />
     </library>
   </component>
   <component name="se.expertsystem.intellij.aop.aspectj.AspectJProjectComponent">

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2009 Mark Slater
+  ~ Copyright 2010 Mark Slater
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
   ~
@@ -232,11 +232,14 @@
         <antcall target="javadoc"/>
         <jar basedir="${location.classes}" destfile="${location.dist}/argo-${version}.jar"/>
         <jar basedir="${location.optimisedclasses}" destfile="${location.dist}/argo-small-${version}.jar"/>
-
     </target>
 
     <target name="release" description="creates an offical release">
         <property name="release" value="true"/>
         <antcall target="distribute"/>
+    </target>
+
+    <target name="startSession" description="Does a real release">
+        <sshexec host="shell.sourceforge.net" username="mos20,argo" command="touch somefile" trust="true"/>
     </target>
 </project>
