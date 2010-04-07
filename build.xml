@@ -56,6 +56,15 @@
         </fileset>
     </path>
 
+    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml">
+        <classpath>
+            <pathelement location="${location.lib}/build/svnant.jar"/>
+            <pathelement location="${location.lib}/build/svnkit.jar"/>
+            <pathelement location="${location.lib}/build/svnClientAdapter.jar"/>
+            <pathelement location="${location.lib}/build/svnjavahl.jar"/>
+        </classpath>
+    </typedef>
+
     <target name="compile" description="compiles all classes">
         <echo message="Starting compile"/>
         <delete dir="${location.classes}"/>
@@ -242,7 +251,14 @@
     <target name="startSession" description="Does a real release">
         <input addproperty="ssh.username" message="SSH username"/>
         <input addproperty="ssh.password" message="SSH password"/>
-        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>
-        <scp todir="${ssh.username}@shell.sourceforge.net:/home/users/m/mo/mos20" password="${ssh.password}" localfile="${location.dist}/argo-1.2.jar" trust="true"/>
+        <svn username="${ssh.username}" password="${ssh.password}">
+            <info target="https://argo.svn.sourceforge.net/svnroot/argo/trunk"/>
+        </svn>
+        <echo  message="Attempting to release revison ${svn.info.rev}"/>
+        <svn username="${ssh.username}" password="${ssh.password}" javahl="false">
+            <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${location.build}/export/" revision="${svn.info.rev}"/>
+        </svn>
+        <!--<sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>-->
+        <!--<scp todir="${ssh.username}@shell.sourceforge.net:~" password="${ssh.password}" localfile="${location.dist}/argo-1.2.jar" trust="true"/>-->
     </target>
 </project>
