@@ -254,10 +254,14 @@
         <svn username="${ssh.username}" password="${ssh.password}">
             <info target="https://argo.svn.sourceforge.net/svnroot/argo/trunk"/>
         </svn>
-        <echo  message="Attempting to release revison ${svn.info.rev}"/>
-        <svn username="${ssh.username}" password="${ssh.password}" javahl="false">
-            <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${location.build}/export/" revision="${svn.info.rev}"/>
+        <property name="release.revision" value="${svn.info.rev}"/>
+        <echo  message="Attempting to release revison ${release.revision}"/>
+        <property name="release.directory" value="${location.build}/release/${release.revision}"/>
+        <delete dir="${location.build}"/>
+        <svn username="${ssh.username}" password="${ssh.password}">
+            <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${release.directory}" revision="${svn.info.rev}"/>
         </svn>
+        <subant target="release" buildpath="${release.directory}"/>
         <!--<sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>-->
         <!--<scp todir="${ssh.username}@shell.sourceforge.net:~" password="${ssh.password}" localfile="${location.dist}/argo-1.2.jar" trust="true"/>-->
     </target>
