@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Mark Slater
+ * Copyright 2010 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -11,15 +11,16 @@
 package argo.format;
 
 import argo.jdom.JsonNode;
-import static argo.jdom.JsonNodeFactories.*;
 import argo.jdom.JsonStringNode;
-import static org.hamcrest.CoreMatchers.equalTo;
 import org.hamcrest.Matchers;
-import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
+
+import static argo.jdom.JsonNodeFactories.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public final class CompactJsonFormatTest {
     @Test
@@ -60,8 +61,8 @@ public final class CompactJsonFormatTest {
     @Test
     public void formatsAJsonStringWithEscapedCharacters() throws Exception {
         assertThat(new CompactJsonFormatter().format(aJsonArray(Arrays.asList(
-                (JsonNode)aJsonString("\" \\ / \b \f \n \r \t"))
-        )), equalTo("[\"\\\" \\\\ \\/ \\b \\f \\n \\r \\t\"]"));
+                (JsonNode)aJsonString("\" \\ \b \f \n \r \t"))
+        )), equalTo("[\"\\\" \\\\ \\b \\f \\n \\r \\t\"]"));
     }
 
     @Test
