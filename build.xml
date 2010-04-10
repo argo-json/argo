@@ -280,6 +280,9 @@
             <!--<copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${release.version}" revision="${svn.info.rev}"/>-->
         <!--</svn>-->
         <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>
+        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/pfs/project/a/ar/argo/argo/" password="${ssh.password}" trust="true">
+            <fileset dir="${release.directory}/build/dist/binaries/"/>
+        </scp>
         <scp todir="${ssh.username},argo@web.sourceforge.net:/home/groups/a/ar/argo/" password="${ssh.password}" trust="true">
             <fileset dir="${release.directory}/build/dist/documentation/"/>
         </scp>
