@@ -15,6 +15,7 @@
     </description>
 
     <property name="location.lib" value="lib"/>
+    <property name="location.documentation" value="docs"/>
     <property name="location.src" value="src/main"/>
     <property name="location.src.test" value="src/test"/>
     <property name="location.src.performancetest" value="src/performancetest"/>
@@ -209,9 +210,20 @@
         <fail if="codesamplefailure" message="Code samples failed."/>
     </target>
 
-    <target name="javadoc">
-        <mkdir dir="${location.dist}/javadoc"/>
-        <javadoc destdir="${location.dist}/javadoc" windowtitle="Argo version ${argo.version}" doctitle="Argo version ${argo.version}">
+    <target name="documentation">
+        <property name="location.dist.documentation" value="${location.dist}/documentation"/>
+        <mkdir dir="${location.dist.documentation}"/>
+        <copy todir="${location.dist.documentation}">
+            <fileset dir="${location.documentation}" excludes="**/*.html"/>
+        </copy>
+        <copy todir="${location.dist.documentation}">
+            <fileset dir="${location.documentation}" includes="**/*.html"/>
+            <filterset>
+              <filter token="VERSION" value="${version}"/>
+            </filterset>
+        </copy>
+        <mkdir dir="${location.dist.documentation}/javadoc"/>
+        <javadoc destdir="${location.dist.documentation}/javadoc" windowtitle="Argo version ${argo.version}" doctitle="Argo version ${argo.version}">
             <sourcepath path="${location.src}/java"/>
         </javadoc>
     </target>
@@ -238,7 +250,7 @@
         <delete dir="${location.dist}"/>
         <mkdir dir="${location.dist}"/>
 
-        <antcall target="javadoc"/>
+        <antcall target="documentation"/>
         <jar basedir="${location.classes}" destfile="${location.dist}/argo-${version}.jar"/>
         <jar basedir="${location.optimisedclasses}" destfile="${location.dist}/argo-small-${version}.jar"/>
     </target>
