@@ -211,7 +211,7 @@
     </target>
 
     <target name="documentation">
-        <property name="location.dist.documentation" value="${location.dist}/documentation/{argo.version}"/>
+        <property name="location.dist.documentation" value="${location.dist}/documentation/${version}"/>
         <mkdir dir="${location.dist.documentation}"/>
         <copy todir="${location.dist.documentation}">
             <fileset dir="${location.documentation}" excludes="**/*.html"/>
@@ -223,7 +223,7 @@
             </filterset>
         </copy>
         <mkdir dir="${location.dist.documentation}/javadoc"/>
-        <javadoc destdir="${location.dist.documentation}/javadoc" windowtitle="Argo version ${argo.version}" doctitle="Argo version ${argo.version}">
+        <javadoc destdir="${location.dist.documentation}/javadoc" windowtitle="Argo version ${version}" doctitle="Argo version ${version}">
             <sourcepath path="${location.src}/java"/>
         </javadoc>
     </target>
