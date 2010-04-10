@@ -211,7 +211,7 @@
     </target>
 
     <target name="documentation">
-        <property name="location.dist.documentation" value="${location.dist}/documentation"/>
+        <property name="location.dist.documentation" value="${location.dist}/documentation/{argo.version}"/>
         <mkdir dir="${location.dist.documentation}"/>
         <copy todir="${location.dist.documentation}">
             <fileset dir="${location.documentation}" excludes="**/*.html"/>
@@ -247,12 +247,13 @@
 
     <target name="distribute" depends="compile, test, performance-test, codesample-test, determine-version">
         <echo message="Creating release structure"/>
+        <property name="location.dist.binaries" value="${location.dist}/binaries/${version}"/>
         <delete dir="${location.dist}"/>
-        <mkdir dir="${location.dist}"/>
+        <mkdir dir="${location.dist.binaries}"/>
 
         <antcall target="documentation"/>
-        <jar basedir="${location.classes}" destfile="${location.dist}/argo-${version}.jar"/>
-        <jar basedir="${location.optimisedclasses}" destfile="${location.dist}/argo-small-${version}.jar"/>
+        <jar basedir="${location.classes}" destfile="${location.dist.binaries}/argo-${version}.jar"/>
+        <jar basedir="${location.optimisedclasses}" destfile="${location.dist.binaries}/argo-small-${version}.jar"/>
     </target>
 
     <target name="release" description="creates an offical release">
@@ -270,11 +271,17 @@
         <echo  message="Attempting to release revison ${release.revision}"/>
         <property name="release.directory" value="${location.build}/release/${release.revision}"/>
         <delete dir="${location.build}"/>
+        <!--/home/pfs/project/a/ar/argo/argo-->
         <svn username="${ssh.username}" password="${ssh.password}">
             <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${release.directory}" revision="${svn.info.rev}"/>
         </svn>
         <subant target="release" buildpath="${release.directory}"/>
-        <!--<sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>-->
-        <!--<scp todir="${ssh.username}@shell.sourceforge.net:~" password="${ssh.password}" localfile="${location.dist}/argo-1.2.jar" trust="true"/>-->
+        <!--<svn username="${ssh.username}" password="${ssh.password}">-->
+            <!--<copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${release.version}" revision="${svn.info.rev}"/>-->
+        <!--</svn>-->
+        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>
+        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/groups/a/ar/argo/" password="${ssh.password}" trust="true">
+            <fileset dir="${release.directory}/build/dist/documentation/"/>
+        </scp>
     </target>
 </project>
