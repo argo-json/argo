@@ -19,8 +19,8 @@ import static argo.jdom.JsonNodeType.*;
 /**
  * <p>Factories for <code>JsonNodeSelectors</code>.</p>
  *
- * <p>Methods in this class fall into two broad catagories - those that take a varargs argument of Objects and naviagate
- * down an entire hierarchy, and those that address a single node in a hierarchy.</p>
+ * <p>Methods in this class fall into two broad catagories - those that take a varargs argument of <code>Object</code>s
+ * and naviagate down an entire hierarchy, and those that address a single node in a hierarchy.</p>
  * <p>For example,
  * <code>aStringNode(Object... pathElements)</code> takes a series of <code>String</code>s and
  * <code>Integer</code>s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
