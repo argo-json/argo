@@ -287,7 +287,7 @@
         <scp todir="${ssh.username},argo@web.sourceforge.net:/home/pfs/project/a/ar/argo/argo/" password="${ssh.password}" trust="true">
             <fileset dir="${release.directory}/build/dist/binaries/"/>
         </scp>
-        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="ln -s /home/groups/a/ar/argo/${version} /home/groups/a/ar/argo/htdocs" trust="true"/>
+        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="rm /home/groups/a/ar/argo/htdocs ; ln -s /home/groups/a/ar/argo/${version} /home/groups/a/ar/argo/htdocs" trust="true"/>
     </target>
 
 </project>
