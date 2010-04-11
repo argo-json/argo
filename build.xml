@@ -288,10 +288,15 @@
             <fileset dir="${release.directory}/build/dist/binaries/"/>
         </scp>
         <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="rm /home/groups/a/ar/argo/htdocs ; ln -s /home/groups/a/ar/argo/${version} /home/groups/a/ar/argo/htdocs" trust="true"/>
+        <propertyfile file="version.properties">
+            <entry key="argo.version.minor" type="int" default="0" operation="+"/>
+        </propertyfile>
+        <svn username="${ssh.username}" password="${ssh.password}">
+            <commit file="version.properties" message="Increment minor revision number post-release."/>
+        </svn>
     </target>
 
     <target name="increment-version-number">
-        
     </target>
 
 </project>
