@@ -271,7 +271,6 @@
         <echo  message="Attempting to release revison ${release.revision}"/>
         <property name="release.directory" value="${location.build}/release/${release.revision}"/>
         <delete dir="${location.build}"/>
-        <!--/home/pfs/project/a/ar/argo/argo-->
         <svn username="${ssh.username}" password="${ssh.password}">
             <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${release.directory}" revision="${svn.info.rev}"/>
         </svn>
@@ -280,11 +279,16 @@
             <!--<copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${release.version}" revision="${svn.info.rev}"/>-->
         <!--</svn>-->
         <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>
-        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/pfs/project/a/ar/argo/argo/" password="${ssh.password}" trust="true">
-            <fileset dir="${release.directory}/build/dist/binaries/"/>
-        </scp>
+        <tar destfile="build/dist/documentation.tar.gz" compression="gzip">
+            <fileset dir="build/dist/documentation/"/>
+        </tar>
         <scp todir="${ssh.username},argo@web.sourceforge.net:/home/groups/a/ar/argo/" password="${ssh.password}" trust="true">
             <fileset dir="${release.directory}/build/dist/documentation/"/>
         </scp>
+        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/pfs/project/a/ar/argo/argo/" password="${ssh.password}" trust="true">
+            <fileset dir="${release.directory}/build/dist/binaries/"/>
+        </scp>
+        <!--<sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="gunzip /home/groups/a/ar/argo/documentation.tar.gz ; tar -xvf /home/groups/a/ar/argo/documentation.tar -C /home/groups/a/ar/argo/ ; rm -rf /home/groups/a/ar/argo/documentation.tar ; ln -s /home/groups/a/ar/argo/${version} /home/groups/a/ar/argo/htdocs" trust="true"/>-->
     </target>
+
 </project>
