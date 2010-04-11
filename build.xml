@@ -233,12 +233,12 @@
         <tstamp>
             <format property="timestamp" pattern="yyyyMMddHHmm" locale="en" timezone="UTC"/>
         </tstamp>
-        <property name="version" value="${argo.version}-${timestamp}"/>
+        <property name="version" value="${argo.version.major}.${argo.version.minor}-${timestamp}"/>
     </target>
 
     <target name="release-version" if="release">
         <property file="version.properties"/>
-        <property name="version" value="${argo.version}"/>
+        <property name="version" value="${argo.version.major}.${argo.version.minor}"/>
     </target>
 
     <target name="determine-version" depends="development-version, release-version">
@@ -276,7 +276,7 @@
         </svn>
         <subant target="prepare-release" buildpath="${release.directory}"/>
         <property file="${release.directory}/version.properties"/>
-        <property name="version" value="${argo.version}"/>
+        <property name="version" value="${argo.version.major}.${argo.version.minor}"/>
         <svn username="${ssh.username}" password="${ssh.password}">
             <copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${version}" revision="${svn.info.rev}" message="Tag for release ${version}."/>
         </svn>
@@ -288,6 +288,10 @@
             <fileset dir="${release.directory}/build/dist/binaries/"/>
         </scp>
         <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="rm /home/groups/a/ar/argo/htdocs ; ln -s /home/groups/a/ar/argo/${version} /home/groups/a/ar/argo/htdocs" trust="true"/>
+    </target>
+
+    <target name="increment-version-number">
+        
     </target>
 
 </project>
