@@ -256,12 +256,12 @@
         <jar basedir="${location.optimisedclasses}" destfile="${location.dist.binaries}/argo-small-${version}.jar"/>
     </target>
 
-    <target name="release" description="creates an offical release">
+    <target name="prepare-release" description="Builds an offical release locally">
         <property name="release" value="true"/>
         <antcall target="distribute"/>
     </target>
 
-    <target name="startSession" description="Does a real release">
+    <target name="distribute-release" description="Does a real release">
         <input addproperty="ssh.username" message="SSH username"/>
         <input addproperty="ssh.password" message="SSH password"/>
         <svn username="${ssh.username}" password="${ssh.password}">
@@ -274,10 +274,10 @@
         <svn username="${ssh.username}" password="${ssh.password}">
             <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${release.directory}" revision="${svn.info.rev}"/>
         </svn>
-        <subant target="release" buildpath="${release.directory}"/>
-        <!--<svn username="${ssh.username}" password="${ssh.password}">-->
-            <!--<copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${release.version}" revision="${svn.info.rev}"/>-->
-        <!--</svn>-->
+        <subant target="prepare-release" buildpath="${release.directory}"/>
+        <svn username="${ssh.username}" password="${ssh.password}">
+            <copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${release.version}" revision="${svn.info.rev}"/>
+        </svn>
         <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>
         <tar destfile="build/dist/documentation.tar.gz" compression="gzip">
             <fileset dir="build/dist/documentation/"/>
@@ -288,7 +288,7 @@
         <scp todir="${ssh.username},argo@web.sourceforge.net:/home/pfs/project/a/ar/argo/argo/" password="${ssh.password}" trust="true">
             <fileset dir="${release.directory}/build/dist/binaries/"/>
         </scp>
-        <!--<sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="gunzip /home/groups/a/ar/argo/documentation.tar.gz ; tar -xvf /home/groups/a/ar/argo/documentation.tar -C /home/groups/a/ar/argo/ ; rm -rf /home/groups/a/ar/argo/documentation.tar ; ln -s /home/groups/a/ar/argo/${version} /home/groups/a/ar/argo/htdocs" trust="true"/>-->
+        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="ln -s /home/groups/a/ar/argo/${version} /home/groups/a/ar/argo/htdocs" trust="true"/>
     </target>
 
 </project>
