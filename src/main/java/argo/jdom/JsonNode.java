@@ -17,9 +17,9 @@ import java.util.Map;
  * An node (leaf or otherwise) in a JSON document.
  *
  * Supplies methods for accessing the contents of this node, and its subnodes, of the form
- * <code>aXXXValue(Object... pathElements)</code>, e.g. <code>aStringValue("bob")</code> will return the JSON String
+ * <code>aXXXValue(Object... pathElements)</code>, e.g. <code>aStringValue("bob")</code> will return the JSON string
  * in a field called "bob", if such a node exists at the root of the <code>JsonNode</code> on which the method is
- * called.  If no field of that name exists, or the field exists, but it isn't a JSON String, an
+ * called.  If no field of that name exists, or the field exists, but it isn't a JSON string, an
  * <code>IllegalArgumentException</code> is thrown. 
  */
 public abstract class JsonNode {
