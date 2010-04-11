@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Mark Slater
+ * Copyright 2010 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,11 +10,11 @@
 
 package argo.jdom;
 
-import static argo.jdom.JsonNodeType.*;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static argo.jdom.JsonNodeType.*;
 
 /**
  * <p>Factories for <code>JsonNodeSelectors</code>.</p>
@@ -24,7 +24,7 @@ import java.util.Map;
  * <p>For example,
  * <code>aStringNode(Object... pathElements)</code> takes a series of <code>String<code>s and
  * <code>Integer</code>s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
- * The <code>String</code>s tell it to select a field with the given name from an object, and the <code>Integer<code>s
+ * The <code>String</code>s tell it to select a field with the given name from an object, and the <code>Integer</code>s
  * tell it to select an element with the given index from an array.</p>
  *
  * <p>By contrast, <code>anArrayNodeWithElement(int index)</code> addresses a single array node only, selecting the
