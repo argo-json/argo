@@ -275,13 +275,12 @@
             <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${release.directory}" revision="${svn.info.rev}"/>
         </svn>
         <subant target="prepare-release" buildpath="${release.directory}"/>
+        <property file="${release.directory}/version.properties"/>
+        <property name="version" value="${argo.version}"/>
         <svn username="${ssh.username}" password="${ssh.password}">
-            <copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${release.version}" revision="${svn.info.rev}"/>
+            <copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${version}" revision="${svn.info.rev}" message="Tag for release ${version}."/>
         </svn>
         <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>
-        <tar destfile="build/dist/documentation.tar.gz" compression="gzip">
-            <fileset dir="build/dist/documentation/"/>
-        </tar>
         <scp todir="${ssh.username},argo@web.sourceforge.net:/home/groups/a/ar/argo/" password="${ssh.password}" trust="true">
             <fileset dir="${release.directory}/build/dist/documentation/"/>
         </scp>
