@@ -17,10 +17,13 @@ import java.util.Map;
  * <p>An node (leaf or otherwise) in a JSON document.</p>
  *
  * <p>Supplies methods for examining the node, and also navigating the hierarchy at and below this node.
- * Methods for navigating the hierarchy are of the form <code>aXXXValue(Object... pathElements)</code>, e.g.
- * <code>aStringValue("bob")</code> will return the JSON string in a field called "bob", if this node has such a field.
- * If no field of that name exists, or the field exists, but it isn't a JSON string, an
- * <code>IllegalArgumentException</code> is thrown.</p> 
+ * Methods for navigating the hierarchy are of the form <code>aXXXValue(Object... pathElements)</code>.
+ * <p>For example,
+ * <code>aStringValue(Object... pathElements)</code> takes a series of <code>String</code>s and
+ * <code>Integer</code>s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
+ * The <code>String</code>s tell it to select a field with the given name from an object, and the <code>Integer</code>s
+ * tell it to select an element with the given index from an array.</p> If no field of that name exists, or the field
+ * exists, but it isn't a JSON string, an <code>IllegalArgumentException</code> is thrown.</p> 
  */
 public abstract class JsonNode {
 
@@ -54,38 +57,101 @@ public abstract class JsonNode {
      */
     public abstract List<JsonNode> getElements();
 
+    /**
+     * Gets a <code>String</code> by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return the <code>String</code> at the path given
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON string.
+     */
     public String aStringValue(final Object... pathElements) {
         return JsonNodeSelectors.aStringNode(pathElements).getValue(this);
     }
 
+    /**
+     * Gets a <code>String</code> or <code>null</code> by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return the <code>String</code> at the path given, or null, if there is a JSON null at the path given.
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON string or a JSON null.
+     */
     public String aNullableStringValue(final Object... pathElements) {
         return JsonNodeSelectors.aNullableStringNode(pathElements).getValue(this);
     }
 
+    /**
+     * Gets a <code>Boolean</code> by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return the <code>Boolean</code> at the path given.
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON boolean.
+     */
     public Boolean aBooleanValue(final Object... pathElements) {
         return JsonNodeSelectors.aBooleanNode(pathElements).getValue(this);
     }
 
+    /**
+     * Gets a <code>Boolean</code> or <code>null</code> by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return the <code>Boolean</code> at the path given, or null, if there is a JSON null at the path given.
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON boolean or a JSON null.
+     */
     public Boolean aNullableBooleanValue(final Object... pathElements) {
         return JsonNodeSelectors.aNullableBooleanNode(pathElements).getValue(this);
     }
 
+    /**
+     * Gets a numeric <code>String</code> by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return the numeric <code>String</code> at the path given.
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON number.
+     */
     public String aNumberValue(final Object... pathElements) {
         return JsonNodeSelectors.aNumberNode(pathElements).getValue(this);
     }
 
+    /**
+     * Gets a numeric <code>String</code> or <code>null</code> by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return the numeric <code>String</code> at the path given, or null, if there is a JSON null at the path given.
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON number or a JSON null.
+     */
     public String aNullableNumberValue(final Object... pathElements) {
         return JsonNodeSelectors.aNullableNumberNode(pathElements).getValue(this);
     }
 
+    /**
+     * Gets a <code>JsonNode</code> representing null by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return a <code>JsonNode</code> representing null.
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON null.
+     */
     public JsonNode aNullNode(final Object... pathElements) {
         return JsonNodeSelectors.aNullNode(pathElements).getValue(this);
     }
 
+    /**
+     * Gets a <code>Map</code> of <code>String</code> field names to <code>JsonNode</code>s, representing a JSON object, by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return a <code>Map</code> of <code>String</code> field names to <code>JsonNode</code>s representing a JSON object.
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON object.
+     */
     public Map<JsonStringNode, JsonNode> anObjectNode(final Object... pathElements) {
         return JsonNodeSelectors.anObjectNode(pathElements).getValue(this);
     }
 
+    /**
+     * Gets a <code>List</code> of <code>JsonNode</code>s, representing a JSON array, by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return a <code>List</code> of <code>JsonNode</code>s representing a JSON array.
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON array.
+     */
     public List<JsonNode> anArrayNode(final Object... pathElements) {
         return JsonNodeSelectors.anArrayNode(pathElements).getValue(this);
     }
