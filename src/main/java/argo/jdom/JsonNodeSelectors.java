@@ -22,7 +22,7 @@ import static argo.jdom.JsonNodeType.*;
  * <p>Methods in this class fall into two broad catagories - those that take a varargs argument of Objects and naviagate
  * down an entire hierarchy, and those that address a single node in a hierarchy.</p>
  * <p>For example,
- * <code>aStringNode(Object... pathElements)</code> takes a series of <code>String<code>s and
+ * <code>aStringNode(Object... pathElements)</code> takes a series of <code>String</code>s and
  * <code>Integer</code>s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
  * The <code>String</code>s tell it to select a field with the given name from an object, and the <code>Integer</code>s
  * tell it to select an element with the given index from an array.</p>
