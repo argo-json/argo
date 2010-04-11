@@ -245,12 +245,13 @@ public final class JsonNodeSelectors {
         return anArrayNode().with(anElement(index));
     }
 
-    private static <T> JsonNodeSelector<JsonNode, T> chainOn(final Object[] pathElements, JsonNodeSelector<JsonNode, T> result) {
+    private static <T> JsonNodeSelector<JsonNode, T> chainOn(final Object[] pathElements, JsonNodeSelector<JsonNode, T> parentSelector) {
+        JsonNodeSelector<JsonNode, T> result = parentSelector;
         for (int i = pathElements.length - 1; i >= 0; i--) {
             if (pathElements[i] instanceof Integer) {
                 result = chainedJsonNodeSelector(anArrayNodeWithElement((Integer) pathElements[i]), result);
             } else if (pathElements[i] instanceof String) {
-                result = chainedJsonNodeSelector(anObjectNodeWithField((String)pathElements[i]), result);
+                result = chainedJsonNodeSelector(anObjectNodeWithField((String) pathElements[i]), result);
             } else {
                 throw new IllegalArgumentException("Element [" + pathElements[i] + "] of path elements" +
                         " [" + Arrays.toString(pathElements) + "] was of illegal type [" + pathElements[i].getClass().getCanonicalName()

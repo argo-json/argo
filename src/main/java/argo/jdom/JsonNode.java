@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An node (leaf or otherwise) in a JSON document.
+ * <p>An node (leaf or otherwise) in a JSON document.</p>
  *
- * Supplies methods for accessing the contents of this node, and its subnodes, of the form
- * <code>aXXXValue(Object... pathElements)</code>, e.g. <code>aStringValue("bob")</code> will return the JSON string
- * in a field called "bob", if such a node exists at the root of the <code>JsonNode</code> on which the method is
- * called.  If no field of that name exists, or the field exists, but it isn't a JSON string, an
- * <code>IllegalArgumentException</code> is thrown. 
+ * <p>Supplies methods for examining the node, and also navigating the hierarchy at and below this node.
+ * Methods for navigating the hierarchy are of the form <code>aXXXValue(Object... pathElements)</code>, e.g.
+ * <code>aStringValue("bob")</code> will return the JSON string in a field called "bob", if this node has such a field.
+ * If no field of that name exists, or the field exists, but it isn't a JSON string, an
+ * <code>IllegalArgumentException</code> is thrown.</p> 
  */
 public abstract class JsonNode {
 
