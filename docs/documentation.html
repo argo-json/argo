@@ -159,7 +159,11 @@ List&lt;String&gt; singles = new AbstractList&lt;String&gt;() {
         JSON numbers - they're treated as <code>String</code>s.  However, helper methods are provided for converting
         these <code>String</code>s to other Java numeric types.  For example, you could retrieve the total royalties
         from the example JSON as follows:</p>
-        <div class="code">BigDecimal totalRoyalties = asBigDecimal(json.aNumberValue("totalRoyalties"));</div>
+        <div class="code">import static argo.format.JsonNumberUtils.asBigDecimal;
+
+...
+
+BigDecimal totalRoyalties = asBigDecimal(json.aNumberValue("totalRoyalties"));</div>
 
         <h3>Parsing JSON into events</h3>
         <p>The <code>SajParser</code> class offers a SAX style interface for parsing JSON.  Given a <code>Reader</code>
@@ -168,11 +172,7 @@ List&lt;String&gt; singles = new AbstractList&lt;String&gt;() {
             encounters parse events, such as the start of the document, the start of a field, or a JSON string.</p>
             <p>The following code extracts the names of all the fields in a piece of JSON.  It assumes
             <code>jsonReader</code> refers to a <code>Reader</code> of the example JSON in the previous section.</p>
-        <div class="code">import static argo.format.JsonNumberUtils.asBigDecimal;
-
-...
-
-private static final SajParser SAJ_PARSER
+        <div class="code">private static final SajParser SAJ_PARSER
         = new SajParser();
 
 ...
