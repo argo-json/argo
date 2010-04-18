@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Mark Slater
+ * Copyright 2010 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,6 +10,8 @@
 
 package argo.jdom;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +42,14 @@ public final class JsonNodeFactories {
 
     public static JsonNode aJsonNumber(final String value) {
         return new JsonNumberNode(value);
+    }
+
+    public static JsonNode aJsonNumber(final BigDecimal value) {
+        return new JsonNumberNode(value.toString());
+    }
+
+    public static JsonNode aJsonNumber(final BigInteger value) {
+        return new JsonNumberNode(value.toString());
     }
 
     public static JsonRootNode aJsonArray(final List<JsonNode> elements) {

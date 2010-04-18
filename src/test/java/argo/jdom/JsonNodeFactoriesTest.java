@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Mark Slater
+ * Copyright 2010 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,13 +10,16 @@
 
 package argo.jdom;
 
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.HashMap;
 
 public final class JsonNodeFactoriesTest {
 
@@ -25,7 +28,7 @@ public final class JsonNodeFactoriesTest {
         assertThat(
                 aJsonArray(
                         aJsonString("Way there")
-                        , aJsonNumber("0.5")
+                        , aJsonNumber(new BigDecimal("0.5"))
                 )
                 , equalTo(
                         aJsonArray(
@@ -47,6 +50,18 @@ public final class JsonNodeFactoriesTest {
                 ,equalTo(aJsonObject(new HashMap<JsonStringNode, JsonNode>(){{
                     put(aJsonString("Gina"), aJsonString("Dreams of running away"));
                     put(aJsonString("Tommy"), aJsonString("Used to work on the dock"));
+                }}))
+        );
+    }
+
+    @Test
+    public void createsJsonNumberNodeUsingABigInteger() throws Exception {
+        assertThat(
+                aJsonObject(
+                aJsonField("Number of shots to give it", aJsonNumber(new BigInteger("1")))
+        )
+                ,equalTo(aJsonObject(new HashMap<JsonStringNode, JsonNode>(){{
+                    put(aJsonString("Number of shots to give it"), aJsonNumber("1"));
                 }}))
         );
     }

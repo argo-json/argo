@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Mark Slater
+ * Copyright 2010 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,15 +10,16 @@
 
 package argo.jdom;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public final class JsonNumberTest {
 
     @Test
     public void testConstructorRejectsNullValue() {
         try {
-            JsonNodeFactories.aJsonNumber(null);
+            JsonNodeFactories.aJsonNumber((String)null);
             fail("Constructing a JsonNumber with a null argument should throw an IllegalArgumentException.");
         } catch (final NullPointerException e) {
             // expect to end up here
