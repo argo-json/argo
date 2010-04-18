@@ -67,6 +67,7 @@
 JsonRootNode json = aJsonObject(
         aJsonField("name", aJsonString("Black Lace"))
         , aJsonField("sales", aJsonNumber("110921"))
+        , aJsonField("totalRoyalties", aJsonNumber("10223.82"))
         , aJsonField("singles", aJsonArray(
                 aJsonString("Superman")
                 , aJsonString("Agadoo")
@@ -82,6 +83,7 @@ JsonRootNode json = aJsonObject(
 JsonObjectNodeBuilder builder = anObjectBuilder()
         .withField("name", aStringBuilder("Black Lace"))
         .withField("sales", aNumberBuilder("110921"))
+        .withField("totalRoyalties", aNumberBuilder("10223.82"))
         .withField("singles", anArrayBuilder()
                 .withElement(aStringBuilder("Superman"))
                 .withElement(aStringBuilder("Agadoo"))
@@ -104,6 +106,7 @@ String jsonText = JSON_FORMATTER.format(json);</div>
         <div class="code">{
     "name": "Black Lace",
     "sales": 110921,
+    "totalRoyalties": 10223.82,
     "singles": [
         "Superman", "Agadoo"
     ]
@@ -148,6 +151,16 @@ List&lt;String&gt; singles = new AbstractList&lt;String&gt;() {
         return SINGLES.getValue(json).size();
     }
 };</div>
+        <p>JSON number handling deserves a brief explanation.  JSON numbers are unlimited precision, and as such, cannot be
+        represented by a Java primative like <code>double</code> or <code>int</code>.  The closest numeric
+        representation offered by Java is <code>BigDecimal</code>, which accurately represents almost all JSON numbers,
+        with the exception of some edge cases (for example, <code>-0</code> and <code>+0</code> are valid JSON numbers,
+        but collapse to <code>BigDecimal.ZERO</code>).  For this reason, Argo doesn't do any implicit conversion of
+        JSON numbers - they're treated as <code>String</code>s.  However, helper methods are provided for converting
+        these <code>String</code>s to other Java numeric types.  For example, you could retrieve the total royalties
+        from the example JSON as follows:</p>
+        <div class="code">BigDecimal totalRoyalties = asBigDecimal(json.aNumberValue("totalRoyalties"));</div>
+
         <h3>Parsing JSON into events</h3>
         <p>The <code>SajParser</code> class offers a SAX style interface for parsing JSON.  Given a <code>Reader</code>
             of a stream of JSON text, and an implementation of <code>JsonListener</code>, the <code>parse</code> method
@@ -155,7 +168,11 @@ List&lt;String&gt; singles = new AbstractList&lt;String&gt;() {
             encounters parse events, such as the start of the document, the start of a field, or a JSON string.</p>
             <p>The following code extracts the names of all the fields in a piece of JSON.  It assumes
             <code>jsonReader</code> refers to a <code>Reader</code> of the example JSON in the previous section.</p>
-        <div class="code">private static final SajParser SAJ_PARSER
+        <div class="code">import static argo.format.JsonNumberUtils.asBigDecimal;
+
+...
+
+private static final SajParser SAJ_PARSER
         = new SajParser();
 
 ...

@@ -20,8 +20,10 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigDecimal;
 import java.util.*;
 
+import static argo.format.JsonNumberUtils.asBigDecimal;
 import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeSelectors.aStringNode;
@@ -37,6 +39,7 @@ public final class MainDocumentationExamples {
     private static final JsonRootNode SAMPLE_JSON = aJsonObject(
             aJsonField("name", aJsonString("Black Lace"))
             , aJsonField("sales", aJsonNumber("110921"))
+            , aJsonField("totalRoyalties", aJsonNumber("10223.82"))
             , aJsonField("singles", aJsonArray(
                     aJsonString("Superman")
                     , aJsonString("Agadoo")
@@ -59,6 +62,7 @@ public final class MainDocumentationExamples {
         JsonRootNode json = aJsonObject(
                 aJsonField("name", aJsonString("Black Lace"))
                 , aJsonField("sales", aJsonNumber("110921"))
+                , aJsonField("totalRoyalties", aJsonNumber("10223.82"))
                 , aJsonField("singles", aJsonArray(
                         aJsonString("Superman")
                         , aJsonString("Agadoo")
@@ -72,6 +76,7 @@ public final class MainDocumentationExamples {
         JsonObjectNodeBuilder builder = anObjectBuilder()
                 .withField("name", aStringBuilder("Black Lace"))
                 .withField("sales", aNumberBuilder("110921"))
+                .withField("totalRoyalties", aNumberBuilder("10223.82"))
                 .withField("singles", anArrayBuilder()
                         .withElement(aStringBuilder("Superman"))
                         .withElement(aStringBuilder("Agadoo"))
@@ -110,8 +115,10 @@ public final class MainDocumentationExamples {
                 return SINGLES.getValue(json).size();
             }
         };
+        BigDecimal totalRoyalties = asBigDecimal(json.aNumberValue("totalRoyalties"));
         assertThat(secondSingle, equalTo("Agadoo"));
         assertThat(singles, equalTo(Arrays.asList("Superman", "Agadoo")));
+        assertThat(totalRoyalties, equalTo(new BigDecimal("10223.82")));
     }
 
     @Test
@@ -145,7 +152,7 @@ public final class MainDocumentationExamples {
             public void falseValue() { }
             public void nullValue() { }
         });
-        assertThat(fieldNames, equalTo((Set<String>)new HashSet<String>(Arrays.asList("name", "sales", "singles"))));
+        assertThat(fieldNames, equalTo((Set<String>)new HashSet<String>(Arrays.asList("name", "sales", "totalRoyalties", "singles"))));
     }
 
     @Test
@@ -165,6 +172,6 @@ try {
         stajParser.close();
     }
 }
-        assertThat(fieldNames, equalTo((Set<String>)new HashSet<String>(Arrays.asList("name", "sales", "singles"))));
+        assertThat(fieldNames, equalTo((Set<String>)new HashSet<String>(Arrays.asList("name", "sales", "totalRoyalties", "singles"))));
     }
 }
