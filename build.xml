@@ -107,19 +107,19 @@
         </javac>
 
         <copy todir="${location.classes}">
-            <fileset dir="src/main/java"/>
+            <fileset dir="src/main"/>
         </copy>
 
         <copy todir="${location.testclasses}">
-            <fileset dir="src/test/java"/>
+            <fileset dir="src/test"/>
         </copy>
 
         <copy todir="${location.performancetestclasses}">
-            <fileset dir="src/performancetest/java"/>
+            <fileset dir="src/performancetest"/>
         </copy>
 
         <copy todir="${location.codesampletestclasses}">
-            <fileset dir="src/codesamples/java"/>
+            <fileset dir="src/codesamples"/>
         </copy>
 
         <echo message="Finished compile"/>
@@ -224,7 +224,7 @@
         </copy>
         <mkdir dir="${location.dist.documentation}/javadoc"/>
         <javadoc destdir="${location.dist.documentation}/javadoc" windowtitle="Argo version ${version}" doctitle="Argo version ${version}">
-            <sourcepath path="${location.src}/java"/>
+            <sourcepath path="${location.src}"/>
         </javadoc>
     </target>
 
