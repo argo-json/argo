@@ -44,6 +44,7 @@ public final class JsonNodeTest {
         assertThat(aJsonNull().isBooleanValue(), equalTo(false));
         assertThat(SAMPLE_JSON.isBooleanValue("some", "missing", "path"), equalTo(false));
         assertThat(aJsonTrue().aBooleanValue(), equalTo(Boolean.TRUE));
+        assertThat(aJsonTrue().getBooleanValue(), equalTo(Boolean.TRUE));
     }
 
     @Test
@@ -52,6 +53,7 @@ public final class JsonNodeTest {
         assertThat(aJsonNull().isNullableBooleanValue(), equalTo(true));
         assertThat(aJsonNumber("12").isNullableBooleanValue(), equalTo(false));
         assertThat(SAMPLE_JSON.aNullableBooleanValue("retirement age"), is(nullValue()));
+        assertThat(SAMPLE_JSON.getNullableBooleanValue("retirement age"), is(nullValue()));
     }
 
     @Test
@@ -61,6 +63,7 @@ public final class JsonNodeTest {
         assertThat(aJsonTrue().isStringValue(), equalTo(false));
         assertThat(aJsonNull().isStringValue(), equalTo(false));
         assertThat(node.aStringValue(), equalTo("hello"));
+        assertThat(node.getStringValue(), equalTo("hello"));
     }
 
     @Test
@@ -71,6 +74,8 @@ public final class JsonNodeTest {
         assertThat(SAMPLE_JSON.isNullableStringValue("some", "missing", "path"), equalTo(false));
         assertThat(SAMPLE_JSON.aNullableStringValue("name"), equalTo("Rossi"));
         assertThat(SAMPLE_JSON.aNullableStringValue("retirement age"), is(nullValue()));
+        assertThat(SAMPLE_JSON.getNullableStringValue("name"), equalTo("Rossi"));
+        assertThat(SAMPLE_JSON.getNullableStringValue("retirement age"), is(nullValue()));
     }
 
     @Test
@@ -80,6 +85,7 @@ public final class JsonNodeTest {
         assertThat(aJsonNull().isNumberValue(), equalTo(false));
         assertThat(aJsonString("Hiya!").isNumberValue(), equalTo(false));
         assertThat(node.aNumberValue(), equalTo("12.1"));
+        assertThat(node.getNumberValue(), equalTo("12.1"));
     }
 
     @Test
@@ -90,6 +96,8 @@ public final class JsonNodeTest {
         assertThat(SAMPLE_JSON.isNullableNumberNode("some", "missing", "path"), equalTo(false));
         assertThat(SAMPLE_JSON.aNullableNumberValue("championships", 2), equalTo("2004"));
         assertThat(SAMPLE_JSON.aNullableNumberValue("retirement age"), is(nullValue()));
+        assertThat(SAMPLE_JSON.getNullableNumberValue("championships", 2), equalTo("2004"));
+        assertThat(SAMPLE_JSON.getNullableNumberValue("retirement age"), is(nullValue()));
     }
 
     @Test
@@ -98,6 +106,7 @@ public final class JsonNodeTest {
         assertThat(SAMPLE_JSON.isNullNode("name"), equalTo(false));
         assertThat(SAMPLE_JSON.isNullNode("some", "missing", "path"), equalTo(false));
         assertThat(SAMPLE_JSON.aNullNode("retirement age"), equalTo(aJsonNull()));
+        assertThat(SAMPLE_JSON.getNullNode("retirement age"), equalTo(aJsonNull()));
     }
 
     @Test
@@ -110,6 +119,7 @@ public final class JsonNodeTest {
         assertThat(aJsonNull().isObjectNode(), equalTo(false));
         assertThat(aJsonString("Some string").isObjectNode(), equalTo(false));
         assertThat(node.anObjectNode(), equalTo(someJsonMappings));
+        assertThat(node.getObjectNode(), equalTo(someJsonMappings));
     }
 
     @Test
@@ -124,6 +134,8 @@ public final class JsonNodeTest {
         assertThat(SAMPLE_JSON.isNullableObjectNode("some", "missing", "path"), equalTo(false));
         assertThat(node.aNullableObjectNode(), equalTo(someJsonMappings));
         assertThat(SAMPLE_JSON.aNullableObjectNode("retirement age"), is(nullValue()));
+        assertThat(node.getNullableObjectNode(), equalTo(someJsonMappings));
+        assertThat(SAMPLE_JSON.getNullableObjectNode("retirement age"), is(nullValue()));
     }
 
     @Test
@@ -134,6 +146,7 @@ public final class JsonNodeTest {
         assertThat(aJsonNull().isArrayNode(), equalTo(false));
         assertThat(aJsonString("Hi").isArrayNode(), equalTo(false));
         assertThat(node.anArrayNode(), equalTo(someJsonNodes));
+        assertThat(node.getArrayNode(), equalTo(someJsonNodes));
     }
 
     @Test
@@ -146,6 +159,8 @@ public final class JsonNodeTest {
         assertThat(SAMPLE_JSON.isNullableArrayNode("some", "missing", "path"), equalTo(false));
         assertThat(node.aNullableArrayNode(), equalTo(someJsonNodes));
         assertThat(SAMPLE_JSON.aNullableArrayNode("retirement age"), is(nullValue()));
+        assertThat(node.getNullableArrayNode(), equalTo(someJsonNodes));
+        assertThat(SAMPLE_JSON.getNullableArrayNode("retirement age"), is(nullValue()));
     }
 
 }
