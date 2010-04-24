@@ -156,7 +156,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return ("a null");
+                return "a null";
             }
         }));
     }
@@ -164,7 +164,7 @@ public final class JsonNodeSelectors {
     public static JsonNodeSelector<JsonNode, List<JsonNode>> anArrayNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, List<JsonNode>>(new Functor<JsonNode, List<JsonNode>>() {
             public boolean matchesNode(final JsonNode jsonNode) {
-                return argo.jdom.JsonNodeType.ARRAY == jsonNode.getType();
+                return ARRAY == jsonNode.getType();
             }
 
             public List<JsonNode> applyTo(final JsonNode jsonNode) {
@@ -178,10 +178,33 @@ public final class JsonNodeSelectors {
         }));
     }
 
+    public static JsonNodeSelector<JsonNode, List<JsonNode>> aNullableArrayNode(final Object... pathElements) {
+        return chainOn(pathElements, new JsonNodeSelector<JsonNode, List<JsonNode>>(new Functor<JsonNode, List<JsonNode>>() {
+            public boolean matchesNode(final JsonNode jsonNode) {
+                return ARRAY == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public List<JsonNode> applyTo(final JsonNode jsonNode) {
+                final List<JsonNode> result;
+                if (ARRAY == jsonNode.getType()) {
+                    result = jsonNode.getElements();
+                } else {
+                    result = null;
+                }
+                return result;
+            }
+
+            @Override
+            public String toString() {
+                return "an array or null";
+            }
+        }));
+    }
+
     public static JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> anObjectNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>>(new Functor<JsonNode, Map<JsonStringNode, JsonNode>>() {
             public boolean matchesNode(final JsonNode jsonNode) {
-                return argo.jdom.JsonNodeType.OBJECT == jsonNode.getType();
+                return OBJECT == jsonNode.getType();
             }
 
             public Map<JsonStringNode, JsonNode> applyTo(final JsonNode jsonNode) {
@@ -191,6 +214,29 @@ public final class JsonNodeSelectors {
             @Override
             public String toString() {
                 return "an object";
+            }
+        }));
+    }
+
+    public static JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> aNullableObjectNode(final Object... pathElements) {
+        return chainOn(pathElements, new JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>>(new Functor<JsonNode, Map<JsonStringNode, JsonNode>>() {
+            public boolean matchesNode(final JsonNode jsonNode) {
+                return OBJECT == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public Map<JsonStringNode, JsonNode> applyTo(final JsonNode jsonNode) {
+                final Map<JsonStringNode, JsonNode> result;
+                if (OBJECT == jsonNode.getType()) {
+                    result = jsonNode.getFields();
+                } else {
+                    result = null;
+                }
+                return result;
+            }
+
+            @Override
+            public String toString() {
+                return "an object or null";
             }
         }));
     }
