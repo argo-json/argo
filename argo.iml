@@ -7,6 +7,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main-new" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/performancetest-new" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test-new" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/codesamples" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/performancetest" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
     <orderEntry type="inheritedJdk" />
