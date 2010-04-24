@@ -547,14 +547,6 @@
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib/performancetest/run" recursive="false" />
     </library>
-    <library name="code sample compile">
-      <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/codesamples/compile" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/lib/codesamples/compile" recursive="false" />
-    </library>
     <library name="build run">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib/build" />
