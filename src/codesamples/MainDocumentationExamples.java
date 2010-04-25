@@ -97,7 +97,7 @@ public final class MainDocumentationExamples {
     public void parsesJsonAndGetsElementsWithCallToJsonNode() throws Exception {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
         final JsonRootNode json = JDOM_PARSER.parse(jsonText);
-        String secondSingle = json.aStringValue("singles", 1);
+        String secondSingle = json.getStringValue("singles", 1);
         assertThat(secondSingle, equalTo("Agadoo"));
     }
 
@@ -115,7 +115,7 @@ public final class MainDocumentationExamples {
                 return SINGLES.getValue(json).size();
             }
         };
-        BigDecimal totalRoyalties = asBigDecimal(json.aNumberValue("totalRoyalties"));
+        BigDecimal totalRoyalties = asBigDecimal(json.getNumberValue("totalRoyalties"));
         assertThat(secondSingle, equalTo("Agadoo"));
         assertThat(singles, equalTo(Arrays.asList("Superman", "Agadoo")));
         assertThat(totalRoyalties, equalTo(new BigDecimal("10223.82")));

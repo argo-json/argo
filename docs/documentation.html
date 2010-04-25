@@ -121,7 +121,7 @@ JsonRootNode json = JDOM_PARSER.parse(jsonText);</div>
         <p>Instances of <code>JsonRootNode</code> are immutable.  <code>JsonRootNode</code> and its parent
         <code>JsonNode</code> provide methods for exploring the generated structure, as specified in the javadoc.  The
         simplest of these are the <code>aXXXValue(Object... pathElements)</code> methods, which are used as follows:</p>
-        <div class="code">String secondSingle = json.aStringValue("singles", 1);</div>
+        <div class="code">String secondSingle = json.getStringValue("singles", 1);</div>
 
         <p>Alternatively, <code>JsonNodeSelector</code>s can be used to extract data from the <code>JsonRootNode</code>
         in a typesafe manner.<code>JsonNodeSelector</code>s are functions that can be applied to <code>JsonNode</code>s to extract a value
@@ -163,7 +163,7 @@ List&lt;String&gt; singles = new AbstractList&lt;String&gt;() {
 
 ...
 
-BigDecimal totalRoyalties = asBigDecimal(json.aNumberValue("totalRoyalties"));</div>
+BigDecimal totalRoyalties = asBigDecimal(json.getNumberValue("totalRoyalties"));</div>
 
         <h3>Parsing JSON into events</h3>
         <p>The <code>SajParser</code> class offers a SAX style interface for parsing JSON.  Given a <code>Reader</code>
