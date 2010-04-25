@@ -16,14 +16,20 @@ import java.util.Map;
 /**
  * <p>An node (leaf or otherwise) in a JSON document.</p>
  *
- * <p>Supplies methods for examining the node, and also navigating the hierarchy at and below this node.
- * Methods for navigating the hierarchy are of the form <code>aXXXValue(Object... pathElements)</code>.
- * <p>For example,
- * <code>aStringValue(Object... pathElements)</code> takes a series of <code>String</code>s and
+ * <p>Supplies methods for examining the node, and also examining and navigating the hierarchy at and below this node.
+ * Methods for navigating the hierarchy are of the form <code>getXXXValue(Object... pathElements)</code>.</p>
+ *
+ * <p>For example, {@link #getStringValue(Object...)} takes a series of <code>String</code>s and
  * <code>Integer</code>s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
  * The <code>String</code>s tell it to select a field with the given name from an object, and the <code>Integer</code>s
  * tell it to select an element with the given index from an array.</p> If no field of that name exists, or the field
- * exists, but it isn't a JSON string, an <code>IllegalArgumentException</code> is thrown.</p> 
+ * exists, but it isn't a JSON string, an <code>IllegalArgumentException</code> is thrown.</p>
+ *
+ * <p>Methods for examining the hierarchy work on the same principal as the
+ * <code>getXXXValue(Object... pathElements)</code> methods, but return a <code>boolean</code> indicating whether
+ * or not the element at the given path exists and is of the type specified, for example,
+ * <code>getStringValue("my field")</code> returns <code>true</code> if the node has a field called
+ * "<code>my field</code>", and its value is a JSON string.</p>
  */
 public abstract class JsonNode {
 
@@ -57,6 +63,12 @@ public abstract class JsonNode {
      */
     public abstract List<JsonNode> getElements();
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON boolean, i.e. a JSON true or a JSON false.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON boolean exists at the path given.
+     */
     public final boolean isBooleanValue(final Object... pathElements) {
         return JsonNodeSelectors.aBooleanNode(pathElements).matches(this);
     }
@@ -84,6 +96,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.aBooleanNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON boolean or a JSON null.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON boolean or a JSON null exists at the path given.
+     */
     public final boolean isNullableBooleanValue(final Object... pathElements) {
         return JsonNodeSelectors.aNullableBooleanNode(pathElements).matches(this);
     }
@@ -111,6 +129,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.aNullableBooleanNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON string.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON string exists at the path given.
+     */
     public final boolean isStringValue(final Object... pathElements) {
         return JsonNodeSelectors.aStringNode(pathElements).matches(this);
     }
@@ -138,6 +162,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.aStringNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON string or a JSON null.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON string or a JSON null exists at the path given.
+     */
     public final boolean isNullableStringValue(final Object... pathElements) {
         return JsonNodeSelectors.aNullableStringNode(pathElements).matches(this);
     }
@@ -165,6 +195,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.aNullableStringNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON number.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON number exists at the path given.
+     */
     public final boolean isNumberValue(final Object... pathElements) {
         return JsonNodeSelectors.aNumberNode(pathElements).matches(this);
     }
@@ -192,6 +228,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.aNumberNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON number or a JSON null.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON number or a JSON null exists at the path given.
+     */
     public final boolean isNullableNumberNode(final Object... pathElements) {
         return JsonNodeSelectors.aNullableNumberNode(pathElements).matches(this);
     }
@@ -219,6 +261,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.aNullableNumberNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON null.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON null exists at the path given.
+     */
     public final boolean isNullNode(final Object... pathElements) {
         return JsonNodeSelectors.aNullNode(pathElements).matches(this);
     }
@@ -246,6 +294,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.aNullNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON object.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON object exists at the path given.
+     */
     public final boolean isObjectNode(final Object... pathElements) {
         return JsonNodeSelectors.anObjectNode(pathElements).matches(this);
     }
@@ -273,6 +327,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.anObjectNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON object or a JSON null.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON object or a JSON null exists at the path given.
+     */
     public final boolean isNullableObjectNode(final Object... pathElements) {
         return JsonNodeSelectors.aNullableObjectNode(pathElements).matches(this);
     }
@@ -300,6 +360,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.aNullableObjectNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON array.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON array exists at the path given.
+     */
     public final boolean isArrayNode(final Object... pathElements) {
         return JsonNodeSelectors.anArrayNode(pathElements).matches(this);
     }
@@ -327,6 +393,12 @@ public abstract class JsonNode {
         return JsonNodeSelectors.anArrayNode(pathElements).getValue(this);
     }
 
+    /**
+     * Determines whether the node at the given path exists and is a JSON array or a JSON null.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON array or a JSON null exists at the path given.
+     */
     public final boolean isNullableArrayNode(final Object... pathElements) {
         return JsonNodeSelectors.aNullableArrayNode(pathElements).matches(this);
     }

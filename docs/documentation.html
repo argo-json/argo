@@ -122,7 +122,8 @@ JsonRootNode json = JDOM_PARSER.parse(jsonText);</div>
         <code>JsonNode</code> provide methods for exploring the generated structure, as specified in the javadoc.  The
         simplest of these are the <code>aXXXValue(Object... pathElements)</code> methods, which are used as follows:</p>
         <div class="code">String secondSingle = json.getStringValue("singles", 1);</div>
-
+        <p>It is also possible to check that the node at a particular path is of the required type as follows:</p>
+        <div class="code">boolean isString = json.isStringValue("singles", 1);</code>
         <p>Alternatively, <code>JsonNodeSelector</code>s can be used to extract data from the <code>JsonRootNode</code>
         in a typesafe manner.<code>JsonNodeSelector</code>s are functions that can be applied to <code>JsonNode</code>s to extract a value
             or a child <code>JsonNode</code>.  The <code>JsonNodeSelectors</code> class provides a number of factory

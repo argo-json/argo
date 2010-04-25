@@ -98,6 +98,8 @@ public final class MainDocumentationExamples {
         final JsonRootNode json = JDOM_PARSER.parse(jsonText);
         String secondSingle = json.getStringValue("singles", 1);
         assertThat(secondSingle, equalTo("Agadoo"));
+        boolean isString = json.isStringValue("singles", 1);
+        assertThat(isString, equalTo(true));
     }
 
     @Test
