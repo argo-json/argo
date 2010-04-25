@@ -125,7 +125,7 @@ public final class MainDocumentationExamples {
     public void producesJsonBackedObject() throws Exception {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
         final JsonRootNode json = JDOM_PARSER.parse(jsonText);
-        final SimpleExample simpleExample = new JsonBackedSimpleExample(json);
+        final SimpleExample simpleExample = new SimpleExample(json);
         System.out.println("simpleExample.getName() = " + simpleExample.getName());
         System.out.println("simpleExample.getSales() = " + simpleExample.getSales());
         System.out.println("simpleExample.getSingles() = " + simpleExample.getSingles());
