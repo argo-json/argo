@@ -120,7 +120,7 @@ String jsonText = JSON_FORMATTER.format(json);</div>
 JsonRootNode json = JDOM_PARSER.parse(jsonText);</div>
         <p>Instances of <code>JsonRootNode</code> are immutable.  <code>JsonRootNode</code> and its parent
         <code>JsonNode</code> provide methods for exploring the generated structure, as specified in the javadoc.  The
-        simplest of these are the <code>aXXXValue(Object... pathElements)</code> methods, which are used as follows:</p>
+        simplest of these are the <code>getXXXValue(Object... pathElements)</code> methods, which are used as follows:</p>
         <div class="code">String secondSingle = json.getStringValue("singles", 1);</div>
         <p>It is also possible to check that the node at a particular path is of the required type as follows:</p>
         <div class="code">boolean isString = json.isStringValue("singles", 1);</div>
