@@ -14,12 +14,15 @@ import org.junit.Test;
 
 import java.io.File;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 public final class SimpleJdomExamples {
 
     @Test
     public void ParseSimpleExample() throws Exception {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
-String secondSingle = new JdomParser().parse(jsonText).aStringValue("singles", 1);
-        System.out.println("secondSingle = " + secondSingle);
+String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
+        assertThat(secondSingle, equalTo("Agadoo"));
     }
 }

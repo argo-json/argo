@@ -54,7 +54,7 @@
 }</div>
         <p>We can use Argo to get the second single like this:</p>
         <div class="code">String secondSingle = new JdomParser().parse(jsonText)
-    .aStringValue("singles", 1);</div>
+    .getStringValue("singles", 1);</div>
         <p>On the first line, we parse the JSON text into an object hierarchy.  There are various options for navigating
             this, but the simplest is just to give the path and type of node we expect.</p>
         <p>On line two, we ask for the JSON string at index 1 of the array in the
