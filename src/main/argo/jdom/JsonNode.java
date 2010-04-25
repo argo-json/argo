@@ -64,7 +64,7 @@ public abstract class JsonNode {
     public abstract List<JsonNode> getElements();
 
     /**
-     * Determines whether the node at the given path exists and is a JSON boolean, i.e. a JSON true or a JSON false.
+     * Determines whether the node at the given path exists and is a JSON boolean.
      *
      * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON boolean exists at the path given.
