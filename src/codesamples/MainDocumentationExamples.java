@@ -89,7 +89,6 @@ public final class MainDocumentationExamples {
     public void formatsJson() throws Exception {
         final JsonRootNode json = SAMPLE_JSON;
         String jsonText = JSON_FORMATTER.format(json);
-        System.out.println("jsonText = " + jsonText);
         assertThat(JDOM_PARSER.parse(jsonText), equalTo(SAMPLE_JSON));
     }
 
@@ -119,16 +118,6 @@ public final class MainDocumentationExamples {
         assertThat(secondSingle, equalTo("Agadoo"));
         assertThat(singles, equalTo(Arrays.asList("Superman", "Agadoo")));
         assertThat(totalRoyalties, equalTo(new BigDecimal("10223.82")));
-    }
-
-    @Test
-    public void producesJsonBackedObject() throws Exception {
-        final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
-        final JsonRootNode json = JDOM_PARSER.parse(jsonText);
-        final SimpleExample simpleExample = new SimpleExample(json);
-        System.out.println("simpleExample.getName() = " + simpleExample.getName());
-        System.out.println("simpleExample.getSales() = " + simpleExample.getSales());
-        System.out.println("simpleExample.getSingles() = " + simpleExample.getSingles());
     }
 
     @Test
