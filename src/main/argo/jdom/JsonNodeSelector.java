@@ -35,7 +35,7 @@ public final class JsonNodeSelector<T, U> {
     /**
      * Determines whether this <code>JsonNodeSelector</code> can exctract a value from the given <code>JsonNode</code>.
      * @param jsonNode the <code>JsonNode</code> to test.
-     * @return true if a value can be extracted from the given <code>JsonNode</code>, false otherwise. 
+     * @return true if a value can be extracted from the given <code>JsonNode</code>, false otherwise.
      */
     public boolean matches(final T jsonNode) {
         return valueGetter.matchesNode(jsonNode);
@@ -46,14 +46,10 @@ public final class JsonNodeSelector<T, U> {
      *
      * @param argument the <code>JsonNode</code> to extract a value from.
      * @return the extracted value.
-     * @throws IllegalArgumentException if calling <code>matches<code> with the given <code>JsonNode</code> would return false, indicating no value can be extracted from it. 
+     * @throws IllegalArgumentException if calling <code>matches<code> with the given <code>JsonNode</code> would return false, indicating no value can be extracted from it.
      */
     public U getValue(final T argument) {
-        if (!matches(argument)) {
-            throw new IllegalArgumentException("Argument [" + argument + "] does not match the requirments of this selector.");
-        } else {
-            return valueGetter.applyTo(argument);
-        }
+        return valueGetter.applyTo(argument);
     }
 
     /**
@@ -62,7 +58,7 @@ public final class JsonNodeSelector<T, U> {
      * <p>For example, if we have <code>JsonNodeSelectors</code> for the first element of an array, and another that
      * selects the second element of an array, and we chain them together in that order, we will get a selector that
      * works on nested arrays, selecting the second element from an array stored in the first element of a parent
-     * array.</p> 
+     * array.</p>
      *
      * @param childJsonNodeSelector the <code>JsonNodeSelector</code> to chain onto this.
      * @param <V> the type the chained <code>JsonNodeSelector</code> will return.

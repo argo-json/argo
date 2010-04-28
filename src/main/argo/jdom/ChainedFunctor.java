@@ -24,7 +24,19 @@ final class ChainedFunctor<T, U, V> implements Functor<T, V> {
     }
 
     public V applyTo(final T jsonNode) {
-        return childJsonNodeSelector.getValue(parentJsonNodeSelector.getValue(jsonNode));
+        final U parent;
+        try {
+            parent = parentJsonNodeSelector.getValue(jsonNode);
+        } catch (JsonNodeDoesNotMatchJsonNodeSelectorException e) {
+            throw new JsonNodeDoesNotMatchJsonNodeSelectorException(e, parentJsonNodeSelector);
+        }
+        final V value;
+        try {
+            value = childJsonNodeSelector.getValue(parent);
+        } catch (JsonNodeDoesNotMatchJsonNodeSelectorException e) {
+            throw new JsonNodeDoesNotMatchJsonNodeSelectorException(e, childJsonNodeSelector);
+        }
+        return value;
     }
 
     @Override
