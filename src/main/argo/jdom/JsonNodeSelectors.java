@@ -40,6 +40,10 @@ public final class JsonNodeSelectors {
                 return STRING == jsonNode.getType();
             }
 
+            public String shortForm() {
+                return "A short form string";
+            }
+
             public String typeSafeApplyTo(final JsonNode jsonNode) {
                 return jsonNode.getText();
             }
@@ -55,6 +59,10 @@ public final class JsonNodeSelectors {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new LeafFunctor<JsonNode, String>() {
             public boolean matchesNode(final JsonNode jsonNode) {
                 return STRING == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public String shortForm() {
+                return "A short form nullable string";
             }
 
             public String typeSafeApplyTo(final JsonNode jsonNode) {
@@ -74,6 +82,10 @@ public final class JsonNodeSelectors {
                 return NUMBER == jsonNode.getType();
             }
 
+            public String shortForm() {
+                return "A short form nullable number";
+            }
+
             public String typeSafeApplyTo(final JsonNode jsonNode) {
                 return jsonNode.getText();
             }
@@ -89,6 +101,10 @@ public final class JsonNodeSelectors {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new LeafFunctor<JsonNode, String>() {
             public boolean matchesNode(final JsonNode jsonNode) {
                 return NUMBER == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public String shortForm() {
+                return "A short form nullable number";
             }
 
             public String typeSafeApplyTo(final JsonNode jsonNode) {
@@ -108,6 +124,10 @@ public final class JsonNodeSelectors {
                 return TRUE == jsonNode.getType() || FALSE == jsonNode.getType();
             }
 
+            public String shortForm() {
+                return "A short form boolean";
+            }
+
             public Boolean typeSafeApplyTo(final JsonNode jsonNode) {
                 return TRUE == jsonNode.getType();
             }
@@ -123,6 +143,10 @@ public final class JsonNodeSelectors {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, Boolean>(new LeafFunctor<JsonNode, Boolean>() {
             public boolean matchesNode(final JsonNode jsonNode) {
                 return TRUE == jsonNode.getType() || FALSE == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public String shortForm() {
+                return "A short form nullable boolean";
             }
 
             public Boolean typeSafeApplyTo(final JsonNode jsonNode) {
@@ -150,6 +174,10 @@ public final class JsonNodeSelectors {
                 return argo.jdom.JsonNodeType.NULL == jsonNode.getType();
             }
 
+            public String shortForm() {
+                return "A short form null";
+            }
+
             public JsonNode typeSafeApplyTo(final JsonNode jsonNode) {
                 return jsonNode;
             }
@@ -167,6 +195,10 @@ public final class JsonNodeSelectors {
                 return ARRAY == jsonNode.getType();
             }
 
+            public String shortForm() {
+                return "A short form array";
+            }
+
             public List<JsonNode> typeSafeApplyTo(final JsonNode jsonNode) {
                 return jsonNode.getElements();
             }
@@ -182,6 +214,10 @@ public final class JsonNodeSelectors {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, List<JsonNode>>(new LeafFunctor<JsonNode, List<JsonNode>>() {
             public boolean matchesNode(final JsonNode jsonNode) {
                 return ARRAY == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public String shortForm() {
+                return "A short form array";
             }
 
             public List<JsonNode> typeSafeApplyTo(final JsonNode jsonNode) {
@@ -207,6 +243,10 @@ public final class JsonNodeSelectors {
                 return OBJECT == jsonNode.getType();
             }
 
+            public String shortForm() {
+                return "A short form object";
+            }
+
             public Map<JsonStringNode, JsonNode> typeSafeApplyTo(final JsonNode jsonNode) {
                 return jsonNode.getFields();
             }
@@ -222,6 +262,10 @@ public final class JsonNodeSelectors {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>>(new LeafFunctor<JsonNode, Map<JsonStringNode, JsonNode>>() {
             public boolean matchesNode(final JsonNode jsonNode) {
                 return OBJECT == jsonNode.getType() || NULL == jsonNode.getType();
+            }
+
+            public String shortForm() {
+                return "A short form nullable object";
             }
 
             public Map<JsonStringNode, JsonNode> typeSafeApplyTo(final JsonNode jsonNode) {
@@ -252,6 +296,10 @@ public final class JsonNodeSelectors {
                 return jsonNode.containsKey(fieldName);
             }
 
+            public String shortForm() {
+                return "\"" + fieldName.getText() + "\"";
+            }
+
             public JsonNode typeSafeApplyTo(Map<JsonStringNode, JsonNode> jsonNode) {
                 return jsonNode.get(fieldName);
             }
@@ -275,6 +323,10 @@ public final class JsonNodeSelectors {
         return new JsonNodeSelector<List<JsonNode>, JsonNode>(new LeafFunctor<List<JsonNode>, JsonNode>() {
             public boolean matchesNode(final List<JsonNode> jsonNode) {
                 return jsonNode.size() > index;
+            }
+
+            public String shortForm() {
+                return Integer.toString(index);
             }
 
             public JsonNode typeSafeApplyTo(final List<JsonNode> jsonNode) {

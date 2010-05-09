@@ -10,7 +10,6 @@
 
 package argo.jdom;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -167,38 +166,42 @@ public final class JsonNodeTest {
     }
 
     @Test
-    @Ignore
+    public void getArrayNodeFromObjectHandledNicely() throws Exception {
+        try {
+            SAMPLE_JSON.getStringValue("championships", 2, 12);
+            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
+        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
+            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".2.12]"));
+        }
+    }
+
+    @Test
     public void getFromWrongTypeOfPathElementsHandledNicely() throws Exception {
         try {
             SAMPLE_JSON.getStringValue("championships", "bob", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getFailPath(), equalTo(asList((Object)"championships", "bob")));
-            assertThat(e.getMessage(), startsWith("Failed to match \"championships\", \"bob\", 2 at \"championships\", \"bob\" - wasn't an object in"));
+            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".\"bob\"]"));
         }
     }
 
     @Test
-    @Ignore
     public void getFromMissingFieldNameElementsHandledNicely() throws Exception {
         try {
             SAMPLE_JSON.getStringValue("wrong field name", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getFailPath(), equalTo(asList((Object)"wrong field name", "bob")));
-            assertThat(e.getMessage(), startsWith("Failed to match \"wrong field name\", 2 at \"wrong field name\" - wasn't a valid field in object in"));
+            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"wrong field name\"]"));
         }
     }
 
     @Test
-    @Ignore
     public void getFromMissingIndexElementsHandledNicely() throws Exception {
         try {
             SAMPLE_JSON.getStringValue("championships", 22);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getFailPath(), equalTo(asList((Object)"championships", 22)));
-            assertThat(e.getMessage(), startsWith("Failed to match \"championships\", 22 at \"championships\", 22 - wasn't a valid index in array in"));
+            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".22]"));
         }
     }
 }

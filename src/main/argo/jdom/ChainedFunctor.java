@@ -10,6 +10,9 @@
 
 package argo.jdom;
 
+import static argo.jdom.JsonNodeDoesNotMatchJsonNodeSelectorException.createChainedJsonNodeDoesNotMatchJsonNodeSelectorException;
+import static argo.jdom.JsonNodeDoesNotMatchJsonNodeSelectorException.createUnchainedJsonNodeDoesNotMatchJsonNodeSelectorException;
+
 final class ChainedFunctor<T, U, V> implements Functor<T, V> {
     private final JsonNodeSelector<T, U> parentJsonNodeSelector;
     private final JsonNodeSelector<U, V> childJsonNodeSelector;
@@ -28,15 +31,19 @@ final class ChainedFunctor<T, U, V> implements Functor<T, V> {
         try {
             parent = parentJsonNodeSelector.getValue(jsonNode);
         } catch (JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            throw new JsonNodeDoesNotMatchJsonNodeSelectorException(e, parentJsonNodeSelector);
+            throw createUnchainedJsonNodeDoesNotMatchJsonNodeSelectorException(e, parentJsonNodeSelector);
         }
         final V value;
         try {
             value = childJsonNodeSelector.getValue(parent);
         } catch (JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            throw new JsonNodeDoesNotMatchJsonNodeSelectorException(e, childJsonNodeSelector);
+            throw createChainedJsonNodeDoesNotMatchJsonNodeSelectorException(e, parentJsonNodeSelector);
         }
         return value;
+    }
+
+    public String shortForm() {
+        return childJsonNodeSelector.shortForm();
     }
 
     @Override

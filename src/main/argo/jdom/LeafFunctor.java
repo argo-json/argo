@@ -13,7 +13,7 @@ package argo.jdom;
 abstract class LeafFunctor<T, V> implements Functor<T, V> {
     public final V applyTo(final T jsonNode) {
         if (!matchesNode(jsonNode)) {
-            throw new JsonNodeDoesNotMatchJsonNodeSelectorException(this);
+            throw JsonNodeDoesNotMatchJsonNodeSelectorException.createJsonNodeDoesNotMatchJsonNodeSelectorException(this);
         } else {
             return typeSafeApplyTo(jsonNode);
         }

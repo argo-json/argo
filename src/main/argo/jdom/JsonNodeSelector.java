@@ -26,7 +26,7 @@ package argo.jdom;
  */
 public final class JsonNodeSelector<T, U> {
 
-    private final Functor<T, U> valueGetter;
+    final Functor<T, U> valueGetter;
 
     JsonNodeSelector(final Functor<T, U> valueGetter) {
         this.valueGetter = valueGetter;
@@ -66,6 +66,10 @@ public final class JsonNodeSelector<T, U> {
      */
     public <V> JsonNodeSelector<T, V> with(final JsonNodeSelector<U, V> childJsonNodeSelector) {
         return new JsonNodeSelector<T,V>(new ChainedFunctor<T, U, V>(this, childJsonNodeSelector));
+    }
+
+    String shortForm() {
+        return valueGetter.shortForm();
     }
 
     @Override
