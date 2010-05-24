@@ -10,13 +10,32 @@
 
 package argo.jdom;
 
+import static argo.jdom.JsonNodeDoesNotMatchChainedJsonNodeSelectorException.getShortFormFailPath;
+
 public final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMatchJsonNodeSelectorException {
 
-    static JsonNodeDoesNotMatchPathElementsException jsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchJsonNodeSelectorException delegate, final Object[] pathElements) {
+    static JsonNodeDoesNotMatchPathElementsException jsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements) {
         return new JsonNodeDoesNotMatchPathElementsException(delegate, pathElements);
     }
 
-    private JsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchJsonNodeSelectorException s, final Object[] pathElements) {
-        super(s.getMessage() + "path elements were..." + pathElements);
+    private JsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements) {
+        super(formatMessage(delegate, pathElements));
+    }
+
+    private static String formatMessage(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements) {
+        return "Failed to match any JSON node at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "].";
+    }
+
+    private static String commaSeparate(final Object[] pathElements) {
+        final StringBuilder result = new StringBuilder();
+        boolean firstElement = true;
+        for (Object pathElement : pathElements) {
+            if (!firstElement) {
+                result.append(".");
+            }
+            firstElement = false;
+            result.append(pathElement);
+        }
+        return result.toString();
     }
 }
