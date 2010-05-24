@@ -10,14 +10,13 @@
 
 package argo.jdom;
 
-abstract class LeafFunctor<T, V> implements Functor<T, V> {
-    public final V applyTo(final T jsonNode) {
-        if (!matchesNode(jsonNode)) {
-            throw JsonNodeDoesNotMatchChainedJsonNodeSelectorException.createJsonNodeDoesNotMatchJsonNodeSelectorException(this);
-        } else {
-            return typeSafeApplyTo(jsonNode);
-        }
+public final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMatchJsonNodeSelectorException {
+
+    static JsonNodeDoesNotMatchPathElementsException jsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchJsonNodeSelectorException delegate, final Object[] pathElements) {
+        return new JsonNodeDoesNotMatchPathElementsException(delegate, pathElements);
     }
 
-    protected abstract V typeSafeApplyTo(final T jsonNode);
+    private JsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchJsonNodeSelectorException s, final Object[] pathElements) {
+        super(s.getMessage() + "path elements were..." + pathElements);
+    }
 }

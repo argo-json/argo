@@ -13,6 +13,8 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
+import static argo.jdom.JsonNodeDoesNotMatchPathElementsException.jsonNodeDoesNotMatchPathElementsException;
+
 /**
  * <p>An node (leaf or otherwise) in a JSON document.</p>
  *
@@ -93,7 +95,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON boolean.
      */
     public final Boolean getBooleanValue(final Object... pathElements) {
-        return JsonNodeSelectors.aBooleanNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.aBooleanNode(pathElements), this, pathElements);
     }
 
     /**
@@ -126,7 +128,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON boolean or a JSON null.
      */
     public final Boolean getNullableBooleanValue(final Object... pathElements) {
-        return JsonNodeSelectors.aNullableBooleanNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.aNullableBooleanNode(pathElements),this, pathElements);
     }
 
     /**
@@ -159,7 +161,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON string.
      */
     public final String getStringValue(final Object... pathElements) {
-        return JsonNodeSelectors.aStringNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.aStringNode(pathElements), this, pathElements);
     }
 
     /**
@@ -192,7 +194,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON string or a JSON null.
      */
     public final String getNullableStringValue(final Object... pathElements) {
-        return JsonNodeSelectors.aNullableStringNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.aNullableStringNode(pathElements), this, pathElements);
     }
 
     /**
@@ -225,7 +227,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON number.
      */
     public final String getNumberValue(final Object... pathElements) {
-        return JsonNodeSelectors.aNumberNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.aNumberNode(pathElements), this, pathElements);
     }
 
     /**
@@ -258,7 +260,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON number or a JSON null.
      */
     public final String getNullableNumberValue(final Object... pathElements) {
-        return JsonNodeSelectors.aNullableNumberNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.aNullableNumberNode(pathElements), this, pathElements);
     }
 
     /**
@@ -291,7 +293,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON null.
      */
     public final JsonNode getNullNode(final Object... pathElements) {
-        return JsonNodeSelectors.aNullNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.aNullNode(pathElements), this, pathElements);
     }
 
     /**
@@ -324,7 +326,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON object.
      */
     public final Map<JsonStringNode, JsonNode> getObjectNode(final Object... pathElements) {
-        return JsonNodeSelectors.anObjectNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.anObjectNode(pathElements), this, pathElements);
     }
 
     /**
@@ -357,7 +359,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON object or a JSON null.
      */
     public final Map<JsonStringNode, JsonNode> getNullableObjectNode(final Object... pathElements) {
-        return JsonNodeSelectors.aNullableObjectNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.aNullableObjectNode(pathElements), this, pathElements);
     }
 
     /**
@@ -390,7 +392,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON array.
      */
     public final List<JsonNode> getArrayNode(final Object... pathElements) {
-        return JsonNodeSelectors.anArrayNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.anArrayNode(pathElements), this, pathElements);
     }
 
     /**
@@ -423,6 +425,14 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON array or a JSON null.
      */
     public final List<JsonNode> getNullableArrayNode(final Object... pathElements) {
-        return JsonNodeSelectors.aNullableArrayNode(pathElements).getValue(this);
+        return wrapExceptionsFor(JsonNodeSelectors.aNullableArrayNode(pathElements), this, pathElements);
+    }
+
+    private <T, V> T wrapExceptionsFor(final JsonNodeSelector<V, T> value, final V node, final Object[] pathElements) throws JsonNodeDoesNotMatchPathElementsException {
+        try {
+            return value.getValue(node);
+        } catch (JsonNodeDoesNotMatchChainedJsonNodeSelectorException e) {
+            throw jsonNodeDoesNotMatchPathElementsException(e, pathElements);
+        }
     }
 }

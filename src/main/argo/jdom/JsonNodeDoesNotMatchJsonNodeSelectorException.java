@@ -10,55 +10,8 @@
 
 package argo.jdom;
 
-import java.util.LinkedList;
-import java.util.List;
-
-public final class JsonNodeDoesNotMatchJsonNodeSelectorException extends IllegalArgumentException {
-
-    private final Functor failedNode;
-
-    static JsonNodeDoesNotMatchJsonNodeSelectorException createJsonNodeDoesNotMatchJsonNodeSelectorException(final Functor failedNode) {
-        return new JsonNodeDoesNotMatchJsonNodeSelectorException(failedNode, new LinkedList<JsonNodeSelector>());
-    }
-
-    static JsonNodeDoesNotMatchJsonNodeSelectorException createChainedJsonNodeDoesNotMatchJsonNodeSelectorException(final JsonNodeDoesNotMatchJsonNodeSelectorException e,
-                                                                                                                           final JsonNodeSelector parentJsonNodeSelector) {
-        final LinkedList<JsonNodeSelector> chainedFailPath = new LinkedList<JsonNodeSelector>(e.failPath);
-        chainedFailPath.add(parentJsonNodeSelector);
-        return new JsonNodeDoesNotMatchJsonNodeSelectorException(e.failedNode, chainedFailPath);
-    }
-
-    static JsonNodeDoesNotMatchJsonNodeSelectorException createUnchainedJsonNodeDoesNotMatchJsonNodeSelectorException(final JsonNodeDoesNotMatchJsonNodeSelectorException e,
-                                                                                                                           final JsonNodeSelector parentJsonNodeSelector) {
-        final LinkedList<JsonNodeSelector> unchainedFailPath = new LinkedList<JsonNodeSelector>();
-        unchainedFailPath.add(parentJsonNodeSelector);
-        return new JsonNodeDoesNotMatchJsonNodeSelectorException(e.failedNode, unchainedFailPath);
-    }
-
-    private final List<JsonNodeSelector> failPath;
-
-    private JsonNodeDoesNotMatchJsonNodeSelectorException(final Functor failedNode, final List<JsonNodeSelector> failPath) {
-        super("Failed to match any JSON node at [" + getShortFormFailPath(failPath) + "]");
-        this.failedNode = failedNode;
-        this.failPath = failPath;
-    }
-
-    private static String getShortFormFailPath(final List<JsonNodeSelector> failPath) {
-        StringBuilder result = new StringBuilder();
-        for (int i = failPath.size()-1; i >= 0; i--) {
-            result.append(failPath.get(i).shortForm());
-            if (i != 0) {
-                result.append(".");
-            }
-        }
-        return result.toString();
-    }
-
-    @Override
-    public String toString() {
-        return "JsonNodeDoesNotMatchJsonNodeSelectorException{" +
-                "failedNode=" + failedNode +
-                ", failPath=" + failPath +
-                '}';
+public class JsonNodeDoesNotMatchJsonNodeSelectorException extends IllegalArgumentException {
+    JsonNodeDoesNotMatchJsonNodeSelectorException(final String s) {
+        super(s);
     }
 }
