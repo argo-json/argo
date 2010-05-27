@@ -34,7 +34,11 @@ public final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoe
                 result.append(".");
             }
             firstElement = false;
-            result.append(pathElement);
+            if (pathElement instanceof String) {
+                result.append("\"").append(pathElement).append("\"");
+            } else {
+                result.append(pathElement);
+            }
         }
         return result.toString();
     }

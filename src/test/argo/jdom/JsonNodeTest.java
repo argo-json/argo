@@ -181,7 +181,7 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("championships", "bob", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".\"bob\"]"));
+            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".\"bob\"] while resolving [\"championships\".\"bob\".2]"));
         }
     }
 
@@ -191,7 +191,7 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("wrong field name", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"wrong field name\"]"));
+            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"wrong field name\"] while resolving [\"wrong field name\".2"));
         }
     }
 
@@ -201,7 +201,7 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("championships", 22);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".22]"));
+            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".22] while resolving [\"championships\".22]"));
         }
     }
 }
