@@ -306,7 +306,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "a field called [" + fieldName.getText() + "]";
+                return "a field called [\"" + fieldName.getText() + "\"]";
             }
         });
     }

@@ -171,7 +171,7 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("championships", 2, 12);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), equalTo("Failed to match any JSON node at [\"championships\".2.12] while resolving [\"championships\".2.12] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
+            assertThat(e.getMessage(), equalTo("Failed to find an array at [\"championships\".2.12] while resolving [\"championships\".2.12] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
         }
     }
 
@@ -181,7 +181,7 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("championships", "bob", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), equalTo("Failed to match any JSON node at [\"championships\".\"bob\"] while resolving [\"championships\".\"bob\".2] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
+            assertThat(e.getMessage(), equalTo("Failed to find an object at [\"championships\".\"bob\"] while resolving [\"championships\".\"bob\".2] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
         }
     }
 
@@ -191,7 +191,7 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("wrong field name", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), equalTo("Failed to match any JSON node at [\"wrong field name\"] while resolving [\"wrong field name\".2] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
+            assertThat(e.getMessage(), equalTo("Failed to find a field called [\"wrong field name\"] at [\"wrong field name\"] while resolving [\"wrong field name\".2] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
         }
     }
 
@@ -203,7 +203,7 @@ public final class JsonNodeTest {
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
             assertThat(
                     e.getMessage(),
-                    equalTo("Failed to match any JSON node at [\"championships\".22] while resolving [\"championships\".22] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
+                    equalTo("Failed to find an element at index [22] at [\"championships\".22] while resolving [\"championships\".22] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
         }
     }
 }

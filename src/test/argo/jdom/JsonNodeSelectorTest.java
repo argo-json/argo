@@ -39,7 +39,7 @@ public final class JsonNodeSelectorTest {
         final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelectors.anObjectNodeWithField("Hello")
                 .with(JsonNodeSelectors.anArrayNodeWithElement(2))
                 .with(JsonNodeSelectors.aNumberNode());
-        assertThat(jsonNodeSelector.toString(), equalTo("an object, with a field called [Hello], with an array, with an element at index [2], with a value that is a number"));
+        assertThat(jsonNodeSelector.toString(), equalTo("an object, with a field called [\"Hello\"], with an array, with an element at index [2], with a value that is a number"));
     }
 
 }

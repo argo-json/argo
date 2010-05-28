@@ -28,7 +28,7 @@ public final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoe
     }
 
     private static String formatMessage(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
-        return "Failed to match any JSON node at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) +  ".";
+        return "Failed to find " + delegate.failedNode.toString() + " at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) +  ".";
     }
 
     private static String commaSeparate(final Object[] pathElements) {
