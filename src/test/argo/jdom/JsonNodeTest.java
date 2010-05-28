@@ -10,6 +10,7 @@
 
 package argo.jdom;
 
+import argo.format.CompactJsonFormatter;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -19,7 +20,6 @@ import java.util.Map;
 import static argo.jdom.JsonNodeFactories.*;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -37,7 +37,7 @@ public final class JsonNodeTest {
                     , aJsonNumber("2008")
                     , aJsonNumber("2009")
             ))
-            ,aJsonField("retirement age", aJsonNull())
+            , aJsonField("retirement age", aJsonNull())
     );
 
     @Test
@@ -171,7 +171,7 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("championships", 2, 12);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".2.12]"));
+            assertThat(e.getMessage(), equalTo("Failed to match any JSON node at [\"championships\".2.12] while resolving [\"championships\".2.12] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
         }
     }
 
@@ -181,7 +181,7 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("championships", "bob", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".\"bob\"] while resolving [\"championships\".\"bob\".2]"));
+            assertThat(e.getMessage(), equalTo("Failed to match any JSON node at [\"championships\".\"bob\"] while resolving [\"championships\".\"bob\".2] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
         }
     }
 
@@ -191,7 +191,7 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("wrong field name", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"wrong field name\"] while resolving [\"wrong field name\".2"));
+            assertThat(e.getMessage(), equalTo("Failed to match any JSON node at [\"wrong field name\"] while resolving [\"wrong field name\".2] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
         }
     }
 
@@ -201,7 +201,9 @@ public final class JsonNodeTest {
             SAMPLE_JSON.getStringValue("championships", 22);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
         } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), startsWith("Failed to match any JSON node at [\"championships\".22] while resolving [\"championships\".22]"));
+            assertThat(
+                    e.getMessage(),
+                    equalTo("Failed to match any JSON node at [\"championships\".22] while resolving [\"championships\".22] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
         }
     }
 }

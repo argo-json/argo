@@ -10,20 +10,25 @@
 
 package argo.jdom;
 
+import argo.format.CompactJsonFormatter;
+import argo.format.JsonFormatter;
+
 import static argo.jdom.JsonNodeDoesNotMatchChainedJsonNodeSelectorException.getShortFormFailPath;
 
 public final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMatchJsonNodeSelectorException {
 
-    static JsonNodeDoesNotMatchPathElementsException jsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements) {
-        return new JsonNodeDoesNotMatchPathElementsException(delegate, pathElements);
+    private static final JsonFormatter JSON_FORMATTER = new CompactJsonFormatter();
+
+    static JsonNodeDoesNotMatchPathElementsException jsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
+        return new JsonNodeDoesNotMatchPathElementsException(delegate, pathElements, rootNode);
     }
 
-    private JsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements) {
-        super(formatMessage(delegate, pathElements));
+    private JsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
+        super(formatMessage(delegate, pathElements, rootNode));
     }
 
-    private static String formatMessage(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements) {
-        return "Failed to match any JSON node at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "].";
+    private static String formatMessage(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
+        return "Failed to match any JSON node at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) +  ".";
     }
 
     private static String commaSeparate(final Object[] pathElements) {

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static argo.jdom.JsonNodeDoesNotMatchPathElementsException.jsonNodeDoesNotMatchPathElementsException;
+import static argo.jdom.JsonNodeFactories.aJsonArray;
 
 /**
  * <p>An node (leaf or otherwise) in a JSON document.</p>
@@ -428,11 +429,11 @@ public abstract class JsonNode {
         return wrapExceptionsFor(JsonNodeSelectors.aNullableArrayNode(pathElements), this, pathElements);
     }
 
-    private <T, V> T wrapExceptionsFor(final JsonNodeSelector<V, T> value, final V node, final Object[] pathElements) throws JsonNodeDoesNotMatchPathElementsException {
+    private <T, V extends JsonNode> T wrapExceptionsFor(final JsonNodeSelector<V, T> value, final V node, final Object[] pathElements) throws JsonNodeDoesNotMatchPathElementsException {
         try {
             return value.getValue(node);
         } catch (JsonNodeDoesNotMatchChainedJsonNodeSelectorException e) {
-            throw jsonNodeDoesNotMatchPathElementsException(e, pathElements);
+            throw jsonNodeDoesNotMatchPathElementsException(e, pathElements, aJsonArray(node));
         }
     }
 }
