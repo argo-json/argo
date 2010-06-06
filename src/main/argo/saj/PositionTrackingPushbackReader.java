@@ -24,7 +24,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
     public PositionTrackingPushbackReader(final Reader in) {
         this.lineNumberReader = new LineNumberReader(in);
         this.lineNumberReader.setLineNumber(1);
-        resettingRowCounter = new ResettingRowCounter(lineNumberReader);
+        this.resettingRowCounter = new ResettingRowCounter(lineNumberReader);
         this.pushbackReader = new PushbackReader(lineNumberReader);
     }
 
@@ -73,8 +73,9 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
         }
 
         void count(int numberToCount) {
-            if (lineNumberReader.getLineNumber() != lineNumberAtLastCount) {
-                lineNumberAtLastCount = lineNumberReader.getLineNumber();
+            final int lineNumber = lineNumberReader.getLineNumber();
+            if (lineNumber != lineNumberAtLastCount) {
+                lineNumberAtLastCount = lineNumber;
                 count = 0;
             } else {
                 count += numberToCount;
