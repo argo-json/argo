@@ -11,79 +11,69 @@
 package argo.saj;
 
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.io.PushbackReader;
 import java.io.Reader;
 
 final class PositionTrackingPushbackReader implements ThingWithPosition {
+    private static final int NEWLINE = '\n';
+    private static final int CARRIAGE_RETURN = '\r';
 
-    private final LineNumberReader lineNumberReader;
-    private final ResettingRowCounter resettingRowCounter;
     private final PushbackReader pushbackReader;
+    private int characterCount = 0;
+    private int lineCount = 1;
+    private boolean lastCharacterWasCarriageReturn = false;
 
     public PositionTrackingPushbackReader(final Reader in) {
-        this.lineNumberReader = new LineNumberReader(in);
-        this.lineNumberReader.setLineNumber(1);
-        this.resettingRowCounter = new ResettingRowCounter(lineNumberReader);
-        this.pushbackReader = new PushbackReader(lineNumberReader);
+        this.pushbackReader = new PushbackReader(in);
     }
 
     public void unread(final char c) throws IOException {
-        resettingRowCounter.count(-1);
+        characterCount--;
+        if (characterCount < 0) characterCount = 0;
         pushbackReader.unread(c);
     }
 
     public void uncount(final char[] resultCharArray) throws IOException {
-        resettingRowCounter.count(-resultCharArray.length);
+        characterCount = characterCount - resultCharArray.length;
+        if (characterCount < 0) characterCount = 0;
     }
 
     public int read() throws IOException {
         final int result = pushbackReader.read();
-        if (result > 0) {
-           resettingRowCounter.count(1);
+        updateCharacterAndLineCounts(result);
+        return result;
+    }
+
+    public int read(final char[] buffer) throws IOException {
+        final int result = pushbackReader.read(buffer);
+        for (char character : buffer) {
+            updateCharacterAndLineCounts(character);
         }
         return result;
     }
 
-    public int read(final char[] remainingNullTokenCharacters) throws IOException {
-        final int result = pushbackReader.read(remainingNullTokenCharacters);
-        if (result > 0) {
-           resettingRowCounter.count(result);
+    private void updateCharacterAndLineCounts(final int result) {
+        if (CARRIAGE_RETURN == result) {
+            characterCount = 0;
+            lineCount++;
+            lastCharacterWasCarriageReturn = true;
+        } else {
+            if (NEWLINE == result && !lastCharacterWasCarriageReturn) {
+                characterCount = 0;
+                lineCount++;
+            } else {
+                characterCount++;
+            }
+            lastCharacterWasCarriageReturn = false;
         }
-        return result;
     }
 
     public int getColumn() {
-        return resettingRowCounter.getCount();
+        return characterCount;
     }
 
     public int getRow() {
-        return lineNumberReader.getLineNumber();
+        return lineCount;
     }
 
-    private static final class ResettingRowCounter {
-        private final LineNumberReader lineNumberReader;
-        private int lineNumberAtLastCount;
-        private int count;
-
-        ResettingRowCounter(final LineNumberReader lineNumberReader) {
-            this.lineNumberReader = lineNumberReader;
-            lineNumberAtLastCount = lineNumberReader.getLineNumber();
-            count = 0;
-        }
-
-        void count(int numberToCount) {
-            final int lineNumber = lineNumberReader.getLineNumber();
-            if (lineNumber != lineNumberAtLastCount) {
-                lineNumberAtLastCount = lineNumber;
-                count = 0;
-            } else {
-                count += numberToCount;
-            }
-        }
-
-        public int getCount() {
-            return count;
-        }
-    }
 }
