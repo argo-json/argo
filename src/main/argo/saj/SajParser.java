@@ -12,7 +12,6 @@ package argo.saj;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.util.Arrays;
 
 /**
@@ -341,7 +340,7 @@ public final class SajParser {
 
 
     private String stringToken(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
-        final StringWriter result = new StringWriter();
+        final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if (DOUBLE_QUOTE != firstChar) {
             throw new InvalidSyntaxException("Expected [" + DOUBLE_QUOTE + "] but got [" + firstChar + "].", in);
@@ -355,10 +354,10 @@ public final class SajParser {
                     break;
                 case BACK_SLASH:
                     final char escapedChar = escapedStringChar(in);
-                    result.write(escapedChar);
+                    result.append(escapedChar);
                     break;
                 default:
-                    result.write(nextChar);
+                    result.append(nextChar);
             }
         }
         return result.toString();
