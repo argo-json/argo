@@ -191,4 +191,37 @@ public final class JsonNodeTest {
                     equalTo("Failed to find an element at index [22] at [\"championships\".22] while resolving [\"championships\".22] in [" + new CompactJsonFormatter().format(SAMPLE_JSON) + "]."));
         }
     }
+
+    @Test
+    public void hasTextReturnsCorrectValueForAllNodeTypes() throws Exception {
+        assertThat(aJsonNull().hasText(), equalTo(false));
+        assertThat(aJsonArray().hasText(), equalTo(false));
+        assertThat(aJsonFalse().hasText(), equalTo(false));
+        assertThat(aJsonNumber("22.2").hasText(), equalTo(true));
+        assertThat(aJsonObject().hasText(), equalTo(false));
+        assertThat(aJsonString("Goggle").hasText(), equalTo(true));
+        assertThat(aJsonTrue().hasText(), equalTo(false));
+    }
+    
+    @Test
+    public void hasFieldsReturnsCorrectValueForAllNodeTypes() throws Exception {
+        assertThat(aJsonNull().hasFields(), equalTo(false));
+        assertThat(aJsonArray().hasFields(), equalTo(false));
+        assertThat(aJsonFalse().hasFields(), equalTo(false));
+        assertThat(aJsonNumber("22.2").hasFields(), equalTo(false));
+        assertThat(aJsonObject().hasFields(), equalTo(true));
+        assertThat(aJsonString("Goggle").hasFields(), equalTo(false));
+        assertThat(aJsonTrue().hasFields(), equalTo(false));
+    }
+
+    @Test
+    public void hasElementsReturnsCorrectValueForAllNodeTypes() throws Exception {
+        assertThat(aJsonNull().hasElements(), equalTo(false));
+        assertThat(aJsonArray().hasElements(), equalTo(true));
+        assertThat(aJsonFalse().hasElements(), equalTo(false));
+        assertThat(aJsonNumber("22.2").hasElements(), equalTo(false));
+        assertThat(aJsonObject().hasElements(), equalTo(false));
+        assertThat(aJsonString("Goggle").hasElements(), equalTo(false));
+        assertThat(aJsonTrue().hasElements(), equalTo(false));
+    }
 }
