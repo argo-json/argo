@@ -5,7 +5,7 @@
     <buildFile url="file://$PROJECT_DIR$/build.xml">
       <additionalClassPath>
         <entry path="file://$PROJECT_DIR$/lib/build/ant-jsch-1.6.5.jar" />
-        <entry path="file://$PROJECT_DIR$/lib/build/jsch-0.1.44.jar" />
+        <entry path="file://$PROJECT_DIR$/lib/build/jsch-0.1.24.jar" />
       </additionalClassPath>
       <antReference projectDefault="true" />
       <customJdkName value="" />
