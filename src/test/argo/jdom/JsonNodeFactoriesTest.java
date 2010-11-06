@@ -14,10 +14,10 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import static argo.jdom.JsonNodeFactories.*;
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -32,7 +32,7 @@ public final class JsonNodeFactoriesTest {
                 )
                 , equalTo(
                         aJsonArray(
-                                Arrays.asList(
+                                asList(
                                         aJsonString("Way there")
                                         , aJsonNumber("0.5")
                                 )
@@ -44,10 +44,25 @@ public final class JsonNodeFactoriesTest {
     public void createsJsonObjectNodeWithFieldArray() throws Exception {
         assertThat(
                 aJsonObject(
-                aJsonField("Gina", aJsonString("Dreams of running away"))
-                , aJsonField("Tommy", aJsonString("Used to work on the dock"))
-        )
-                ,equalTo(aJsonObject(new HashMap<JsonStringNode, JsonNode>(){{
+                        aJsonField("Gina", aJsonString("Dreams of running away"))
+                        , aJsonField("Tommy", aJsonString("Used to work on the dock"))
+                )
+                , equalTo(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(aJsonString("Gina"), aJsonString("Dreams of running away"));
+                    put(aJsonString("Tommy"), aJsonString("Used to work on the dock"));
+                }}))
+        );
+    }
+
+    @Test
+    public void createsJsonObjectNodeWithFieldIterable() throws Exception {
+        assertThat(aJsonObject(
+                asList(
+                        aJsonField("Gina", aJsonString("Dreams of running away"))
+                        , aJsonField("Tommy", aJsonString("Used to work on the dock"))
+                )
+        ),
+                equalTo(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
                     put(aJsonString("Gina"), aJsonString("Dreams of running away"));
                     put(aJsonString("Tommy"), aJsonString("Used to work on the dock"));
                 }}))
@@ -58,9 +73,9 @@ public final class JsonNodeFactoriesTest {
     public void createsJsonNumberNodeUsingABigInteger() throws Exception {
         assertThat(
                 aJsonObject(
-                aJsonField("Number of shots to give it", aJsonNumber(new BigInteger("1")))
-        )
-                ,equalTo(aJsonObject(new HashMap<JsonStringNode, JsonNode>(){{
+                        aJsonField("Number of shots to give it", aJsonNumber(new BigInteger("1")))
+                )
+                , equalTo(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
                     put(aJsonString("Number of shots to give it"), aJsonNumber("1"));
                 }}))
         );
