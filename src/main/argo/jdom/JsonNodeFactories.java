@@ -78,4 +78,8 @@ public final class JsonNodeFactories {
     public static JsonField aJsonField(final String name, final JsonNode value) {
         return new JsonField(aJsonString(name), value);
     }
+
+    public static JsonNode aJsonBoolean(final boolean value) {
+        return value ? aJsonTrue() : aJsonFalse();
+    }
 }

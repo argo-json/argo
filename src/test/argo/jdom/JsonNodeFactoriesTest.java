@@ -81,4 +81,20 @@ public final class JsonNodeFactoriesTest {
         );
     }
 
+    @Test
+    public void createsAJsonTrueFromAJavaBoolean() throws Exception {
+        assertThat(
+                JsonNodeFactories.aJsonBoolean(true)
+                , equalTo(aJsonTrue())
+        );
+    }
+
+    @Test
+    public void createsAJsonFalseFromAJavaBoolean() throws Exception {
+        assertThat(
+                JsonNodeFactories.aJsonBoolean(false)
+                , equalTo(aJsonFalse())
+        );
+    }
+
 }
