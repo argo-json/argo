@@ -18,8 +18,8 @@ final class JsonArray extends JsonRootNode {
 
     private final List<JsonNode> elements;
 
-    JsonArray(final List<JsonNode> elements) {
-        this.elements = new ArrayList<JsonNode>(elements);
+    JsonArray(final Iterable<JsonNode> elements) {
+        this.elements = asList(elements);
     }
 
     public JsonNodeType getType() {
@@ -71,5 +71,13 @@ final class JsonArray extends JsonRootNode {
                 .append(elements)
                 .append("]")
                 .toString();
+    }
+
+    private static List<JsonNode> asList(final Iterable<JsonNode> elements) {
+        return new ArrayList<JsonNode>(){{
+            for (JsonNode element : elements) {
+                this.add(element);
+            }
+        }};
     }
 }

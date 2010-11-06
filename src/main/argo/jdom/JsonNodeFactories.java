@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,7 +51,7 @@ public final class JsonNodeFactories {
         return new JsonNumberNode(value.toString());
     }
 
-    public static JsonRootNode aJsonArray(final List<JsonNode> elements) {
+    public static JsonRootNode aJsonArray(final Iterable<JsonNode> elements) {
         return new JsonArray(elements);
     }
 
@@ -65,6 +64,10 @@ public final class JsonNodeFactories {
     }
 
     public static JsonRootNode aJsonObject(final JsonField... jsonField) {
+        return aJsonObject(Arrays.asList(jsonField));
+    }
+
+    public static JsonRootNode aJsonObject(final Iterable<JsonField> jsonField) {
         return aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
             for (final JsonField field : jsonField) {
                 put(field.getName(), field.getValue());
