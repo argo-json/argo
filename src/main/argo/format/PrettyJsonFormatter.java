@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * JsonFormat that formats JSON in a human-readable form.  Instances of this class can safely be shared between threads.
@@ -61,16 +61,16 @@ public final class PrettyJsonFormatter implements JsonFormatter {
                 break;
             case OBJECT:
                 writer.append('{');
-                for (final Map.Entry<JsonStringNode, JsonNode> field : jsonNode.getFields().entrySet()) {
+                for (final JsonStringNode field : new TreeSet<JsonStringNode>(jsonNode.getFields().keySet())) {
                     writer.println();
                     addTabs(writer, indent + 1);
                     if (!first) {
                         writer.append(", ");
                     }
                     first = false;
-                    formatJsonNode(field.getKey(), writer, indent + 1);
+                    formatJsonNode(field, writer, indent + 1);
                     writer.append(": ");
-                    formatJsonNode(field.getValue(), writer, indent + 1);
+                    formatJsonNode(jsonNode.getFields().get(field), writer, indent + 1);
                 }
                 if (!jsonNode.getFields().isEmpty()) {
                     writer.println();

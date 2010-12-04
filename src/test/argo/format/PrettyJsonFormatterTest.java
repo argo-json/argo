@@ -28,29 +28,19 @@ import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public final class PrettyJsonFormatTest {
+public final class PrettyJsonFormatterTest {
     @Test
     public void formatsAJsonObject() throws Exception {
         assertThat(new PrettyJsonFormatter().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
             put(aJsonString("Hello"), aJsonString("World"));
             put(aJsonString("Foo"), aJsonString("Bar"));
-        }})), Matchers.anyOf(
-                equalTo(
-                        aJsonStringResultBuilder()
-                                .println("{")
-                                .println("\t\"Hello\": \"World\"")
-                                .println("\t, \"Foo\": \"Bar\"")
-                                .print("}")
-                                .build()
-                )
-                , equalTo(
-                        aJsonStringResultBuilder()
-                                .println("{")
-                                .println("\t\"Foo\": \"Bar\"")
-                                .println("\t, \"Hello\": \"World\"")
-                                .print("}")
-                                .build()
-                )
+        }})), equalTo(
+                aJsonStringResultBuilder()
+                        .println("{")
+                        .println("\t\"Foo\": \"Bar\"")
+                        .println("\t, \"Hello\": \"World\"")
+                        .print("}")
+                        .build()
         ));
     }
 

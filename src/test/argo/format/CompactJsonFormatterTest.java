@@ -12,7 +12,6 @@ package argo.format;
 
 import argo.jdom.JsonNode;
 import argo.jdom.JsonStringNode;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -22,16 +21,13 @@ import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public final class CompactJsonFormatTest {
+public final class CompactJsonFormatterTest {
     @Test
     public void formatsAJsonObject() throws Exception {
         assertThat(new CompactJsonFormatter().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
             put(aJsonString("Hello"), aJsonString("World"));
             put(aJsonString("Foo"), aJsonString("Bar"));
-        }})), Matchers.anyOf(
-                equalTo("{\"Hello\":\"World\",\"Foo\":\"Bar\"}")
-                , equalTo("{\"Foo\":\"Bar\",\"Hello\":\"World\"}")
-        ));
+        }})), equalTo("{\"Foo\":\"Bar\",\"Hello\":\"World\"}"));
     }
 
     @Test

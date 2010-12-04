@@ -17,7 +17,7 @@ import argo.jdom.JsonStringNode;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * JsonFormat that formats JSON as compactly as possible.  Instances of this class can safely be shared between threads.
@@ -54,14 +54,14 @@ public final class CompactJsonFormatter implements JsonFormatter {
                 break;
             case OBJECT:
                 writer.append('{');
-                for (final Map.Entry<JsonStringNode, JsonNode> field : jsonNode.getFields().entrySet()) {
+                for (final JsonStringNode field : new TreeSet<JsonStringNode>(jsonNode.getFields().keySet())) {
                     if (!first) {
                         writer.append(',');
                     }
                     first = false;
-                    formatJsonNode(field.getKey(), writer);
+                    formatJsonNode(field, writer);
                     writer.append(':');
-                    formatJsonNode(field.getValue(), writer);
+                    formatJsonNode(jsonNode.getFields().get(field), writer);
                 }
                 writer.append('}');
                 break;

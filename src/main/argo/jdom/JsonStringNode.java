@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * <code>JsonNode</code> that explicitly represents a JSON String.
  */
-public final class JsonStringNode extends JsonNode {
+public final class JsonStringNode extends JsonNode implements Comparable<JsonStringNode> {
 
     private final String value;
 
@@ -76,5 +76,9 @@ public final class JsonStringNode extends JsonNode {
                 .append(value)
                 .append("]")
                 .toString();
+    }
+
+    public int compareTo(final JsonStringNode that) {
+        return this.value.compareTo(that.value);
     }
 }
