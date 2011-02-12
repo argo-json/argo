@@ -1,9 +1,9 @@
 <!--
-  ~ Copyright 2010 Mark Slater
+  ~ Copyright 2011 Mark Slater
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
   ~
-  ~ 	http://www.apache.org/licenses/LICENSE-2.0
+  ~ http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
   -->
@@ -281,13 +281,13 @@
             <copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${version}" revision="${svn.info.rev}" message="Tag for release ${version}."/>
         </svn>
         <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>
-        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/groups/a/ar/argo/" password="${ssh.password}" trust="true">
+        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/project-web/argo/" password="${ssh.password}" trust="true">
             <fileset dir="${release.directory}/build/dist/documentation/"/>
         </scp>
-        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/pfs/project/a/ar/argo/argo/" password="${ssh.password}" trust="true">
+        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/frs/project/a/ar/argo/argo/" password="${ssh.password}" trust="true">
             <fileset dir="${release.directory}/build/dist/binaries/"/>
         </scp>
-        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="rm /home/groups/a/ar/argo/htdocs ; ln -s /home/groups/a/ar/argo/${version} /home/groups/a/ar/argo/htdocs" trust="true"/>
+        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${version} /home/project-web/argo/htdocs" trust="true"/>
         <propertyfile file="version.properties">
             <entry key="argo.version.minor" type="int" default="0" operation="+"/>
         </propertyfile>
