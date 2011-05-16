@@ -12,6 +12,9 @@ package argo.jdom;
 
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 public final class JdomParserTest {
 
     @Test
@@ -21,6 +24,16 @@ public final class JdomParserTest {
 
     @Test
     public void parsesNumberWithALowerCaseExponent() throws Exception {
-        new JdomParser().parse("{ \"PI\":3.141e-10}");
+        assertThat(new JdomParser().parse("{ \"PI\":3.141e-10}").getNumberValue("PI"), equalTo("3.141e-10"));
+    }
+
+    @Test
+    public void parsesAnUnescapedForwardsSlash() throws Exception {
+        assertThat(new JdomParser().parse("{ \"a\":\"hp://foo\"}").getStringValue("a"), equalTo("hp://foo"));
+    }
+
+    @Test
+    public void parsesSomeUnicodeStuff() throws Exception {
+        assertThat(new JdomParser().parse("{ \"v\":\"\\u2000\\u20ff\"}").getStringValue("v"), equalTo("\u2000\u20ff"));
     }
 }
