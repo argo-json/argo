@@ -17,7 +17,7 @@ import static argo.jdom.JsonNodeDoesNotMatchPathElementsException.jsonNodeDoesNo
 import static argo.jdom.JsonNodeFactories.aJsonArray;
 
 /**
- * <p>An node (leaf or otherwise) in a JSON document.</p>
+ * <p>A node (leaf or otherwise) in a JSON document.</p>
  * <p/>
  * <p>Supplies methods for examining the node, and also examining and navigating the hierarchy at and below this node.
  * Methods for navigating the hierarchy are of the form <code>getXXXValue(Object... pathElements)</code>.</p>
