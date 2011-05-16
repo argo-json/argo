@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -62,7 +62,7 @@ public final class SajParser {
         }
         final int trailingCharacter = readNextNonWhitespaceChar(pushbackReader);
         if (trailingCharacter != -1) {
-            throw new InvalidSyntaxException("Got unexpected trailing character [" + (char)trailingCharacter + "].", pushbackReader);
+            throw new InvalidSyntaxException("Got unexpected trailing character [" + (char) trailingCharacter + "].", pushbackReader);
         }
         jsonListener.endDocument();
     }
@@ -318,6 +318,11 @@ public final class SajParser {
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '.' || firstChar == 'E') {
             result.append('E');
+            result.append(possibleSign(pushbackReader));
+            result.append(digitToken(pushbackReader));
+            result.append(digitString(pushbackReader));
+        } else if (firstChar == 'e') {
+            result.append('e');
             result.append(possibleSign(pushbackReader));
             result.append(digitToken(pushbackReader));
             result.append(digitString(pushbackReader));

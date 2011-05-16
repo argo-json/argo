@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -119,6 +119,26 @@ public final class SajParserTest {
             inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("[12.123E-2]"), jsonListener);
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void tokenizesValidNumberWithLowerCaseExponent() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).numberValue("12.123e-2");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
+        }});
+        new SajParser().parse(new StringReader("[12.123e-2]"), jsonListener);
         context.assertIsSatisfied();
     }
 
