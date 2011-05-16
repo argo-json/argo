@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,7 +18,7 @@ import static argo.jdom.JsonNodeType.*;
 
 /**
  * <p>Factories for <code>JsonNodeSelectors</code>.</p>
- *
+ * <p/>
  * <p>Methods in this class fall into two broad catagories - those that take a varargs argument of <code>Object</code>s
  * and naviagate down an entire hierarchy, and those that address a single node in a hierarchy.</p>
  * <p>For example,
@@ -26,13 +26,35 @@ import static argo.jdom.JsonNodeType.*;
  * <code>Integer</code>s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
  * The <code>String</code>s tell it to select a field with the given name from an object, and the <code>Integer</code>s
  * tell it to select an element with the given index from an array.</p>
- *
+ * <p/>
  * <p>By contrast, <code>anArrayNodeWithElement(int index)</code> addresses a single array node only, selecting the
  * element at the given index from it.</p>
  */
 public final class JsonNodeSelectors {
 
-    private JsonNodeSelectors() {}
+    private JsonNodeSelectors() {
+    }
+
+    public static JsonNodeSelector<JsonNode, JsonNode> anyNode(final Object... pathElements) {
+        return chainOn(pathElements, new JsonNodeSelector<JsonNode, JsonNode>(new LeafFunctor<JsonNode, JsonNode>() {
+            public boolean matchesNode(final JsonNode jsonNode) {
+                return true;
+            }
+
+            public String shortForm() {
+                return "A node";
+            }
+
+            public JsonNode typeSafeApplyTo(final JsonNode jsonNode) {
+                return jsonNode;
+            }
+
+            @Override
+            public String toString() {
+                return ("any node");
+            }
+        }));
+    }
 
     public static JsonNodeSelector<JsonNode, String> aStringNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new LeafFunctor<JsonNode, String>() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -30,13 +30,13 @@ public final class JsonNodeTest {
     private static final JsonRootNode SAMPLE_JSON = aJsonObject(
             aJsonField("name", aJsonString("Rossi"))
             , aJsonField("championships", aJsonArray(
-                    aJsonNumber("2002")
-                    , aJsonNumber("2003")
-                    , aJsonNumber("2004")
-                    , aJsonNumber("2005")
-                    , aJsonNumber("2008")
-                    , aJsonNumber("2009")
-            ))
+            aJsonNumber("2002")
+            , aJsonNumber("2003")
+            , aJsonNumber("2004")
+            , aJsonNumber("2005")
+            , aJsonNumber("2008")
+            , aJsonNumber("2009")
+    ))
             , aJsonField("retirement age", aJsonNull())
     );
 
@@ -202,7 +202,7 @@ public final class JsonNodeTest {
         assertThat(aJsonString("Goggle").hasText(), equalTo(true));
         assertThat(aJsonTrue().hasText(), equalTo(false));
     }
-    
+
     @Test
     public void hasFieldsReturnsCorrectValueForAllNodeTypes() throws Exception {
         assertThat(aJsonNull().hasFields(), equalTo(false));
@@ -223,5 +223,48 @@ public final class JsonNodeTest {
         assertThat(aJsonObject().hasElements(), equalTo(false));
         assertThat(aJsonString("Goggle").hasElements(), equalTo(false));
         assertThat(aJsonTrue().hasElements(), equalTo(false));
+    }
+
+    @Test
+    public void isNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
+        assertThat(aJsonNull().isNode(), equalTo(true));
+        assertThat(aJsonArray().isNode(), equalTo(true));
+        assertThat(aJsonFalse().isNode(), equalTo(true));
+        assertThat(aJsonNumber("22.2").isNode(), equalTo(true));
+        assertThat(aJsonObject().isNode(), equalTo(true));
+        assertThat(aJsonString("Goggle").isNode(), equalTo(true));
+        assertThat(aJsonTrue().isNode(), equalTo(true));
+
+        assertThat(SAMPLE_JSON.isNode(), equalTo(true));
+        assertThat(SAMPLE_JSON.isNode("name"), equalTo(true));
+        assertThat(SAMPLE_JSON.isNode("championships"), equalTo(true));
+        assertThat(SAMPLE_JSON.isNode("retirement age"), equalTo(true));
+        assertThat(SAMPLE_JSON.isNode("championships", 2), equalTo(true));
+        assertThat(SAMPLE_JSON.isNode("championships", 22), equalTo(false));
+        assertThat(SAMPLE_JSON.isNode("championships", 2, 4), equalTo(false));
+    }
+
+    @Test
+    public void getNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
+        assertThat(aJsonNull().getNode(), equalTo(aJsonNull()));
+        assertThat(aJsonArray().getNode(), equalTo((JsonNode) aJsonArray()));
+        assertThat(aJsonFalse().getNode(), equalTo(aJsonFalse()));
+        assertThat(aJsonNumber("22.2").getNode(), equalTo(aJsonNumber("22.2")));
+        assertThat(aJsonObject().getNode(), equalTo((JsonNode) aJsonObject()));
+        assertThat(aJsonString("Goggle").getNode(), equalTo((JsonNode) aJsonString("Goggle")));
+        assertThat(aJsonTrue().getNode(), equalTo(aJsonTrue()));
+
+        assertThat(SAMPLE_JSON.getNode(), equalTo((JsonNode) SAMPLE_JSON));
+        assertThat(SAMPLE_JSON.getNode("name"), equalTo((JsonNode) aJsonString("Rossi")));
+        assertThat(SAMPLE_JSON.getNode("championships"), equalTo((JsonNode) aJsonArray(
+                aJsonNumber("2002")
+                , aJsonNumber("2003")
+                , aJsonNumber("2004")
+                , aJsonNumber("2005")
+                , aJsonNumber("2008")
+                , aJsonNumber("2009")
+        )));
+        assertThat(SAMPLE_JSON.getNode("retirement age"), equalTo(aJsonNull()));
+        assertThat(SAMPLE_JSON.getNode("championships", 2), equalTo(aJsonNumber("2004")));
     }
 }

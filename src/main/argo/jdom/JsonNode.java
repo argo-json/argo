@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,16 +18,16 @@ import static argo.jdom.JsonNodeFactories.aJsonArray;
 
 /**
  * <p>An node (leaf or otherwise) in a JSON document.</p>
- *
+ * <p/>
  * <p>Supplies methods for examining the node, and also examining and navigating the hierarchy at and below this node.
  * Methods for navigating the hierarchy are of the form <code>getXXXValue(Object... pathElements)</code>.</p>
- *
+ * <p/>
  * <p>For example, {@link #getStringValue(Object...)} takes a series of <code>String</code>s and
  * <code>Integer</code>s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
  * The <code>String</code>s tell it to select a field with the given name from an object, and the <code>Integer</code>s
  * tell it to select an element with the given index from an array.</p> If no field of that name exists, or the field
  * exists, but it isn't a JSON string, an <code>IllegalArgumentException</code> is thrown.</p>
- *
+ * <p/>
  * <p>Methods for examining the hierarchy work on the same principal as the
  * <code>getXXXValue(Object... pathElements)</code> methods, but return a <code>boolean</code> indicating whether
  * or not the element at the given path exists and is of the type specified, for example,
@@ -65,6 +65,27 @@ public abstract class JsonNode {
      * @throws IllegalStateException if hasElements() returns false, indicating this type of node doesn't support elements.
      */
     public abstract List<JsonNode> getElements();
+
+    /**
+     * Determines whether the node at the given path exists.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON node exists at the path given.
+     */
+    public boolean isNode(final Object... pathElements) {
+        return JsonNodeSelectors.anyNode(pathElements).matches(this);
+    }
+
+    /**
+     * Gets a <code>JsonNode</code> by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return the <code>JsonNode</code> at the path given.
+     * @throws IllegalArgumentException if there is no node at the given path.
+     */
+    public JsonNode getNode(final Object... pathElements) {
+        return wrapExceptionsFor(JsonNodeSelectors.anyNode(pathElements), this, pathElements);
+    }
 
     /**
      * Determines whether the node at the given path exists and is a JSON boolean.
@@ -105,7 +126,7 @@ public abstract class JsonNode {
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON boolean or a JSON null.
      */
     public final Boolean getNullableBooleanValue(final Object... pathElements) {
-        return wrapExceptionsFor(JsonNodeSelectors.aNullableBooleanNode(pathElements),this, pathElements);
+        return wrapExceptionsFor(JsonNodeSelectors.aNullableBooleanNode(pathElements), this, pathElements);
     }
 
     /**
