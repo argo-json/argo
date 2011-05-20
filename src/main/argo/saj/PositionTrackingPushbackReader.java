@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -76,4 +76,18 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
         return lineCount;
     }
 
+    public ThingWithPosition snapshotOfPosition() {
+        return new ThingWithPosition() {
+            private final int localCharacterCount = characterCount;
+            private final int localLineCount = lineCount;
+
+            public int getColumn() {
+                return localCharacterCount;
+            }
+
+            public int getRow() {
+                return localLineCount;
+            }
+        };
+    }
 }

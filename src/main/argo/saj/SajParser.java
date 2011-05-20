@@ -350,10 +350,13 @@ public final class SajParser {
         if (DOUBLE_QUOTE != firstChar) {
             throw new InvalidSyntaxException("Expected [" + DOUBLE_QUOTE + "] but got [" + firstChar + "].", in);
         }
+        final ThingWithPosition openDoubleQuotesPosition = in.snapshotOfPosition();
         boolean stringClosed = false;
         while (!stringClosed) {
             final char nextChar = (char) in.read();
             switch (nextChar) {
+                case (char) -1:
+                    throw new InvalidSyntaxException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
                 case DOUBLE_QUOTE:
                     stringClosed = true;
                     break;

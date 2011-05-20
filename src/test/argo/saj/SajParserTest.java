@@ -606,6 +606,17 @@ public final class SajParserTest {
     }
 
     @Test
+    public void rejectsMismatchedDoubleQuotes() throws Exception {
+        final String inputString = "{\"}";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e, anInvalidSyntaxExceptionAtPosition(2, 1));
+        }
+    }
+
+    @Test
     public void rejectsTrailingNonWhitespaceCharactersWithNewLines() throws Exception {
         final String inputString = "[\n]\nwhoops";
         try {

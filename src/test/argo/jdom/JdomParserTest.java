@@ -10,6 +10,7 @@
 
 package argo.jdom;
 
+import argo.saj.InvalidSyntaxException;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -35,5 +36,15 @@ public final class JdomParserTest {
     @Test
     public void parsesSomeUnicodeStuff() throws Exception {
         assertThat(new JdomParser().parse("{ \"v\":\"\\u2000\\u20ff\"}").getStringValue("v"), equalTo("\u2000\u20ff"));
+    }
+
+    @Test(expected = InvalidSyntaxException.class)
+    public void parsesMismatchedDoubleQuotesInAnArray() throws Exception {
+        new JdomParser().parse("{\"}");
+    }
+
+    @Test(expected = InvalidSyntaxException.class)
+    public void parsesMismatchedDoubleQuotesInAnObject() throws Exception {
+        new JdomParser().parse("{\"a\":\"b}");
     }
 }
