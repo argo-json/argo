@@ -618,12 +618,12 @@ public final class SajParserTest {
 
     @Test
     public void rejectsTrailingNonWhitespaceCharactersWithNewLines() throws Exception {
-        final String inputString = "[\n]\nwhoops";
+        final String inputString = "[\n]\n whoops";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
-            assertThat(e, anInvalidSyntaxExceptionAtPosition(1, 3));
+            assertThat(e, anInvalidSyntaxExceptionAtPosition(2, 3));
         }
     }
 

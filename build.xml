@@ -3,7 +3,7 @@
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
   ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ 	http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
   -->
@@ -18,18 +18,18 @@
     <property name="location.documentation" value="docs"/>
     <property name="location.src" value="src/main"/>
     <property name="location.src.test" value="src/test"/>
-    <property name="location.src.performancetest" value="src/performancetest"/>
-    <property name="location.src.codesample" value="src/codesamples"/>
+    <property name="location.src.performance-test" value="src/performancetest"/>
+    <property name="location.src.code-sample" value="src/codesamples"/>
 
     <property name="location.build" value="build"/>
     <property name="location.classes" value="${location.build}/classes"/>
-    <property name="location.optimisedclasses" value="${location.build}/optimised-classes"/>
-    <property name="location.testclasses" value="${location.build}/test-classes"/>
-    <property name="location.testresults" value="${location.build}/test-results"/>
-    <property name="location.performancetestclasses" value="${location.build}/performance-test-classes"/>
-    <property name="location.performancetestresults" value="${location.build}/performance-test-results"/>
-    <property name="location.codesampletestclasses" value="${location.build}/codesample-classes"/>
-    <property name="location.codesampletestresults" value="${location.build}/codesample-results"/>
+    <property name="location.optimised-classes" value="${location.build}/optimised-classes"/>
+    <property name="location.test-classes" value="${location.build}/test-classes"/>
+    <property name="location.test-results" value="${location.build}/test-results"/>
+    <property name="location.performance-test-classes" value="${location.build}/performance-test-classes"/>
+    <property name="location.performance-test-results" value="${location.build}/performance-test-results"/>
+    <property name="location.code-sample-test-classes" value="${location.build}/codesample-classes"/>
+    <property name="location.code-sample-test-results" value="${location.build}/codesample-results"/>
 
     <property name="location.dist" value="${location.build}/dist"/>
 
@@ -70,38 +70,38 @@
         <echo message="Starting compile"/>
         <delete dir="${location.classes}"/>
         <mkdir dir="${location.classes}"/>
-        <delete dir="${location.optimisedclasses}"/>
-        <mkdir dir="${location.optimisedclasses}"/>
-        <delete dir="${location.testclasses}"/>
-        <mkdir dir="${location.testclasses}"/>
-        <delete dir="${location.performancetestclasses}"/>
-        <mkdir dir="${location.performancetestclasses}"/>
-        <delete dir="${location.codesampletestclasses}"/>
-        <mkdir dir="${location.codesampletestclasses}"/>
+        <delete dir="${location.optimised-classes}"/>
+        <mkdir dir="${location.optimised-classes}"/>
+        <delete dir="${location.test-classes}"/>
+        <mkdir dir="${location.test-classes}"/>
+        <delete dir="${location.performance-test-classes}"/>
+        <mkdir dir="${location.performance-test-classes}"/>
+        <delete dir="${location.code-sample-test-classes}"/>
+        <mkdir dir="${location.code-sample-test-classes}"/>
 
         <javac destdir="${location.classes}" debug="on" source="1.6" target="1.6">
             <src path="${location.src}"/>
         </javac>
 
-        <javac destdir="${location.optimisedclasses}" debug="on" optimize="true" source="1.6" target="1.6">
+        <javac destdir="${location.optimised-classes}" debug="on" optimize="true" source="1.6" target="1.6">
             <src path="${location.src}"/>
         </javac>
 
-        <javac destdir="${location.testclasses}" debug="on" source="1.6" target="1.6">
+        <javac destdir="${location.test-classes}" debug="on" source="1.6" target="1.6">
             <src path="${location.src.test}"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
         </javac>
 
-        <javac destdir="${location.performancetestclasses}" debug="on" source="1.6" target="1.6">
-            <src path="${location.src.performancetest}"/>
+        <javac destdir="${location.performance-test-classes}" debug="on" source="1.6" target="1.6">
+            <src path="${location.src.performance-test}"/>
             <classpath refid="performance-test-compile-libs"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
         </javac>
 
-        <javac destdir="${location.codesampletestclasses}" debug="on" source="1.6" target="1.6">
-            <src path="${location.src.codesample}"/>
+        <javac destdir="${location.code-sample-test-classes}" debug="on" source="1.6" target="1.6">
+            <src path="${location.src.code-sample}"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
         </javac>
@@ -110,15 +110,15 @@
             <fileset dir="src/main"/>
         </copy>
 
-        <copy todir="${location.testclasses}">
+        <copy todir="${location.test-classes}">
             <fileset dir="src/test"/>
         </copy>
 
-        <copy todir="${location.performancetestclasses}">
+        <copy todir="${location.performance-test-classes}">
             <fileset dir="src/performancetest"/>
         </copy>
 
-        <copy todir="${location.codesampletestclasses}">
+        <copy todir="${location.code-sample-test-classes}">
             <fileset dir="src/codesamples"/>
         </copy>
 
@@ -126,88 +126,88 @@
     </target>
 
     <target name="test" depends="compile" description="builds and runs unit tests">
-        <delete dir="${location.testresults}"/>
-        <mkdir dir="${location.testresults}"/>
-        <junit printsummary="yes" errorproperty="unittestfailure">
+        <delete dir="${location.test-results}"/>
+        <mkdir dir="${location.test-results}"/>
+        <junit printsummary="yes" errorproperty="unit-test-failure">
             <classpath>
-                <pathelement location="${location.testclasses}"/>
+                <pathelement location="${location.test-classes}"/>
                 <pathelement location="${location.classes}"/>
                 <path refid="test-compile-libs"/>
             </classpath>
-            <batchtest fork="yes" todir="${location.testresults}">
-                <fileset dir="${location.testclasses}">
+            <batchtest fork="yes" todir="${location.test-results}">
+                <fileset dir="${location.test-classes}">
                     <include name="**/*Test.class"/>
                 </fileset>
                 <formatter type="xml"/>
             </batchtest>
         </junit>
 
-        <junitreport todir="${location.testresults}">
-            <fileset dir="${location.testresults}">
+        <junitreport todir="${location.test-results}">
+            <fileset dir="${location.test-results}">
                 <include name="TEST-*.xml"/>
             </fileset>
-            <report todir="${location.testresults}"/>
+            <report todir="${location.test-results}"/>
         </junitreport>
 
-        <fail if="unittestfailure" message="Unit tests failed."/>
+        <fail if="unit-test-failure" message="Unit tests failed."/>
     </target>
 
     <target name="performance-test" depends="compile" description="builds and runs performance tests">
-        <delete dir="${location.performancetestresults}"/>
-        <mkdir dir="${location.performancetestresults}"/>
-        <junit printsummary="yes" errorproperty="performancetestfailure">
+        <delete dir="${location.performance-test-results}"/>
+        <mkdir dir="${location.performance-test-results}"/>
+        <junit printsummary="yes" errorproperty="performance-test-failure">
             <classpath>
-                <pathelement location="${location.performancetestclasses}"/>
+                <pathelement location="${location.performance-test-classes}"/>
                 <pathelement location="${location.classes}"/>
                 <path refid="performance-test-compile-libs"/>
                 <path refid="test-compile-libs"/>
                 <path refid="performance-test-run-libs"/>
-                <pathelement location="${location.src.performancetest}"/>
+                <pathelement location="${location.src.performance-test}"/>
             </classpath>
-            <batchtest fork="yes" todir="${location.performancetestresults}">
-                <fileset dir="${location.performancetestclasses}">
+            <batchtest fork="yes" todir="${location.performance-test-results}">
+                <fileset dir="${location.performance-test-classes}">
                     <include name="**/*Test.class"/>
                 </fileset>
                 <formatter type="xml"/>
             </batchtest>
         </junit>
 
-        <junitreport todir="${location.performancetestresults}">
-            <fileset dir="${location.performancetestresults}">
+        <junitreport todir="${location.performance-test-results}">
+            <fileset dir="${location.performance-test-results}">
                 <include name="TEST-*.xml"/>
             </fileset>
-            <report todir="${location.performancetestresults}"/>
+            <report todir="${location.performance-test-results}"/>
         </junitreport>
 
-        <fail if="performancetestfailure" message="Performance tests failed."/>
+        <fail if="performance-test-failure" message="Performance tests failed."/>
     </target>
 
-    <target name="codesample-test" depends="compile" description="builds and runs code samples">
-        <delete dir="${location.codesampletestresults}"/>
-        <mkdir dir="${location.codesampletestresults}"/>
-        <junit printsummary="yes" errorproperty="codesamplefailure">
+    <target name="code-sample-test" depends="compile" description="builds and runs code samples">
+        <delete dir="${location.code-sample-test-results}"/>
+        <mkdir dir="${location.code-sample-test-results}"/>
+        <junit printsummary="yes" errorproperty="code-sample-failure">
             <classpath>
-                <pathelement location="${location.codesampletestclasses}"/>
+                <pathelement location="${location.code-sample-test-classes}"/>
                 <pathelement location="${location.classes}"/>
                 <path refid="test-compile-libs"/>
-                <pathelement location="${location.src.codesample}"/>
+                <pathelement location="${location.src.code-sample}"/>
             </classpath>
-            <batchtest fork="yes" todir="${location.codesampletestresults}">
-                <fileset dir="${location.codesampletestclasses}">
+            <batchtest fork="yes" todir="${location.code-sample-test-results}">
+                <fileset dir="${location.code-sample-test-classes}">
                     <include name="**/*Examples.class"/>
                 </fileset>
                 <formatter type="xml"/>
             </batchtest>
         </junit>
 
-        <junitreport todir="${location.codesampletestresults}">
-            <fileset dir="${location.codesampletestresults}">
+        <junitreport todir="${location.code-sample-test-results}">
+            <fileset dir="${location.code-sample-test-results}">
                 <include name="TEST-*.xml"/>
             </fileset>
-            <report todir="${location.codesampletestresults}"/>
+            <report todir="${location.code-sample-test-results}"/>
         </junitreport>
 
-        <fail if="codesamplefailure" message="Code samples failed."/>
+        <fail if="code-sample-failure" message="Code samples failed."/>
     </target>
 
     <target name="documentation">
@@ -219,11 +219,12 @@
         <copy todir="${location.dist.documentation}">
             <fileset dir="${location.documentation}" includes="**/*.html"/>
             <filterset>
-              <filter token="VERSION" value="${version}"/>
+                <filter token="VERSION" value="${version}"/>
             </filterset>
         </copy>
         <mkdir dir="${location.dist.documentation}/javadoc"/>
-        <javadoc destdir="${location.dist.documentation}/javadoc" windowtitle="Argo version ${version}" doctitle="Argo version ${version}">
+        <javadoc destdir="${location.dist.documentation}/javadoc" windowtitle="Argo version ${version}"
+                 doctitle="Argo version ${version}">
             <sourcepath path="${location.src}"/>
         </javadoc>
     </target>
@@ -245,7 +246,7 @@
         <echo message="Version for build is: ${version}"/>
     </target>
 
-    <target name="distribute" depends="compile, test, performance-test, codesample-test, determine-version">
+    <target name="distribute" depends="compile, test, performance-test, code-sample-test, determine-version">
         <echo message="Creating release structure"/>
         <property name="location.dist.binaries" value="${location.dist}/binaries/${version}"/>
         <delete dir="${location.dist}"/>
@@ -253,10 +254,10 @@
 
         <antcall target="documentation"/>
         <jar basedir="${location.classes}" destfile="${location.dist.binaries}/argo-${version}.jar"/>
-        <jar basedir="${location.optimisedclasses}" destfile="${location.dist.binaries}/argo-small-${version}.jar"/>
+        <jar basedir="${location.optimised-classes}" destfile="${location.dist.binaries}/argo-small-${version}.jar"/>
     </target>
 
-    <target name="prepare-release" description="Builds an offical release locally">
+    <target name="prepare-release" description="Builds an official release locally">
         <property name="release" value="true"/>
         <antcall target="distribute"/>
     </target>
@@ -268,26 +269,34 @@
             <info target="https://argo.svn.sourceforge.net/svnroot/argo/trunk"/>
         </svn>
         <property name="release.revision" value="${svn.info.rev}"/>
-        <echo  message="Attempting to release revison ${release.revision}"/>
+        <echo message="Attempting to release revision ${release.revision}"/>
         <property name="release.directory" value="${location.build}/release/${release.revision}"/>
         <delete dir="${location.build}"/>
         <svn username="${ssh.username}" password="${ssh.password}">
-            <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${release.directory}" revision="${svn.info.rev}"/>
+            <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${release.directory}"
+                    revision="${svn.info.rev}"/>
         </svn>
         <subant target="prepare-release" buildpath="${release.directory}"/>
         <property file="${release.directory}/version.properties"/>
         <property name="version" value="${argo.version.major}.${argo.version.minor}"/>
         <svn username="${ssh.username}" password="${ssh.password}">
-            <copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${version}" revision="${svn.info.rev}" message="Tag for release ${version}."/>
+            <copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk"
+                  desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${version}" revision="${svn.info.rev}"
+                  message="Tag for release ${version}."/>
         </svn>
-        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="create" trust="true"/>
-        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/project-web/argo/" password="${ssh.password}" trust="true">
+        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}"
+                 command="create" trust="true"/>
+        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/project-web/argo/" password="${ssh.password}"
+             trust="true">
             <fileset dir="${release.directory}/build/dist/documentation/"/>
         </scp>
-        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/frs/project/a/ar/argo/argo/" password="${ssh.password}" trust="true">
+        <scp todir="${ssh.username},argo@web.sourceforge.net:/home/frs/project/a/ar/argo/argo/"
+             password="${ssh.password}" trust="true">
             <fileset dir="${release.directory}/build/dist/binaries/"/>
         </scp>
-        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}" command="rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${version} /home/project-web/argo/htdocs" trust="true"/>
+        <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}"
+                 command="rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${version} /home/project-web/argo/htdocs"
+                 trust="true"/>
         <propertyfile file="version.properties">
             <entry key="argo.version.minor" type="int" default="0" operation="+"/>
         </propertyfile>

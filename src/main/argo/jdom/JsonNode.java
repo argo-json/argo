@@ -36,7 +36,7 @@ import static argo.jdom.JsonNodeFactories.aJsonArray;
  */
 public abstract class JsonNode {
 
-    // Only extendable by classes in this package
+    // Only extensible by classes in this package
     JsonNode() {
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -42,7 +42,7 @@ public final class JsonNodeBuildersTest {
         assertThat(aNumberBuilder("10.1").build(), equalTo(JsonNodeFactories.aJsonNumber("10.1")));
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void numberBuilderFailsEarlyOnAnInvalidNumber() throws Exception {
         assertThat(aNumberBuilder("-010.1e12").build(), equalTo(JsonNodeFactories.aJsonNumber("10.1")));
     }
@@ -64,16 +64,16 @@ public final class JsonNodeBuildersTest {
                         .withElement(aStringBuilder("Bob"))
                         .build()
                 , equalTo(
-                        JsonNodeFactories.aJsonArray(
-                                new LinkedList<JsonNode>(
-                                        Arrays.asList(JsonNodeFactories.aJsonString("Bob"))
-                                )
+                JsonNodeFactories.aJsonArray(
+                        new LinkedList<JsonNode>(
+                                Arrays.asList(JsonNodeFactories.aJsonString("Bob"))
                         )
-                ));
+                )
+        ));
     }
 
     @Test
-    public void objectBuilderBuildsAnOjectWithNoFields() throws Exception {
+    public void objectBuilderBuildsAnObjectWithNoFields() throws Exception {
         assertThat(anObjectBuilder().build(), equalTo(JsonNodeFactories.aJsonObject(new HashMap<JsonStringNode, JsonNode>())));
     }
 
@@ -84,11 +84,11 @@ public final class JsonNodeBuildersTest {
                         .withField("Hunky", aStringBuilder("dory"))
                         .build()
                 , equalTo(
-                        JsonNodeFactories.aJsonObject(
-                                new HashMap<JsonStringNode, JsonNode>() {{
-                                    put(JsonNodeFactories.aJsonString("Hunky"), JsonNodeFactories.aJsonString("dory"));
-                                }}
-                        )
-                ));
+                JsonNodeFactories.aJsonObject(
+                        new HashMap<JsonStringNode, JsonNode>() {{
+                            put(JsonNodeFactories.aJsonString("Hunky"), JsonNodeFactories.aJsonString("dory"));
+                        }}
+                )
+        ));
     }
 }

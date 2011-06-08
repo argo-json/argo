@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -36,9 +36,9 @@ public final class PrettyJsonFormatterTest {
             put(aJsonString("Foo"), aJsonString("Bar"));
         }})), equalTo(
                 aJsonStringResultBuilder()
-                        .println("{")
-                        .println("\t\"Foo\": \"Bar\"")
-                        .println("\t, \"Hello\": \"World\"")
+                        .printLine("{")
+                        .printLine("\t\"Foo\": \"Bar\"")
+                        .printLine("\t, \"Hello\": \"World\"")
                         .print("}")
                         .build()
         ));
@@ -50,8 +50,8 @@ public final class PrettyJsonFormatterTest {
             put(aJsonString("Hello"), aJsonObject(new HashMap<JsonStringNode, JsonNode>()));
         }})), equalTo(
                 aJsonStringResultBuilder()
-                        .println("{")
-                        .println("\t\"Hello\": {}")
+                        .printLine("{")
+                        .printLine("\t\"Hello\": {}")
                         .print("}")
                         .build()
         )
@@ -65,9 +65,9 @@ public final class PrettyJsonFormatterTest {
                 , aJsonNumber("23")
         ))), equalTo(
                 aJsonStringResultBuilder()
-                        .println("[")
-                        .println("\t\"BobBob\"")
-                        .println("\t, 23")
+                        .printLine("[")
+                        .printLine("\t\"BobBob\"")
+                        .printLine("\t, 23")
                         .print("]")
                         .build()
         )
@@ -88,11 +88,11 @@ public final class PrettyJsonFormatterTest {
     @Test
     public void formatsAJsonStringWithEscapedCharacters() throws Exception {
         assertThat(new PrettyJsonFormatter().format(aJsonArray(Arrays.asList(
-                (JsonNode)aJsonString("\" \\ \b \f \n \r \t"))
+                (JsonNode) aJsonString("\" \\ \b \f \n \r \t"))
         )), equalTo(
                 aJsonStringResultBuilder()
-                        .println("[")
-                        .println("\t\"\\\" \\\\ \\b \\f \\n \\r \\t\"")
+                        .printLine("[")
+                        .printLine("\t\"\\\" \\\\ \\b \\f \\n \\r \\t\"")
                         .print("]")
                         .build()
         )
@@ -102,18 +102,18 @@ public final class PrettyJsonFormatterTest {
     @Test
     public void formatsAStringWithinAString() throws Exception {
         assertThat(new PrettyJsonFormatter().format(aJsonArray(Arrays.asList(
-                (JsonNode)aJsonString("\"\\\"A String\\\" within a String\""))
+                (JsonNode) aJsonString("\"\\\"A String\\\" within a String\""))
         )), equalTo(
                 aJsonStringResultBuilder()
-                        .println("[")
-                        .println("\t\"\\\"\\\\\\\"A String\\\\\\\" within a String\\\"\"")
+                        .printLine("[")
+                        .printLine("\t\"\\\"\\\\\\\"A String\\\\\\\" within a String\\\"\"")
                         .print("]")
                         .build()
         ));
     }
 
     @Test
-    public void testRoundtrip() throws Exception {
+    public void testRoundTrip() throws Exception {
         final File longJsonExample = new File(this.getClass().getResource("Sample.json").getFile());
         final String json = readFileToString(longJsonExample);
         final JdomParser jdomParser = new JdomParser();

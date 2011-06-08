@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -42,17 +42,13 @@ public final class StajParserTest {
             this.stajParser = stajParser;
         }
 
-        boolean nextReturned() {
-            return nextReturned;
-        }
-
         void waitForNextToReturn() {
             synchronized (lock) {
                 while (!nextReturned) {
                     try {
                         lock.wait();
                     } catch (final InterruptedException e) {
-                        throw new RuntimeException("Coding failue: interrupted waiting for next to return.", e);
+                        throw new RuntimeException("Coding failure: interrupted waiting for next to return.", e);
                     }
                 }
             }
@@ -88,7 +84,7 @@ public final class StajParserTest {
                     try {
                         lock.wait();
                     } catch (final InterruptedException e) {
-                        throw new RuntimeException("Coding failue: interrupted waiting for read to be called.", e);
+                        throw new RuntimeException("Coding failure: interrupted waiting for read to be called.", e);
                     }
                 }
             }
@@ -101,7 +97,7 @@ public final class StajParserTest {
             }
         }
 
-        public int read(final char[] cbuf, final int off, final int len) throws IOException {
+        public int read(final char[] chars, final int offset, final int length) throws IOException {
             synchronized (lock) {
                 if (!readCalled) {
                     readCalled = true;
@@ -111,11 +107,11 @@ public final class StajParserTest {
                     try {
                         lock.wait();
                     } catch (final InterruptedException e) {
-                        throw new RuntimeException("Coding failue: interrupted waiting for allowRead.", e);
+                        throw new RuntimeException("Coding failure: interrupted waiting for allowRead.", e);
                     }
                 }
             }
-            return delegate.read(cbuf, off, len);
+            return delegate.read(chars, offset, length);
         }
 
         public void close() throws IOException {

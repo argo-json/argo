@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -35,7 +35,7 @@ public final class JsonNodeSelectorTest {
     }
 
     @Test
-    public void toStringProducesSomethingIntelligable() throws Exception {
+    public void toStringProducesSomethingIntelligible() throws Exception {
         final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelectors.anObjectNodeWithField("Hello")
                 .with(JsonNodeSelectors.anArrayNodeWithElement(2))
                 .with(JsonNodeSelectors.aNumberNode());

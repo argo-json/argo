@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -20,7 +20,7 @@ public final class ParserToJsonStreamReaderAdapterTest {
     @Test(expected = JsonStreamException.class)
     public void handlesIoExceptionDuringParsing() throws Exception {
         new StajParser(new Reader() {
-            public int read(char[] cbuf, int off, int len) throws IOException {
+            public int read(char[] chars, int offset, int length) throws IOException {
                 throw new IOException("An IOException");
             }
 
@@ -32,7 +32,7 @@ public final class ParserToJsonStreamReaderAdapterTest {
     @Test(expected = MyTestRuntimeException.class)
     public void handlesRuntimeExceptionDuringParsing() throws Exception {
         new StajParser(new Reader() {
-            public int read(char[] cbuf, int off, int len) throws IOException {
+            public int read(char[] chars, int offset, int length) throws IOException {
                 throw new MyTestRuntimeException();
             }
 

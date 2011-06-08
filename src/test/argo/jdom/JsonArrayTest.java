@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertFalse;
 public final class JsonArrayTest {
 
     @Test
-    public void testImmutablility() {
+    public void testImmutability() {
         final JsonNode baseJsonNode = aJsonNumber("0");
         final List<JsonNode> baseElements = new LinkedList<JsonNode>(Arrays.<JsonNode>asList(baseJsonNode));
         final JsonNode jsonArray = JsonNodeFactories.aJsonArray(baseElements);
