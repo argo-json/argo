@@ -26,7 +26,7 @@ package argo.jdom;
  */
 public final class JsonNodeSelector<T, U> {
 
-    final Functor<T, U> valueGetter;
+    private final Functor<T, U> valueGetter;
 
     JsonNodeSelector(final Functor<T, U> valueGetter) {
         this.valueGetter = valueGetter;

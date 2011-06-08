@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -14,14 +14,14 @@ import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 final class InvalidSyntaxExceptionMatcher extends TypeSafeMatcher<InvalidSyntaxException> {
-    final int column;
-    final int line;
+    private final int column;
+    private final int line;
 
     static InvalidSyntaxExceptionMatcher anInvalidSyntaxExceptionAtPosition(final int column, final int line) {
         return new InvalidSyntaxExceptionMatcher(column, line);
     }
 
-    InvalidSyntaxExceptionMatcher(final int column, final int line) {
+    private InvalidSyntaxExceptionMatcher(final int column, final int line) {
         this.column = column;
         this.line = line;
     }
@@ -29,6 +29,7 @@ final class InvalidSyntaxExceptionMatcher extends TypeSafeMatcher<InvalidSyntaxE
     public boolean matchesSafely(final InvalidSyntaxException e) {
         return e.getColumn() == column && e.getLine() == line;
     }
+
     public void describeTo(final Description description) {
         description.appendText("An InvalidSyntaxException at line ").appendValue(line).appendText(", column ").appendValue(column);
     }
