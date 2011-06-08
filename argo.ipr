@@ -557,6 +557,7 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/performance-test/compile" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/lib/performancetest/compile" recursive="false" />
     </library>
     <library name="performance test run">
@@ -565,6 +566,7 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/performance-test/run" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/lib/performancetest/run" recursive="false" />
     </library>
     <library name="test compile">

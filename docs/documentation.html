@@ -66,116 +66,109 @@
         <code>JsonRootNode</code>. A number of factory methods are provided for constructing <code>JsonNode</code>s
         and <code>JsonRootNode</code>s in the <code>JsonNodeFactories</code> class:</p>
 
-    <div class="code">import static argo.jdom.JsonNodeFactories.*;
+        <div class="code">import static argo.jdom.JsonNodeFactories.*;
 
-        ...
+...
 
-        JsonRootNode json = aJsonObject(
+JsonRootNode json = aJsonObject(
         aJsonField("name", aJsonString("Black Lace"))
         , aJsonField("sales", aJsonNumber("110921"))
         , aJsonField("totalRoyalties", aJsonNumber("10223.82"))
         , aJsonField("singles", aJsonArray(
-        aJsonString("Superman")
-        , aJsonString("Agadoo")
+                aJsonString("Superman")
+                , aJsonString("Agadoo")
         ))
-        );
-    </div>
+);</div>
     <p>All implementations of <code>JsonNode</code> and <code>JsonRootNode</code> are immutable. The same
         <code>JsonRootNode</code> could have been built up in a mutable manner using the methods in
         <code>JsonNodeBuilders</code> class:</p>
 
-    <div class="code">import static argo.jdom.JsonNodeBuilders.*;
+        <div class="code">import static argo.jdom.JsonNodeBuilders.*;
 
-        ...
+...
 
-        JsonObjectNodeBuilder builder = anObjectBuilder()
+JsonObjectNodeBuilder builder = anObjectBuilder()
         .withField("name", aStringBuilder("Black Lace"))
         .withField("sales", aNumberBuilder("110921"))
         .withField("totalRoyalties", aNumberBuilder("10223.82"))
         .withField("singles", anArrayBuilder()
-        .withElement(aStringBuilder("Superman"))
-        .withElement(aStringBuilder("Agadoo"))
+                .withElement(aStringBuilder("Superman"))
+                .withElement(aStringBuilder("Agadoo"))
         );
-        JsonRootNode json = builder.build();
-    </div>
+JsonRootNode json = builder.build();</div>
     <p>Finally, an instance of <code>JsonFormatter</code> is needed to produce JSON text from the
         <code>JsonRootNode</code>. The two implementations provided are <code>PrettyJsonFormatter</code>, which
         produces easy to read JSON, and <code>CompactJsonFormatter</code>, which produces very brief JSON.
         Instances of both classes can safely be shared between threads.</p>
 
-    <div class="code">private static final JsonFormatter JSON_FORMATTER
+        <div class="code">private static final JsonFormatter JSON_FORMATTER
         = new PrettyJsonFormatter();
 
-        ...
+...
 
-        String jsonText = JSON_FORMATTER.format(json);
-    </div>
+String jsonText = JSON_FORMATTER.format(json);</div>
 
     <h3>Parsing JSON into an Object</h3>
 
     <p>All the examples in this section are based on the following JSON, which is
         assumed to be available in a <code>String</code> variable called <code>jsonText</code>.</p>
 
-    <div class="code">{
-        "name": "Black Lace",
-        "sales": 110921,
-        "totalRoyalties": 10223.82,
-        "singles": [
+        <div class="code">{
+    "name": "Black Lace",
+    "sales": 110921,
+    "totalRoyalties": 10223.82,
+    "singles": [
         "Superman", "Agadoo"
-        ]
-        }
-    </div>
+    ]
+}</div>
     <p>The <code>JdomParser</code> class is used to generate a <code>JsonRootNode</code> from JSON text. Instances
         of <code>JdomParser</code> can safely be shared between threads.</p>
 
-    <div class="code">private static final JdomParser JDOM_PARSER = new JdomParser();
+        <div class="code">private static final JdomParser JDOM_PARSER = new JdomParser();
 
-        ...
+...
 
-        JsonRootNode json = JDOM_PARSER.parse(jsonText);
-    </div>
+JsonRootNode json = JDOM_PARSER.parse(jsonText);</div>
     <p>Instances of <code>JsonRootNode</code> are immutable. <code>JsonRootNode</code> and its parent
         <code>JsonNode</code> provide methods for exploring the generated structure, as specified in the javadoc. The
         simplest of these are the <code>getXXXValue(Object... pathElements)</code> methods, which are used as follows:
     </p>
 
-    <div class="code">String secondSingle = json.getStringValue("singles", 1);</div>
-    <p>It is also possible to check that the node at a particular path is of the required type as follows:</p>
+        <div class="code">String secondSingle = json.getStringValue("singles", 1);</div>
+        <p>It is also possible to check that the node at a particular path is of the required type as follows:</p>
 
-    <div class="code">boolean isString = json.isStringValue("singles", 1);</div>
-    <p>Alternatively, <code>JsonNodeSelector</code>s can be used to extract data from the <code>JsonRootNode</code>
+        <div class="code">boolean isString = json.isStringValue("singles", 1);</div>
+        <p>Alternatively, <code>JsonNodeSelector</code>s can be used to extract data from the <code>JsonRootNode</code>
         in a typesafe manner.<code>JsonNodeSelector</code>s are functions that can be applied to <code>JsonNode</code>s
         to extract a value
         or a child <code>JsonNode</code>. The <code>JsonNodeSelectors</code> class provides a number of factory
         methods for constructing instances of <code>JsonNodeSelector</code>. The following code gets the name of
         the second single (note that like arrays, the index of the first element is zero):</p>
 
-    <div class="code">private static final JsonNodeSelector&lt;JsonNode,String&gt; SECOND_SINGLE
+        <div class="code">private static final JsonNodeSelector&lt;JsonNode,String&gt; SECOND_SINGLE
         = JsonNodeSelectors.aStringNode("singles", 1);
 
-        ...
+...
 
-        String secondSingle = SECOND_SINGLE.getValue(json);
-    </div>
+String secondSingle = SECOND_SINGLE.getValue(json);</div>
     <p>The singles can also be converted into a <code>List&lt;String&gt;</code>:</p>
 
-    <div class="code">private static final JsonNodeSelector&lt;JsonNode, List&lt;JsonNode&gt;&gt; SINGLES
+        <div class="code">private static final JsonNodeSelector&lt;JsonNode, List&lt;JsonNode&gt;&gt; SINGLES
         = anArrayNode("singles");
-        private static final JsonNodeSelector&lt;JsonNode, String&gt; SINGLE_NAME
+private static final JsonNodeSelector&lt;JsonNode, String&gt; SINGLE_NAME
         = aStringNode();
 
-        ...
+...
 
-        List&lt;String&gt; singles = new AbstractList&lt;String&gt;() {
-        public String get(int index) {
+List&lt;String&gt; singles = new AbstractList&lt;String&gt;() {
+    public String get(int index) {
         return SINGLE_NAME.getValue(SINGLES.getValue(json).get(index));
-        }
+    }
 
-        public int size() {
+    public int size() {
         return SINGLES.getValue(json).size();
-        }
-        };
-    </div>
+    }
+};</div>
     <p>JSON number handling deserves a brief explanation. JSON numbers are unlimited precision, and as such, cannot be
         represented by a Java primitive like <code>double</code> or <code>int</code>. The closest numeric
         representation offered by Java is <code>BigDecimal</code>, which accurately represents almost all JSON numbers,
@@ -185,12 +178,11 @@
         these <code>String</code>s to other Java numeric types. For example, you could retrieve the total royalties
         from the example JSON as follows:</p>
 
-    <div class="code">import static argo.format.JsonNumberUtils.asBigDecimal;
+        <div class="code">import static argo.format.JsonNumberUtils.asBigDecimal;
 
-        ...
+...
 
-        BigDecimal totalRoyalties = asBigDecimal(json.getNumberValue("totalRoyalties"));
-    </div>
+BigDecimal totalRoyalties = asBigDecimal(json.getNumberValue("totalRoyalties"));</div>
 
     <h3>Parsing JSON into events</h3>
 
@@ -202,23 +194,22 @@
     <p>The following code extracts the names of all the fields in a piece of JSON. It assumes
         <code>jsonReader</code> refers to a <code>Reader</code> of the example JSON in the previous section.</p>
 
-    <div class="code">private static final SajParser SAJ_PARSER
+        <div class="code">private static final SajParser SAJ_PARSER
         = new SajParser();
 
-        ...
+...
 
-        final Set&lt;String&gt; fieldNames = new HashSet&lt;String&gt;();
-        SAJ_PARSER.parse(jsonReader, new JsonListener() {
-        public void startField(String name) {
+final Set&lt;String&gt; fieldNames = new HashSet&lt;String&gt;();
+SAJ_PARSER.parse(jsonReader, new JsonListener() {
+    public void startField(String name) {
         fieldNames.add(name);
-        }
-        public void startDocument() { }
-        public void endDocument() { }
+    }
+    public void startDocument() { }
+    public void endDocument() { }
 
-        ...
+...
 
-        });
-    </div>
+}); </div>
     <h3>Parsing JSON through iteration</h3>
 
     <p>The <code>StajParser</code> class allows the calling code to request parsing events from a stream of JSON
@@ -228,21 +219,20 @@
         Again, it assumes <code>jsonReader</code> refers to a <code>Reader</code> of the example JSON in the previous
         section.</p>
 
-    <div class="code">Set&lt;String&gt; fieldNames = new HashSet&lt;String&gt;();
-        StajParser stajParser = null;
-        try {
-        stajParser = new StajParser(jsonReader);
-        while (stajParser.hasNext()) {
+        <div class="code">Set&lt;String&gt; fieldNames = new HashSet&lt;String&gt;();
+StajParser stajParser = null;
+try {
+    stajParser = new StajParser(jsonReader);
+    while (stajParser.hasNext()) {
         if (stajParser.next() == JsonStreamElementType.START_FIELD) {
-        fieldNames.add(stajParser.getText());
+            fieldNames.add(stajParser.getText());
         }
-        }
-        } finally {
-        if (stajParser != null) {
+    }
+} finally {
+    if (stajParser != null) {
         stajParser.close();
-        }
-        }
-    </div>
+    }
+}</div>
     <p>Note that it is important to call <code>close()</code> when finished with an instance of
         <code>StajParser</code> to free up resource associated with it.</p>
 </div>

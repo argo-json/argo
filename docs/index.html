@@ -50,19 +50,17 @@
             assumed to be available in a <code>String</code> called <code>jsonText</code>.</p>
 
         <div class="code">{
-            "name": "Black Lace",
-            "sales": 110921,
-            "totalRoyalties": 10223.82,
-            "singles": [
-            "Superman", "Agadoo"
-            ]
-            }
-        </div>
+    "name": "Black Lace",
+    "sales": 110921,
+    "totalRoyalties": 10223.82,
+    "singles": [
+        "Superman", "Agadoo"
+    ]
+}</div>
         <p>We can use Argo to get the second single like this:</p>
 
         <div class="code">String secondSingle = new JdomParser().parse(jsonText)
-            .getStringValue("singles", 1);
-        </div>
+    .getStringValue("singles", 1);</div>
         <p>On the first line, we parse the JSON text into an object hierarchy. There are various options for navigating
             this, but the simplest is just to give the path and type of node we expect.</p>
 
