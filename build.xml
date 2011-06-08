@@ -18,8 +18,8 @@
     <property name="location.documentation" value="docs"/>
     <property name="location.src" value="src/main"/>
     <property name="location.src.test" value="src/test"/>
-    <property name="location.src.performance-test" value="src/performancetest"/>
-    <property name="location.src.code-sample" value="src/codesamples"/>
+    <property name="location.src.performance-test" value="src/performance-test"/>
+    <property name="location.src.code-sample" value="src/code-samples"/>
 
     <property name="location.build" value="build"/>
     <property name="location.classes" value="${location.build}/classes"/>
@@ -28,8 +28,8 @@
     <property name="location.test-results" value="${location.build}/test-results"/>
     <property name="location.performance-test-classes" value="${location.build}/performance-test-classes"/>
     <property name="location.performance-test-results" value="${location.build}/performance-test-results"/>
-    <property name="location.code-sample-test-classes" value="${location.build}/codesample-classes"/>
-    <property name="location.code-sample-test-results" value="${location.build}/codesample-results"/>
+    <property name="location.code-sample-test-classes" value="${location.build}/code-sample-classes"/>
+    <property name="location.code-sample-test-results" value="${location.build}/code-sample-results"/>
 
     <property name="location.dist" value="${location.build}/dist"/>
 
@@ -46,13 +46,13 @@
     </path>
 
     <path id="performance-test-compile-libs">
-        <fileset dir="${location.lib}/performancetest/compile">
+        <fileset dir="${location.lib}/performance-test/compile">
             <include name="**/*.jar"/>
         </fileset>
     </path>
 
     <path id="performance-test-run-libs">
-        <fileset dir="${location.lib}/performancetest/run">
+        <fileset dir="${location.lib}/performance-test/run">
             <include name="**/*.jar"/>
         </fileset>
     </path>
@@ -115,11 +115,11 @@
         </copy>
 
         <copy todir="${location.performance-test-classes}">
-            <fileset dir="src/performancetest"/>
+            <fileset dir="src/performance-test"/>
         </copy>
 
         <copy todir="${location.code-sample-test-classes}">
-            <fileset dir="src/codesamples"/>
+            <fileset dir="src/code-samples"/>
         </copy>
 
         <echo message="Finished compile"/>

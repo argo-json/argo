@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -22,7 +22,7 @@ public final class SimpleJdomExamples {
     @Test
     public void ParseSimpleExample() throws Exception {
         final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
-String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
+        String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
         assertThat(secondSingle, equalTo("Agadoo"));
     }
 }

@@ -553,7 +553,7 @@
     </library>
     <library name="performance test compile">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/performancetest/compile" />
+        <root url="file://$PROJECT_DIR$/lib/performance-test/compile" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -561,7 +561,7 @@
     </library>
     <library name="performance test run">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/performancetest/run" />
+        <root url="file://$PROJECT_DIR$/lib/performance-test/run" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

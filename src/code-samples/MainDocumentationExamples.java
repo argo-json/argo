@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -41,9 +41,9 @@ public final class MainDocumentationExamples {
             , aJsonField("sales", aJsonNumber("110921"))
             , aJsonField("totalRoyalties", aJsonNumber("10223.82"))
             , aJsonField("singles", aJsonArray(
-                    aJsonString("Superman")
-                    , aJsonString("Agadoo")
-            ))
+            aJsonString("Superman")
+            , aJsonString("Agadoo")
+    ))
     );
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
@@ -64,9 +64,9 @@ public final class MainDocumentationExamples {
                 , aJsonField("sales", aJsonNumber("110921"))
                 , aJsonField("totalRoyalties", aJsonNumber("10223.82"))
                 , aJsonField("singles", aJsonArray(
-                        aJsonString("Superman")
-                        , aJsonString("Agadoo")
-                ))
+                aJsonString("Superman")
+                , aJsonString("Agadoo")
+        ))
         );
         assertThat(json, equalTo(SAMPLE_JSON));
     }
@@ -130,39 +130,63 @@ public final class MainDocumentationExamples {
             public void startField(String name) {
                 fieldNames.add(name);
             }
-            public void startDocument() { }
-            public void endDocument() { }
-            public void startArray() { }
-            public void endArray() { }
-            public void startObject() { }
-            public void endObject() { }
-            public void endField() { }
-            public void stringValue(final String value) { }
-            public void numberValue(final String value) { }
-            public void trueValue() { }
-            public void falseValue() { }
-            public void nullValue() { }
+
+            public void startDocument() {
+            }
+
+            public void endDocument() {
+            }
+
+            public void startArray() {
+            }
+
+            public void endArray() {
+            }
+
+            public void startObject() {
+            }
+
+            public void endObject() {
+            }
+
+            public void endField() {
+            }
+
+            public void stringValue(final String value) {
+            }
+
+            public void numberValue(final String value) {
+            }
+
+            public void trueValue() {
+            }
+
+            public void falseValue() {
+            }
+
+            public void nullValue() {
+            }
         });
-        assertThat(fieldNames, equalTo((Set<String>)new HashSet<String>(Arrays.asList("name", "sales", "totalRoyalties", "singles"))));
+        assertThat(fieldNames, equalTo((Set<String>) new HashSet<String>(Arrays.asList("name", "sales", "totalRoyalties", "singles"))));
     }
 
     @Test
     public void parsesUsingStaj() throws Exception {
         final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
-Set<String> fieldNames = new HashSet<String>();
-StajParser stajParser = null;
-try {
-    stajParser = new StajParser(jsonReader);
-    while (stajParser.hasNext()) {
-        if (stajParser.next() == JsonStreamElementType.START_FIELD) {
-            fieldNames.add(stajParser.getText());
+        Set<String> fieldNames = new HashSet<String>();
+        StajParser stajParser = null;
+        try {
+            stajParser = new StajParser(jsonReader);
+            while (stajParser.hasNext()) {
+                if (stajParser.next() == JsonStreamElementType.START_FIELD) {
+                    fieldNames.add(stajParser.getText());
+                }
+            }
+        } finally {
+            if (stajParser != null) {
+                stajParser.close();
+            }
         }
-    }
-} finally {
-    if (stajParser != null) {
-        stajParser.close();
-    }
-}
-        assertThat(fieldNames, equalTo((Set<String>)new HashSet<String>(Arrays.asList("name", "sales", "totalRoyalties", "singles"))));
+        assertThat(fieldNames, equalTo((Set<String>) new HashSet<String>(Arrays.asList("name", "sales", "totalRoyalties", "singles"))));
     }
 }
