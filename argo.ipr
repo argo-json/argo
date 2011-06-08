@@ -83,6 +83,7 @@
           <option name="SMART_TABS" value="false" />
           <option name="LABEL_INDENT_SIZE" value="0" />
           <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+          <option name="USE_RELATIVE_INDENTS" value="false" />
         </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="xml">
           <option name="INDENT_SIZE" value="4" />
@@ -92,6 +93,7 @@
           <option name="SMART_TABS" value="false" />
           <option name="LABEL_INDENT_SIZE" value="0" />
           <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+          <option name="USE_RELATIVE_INDENTS" value="false" />
         </ADDITIONAL_INDENT_OPTIONS>
       </value>
     </option>
@@ -203,6 +205,8 @@
         <inspection_tool class="LiteralAsArgToStringEquals" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="MethodOnlyUsedFromInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="ignoreMethodsAccessedFromAnonymousClass" value="false" />
+          <option name="ignoreStaticMethodsFromNonStaticInnerClass" value="false" />
+          <option name="onlyReportStaticMethods" value="false" />
         </inspection_tool>
         <inspection_tool class="MissortedModifiers" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_requireAnnotationsFirst" value="true" />
@@ -402,10 +406,21 @@
   <component name="ProjectDetails">
     <option name="projectName" value="argo" />
   </component>
+  <component name="ProjectDictionaryState">
+    <dictionary name="mark">
+      <words>
+        <w>pushback</w>
+        <w>threadsafe</w>
+      </words>
+    </dictionary>
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/argo.iml" filepath="$PROJECT_DIR$/argo.iml" />
     </modules>
+  </component>
+  <component name="ProjectResources">
+    <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
@@ -506,13 +521,13 @@
     <option name="myLastEditedConfigurable" />
   </component>
   <component name="libraryTable">
-    <library name="test compile">
+    <library name="build run">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/test/compile" />
+        <root url="file://$PROJECT_DIR$/lib/build" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/lib/test/compile" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/build" recursive="false" />
     </library>
     <library name="performance test compile">
       <CLASSES>
@@ -522,14 +537,6 @@
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib/performancetest/compile" recursive="false" />
     </library>
-    <library name="test run">
-      <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/test/run" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/lib/test/run" recursive="false" />
-    </library>
     <library name="performance test run">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib/performancetest/run" />
@@ -538,13 +545,21 @@
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib/performancetest/run" recursive="false" />
     </library>
-    <library name="build run">
+    <library name="test compile">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/build" />
+        <root url="file://$PROJECT_DIR$/lib/test/compile" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/lib/build" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/test/compile" recursive="false" />
+    </library>
+    <library name="test run">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/test/run" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib/test/run" recursive="false" />
     </library>
   </component>
   <component name="se.expertsystem.intellij.aop.aspectj.AspectJProjectComponent">

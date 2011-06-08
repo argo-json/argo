@@ -316,18 +316,23 @@ public final class SajParser {
     private String possibleExponent(final PositionTrackingPushbackReader pushbackReader) throws IOException, InvalidSyntaxException {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
-        if (firstChar == '.' || firstChar == 'E') {
-            result.append('E');
-            result.append(possibleSign(pushbackReader));
-            result.append(digitToken(pushbackReader));
-            result.append(digitString(pushbackReader));
-        } else if (firstChar == 'e') {
-            result.append('e');
-            result.append(possibleSign(pushbackReader));
-            result.append(digitToken(pushbackReader));
-            result.append(digitString(pushbackReader));
-        } else {
-            pushbackReader.unread(firstChar);
+        switch (firstChar) {
+            case '.':
+            case 'E':
+                result.append('E');
+                result.append(possibleSign(pushbackReader));
+                result.append(digitToken(pushbackReader));
+                result.append(digitString(pushbackReader));
+                break;
+            case 'e':
+                result.append('e');
+                result.append(possibleSign(pushbackReader));
+                result.append(digitToken(pushbackReader));
+                result.append(digitString(pushbackReader));
+                break;
+            default:
+                pushbackReader.unread(firstChar);
+                break;
         }
         return result.toString();
     }
@@ -400,7 +405,7 @@ public final class SajParser {
                 result = TAB;
                 break;
             case 'u':
-                result = (char) hexidecimalNumber(in);
+                result = (char) hexadecimalNumber(in);
                 break;
             default:
                 throw new InvalidSyntaxException("Unrecognised escape character [" + firstChar + "].", in);
@@ -408,18 +413,18 @@ public final class SajParser {
         return result;
     }
 
-    private int hexidecimalNumber(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
+    private int hexadecimalNumber(final PositionTrackingPushbackReader in) throws IOException, InvalidSyntaxException {
         final char[] resultCharArray = new char[4];
         final int readSize = in.read(resultCharArray);
         if (readSize != 4) {
-            throw new InvalidSyntaxException("Expected a 4 digit hexidecimal number but got only [" + readSize + "], namely [" + String.valueOf(resultCharArray, 0, readSize) + "].", in);
+            throw new InvalidSyntaxException("Expected a 4 digit hexadecimal number but got only [" + readSize + "], namely [" + String.valueOf(resultCharArray, 0, readSize) + "].", in);
         }
         int result;
         try {
             result = Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
             in.uncount(resultCharArray);
-            throw new InvalidSyntaxException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexidecimal number.", e, in);
+            throw new InvalidSyntaxException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexadecimal number.", e, in);
         }
         return result;
     }
