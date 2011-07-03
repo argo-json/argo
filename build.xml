@@ -224,7 +224,7 @@
         </copy>
         <mkdir dir="${location.dist.documentation}/javadoc"/>
         <javadoc destdir="${location.dist.documentation}/javadoc" windowtitle="Argo version ${version}"
-                 doctitle="Argo version ${version}">
+                 doctitle="Argo version ${version}" linksource="true">
             <sourcepath path="${location.src}"/>
         </javadoc>
     </target>
