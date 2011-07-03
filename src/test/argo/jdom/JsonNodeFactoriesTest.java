@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -31,13 +31,13 @@ public final class JsonNodeFactoriesTest {
                         , aJsonNumber(new BigDecimal("0.5"))
                 )
                 , equalTo(
-                        aJsonArray(
-                                asList(
-                                        aJsonString("Way there")
-                                        , aJsonNumber("0.5")
-                                )
+                aJsonArray(
+                        asList(
+                                aJsonString("Way there")
+                                , aJsonNumber("0.5")
                         )
-                ));
+                )
+        ));
     }
 
     @Test
@@ -45,12 +45,12 @@ public final class JsonNodeFactoriesTest {
         assertThat(
                 aJsonObject(
                         aJsonField("Gina", aJsonString("Dreams of running away"))
-                        , aJsonField("Tommy", aJsonString("Used to work on the dock"))
+                        , aJsonField(aJsonString("Tommy"), aJsonString("Used to work on the dock"))
                 )
                 , equalTo(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(aJsonString("Gina"), aJsonString("Dreams of running away"));
-                    put(aJsonString("Tommy"), aJsonString("Used to work on the dock"));
-                }}))
+            put(aJsonString("Gina"), aJsonString("Dreams of running away"));
+            put(aJsonString("Tommy"), aJsonString("Used to work on the dock"));
+        }}))
         );
     }
 
@@ -76,8 +76,8 @@ public final class JsonNodeFactoriesTest {
                         aJsonField("Number of shots to give it", aJsonNumber(new BigInteger("1")))
                 )
                 , equalTo(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(aJsonString("Number of shots to give it"), aJsonNumber("1"));
-                }}))
+            put(aJsonString("Number of shots to give it"), aJsonNumber("1"));
+        }}))
         );
     }
 

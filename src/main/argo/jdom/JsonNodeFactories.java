@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -21,7 +21,8 @@ import java.util.Map;
  */
 public final class JsonNodeFactories {
 
-    private JsonNodeFactories() {}
+    private JsonNodeFactories() {
+    }
 
     public static JsonNode aJsonNull() {
         return JsonConstants.NULL;
@@ -77,6 +78,10 @@ public final class JsonNodeFactories {
 
     public static JsonField aJsonField(final String name, final JsonNode value) {
         return new JsonField(aJsonString(name), value);
+    }
+
+    public static JsonField aJsonField(final JsonStringNode name, final JsonNode value) {
+        return new JsonField(name, value);
     }
 
     public static JsonNode aJsonBoolean(final boolean value) {
