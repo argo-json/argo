@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,6 +16,7 @@ import java.util.Stack;
 
 import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
 import static argo.jdom.JsonNodeBuilders.*;
+import static argo.jdom.JsonNodeFactories.aJsonString;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
 
@@ -26,9 +27,11 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         return root.build();
     }
 
-    public void startDocument() { }
+    public void startDocument() {
+    }
 
-    public void endDocument() { }
+    public void endDocument() {
+    }
 
     public void startArray() {
         final JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
@@ -37,6 +40,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
                 arrayBuilder.withElement(jsonNodeBuilder);
             }
+
             public void addField(final JsonFieldBuilder jsonFieldBuilder) {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array.");
             }
@@ -54,6 +58,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object.");
             }
+
             public void addField(final JsonFieldBuilder jsonFieldBuilder) {
                 objectNodeBuilder.withFieldBuilder(jsonFieldBuilder);
             }
@@ -65,12 +70,13 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final String name) {
-        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(aStringBuilder(name));
+        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(aJsonString(name));
         stack.peek().addField(fieldBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
                 fieldBuilder.withValue(jsonNodeBuilder);
             }
+
             public void addField(final JsonFieldBuilder jsonFieldBuilder) {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field.");
             }

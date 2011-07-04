@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
+import static argo.jdom.JsonNodeFactories.aJsonString;
 
 /**
  * Builder for <code>JsonRootNode</code>s representing JSON objects.
@@ -23,27 +24,28 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
 
     private final List<JsonFieldBuilder> fieldBuilders = new LinkedList<JsonFieldBuilder>();
 
-    JsonObjectNodeBuilder() {}
-
-    /**
-     * Adds a field to the object that will be built.
-     *
-     * @param name the name of the field
-     * @param value a builder for the value of the field.
-     * @return the modified object builder.
-     */
-    public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder value) {
-        return withField(JsonNodeBuilders.aStringBuilder(name), value);
+    JsonObjectNodeBuilder() {
     }
 
     /**
      * Adds a field to the object that will be built.
      *
-     * @param name a builder for the name of the field
+     * @param name  the name of the field
      * @param value a builder for the value of the field.
      * @return the modified object builder.
      */
-    public JsonObjectNodeBuilder withField(final JsonNodeBuilder<JsonStringNode> name, final JsonNodeBuilder value) {
+    public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder value) {
+        return withField(aJsonString(name), value);
+    }
+
+    /**
+     * Adds a field to the object that will be built.
+     *
+     * @param name  a builder for the name of the field
+     * @param value a builder for the value of the field.
+     * @return the modified object builder.
+     */
+    public JsonObjectNodeBuilder withField(final JsonStringNode name, final JsonNodeBuilder value) {
         return withFieldBuilder(aJsonFieldBuilder().withKey(name).withValue(value));
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,37 +15,43 @@ package argo.jdom;
  */
 public final class JsonNodeBuilders {
 
-    private JsonNodeBuilders() {}
+    private static final JsonNodeBuilder<JsonNode> NULL_BUILDER = new JsonNodeBuilder<JsonNode>() {
+        public JsonNode build() {
+            return JsonNodeFactories.aJsonNull();
+        }
+    };
+    private static final JsonNodeBuilder<JsonNode> TRUE_BUILDER = new JsonNodeBuilder<JsonNode>() {
+        public JsonNode build() {
+            return JsonNodeFactories.aJsonTrue();
+        }
+    };
+    private static final JsonNodeBuilder<JsonNode> FALSE_BUILDER = new JsonNodeBuilder<JsonNode>() {
+        public JsonNode build() {
+            return JsonNodeFactories.aJsonFalse();
+        }
+    };
+
+    private JsonNodeBuilders() {
+    }
 
     public static JsonNodeBuilder<JsonNode> aNullBuilder() {
-        return new JsonNodeBuilder<JsonNode>() {
-            public JsonNode build() {
-                return JsonNodeFactories.aJsonNull();
-            }
-        };
+        return NULL_BUILDER;
     }
 
     public static JsonNodeBuilder<JsonNode> aTrueBuilder() {
-        return new JsonNodeBuilder<JsonNode>() {
-            public JsonNode build() {
-                return JsonNodeFactories.aJsonTrue();
-            }
-        };
+        return TRUE_BUILDER;
     }
 
     public static JsonNodeBuilder<JsonNode> aFalseBuilder() {
-        return new JsonNodeBuilder<JsonNode>() {
-            public JsonNode build() {
-                return JsonNodeFactories.aJsonFalse();
-            }
-        };
+        return FALSE_BUILDER;
     }
 
     /**
      * Builder for a JSON number.  This method will throw an illegal argument exception if the <code>String</code> specified does not conform to the JSON number specification.
+     *
      * @param value a String representing a JSON number.
-     * @throws IllegalArgumentException if the given <code>String</code> does not conform to the JSON number specification.
      * @return a builder for a <code>JsonNode</code> representing the number given.
+     * @throws IllegalArgumentException if the given <code>String</code> does not conform to the JSON number specification.
      */
     public static JsonNodeBuilder<JsonNode> aNumberBuilder(final String value) {
         return new JsonNumberNodeBuilder(value);
@@ -53,6 +59,7 @@ public final class JsonNodeBuilders {
 
     /**
      * Builder for a JSON string.
+     *
      * @param value a String to convert into a JSON string.
      * @return a builder for a <code>JsonNode</code> representing the string given.
      */
