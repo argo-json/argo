@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -13,7 +13,7 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
-final class JsonConstants extends JsonNode {
+final class JsonConstants extends JsonNode implements JsonNodeBuilder<JsonNode> {
 
     static final JsonConstants NULL = new JsonConstants(JsonNodeType.NULL);
     static final JsonConstants TRUE = new JsonConstants(JsonNodeType.TRUE);
@@ -53,4 +53,7 @@ final class JsonConstants extends JsonNode {
         throw new IllegalStateException("Attempt to get elements on a JsonNode without elements.");
     }
 
+    public JsonNode build() {
+        return this;
+    }
 }

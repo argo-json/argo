@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * <code>JsonNode</code> that explicitly represents a JSON String.
  */
-public final class JsonStringNode extends JsonNode implements Comparable<JsonStringNode> {
+public final class JsonStringNode extends JsonNode implements Comparable<JsonStringNode>, JsonNodeBuilder<JsonStringNode> {
 
     private final String value;
 
@@ -80,5 +80,9 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
 
     public int compareTo(final JsonStringNode that) {
         return this.value.compareTo(that.value);
+    }
+
+    public JsonStringNode build() {
+        return this;
     }
 }

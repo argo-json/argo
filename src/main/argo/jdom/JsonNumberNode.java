@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2011 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import static argo.jdom.JsonNodeType.NUMBER;
 
-final class JsonNumberNode extends JsonNode {
+final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode> {
 
     private static final Pattern PATTERN = Pattern.compile("(-?)(0|([1-9]([0-9]*)))(\\.[0-9]+)?((e|E)(\\+|-)?[0-9]+)?");
 
@@ -81,5 +81,9 @@ final class JsonNumberNode extends JsonNode {
                 .append(value)
                 .append("]")
                 .toString();
+    }
+
+    public JsonNode build() {
+        return this;
     }
 }

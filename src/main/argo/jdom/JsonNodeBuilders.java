@@ -10,40 +10,26 @@
 
 package argo.jdom;
 
+import static argo.jdom.JsonConstants.*;
+
 /**
  * Builders for <code>JsonNode</code>s.
  */
 public final class JsonNodeBuilders {
 
-    private static final JsonNodeBuilder<JsonNode> NULL_BUILDER = new JsonNodeBuilder<JsonNode>() {
-        public JsonNode build() {
-            return JsonNodeFactories.aJsonNull();
-        }
-    };
-    private static final JsonNodeBuilder<JsonNode> TRUE_BUILDER = new JsonNodeBuilder<JsonNode>() {
-        public JsonNode build() {
-            return JsonNodeFactories.aJsonTrue();
-        }
-    };
-    private static final JsonNodeBuilder<JsonNode> FALSE_BUILDER = new JsonNodeBuilder<JsonNode>() {
-        public JsonNode build() {
-            return JsonNodeFactories.aJsonFalse();
-        }
-    };
-
     private JsonNodeBuilders() {
     }
 
     public static JsonNodeBuilder<JsonNode> aNullBuilder() {
-        return NULL_BUILDER;
+        return NULL;
     }
 
     public static JsonNodeBuilder<JsonNode> aTrueBuilder() {
-        return TRUE_BUILDER;
+        return TRUE;
     }
 
     public static JsonNodeBuilder<JsonNode> aFalseBuilder() {
-        return FALSE_BUILDER;
+        return FALSE;
     }
 
     /**
@@ -54,7 +40,7 @@ public final class JsonNodeBuilders {
      * @throws IllegalArgumentException if the given <code>String</code> does not conform to the JSON number specification.
      */
     public static JsonNodeBuilder<JsonNode> aNumberBuilder(final String value) {
-        return new JsonNumberNodeBuilder(value);
+        return new JsonNumberNode(value);
     }
 
     /**
@@ -63,8 +49,8 @@ public final class JsonNodeBuilders {
      * @param value a String to convert into a JSON string.
      * @return a builder for a <code>JsonNode</code> representing the string given.
      */
-    public static JsonStringNodeBuilder aStringBuilder(final String value) {
-        return new JsonStringNodeBuilder(value);
+    public static JsonNodeBuilder<JsonStringNode> aStringBuilder(final String value) {
+        return new JsonStringNode(value);
     }
 
     public static JsonObjectNodeBuilder anObjectBuilder() {
