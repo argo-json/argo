@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/performance-test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/documentation" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -16,6 +17,7 @@
     <orderEntry type="library" name="test run" level="project" />
     <orderEntry type="library" name="performance test run" level="project" />
     <orderEntry type="library" name="build run" level="project" />
+    <orderEntry type="library" name="documentation run" level="project" />
   </component>
 </module>
 

@@ -20,6 +20,7 @@
     <property name="location.src.test" value="src/test"/>
     <property name="location.src.performance-test" value="src/performance-test"/>
     <property name="location.src.code-sample" value="src/code-samples"/>
+    <property name="location.src.documentation" value="src/documentation"/>
 
     <property name="location.build" value="build"/>
     <property name="location.classes" value="${location.build}/classes"/>
@@ -30,6 +31,7 @@
     <property name="location.performance-test-results" value="${location.build}/performance-test-results"/>
     <property name="location.code-sample-test-classes" value="${location.build}/code-sample-classes"/>
     <property name="location.code-sample-test-results" value="${location.build}/code-sample-results"/>
+    <property name="location.documentation-classes" value="${location.build}/documentation-classes"/>
 
     <property name="location.dist" value="${location.build}/dist"/>
 
@@ -57,6 +59,12 @@
         </fileset>
     </path>
 
+    <path id="documentation-libs">
+        <fileset dir="${location.lib}/documentation">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
     <typedef resource="org/tigris/subversion/svnant/svnantlib.xml">
         <classpath>
             <pathelement location="${location.lib}/build/svnant.jar"/>
@@ -78,6 +86,8 @@
         <mkdir dir="${location.performance-test-classes}"/>
         <delete dir="${location.code-sample-test-classes}"/>
         <mkdir dir="${location.code-sample-test-classes}"/>
+        <delete dir="${location.documentation-classes}"/>
+        <mkdir dir="${location.documentation-classes}"/>
 
         <javac destdir="${location.classes}" debug="on" source="1.6" target="1.6">
             <src path="${location.src}"/>
@@ -104,6 +114,12 @@
             <src path="${location.src.code-sample}"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
+        </javac>
+
+        <javac destdir="${location.documentation-classes}" debug="on" source="1.6" target="1.6"
+               includeantruntime="false">
+            <src path="${location.src.documentation}"/>
+            <classpath refid="documentation-libs"/>
         </javac>
 
         <copy todir="${location.classes}">
@@ -222,6 +238,13 @@
                 <filter token="VERSION" value="${version}"/>
             </filterset>
         </copy>
+        <java classname="argo.Index" failonerror="true" fork="true">
+            <arg value="${location.dist}/documentation/${version}"/>
+            <classpath>
+                <pathelement path="${location.documentation-classes}"/>
+                <path refid="documentation-libs"/>
+            </classpath>
+        </java>
         <mkdir dir="${location.dist.documentation}/javadoc"/>
         <javadoc destdir="${location.dist.documentation}/javadoc" windowtitle="Argo version ${version}"
                  doctitle="Argo version ${version}" linksource="true">

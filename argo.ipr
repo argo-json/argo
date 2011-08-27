@@ -551,6 +551,17 @@
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib/build" recursive="false" />
     </library>
+    <library name="documentation run">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib/documentation" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/documentation/xazzle-0.18.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/documentation/writexml-0.2.jar!/" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/lib/documentation" recursive="false" />
+    </library>
     <library name="performance test compile">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib/performance-test/compile" />
