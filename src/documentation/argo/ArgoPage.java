@@ -13,8 +13,10 @@ package argo;
 import org.sourceforge.xazzle.xhtml.BlockLevelTag;
 import org.sourceforge.xazzle.xhtml.Href;
 import org.sourceforge.xazzle.xhtml.HtmlTag;
+import org.sourceforge.xazzle.xhtml.InlineTag;
 
 import static org.sourceforge.xazzle.xhtml.AlternateText.alternateText;
+import static org.sourceforge.xazzle.xhtml.ClassName.className;
 import static org.sourceforge.xazzle.xhtml.Href.href;
 import static org.sourceforge.xazzle.xhtml.Id.id;
 import static org.sourceforge.xazzle.xhtml.ImageSource.imageSource;
@@ -128,5 +130,23 @@ final class ArgoPage {
                         )
                 )
         );
+    }
+
+    static InlineTag variableName(String name) {
+        return codeTag(xhtmlText(name));
+    }
+
+    static InlineTag codeSnippet(String snippet) {
+        return codeTag(xhtmlText(snippet));
+    }
+
+    static BlockLevelTag codeBlock(String someCode) {
+        return divTag(
+                xhtmlText(someCode)
+        ).withClass(className("code"));
+    }
+
+    static InlineTag simpleNameOf(final Class clazz) {
+        return codeTag(xhtmlText(clazz.getSimpleName()));
     }
 }

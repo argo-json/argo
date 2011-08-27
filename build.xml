@@ -120,6 +120,7 @@
                includeantruntime="false">
             <src path="${location.src.documentation}"/>
             <classpath refid="documentation-libs"/>
+            <classpath location="${location.classes}"/>
         </javac>
 
         <copy todir="${location.classes}">
@@ -230,19 +231,14 @@
         <property name="location.dist.documentation" value="${location.dist}/documentation/${version}"/>
         <mkdir dir="${location.dist.documentation}"/>
         <copy todir="${location.dist.documentation}">
-            <fileset dir="${location.documentation}" excludes="**/*.html"/>
+            <fileset dir="${location.documentation}"/>
         </copy>
-        <copy todir="${location.dist.documentation}">
-            <fileset dir="${location.documentation}" includes="**/*.html"/>
-            <filterset>
-                <filter token="VERSION" value="${version}"/>
-            </filterset>
-        </copy>
-        <java classname="argo.Index" failonerror="true" fork="true">
+        <java classname="argo.DocumentationGenerator" failonerror="true" fork="true">
             <arg value="${location.dist}/documentation/${version}"/>
             <classpath>
                 <pathelement path="${location.documentation-classes}"/>
                 <path refid="documentation-libs"/>
+                <pathelement location="${location.classes}"/>
             </classpath>
         </java>
         <mkdir dir="${location.dist.documentation}/javadoc"/>

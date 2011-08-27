@@ -12,8 +12,7 @@ package argo;
 
 import org.sourceforge.xazzle.xhtml.HtmlTag;
 
-import static argo.ArgoPage.anArgoPage;
-import static org.sourceforge.xazzle.xhtml.ClassName.className;
+import static argo.ArgoPage.*;
 import static org.sourceforge.xazzle.xhtml.Href.href;
 import static org.sourceforge.xazzle.xhtml.Tags.*;
 
@@ -40,42 +39,39 @@ final class IndexPage {
                 paragraphTag(
                         xhtmlText("A brief example demonstrates the DOM style parser. The example is based on the following JSON, " +
                                 "which is assumed to be available in a "),
-                        codeTag(xhtmlText("String")),
+                        simpleNameOf(String.class),
                         xhtmlText(" called "),
-                        codeTag(xhtmlText("jsonText")),
+                        variableName("jsonText"),
                         xhtmlText(".")
                 ),
-                divTag(
-                        xhtmlText("{\n" +
-                                "    \"name\": \"Black Lace\",\n" +
-                                "    \"sales\": 110921,\n" +
-                                "    \"totalRoyalties\": 10223.82,\n" +
-                                "    \"singles\": [\n" +
-                                "        \"Superman\", \"Agadoo\"\n" +
-                                "    ]\n" +
-                                "}")
-                ).withClass(className("code")),
+                codeBlock("{\n" +
+                        "    \"name\": \"Black Lace\",\n" +
+                        "    \"sales\": 110921,\n" +
+                        "    \"totalRoyalties\": 10223.82,\n" +
+                        "    \"singles\": [\n" +
+                        "        \"Superman\", \"Agadoo\"\n" +
+                        "    ]\n" +
+                        "}"),
                 paragraphTag(
                         xhtmlText("We can use Argo to get the second single like this:")
                 ),
-                divTag(
-                        xhtmlText("String secondSingle = new JdomParser().parse(jsonText)\n" +
-                                "    .getStringValue(\"singles\", 1);")
-                ).withClass(className("code")),
+                codeBlock(
+                        "String secondSingle = new JdomParser().parse(jsonText)\n" +
+                                "    .getStringValue(\"singles\", 1);"),
                 paragraphTag(
                         xhtmlText("On the first line, we parse the JSON text into an object hierarchy. There are various options for " +
                                 "navigating this, but the simplest is just to give the path and type of node we expect.")
                 ),
                 paragraphTag(
                         xhtmlText("On line two, we ask for the JSON string at index 1 of the array in the "),
-                        codeTag(xhtmlText("singles")),
+                        variableName("singles"),
                         xhtmlText(" field.")
                 ),
                 paragraphTag(
                         xhtmlText("If we check the "),
-                        codeTag(xhtmlText("secondSingle")),
+                        variableName("secondSingle"),
                         xhtmlText(" variable, we will find, as expected, it contains the "),
-                        codeTag(xhtmlText("String")),
+                        simpleNameOf(String.class),
                         xhtmlText(" \""), codeTag(xhtmlText("Agadoo")), xhtmlText("\".")
                 )
         );

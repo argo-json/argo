@@ -21,11 +21,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
+import static argo.DocumentationPage.documentationPage;
 import static argo.DownloadsPage.downloadsPage;
 import static argo.IndexPage.indexPage;
 import static argo.SupportPage.supportPage;
 
-public class Index {
+public class DocumentationGenerator {
     public static void main(String[] args) throws Exception {
         final File destination = new File(args[0]);
         final String version = versionString();
@@ -33,6 +34,7 @@ public class Index {
         writePage(indexPage(version), destination, "index.html");
         writePage(supportPage(), destination, "support.html");
         writePage(downloadsPage(version), destination, "downloads.html");
+        writePage(documentationPage(), destination, "documentation.html");
     }
 
     private static String versionString() throws IOException {
