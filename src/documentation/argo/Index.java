@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
+import static argo.DownloadsPage.downloadsPage;
 import static argo.IndexPage.indexPage;
 import static argo.SupportPage.supportPage;
 
@@ -31,6 +32,7 @@ public class Index {
 
         writePage(indexPage(version), destination, "index.html");
         writePage(supportPage(), destination, "support.html");
+        writePage(downloadsPage(version), destination, "downloads.html");
     }
 
     private static String versionString() throws IOException {
