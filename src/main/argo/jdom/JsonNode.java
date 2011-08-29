@@ -88,6 +88,27 @@ public abstract class JsonNode {
     }
 
     /**
+     * Determines whether the node at the given path exists and is a root type - either a JSON object or JSON array.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON root node exists at the path given.
+     */
+    public boolean isRootNode(final Object... pathElements) {
+        return JsonNodeSelectors.anyRootNode(pathElements).matches(this);
+    }
+
+    /**
+     * Gets a <code>JsonRootNode</code> by navigating the hierarchy below this node.
+     *
+     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @return the <code>JsonRootNode</code> at the path given.
+     * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON root node.
+     */
+    public JsonRootNode getRootNode(final Object... pathElements) {
+        return wrapExceptionsFor(JsonNodeSelectors.anyRootNode(pathElements), this, pathElements);
+    }
+
+    /**
      * Determines whether the node at the given path exists and is a JSON boolean.
      *
      * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
@@ -325,4 +346,5 @@ public abstract class JsonNode {
             throw jsonNodeDoesNotMatchPathElementsException(e, pathElements, aJsonArray(node));
         }
     }
+
 }

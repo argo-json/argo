@@ -267,4 +267,39 @@ public final class JsonNodeTest {
         assertThat(SAMPLE_JSON.getNode("retirement age"), equalTo(aJsonNull()));
         assertThat(SAMPLE_JSON.getNode("championships", 2), equalTo(aJsonNumber("2004")));
     }
+
+    @Test
+    public void isRootNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
+        assertThat(aJsonNull().isRootNode(), equalTo(false));
+        assertThat(aJsonArray().isRootNode(), equalTo(true));
+        assertThat(aJsonFalse().isRootNode(), equalTo(false));
+        assertThat(aJsonNumber("22.2").isRootNode(), equalTo(false));
+        assertThat(aJsonObject().isRootNode(), equalTo(true));
+        assertThat(aJsonString("Goggle").isRootNode(), equalTo(false));
+        assertThat(aJsonTrue().isRootNode(), equalTo(false));
+
+        assertThat(SAMPLE_JSON.isRootNode(), equalTo(true));
+        assertThat(SAMPLE_JSON.isRootNode("name"), equalTo(false));
+        assertThat(SAMPLE_JSON.isRootNode("championships"), equalTo(true));
+        assertThat(SAMPLE_JSON.isRootNode("retirement age"), equalTo(false));
+        assertThat(SAMPLE_JSON.isRootNode("championships", 2), equalTo(false));
+        assertThat(SAMPLE_JSON.isRootNode("championships", 22), equalTo(false));
+        assertThat(SAMPLE_JSON.isRootNode("championships", 2, 4), equalTo(false));
+    }
+
+    @Test
+    public void getRootNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
+        assertThat(aJsonArray().getRootNode(), equalTo((JsonNode) aJsonArray()));
+        assertThat(aJsonObject().getRootNode(), equalTo((JsonNode) aJsonObject()));
+
+        assertThat(SAMPLE_JSON.getRootNode(), equalTo(SAMPLE_JSON));
+        assertThat(SAMPLE_JSON.getRootNode("championships"), equalTo(aJsonArray(
+                aJsonNumber("2002")
+                , aJsonNumber("2003")
+                , aJsonNumber("2004")
+                , aJsonNumber("2005")
+                , aJsonNumber("2008")
+                , aJsonNumber("2009")
+        )));
+    }
 }
