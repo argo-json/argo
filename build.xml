@@ -8,7 +8,7 @@
   ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
   -->
 
-<project name="argo" default="compile" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+<project name="argo" default="compile">
 
     <description>
         Argo build file
@@ -313,15 +313,17 @@
         <antcall target="distribute"/>
     </target>
 
-    <target name="deploy" description="deploy snapshot version to Maven snapshot repository">
+    <target name="deploy" description="deploy snapshot version to Maven snapshot repository"
+            xmlns:artifact="antlib:org.apache.maven.artifact.ant">
         <property name="location.dist.binaries" value="${location.dist}/binaries/${version}"/>
         <artifact:mvn>
+            <artifact:arg value="-s${location.dist}/maven/settings.xml"/>
+            <artifact:arg value="-e"/>
             <artifact:arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file"/>
             <artifact:arg value="-Durl=${maven-snapshots-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-snapshots-repository-id}"/>
             <artifact:arg value="-DpomFile=${location.dist}/maven/pom.xml"/>
             <artifact:arg value="-Dfile=${location.dist.binaries}/argo-${version}.jar"/>
-            <artifact:arg value="-Dsettings=${location.dist}/maven/settings.xml"/>
         </artifact:mvn>
     </target>
 
