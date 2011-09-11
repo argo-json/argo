@@ -312,7 +312,6 @@
              destfile="${location.dist.maven}/argo-${version}-${maven.version.type}-sources.jar"/>
         <jar basedir="${location.dist}/documentation/${version}/javadoc"
              destfile="${location.dist.maven}/argo-${version}-${maven.version.type}-javadoc.jar"/>
-
         <antcall target="distribute-release-maven"/>
     </target>
 
@@ -372,6 +371,15 @@
             <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-${maven.version.type}-javadoc.jar"/>
             <artifact:arg value="-Dclassifier=javadoc"/>
             <artifact:arg value="-Pgpg"/>
+        </artifact:mvn>
+
+        <!-- close the staging repository, whatever that means -->
+        <artifact:mvn>
+            <artifact:arg value="nexus:staging-close"/>
+            <artifact:arg value="-s${location.dist.maven}/settings.xml"/>
+            <artifact:arg value="-Dnexus.serverAuthId=${maven-staging-repository-id}"/>
+            <artifact:arg value="-Dnexus.url=https://oss.sonatype.org"/>
+            <artifact:arg value="-DverboseDebug=true"/>
         </artifact:mvn>
     </target>
 

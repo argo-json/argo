@@ -89,20 +89,6 @@ public class PomGenerator {
                         pomTag(tagName("artifactId"), text("oss-parent")),
                         pomTag(tagName("version"), text("7"))
                 )
-//                ,
-//                pomTag(tagName("pluginManagement"),
-//                        pomTag(tagName("plugins"),
-//                                pomTag(tagName("plugin"),
-//                                        pomTag(tagName("groupId"), text("org.sonatype.plugins")),
-//                                        pomTag(tagName("artifactId"), text("nexus-maven-plugin")),
-//                                        pomTag(tagName("version"), text("1.9.2.2")),
-//                                        pomTag(tagName("configuration"),
-//                                                pomTag(tagName("nexusUrl"), text("https://oss.sonatype.org")),
-//                                                pomTag(tagName("serverAuthId"), text("sonatype-nexus-staging"))
-//                                        )
-//                                )
-//                        )
-//                )
         );
     }
 
