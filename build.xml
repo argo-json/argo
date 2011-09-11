@@ -308,14 +308,10 @@
              destfile="${location.dist.maven}/argo-${version}-RELEASE-sources.jar"/>
         <jar basedir="${location.dist}/documentation/${version}/javadoc"
              destfile="${location.dist.maven}/argo-${version}-RELEASE-javadoc.jar"/>
-        <antcall target="distribute-release-maven"/>
     </target>
 
     <target name="prepare-release" description="Builds an official release locally">
         <property name="release" value="true"/>
-        <input addproperty="sonatype.username" message="Sonatype username"/>
-        <input addproperty="sonatype.password" message="Sonatype password"/>
-        <input addproperty="gpg.passphrase" message="GPG passphrase"/>
         <antcall target="distribute"/>
     </target>
 
@@ -323,22 +319,22 @@
             xmlns:artifact="antlib:org.apache.maven.artifact.ant">
         <artifact:mvn>
             <artifact:arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file"/>
-            <artifact:arg value="-s${location.dist.maven}/settings.xml"/>
+            <artifact:arg value="-s${release.directory}/maven/settings.xml"/>
             <artifact:arg value="-Durl=${maven-staging-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-staging-repository-id}"/>
-            <artifact:arg value="-DpomFile=${location.dist.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-RELEASE.jar"/>
+            <artifact:arg value="-DpomFile=${release.directory}/maven/pom.xml"/>
+            <artifact:arg value="-Dfile=${release.directory}/maven/argo-${version}-RELEASE.jar"/>
             <artifact:arg value="-Pgpg"/>
         </artifact:mvn>
 
         <!-- sign and deploy the sources artifact -->
         <artifact:mvn>
             <artifact:arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file"/>
-            <artifact:arg value="-s${location.dist.maven}/settings.xml"/>
+            <artifact:arg value="-s${release.directory}/maven/settings.xml"/>
             <artifact:arg value="-Durl=${maven-staging-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-staging-repository-id}"/>
-            <artifact:arg value="-DpomFile=${location.dist.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-RELEASE-sources.jar"/>
+            <artifact:arg value="-DpomFile=${release.directory}/maven/pom.xml"/>
+            <artifact:arg value="-Dfile=${release.directory}/maven/argo-${version}-RELEASE-sources.jar"/>
             <artifact:arg value="-Dclassifier=sources"/>
             <artifact:arg value="-Pgpg"/>
         </artifact:mvn>
@@ -346,11 +342,11 @@
         <!-- sign and deploy the javadoc artifact -->
         <artifact:mvn>
             <artifact:arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file"/>
-            <artifact:arg value="-s${location.dist.maven}/settings.xml"/>
+            <artifact:arg value="-s${release.directory}/maven/settings.xml"/>
             <artifact:arg value="-Durl=${maven-staging-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-staging-repository-id}"/>
-            <artifact:arg value="-DpomFile=${location.dist.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-RELEASE-javadoc.jar"/>
+            <artifact:arg value="-DpomFile=${release.directory}/maven/pom.xml"/>
+            <artifact:arg value="-Dfile=${release.directory}/maven/argo-${version}-RELEASE-javadoc.jar"/>
             <artifact:arg value="-Dclassifier=javadoc"/>
             <artifact:arg value="-Pgpg"/>
         </artifact:mvn>
@@ -358,17 +354,30 @@
         <!-- close the staging repository, whatever that means -->
         <artifact:mvn>
             <artifact:arg value="nexus:staging-close"/>
-            <artifact:arg value="-s${location.dist.maven}/settings.xml"/>
+            <artifact:arg value="-s${release.directory}/maven/settings.xml"/>
             <artifact:arg value="-Dnexus.serverAuthId=${maven-staging-repository-id}"/>
             <artifact:arg value="-Dnexus.url=https://oss.sonatype.org"/>
-            <artifact:arg value="-DverboseDebug=true"/>
+        </artifact:mvn>
+
+        <!-- release the staging repository -->
+        <artifact:mvn>
+            <artifact:arg value="nexus:staging-list"/>
+            <artifact:arg value="-s${release.directory}/maven/settings.xml"/>
+            <artifact:arg value="-Dnexus.serverAuthId=${maven-staging-repository-id}"/>
+            <artifact:arg value="-Dnexus.url=https://oss.sonatype.org"/>
+            <!--<artifact:arg value="-Dnexus.promoteAutoSelectOverride=true"/>-->
         </artifact:mvn>
     </target>
 
     <target name="distribute-release" description="Does a real release">
 
-        <input addproperty="ssh.username" message="SSH username"/>
-        <input addproperty="ssh.password" message="SSH password"/>
+        <input addproperty="ssh.username" message="Sourceforge SSH username"/>
+        <input addproperty="ssh.password" message="Sourceforge SSH password"/>
+
+        <input addproperty="sonatype.username" message="Sonatype username"/>
+        <input addproperty="sonatype.password" message="Sonatype password"/>
+        <input addproperty="gpg.passphrase" message="GPG passphrase"/>
+
         <svn username="${ssh.username}" password="${ssh.password}">
             <info target="https://argo.svn.sourceforge.net/svnroot/argo/trunk"/>
         </svn>
@@ -401,6 +410,7 @@
         <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}"
                  command="rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${version} /home/project-web/argo/htdocs"
                  trust="true"/>
+        <antcall target="distribute-release-maven"/>
         <propertyfile file="version.properties">
             <entry key="argo.version.minor" type="int" default="0" operation="+"/>
         </propertyfile>
