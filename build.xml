@@ -37,12 +37,8 @@
     <property name="location.dist" value="${location.build}/dist"/>
     <property name="location.dist.maven" value="${location.dist}/maven"/>
 
-    <property name="maven-snapshots-repository-id" value="sonatype-nexus-snapshots"/>
-    <property name="maven-snapshots-repository-url" value="https://oss.sonatype.org/content/repositories/snapshots"/>
     <property name="maven-staging-repository-id" value="sonatype-nexus-staging"/>
     <property name="maven-staging-repository-url" value="https://oss.sonatype.org/service/local/staging/deploy/maven2"/>
-
-    <property name="maven.version.type" value="RELEASE"/>
 
     <path id="all-libs">
         <fileset dir="${location.lib}">
@@ -267,7 +263,7 @@
         <mkdir dir="${location.dist.maven}"/>
         <java classname="build.maven.PomGenerator" failonerror="true" fork="true">
             <arg value="${location.dist.maven}"/>
-            <arg value="${maven.version.type}"/>
+            <arg value="${maven-staging-repository-id}"/>
             <arg value="${sonatype.username}"/>
             <arg value="${sonatype.password}"/>
             <arg value="${gpg.passphrase}"/>
@@ -307,11 +303,11 @@
         <jar basedir="${location.classes}" destfile="${location.dist.binaries}/argo-${version}.jar"/>
         <jar basedir="${location.optimised-classes}" destfile="${location.dist.binaries}/argo-small-${version}.jar"/>
 
-        <jar basedir="${location.classes}" destfile="${location.dist.maven}/argo-${version}-${maven.version.type}.jar"/>
+        <jar basedir="${location.classes}" destfile="${location.dist.maven}/argo-${version}-RELEASE.jar"/>
         <jar basedir="${location.src}"
-             destfile="${location.dist.maven}/argo-${version}-${maven.version.type}-sources.jar"/>
+             destfile="${location.dist.maven}/argo-${version}-RELEASE-sources.jar"/>
         <jar basedir="${location.dist}/documentation/${version}/javadoc"
-             destfile="${location.dist.maven}/argo-${version}-${maven.version.type}-javadoc.jar"/>
+             destfile="${location.dist.maven}/argo-${version}-RELEASE-javadoc.jar"/>
         <antcall target="distribute-release-maven"/>
     </target>
 
@@ -323,20 +319,6 @@
         <antcall target="distribute"/>
     </target>
 
-    <target name="distribute-snapshot-maven" description="deploy snapshot version to Maven snapshot repository"
-            xmlns:artifact="antlib:org.apache.maven.artifact.ant">
-        <property name="location.dist.binaries" value="${location.dist}/binaries/${version}"/>
-        <artifact:mvn>
-            <artifact:arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file"/>
-            <artifact:arg value="-s${location.dist.maven}/settings.xml"/>
-            <artifact:arg value="-Durl=${maven-snapshots-repository-url}"/>
-            <artifact:arg value="-DrepositoryId=${maven-snapshots-repository-id}"/>
-            <artifact:arg value="-DpomFile=${location.dist.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-${maven.version.type}.jar"/>
-        </artifact:mvn>
-    </target>
-
-    <!-- before this, update project version (both build.xml and pom.xml) from SNAPSHOT to RELEASE -->
     <target name="distribute-release-maven" description="deploy release version to Maven staging repository"
             xmlns:artifact="antlib:org.apache.maven.artifact.ant">
         <artifact:mvn>
@@ -345,7 +327,7 @@
             <artifact:arg value="-Durl=${maven-staging-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-staging-repository-id}"/>
             <artifact:arg value="-DpomFile=${location.dist.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-${maven.version.type}.jar"/>
+            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-RELEASE.jar"/>
             <artifact:arg value="-Pgpg"/>
         </artifact:mvn>
 
@@ -356,7 +338,7 @@
             <artifact:arg value="-Durl=${maven-staging-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-staging-repository-id}"/>
             <artifact:arg value="-DpomFile=${location.dist.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-${maven.version.type}-sources.jar"/>
+            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-RELEASE-sources.jar"/>
             <artifact:arg value="-Dclassifier=sources"/>
             <artifact:arg value="-Pgpg"/>
         </artifact:mvn>
@@ -368,7 +350,7 @@
             <artifact:arg value="-Durl=${maven-staging-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-staging-repository-id}"/>
             <artifact:arg value="-DpomFile=${location.dist.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-${maven.version.type}-javadoc.jar"/>
+            <artifact:arg value="-Dfile=${location.dist.maven}/argo-${version}-RELEASE-javadoc.jar"/>
             <artifact:arg value="-Dclassifier=javadoc"/>
             <artifact:arg value="-Pgpg"/>
         </artifact:mvn>

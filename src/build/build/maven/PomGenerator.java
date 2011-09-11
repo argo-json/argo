@@ -31,15 +31,18 @@ public class PomGenerator {
         final File destination = new File(args[0]);
         final String version = versionString();
 
-        writeXml(pom(version, args[1]), destination, "pom.xml");
-        writeXml(settings(args[2], args[3], args[4]), destination, "settings.xml");
+        writeXml(pom(version), destination, "pom.xml");
+        writeXml(settings(args[1], args[2], args[3], args[4]), destination, "settings.xml");
     }
 
-    private static Tag settings(final String username, final String password, final String gpgPassphrase) {
+    private static Tag settings(final String serverId, final String username, final String password, final String gpgPassphrase) {
         return settingsTag(tagName("settings"),
                 settingsTag(tagName("servers"),
-                        server("sonatype-nexus-snapshots", username, password),
-                        server("sonatype-nexus-staging", username, password)
+                        settingsTag(tagName("server"),
+                                settingsTag(tagName("id"), text(serverId)),
+                                settingsTag(tagName("username"), text(username)),
+                                settingsTag(tagName("password"), text(password))
+                        )
                 ),
                 settingsTag(tagName("pluginGroups"),
                         settingsTag(tagName("pluginGroup"), text("org.sonatype.plugins"))
@@ -63,12 +66,12 @@ public class PomGenerator {
         );
     }
 
-    private static Tag pom(final String version, final String versionType) {
+    private static Tag pom(final String version) {
         return pomTag(tagName("project"),
                 pomTag(tagName("modelVersion"), text("4.0.0")),
                 pomTag(tagName("groupId"), text("org.sourceforge.argo")),
                 pomTag(tagName("artifactId"), text("argo")),
-                pomTag(tagName("version"), text(version + "-" + versionType)),
+                pomTag(tagName("version"), text(version + "-" + "RELEASE")),
                 pomTag(tagName("packaging"), text("jar")),
                 pomTag(tagName("name"), text("Argo")),
                 pomTag(tagName("description"), text("Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.")),
@@ -97,7 +100,7 @@ public class PomGenerator {
     }
 
     private static Tag settingsTag(final TagName tagName, final WriteableToXml... children) {
-        return new Tag(Namespace.namespace(URI.create("http://maven.apache.org/SETTINGS/1.0.0")), tagName, attributes(), asList(children));
+        return new Tag(namespace(URI.create("http://maven.apache.org/SETTINGS/1.0.0")), tagName, attributes(), asList(children));
     }
 
     private static String versionString() throws IOException {
