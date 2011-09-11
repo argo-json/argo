@@ -362,11 +362,11 @@
 
         <!-- release the staging repository -->
         <artifact:mvn>
-            <artifact:arg value="nexus:staging-list"/>
+            <artifact:arg value="nexus:staging-release"/>
             <artifact:arg value="-s${release.directory.maven}/settings.xml"/>
             <artifact:arg value="-Dnexus.serverAuthId=${maven-staging-repository-id}"/>
             <artifact:arg value="-Dnexus.url=https://oss.sonatype.org"/>
-            <!--<artifact:arg value="-Dnexus.promoteAutoSelectOverride=true"/>-->
+            <artifact:arg value="-Dnexus.promoteAutoSelectOverride=true"/>
         </artifact:mvn>
     </target>
 
