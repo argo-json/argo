@@ -31,8 +31,8 @@ public class PomGenerator {
         final File destination = new File(args[0]);
         final String version = versionString();
 
-        writeXml(pom(version), destination, "pom.xml");
-        writeXml(settings(args[1], args[2], args[3]), destination, "settings.xml");
+        writeXml(pom(version, args[1]), destination, "pom.xml");
+        writeXml(settings(args[2], args[3], args[4]), destination, "settings.xml");
     }
 
     private static Tag settings(final String username, final String password, final String gpgPassphrase) {
@@ -40,6 +40,9 @@ public class PomGenerator {
                 settingsTag(tagName("servers"),
                         server("sonatype-nexus-snapshots", username, password),
                         server("sonatype-nexus-staging", username, password)
+                ),
+                settingsTag(tagName("pluginGroups"),
+                        settingsTag(tagName("pluginGroup"), text("org.sonatype.plugins"))
                 ),
                 settingsTag(tagName("profiles"),
                         settingsTag(tagName("profile"),
@@ -60,12 +63,12 @@ public class PomGenerator {
         );
     }
 
-    private static Tag pom(final String version) {
+    private static Tag pom(final String version, final String versionType) {
         return pomTag(tagName("project"),
                 pomTag(tagName("modelVersion"), text("4.0.0")),
                 pomTag(tagName("groupId"), text("org.sourceforge.argo")),
                 pomTag(tagName("artifactId"), text("argo")),
-                pomTag(tagName("version"), text(version)),
+                pomTag(tagName("version"), text(version + "-" + versionType)),
                 pomTag(tagName("packaging"), text("jar")),
                 pomTag(tagName("name"), text("Argo")),
                 pomTag(tagName("description"), text("Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.")),
@@ -80,7 +83,26 @@ public class PomGenerator {
                 pomTag(tagName("scm"),
                         pomTag(tagName("url"), text("https://argo.svn.sourceforge.net/svnroot/argo/tags/" + version))
                 ),
-                pomTag(tagName("dependencies"))
+                pomTag(tagName("dependencies")),
+                pomTag(tagName("parent"),
+                        pomTag(tagName("groupId"), text("org.sonatype.oss")),
+                        pomTag(tagName("artifactId"), text("oss-parent")),
+                        pomTag(tagName("version"), text("7"))
+                )
+//                ,
+//                pomTag(tagName("pluginManagement"),
+//                        pomTag(tagName("plugins"),
+//                                pomTag(tagName("plugin"),
+//                                        pomTag(tagName("groupId"), text("org.sonatype.plugins")),
+//                                        pomTag(tagName("artifactId"), text("nexus-maven-plugin")),
+//                                        pomTag(tagName("version"), text("1.9.2.2")),
+//                                        pomTag(tagName("configuration"),
+//                                                pomTag(tagName("nexusUrl"), text("https://oss.sonatype.org")),
+//                                                pomTag(tagName("serverAuthId"), text("sonatype-nexus-staging"))
+//                                        )
+//                                )
+//                        )
+//                )
         );
     }
 
