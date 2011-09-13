@@ -69,7 +69,7 @@ public class PomGenerator {
     private static Tag pom(final String version) {
         return pomTag(tagName("project"),
                 pomTag(tagName("modelVersion"), text("4.0.0")),
-                pomTag(tagName("groupId"), text("org.sourceforge.argo")),
+                pomTag(tagName("groupId"), text("net.sourceforge.argo")),
                 pomTag(tagName("artifactId"), text("argo")),
                 pomTag(tagName("version"), text(version + "-" + "RELEASE")),
                 pomTag(tagName("packaging"), text("jar")),
