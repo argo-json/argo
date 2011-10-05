@@ -71,7 +71,7 @@ public class PomGenerator {
                 pomTag(tagName("modelVersion"), text("4.0.0")),
                 pomTag(tagName("groupId"), text("net.sourceforge.argo")),
                 pomTag(tagName("artifactId"), text("argo")),
-                pomTag(tagName("version"), text(version + "-" + "RELEASE")),
+                pomTag(tagName("version"), text(version)),
                 pomTag(tagName("packaging"), text("jar")),
                 pomTag(tagName("name"), text("Argo")),
                 pomTag(tagName("description"), text("Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.")),

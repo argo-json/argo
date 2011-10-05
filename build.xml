@@ -303,11 +303,11 @@
         <jar basedir="${location.classes}" destfile="${location.dist.binaries}/argo-${version}.jar"/>
         <jar basedir="${location.optimised-classes}" destfile="${location.dist.binaries}/argo-small-${version}.jar"/>
 
-        <jar basedir="${location.classes}" destfile="${location.dist.maven}/argo-${version}-RELEASE.jar"/>
+        <jar basedir="${location.classes}" destfile="${location.dist.maven}/argo-${version}.jar"/>
         <jar basedir="${location.src}"
-             destfile="${location.dist.maven}/argo-${version}-RELEASE-sources.jar"/>
+             destfile="${location.dist.maven}/argo-${version}-sources.jar"/>
         <jar basedir="${location.dist}/documentation/${version}/javadoc"
-             destfile="${location.dist.maven}/argo-${version}-RELEASE-javadoc.jar"/>
+             destfile="${location.dist.maven}/argo-${version}-javadoc.jar"/>
     </target>
 
     <target name="prepare-release" description="Builds an official release locally">
@@ -324,7 +324,7 @@
             <artifact:arg value="-Durl=${maven-staging-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-staging-repository-id}"/>
             <artifact:arg value="-DpomFile=${release.directory.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${release.directory.maven}/argo-${version}-RELEASE.jar"/>
+            <artifact:arg value="-Dfile=${release.directory.maven}/argo-${version}.jar"/>
             <artifact:arg value="-Pgpg"/>
         </artifact:mvn>
 
@@ -335,7 +335,7 @@
             <artifact:arg value="-Durl=${maven-staging-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-staging-repository-id}"/>
             <artifact:arg value="-DpomFile=${release.directory.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${release.directory.maven}/argo-${version}-RELEASE-sources.jar"/>
+            <artifact:arg value="-Dfile=${release.directory.maven}/argo-${version}-sources.jar"/>
             <artifact:arg value="-Dclassifier=sources"/>
             <artifact:arg value="-Pgpg"/>
         </artifact:mvn>
@@ -347,7 +347,7 @@
             <artifact:arg value="-Durl=${maven-staging-repository-url}"/>
             <artifact:arg value="-DrepositoryId=${maven-staging-repository-id}"/>
             <artifact:arg value="-DpomFile=${release.directory.maven}/pom.xml"/>
-            <artifact:arg value="-Dfile=${release.directory.maven}/argo-${version}-RELEASE-javadoc.jar"/>
+            <artifact:arg value="-Dfile=${release.directory.maven}/argo-${version}-javadoc.jar"/>
             <artifact:arg value="-Dclassifier=javadoc"/>
             <artifact:arg value="-Pgpg"/>
         </artifact:mvn>
