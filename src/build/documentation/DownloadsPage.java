@@ -13,6 +13,7 @@ package documentation;
 import org.sourceforge.xazzle.xhtml.HtmlTag;
 
 import static documentation.ArgoPage.anArgoPage;
+import static documentation.ArgoPage.codeBlock;
 import static org.sourceforge.xazzle.xhtml.Href.href;
 import static org.sourceforge.xazzle.xhtml.Tags.*;
 
@@ -31,13 +32,20 @@ final class DownloadsPage {
                 paragraphTag(
                         xhtmlText("Argo is available under the "),
                         anchorTag(xhtmlText("Apache 2 license")).withHref(href("http://www.apache.org/licenses/LICENSE-2.0")),
-                        xhtmlText(".  It can be downloaded in three forms:")),
+                        xhtmlText(".  It can be downloaded in four forms:")),
                 unorderedListTag(
                         listItemTag(
                                 xhtmlText("the "), anchorTag(xhtmlText("standard jar")).withHref(href(standardJarUrl)), xhtmlText(", with source code included,")
                         ),
                         listItemTag(
                                 xhtmlText("a "), anchorTag(xhtmlText("compact jar")).withHref(href(smallJarUrl)), xhtmlText(", with no source, and no debug information,")
+                        ),
+                        listItemTag(
+                                xhtmlText("as a Maven dependency from central, using "), codeBlock("<dependency>\n" +
+                                "   <groupId>net.sourceforge.argo</groupId>\n" +
+                                "   <artifactId>argo</artifactId>\n" +
+                                "   <version>" + version + "</version>\n" +
+                                "</dependency>")
                         ),
                         listItemTag(
                                 xhtmlText("or as the full source code including tests etc. using Subversion from "), codeTag(anchorTag(xhtmlText(subversionUrl)).withHref(href(subversionUrl))), xhtmlText(".")
