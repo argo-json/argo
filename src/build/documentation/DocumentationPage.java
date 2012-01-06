@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -128,6 +128,8 @@ final class DocumentationPage {
                         "...\n" +
                         "\n" +
                         "String jsonText = JSON_FORMATTER.format(json);"),
+                paragraphTag(xhtmlText("Both classes also accept a "), simpleNameOf(java.io.Writer.class),
+                        xhtmlText(" as an argument to the "), methodName("format"), xhtmlText(" method, to allow the output to be streamed.")),
                 h3Tag(xhtmlText("Parsing JSON into an Object")),
                 paragraphTag(
                         xhtmlText("All the examples in this section are based on the following JSON, which is assumed to be available in a "),
