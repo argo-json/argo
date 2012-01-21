@@ -119,6 +119,10 @@ public final class JsonNodeFactories {
         return new JsonNumberNode(value.toString());
     }
 
+    public static JsonNode number(final long value) {
+        return new JsonNumberNode(Long.toString(value));
+    }
+
     /**
      * @param elements <code>JsonNode</code>s that will populate the array
      * @return a JSON array of the given <code>JsonNode</code>s

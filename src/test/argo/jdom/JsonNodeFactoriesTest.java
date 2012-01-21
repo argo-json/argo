@@ -70,6 +70,16 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
+    public void createsJsonNumberNodeUsingALong() throws Exception {
+        assertThat(
+                object(field("Number of shots to give it", number(1)))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+            put(string("Number of shots to give it"), number("1"));
+        }}))
+        );
+    }
+
+    @Test
     public void createsAJsonTrueFromAJavaBoolean() throws Exception {
         assertThat(
                 booleanNode(true)
