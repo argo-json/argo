@@ -35,10 +35,12 @@ public final class JsonObjectTest {
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
-        jsonObject.getFields().put(string("Another key"), number("1"));
-        assertEquals(1, jsonObject.getFields().size());
-        assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
-        assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
+        try {
+            jsonObject.getFields().put(string("Another key"), number("1"));
+            fail("modifying the fields retrieved from a JsonObject should result in an UnsupportedOperationException");
+        } catch (Exception e) {
+            // expect to end up here
+        }
     }
 
     @Test

@@ -17,8 +17,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public final class JsonArrayTest {
 
@@ -32,9 +31,12 @@ public final class JsonArrayTest {
         baseElements.add(JsonNodeFactories.number("1"));
         assertEquals(1, jsonArray.getElements().size());
         assertEquals(baseJsonNode, jsonArray.getElements().get(0));
-        jsonArray.getElements().add(JsonNodeFactories.number("1"));
-        assertEquals(1, jsonArray.getElements().size());
-        assertEquals(baseJsonNode, jsonArray.getElements().get(0));
+        try {
+            jsonArray.getElements().add(JsonNodeFactories.number("1"));
+            fail("modifying the elements retrieved from a JsonArray should result in an UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expect to end up here
+        }
     }
 
     @Test

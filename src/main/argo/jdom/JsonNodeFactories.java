@@ -12,9 +12,7 @@ package argo.jdom;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Factories for <code>JsonNode</code>s.
@@ -151,6 +149,15 @@ public final class JsonNodeFactories {
         return array(Arrays.asList(elements));
     }
 
+    public static JsonRootNode lazyArray(final List<JsonNode> elements) {
+        return new AbstractJsonArray() {
+            @Override
+            public List<JsonNode> getElements() {
+                return elements;
+            }
+        };
+    }
+
     /**
      * @param fields <code>JsonField</code>s that the object will contain
      * @return a JSON object containing the given fields
@@ -195,6 +202,44 @@ public final class JsonNodeFactories {
                 put(field.getName(), field.getValue());
             }
         }});
+    }
+
+    public static JsonRootNode lazyObject(final List<JsonField> fields) {
+        return new AbstractJsonObject() {
+            @Override
+            public Map<JsonStringNode, JsonNode> getFields() {
+                final Iterator<JsonField> fieldIterator = fields.iterator();
+                return new AbstractMap<JsonStringNode, JsonNode>() {
+                    @Override
+                    public Set<Entry<JsonStringNode, JsonNode>> entrySet() {
+                        return new AbstractSet<Entry<JsonStringNode, JsonNode>>() {
+                            @Override
+                            public Iterator<Entry<JsonStringNode, JsonNode>> iterator() {
+                                return new Iterator<Entry<JsonStringNode, JsonNode>>() {
+                                    public boolean hasNext() {
+                                        return fieldIterator.hasNext();
+                                    }
+
+                                    public Entry<JsonStringNode, JsonNode> next() {
+                                        JsonField jsonField = fieldIterator.next();
+                                        return new SimpleEntry<JsonStringNode, JsonNode>(jsonField.getName(), jsonField.getValue());
+                                    }
+
+                                    public void remove() {
+                                        throw new UnsupportedOperationException("Removal not supported");
+                                    }
+                                };
+                            }
+
+                            @Override
+                            public int size() {
+                                return fields.size();
+                            }
+                        };
+                    }
+                };
+            }
+        };
     }
 
     /**

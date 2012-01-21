@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,72 +12,23 @@ package argo.jdom;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-final class JsonArray extends JsonRootNode {
+import static java.util.Collections.unmodifiableList;
+
+final class JsonArray extends AbstractJsonArray {
 
     private final List<JsonNode> elements;
 
     JsonArray(final Iterable<JsonNode> elements) {
-        this.elements = asList(elements);
-    }
-
-    public JsonNodeType getType() {
-        return JsonNodeType.ARRAY;
-    }
-
-    public List<JsonNode> getElements() {
-        return new ArrayList<JsonNode>(elements);
-    }
-
-    public boolean hasText() {
-        return false;
-    }
-
-    public String getText() {
-        throw new IllegalStateException("Attempt to get text on a JsonNode without text.");
-    }
-
-    public boolean hasFields() {
-        return false;
-    }
-
-    public Map<JsonStringNode, JsonNode> getFields() {
-        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
-    }
-
-    public boolean hasElements() {
-        return true;
-    }
-
-    @Override
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
-
-        final JsonArray thatJsonArray = (JsonArray) that;
-        return this.elements.equals(thatJsonArray.elements);
-    }
-
-    @Override
-    public int hashCode() {
-        return elements.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return new StringBuilder()
-                .append("JsonArray elements:[")
-                .append(elements)
-                .append("]")
-                .toString();
-    }
-
-    private static List<JsonNode> asList(final Iterable<JsonNode> elements) {
-        return new ArrayList<JsonNode>(){{
+        this.elements = unmodifiableList(new ArrayList<JsonNode>() {{
             for (JsonNode element : elements) {
                 this.add(element);
             }
-        }};
+        }});
     }
+
+    public List<JsonNode> getElements() {
+        return elements;
+    }
+
 }

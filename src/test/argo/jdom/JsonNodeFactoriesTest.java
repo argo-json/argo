@@ -14,7 +14,9 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static java.util.Arrays.asList;
@@ -31,6 +33,20 @@ public final class JsonNodeFactoriesTest {
                 array(asList(
                         string("Way there")
                         , number("0.5")
+                ))
+        ));
+    }
+
+    @Test
+    public void createsALazyJsonArrayNode() throws Exception {
+        List<JsonNode> elements = new ArrayList<JsonNode>();
+        JsonRootNode jsonRootNode = lazyArray(elements);
+        elements.add(string("late element"));
+        assertThat(
+                jsonRootNode
+                , equalTo(
+                array(asList(
+                        (JsonNode) string("late element")
                 ))
         ));
     }
@@ -57,6 +73,18 @@ public final class JsonNodeFactoriesTest {
                     put(string("Tommy"), string("Used to work on the dock"));
                 }}))
         );
+    }
+
+    @Test
+    public void createsALazyJsonObjectNode() throws Exception {
+        List<JsonField> fields = new ArrayList<JsonField>();
+        JsonRootNode jsonRootNode = lazyObject(fields);
+        fields.add(field("late", string("field")));
+        assertThat(
+                jsonRootNode
+                , equalTo(
+                object(field("late", string("field")))
+        ));
     }
 
     @Test
