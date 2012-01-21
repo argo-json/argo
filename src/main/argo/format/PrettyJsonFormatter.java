@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.TreeSet;
 
 /**
@@ -40,18 +41,18 @@ public final class PrettyJsonFormatter implements JsonFormatter {
     }
 
     private void formatJsonNode(final JsonNode jsonNode, final PrintWriter writer, final int indent) throws IOException {
-        boolean first = true;
         switch (jsonNode.getType()) {
             case ARRAY:
                 writer.append('[');
-                for (final JsonNode node : jsonNode.getElements()) {
+                final Iterator<JsonNode> elements = jsonNode.getElements().iterator();
+                while(elements.hasNext()) {
+                    final JsonNode node = elements.next();
                     writer.println();
                     addTabs(writer, indent + 1);
-                    if (!first) {
-                        writer.append(", ");
-                    }
-                    first = false;
                     formatJsonNode(node, writer, indent + 1);
+                    if (elements.hasNext()) {
+                        writer.append(",");
+                    }
                 }
                 if (!jsonNode.getElements().isEmpty()) {
                     writer.println();
@@ -61,16 +62,17 @@ public final class PrettyJsonFormatter implements JsonFormatter {
                 break;
             case OBJECT:
                 writer.append('{');
-                for (final JsonStringNode field : new TreeSet<JsonStringNode>(jsonNode.getFields().keySet())) {
+                final Iterator<JsonStringNode> jsonStringNodes = new TreeSet<JsonStringNode>(jsonNode.getFields().keySet()).iterator();
+                while(jsonStringNodes.hasNext()) {
+                    final JsonStringNode field = jsonStringNodes.next();
                     writer.println();
                     addTabs(writer, indent + 1);
-                    if (!first) {
-                        writer.append(", ");
-                    }
-                    first = false;
                     formatJsonNode(field, writer, indent + 1);
                     writer.append(": ");
                     formatJsonNode(jsonNode.getFields().get(field), writer, indent + 1);
+                    if (jsonStringNodes.hasNext()) {
+                        writer.append(",");
+                    }
                 }
                 if (!jsonNode.getFields().isEmpty()) {
                     writer.println();
