@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -19,7 +19,7 @@ public final class JsonNumberTest {
     @Test
     public void testConstructorRejectsNullValue() {
         try {
-            JsonNodeFactories.aJsonNumber((String)null);
+            JsonNodeFactories.number((String) null);
             fail("Constructing a JsonNumber with a null argument should throw an IllegalArgumentException.");
         } catch (final NullPointerException e) {
             // expect to end up here
@@ -28,17 +28,17 @@ public final class JsonNumberTest {
 
     @Test
     public void testEquals() {
-        assertEquals(JsonNodeFactories.aJsonNumber("0"), JsonNodeFactories.aJsonNumber("0"));
-        assertFalse(JsonNodeFactories.aJsonNumber("0").equals(JsonNodeFactories.aJsonNumber("1")));
+        assertEquals(JsonNodeFactories.number("0"), JsonNodeFactories.number("0"));
+        assertFalse(JsonNodeFactories.number("0").equals(JsonNodeFactories.number("1")));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(JsonNodeFactories.aJsonNumber("0").hashCode(), JsonNodeFactories.aJsonNumber("0").hashCode());
+        assertEquals(JsonNodeFactories.number("0").hashCode(), JsonNodeFactories.number("0").hashCode());
     }
 
     @Test
     public void testToString() {
-        JsonNodeFactories.aJsonNumber("0").toString();
+        JsonNodeFactories.number("0").toString();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import static argo.jdom.JsonNodeDoesNotMatchPathElementsException.jsonNodeDoesNotMatchPathElementsException;
-import static argo.jdom.JsonNodeFactories.aJsonArray;
 
 /**
  * <p>A node (leaf or otherwise) in a JSON document.</p>
@@ -343,7 +342,7 @@ public abstract class JsonNode {
         try {
             return value.getValue(node);
         } catch (JsonNodeDoesNotMatchChainedJsonNodeSelectorException e) {
-            throw jsonNodeDoesNotMatchPathElementsException(e, pathElements, aJsonArray(node));
+            throw jsonNodeDoesNotMatchPathElementsException(e, pathElements, JsonNodeFactories.array(node));
         }
     }
 

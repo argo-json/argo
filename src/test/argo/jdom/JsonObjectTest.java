@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -23,19 +23,19 @@ public final class JsonObjectTest {
 
     @Test
     public void testImmutability() {
-        final JsonStringNode baseJsonKey = aJsonString("Test");
-        final JsonNode baseJsonNode = aJsonNumber("0");
+        final JsonStringNode baseJsonKey = string("Test");
+        final JsonNode baseJsonNode = number("0");
         final Map<JsonStringNode, JsonNode> baseElements = new HashMap<JsonStringNode, JsonNode>();
         baseElements.put(baseJsonKey, baseJsonNode);
-        final JsonRootNode jsonObject = aJsonObject(baseElements);
+        final JsonRootNode jsonObject = object(baseElements);
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
-        baseElements.put(aJsonString("Another key"), aJsonNumber("1"));
+        baseElements.put(string("Another key"), number("1"));
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
-        jsonObject.getFields().put(aJsonString("Another key"), aJsonNumber("1"));
+        jsonObject.getFields().put(string("Another key"), number("1"));
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
@@ -43,20 +43,20 @@ public final class JsonObjectTest {
 
     @Test
     public void testEquals() {
-        assertEquals(aJsonObject(new HashMap<JsonStringNode, JsonNode>()), aJsonObject(new HashMap<JsonStringNode, JsonNode>()));
-        assertEquals(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))), aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))));
-        assertFalse(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).equals(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("1")))));
-        assertFalse(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).equals(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Another test"), aJsonNumber("0")))));
+        assertEquals(object(new HashMap<JsonStringNode, JsonNode>()), object(new HashMap<JsonStringNode, JsonNode>()));
+        assertEquals(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))), object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))));
+        assertFalse(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).equals(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("1")))));
+        assertFalse(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).equals(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Another test"), number("0")))));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(aJsonObject(new HashMap<JsonStringNode, JsonNode>()), aJsonObject(new HashMap<JsonStringNode, JsonNode>()));
-        assertEquals(aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).hashCode(), aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).hashCode());
+        assertEquals(object(new HashMap<JsonStringNode, JsonNode>()), object(new HashMap<JsonStringNode, JsonNode>()));
+        assertEquals(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).hashCode(), object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).hashCode());
     }
 
     @Test
     public void testToString() {
-        aJsonObject(Collections.<JsonStringNode, JsonNode>singletonMap(aJsonString("Test"), aJsonNumber("0"))).toString();
+        object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).toString();
     }
 }

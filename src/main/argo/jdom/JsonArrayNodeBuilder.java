@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -38,6 +38,6 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonRootNode>
         for (JsonNodeBuilder elementBuilder : elementBuilders) {
             elements.add(elementBuilder.build());
         }
-        return JsonNodeFactories.aJsonArray(elements);
+        return JsonNodeFactories.array(elements);
     }
 }

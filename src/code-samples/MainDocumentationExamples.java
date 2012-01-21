@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -36,14 +36,14 @@ public final class MainDocumentationExamples {
     private static final JsonFormatter JSON_FORMATTER
             = new PrettyJsonFormatter();
 
-    private static final JsonRootNode SAMPLE_JSON = aJsonObject(
-            aJsonField("name", aJsonString("Black Lace"))
-            , aJsonField("sales", aJsonNumber("110921"))
-            , aJsonField("totalRoyalties", aJsonNumber("10223.82"))
-            , aJsonField("singles", aJsonArray(
-            aJsonString("Superman")
-            , aJsonString("Agadoo")
-    ))
+    private static final JsonRootNode SAMPLE_JSON = object(
+            field("name", string("Black Lace")),
+            field("sales", number("110921")),
+            field("totalRoyalties", number("10223.82")),
+            field("singles", array(
+                    string("Superman"),
+                    string("Agadoo")
+            ))
     );
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
@@ -59,15 +59,15 @@ public final class MainDocumentationExamples {
 
     @Test
     public void producesJsonFromFactory() throws Exception {
-        JsonRootNode json = aJsonObject(
-                aJsonField("name", aJsonString("Black Lace"))
-                , aJsonField("sales", aJsonNumber("110921"))
-                , aJsonField("totalRoyalties", aJsonNumber("10223.82"))
-                , aJsonField("singles", aJsonArray(
-                aJsonString("Superman")
-                , aJsonString("Agadoo")
+JsonRootNode json = object(
+        field("name", string("Black Lace")),
+        field("sales", number("110921")),
+        field("totalRoyalties", number("10223.82")),
+        field("singles", array(
+                string("Superman"),
+                string("Agadoo")
         ))
-        );
+);
         assertThat(json, equalTo(SAMPLE_JSON));
     }
 

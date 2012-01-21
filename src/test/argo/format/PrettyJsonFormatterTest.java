@@ -31,9 +31,9 @@ import static org.junit.Assert.assertThat;
 public final class PrettyJsonFormatterTest {
     @Test
     public void formatsAJsonObject() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
-            put(aJsonString("Hello"), aJsonString("World"));
-            put(aJsonString("Foo"), aJsonString("Bar"));
+        assertThat(new PrettyJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
+            put(string("Hello"), string("World"));
+            put(string("Foo"), string("Bar"));
         }})), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("{")
@@ -46,8 +46,8 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAnEmptyJsonObject() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
-            put(aJsonString("Hello"), aJsonObject(new HashMap<JsonStringNode, JsonNode>()));
+        assertThat(new PrettyJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
+            put(string("Hello"), object(new HashMap<JsonStringNode, JsonNode>()));
         }})), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("{")
@@ -60,9 +60,9 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAJsonArray() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(aJsonArray(Arrays.asList(
-                aJsonString("BobBob")
-                , aJsonNumber("23")
+        assertThat(new PrettyJsonFormatter().format(array(Arrays.asList(
+                string("BobBob")
+                , number("23")
         ))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
@@ -76,8 +76,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAnEmptyJsonArray() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(aJsonArray(Collections.<JsonNode>emptyList()
-        )), equalTo(
+        assertThat(new PrettyJsonFormatter().format(array(Collections.<JsonNode>emptyList())), equalTo(
                 aJsonStringResultBuilder()
                         .print("[]")
                         .build()
@@ -87,9 +86,8 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAJsonStringWithEscapedCharacters() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(aJsonArray(Arrays.asList(
-                (JsonNode) aJsonString("\" \\ \b \f \n \r \t"))
-        )), equalTo(
+        assertThat(new PrettyJsonFormatter().format(array(Arrays.asList(
+                (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
                         .printLine("\t\"\\\" \\\\ \\b \\f \\n \\r \\t\"")
@@ -101,9 +99,8 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAStringWithinAString() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(aJsonArray(Arrays.asList(
-                (JsonNode) aJsonString("\"\\\"A String\\\" within a String\""))
-        )), equalTo(
+        assertThat(new PrettyJsonFormatter().format(array(Arrays.asList(
+                (JsonNode) string("\"\\\"A String\\\" within a String\"")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
                         .printLine("\t\"\\\"\\\\\\\"A String\\\\\\\" within a String\\\"\"")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -19,7 +19,7 @@ public final class JsonStringTest {
     @Test
     public void testConstructorRejectsNullValue() {
         try {
-            JsonNodeFactories.aJsonString(null);
+            JsonNodeFactories.string(null);
             fail("Constructing a JsonTextNode with a null argument should throw an IllegalArgumentException.");
         } catch (final NullPointerException e) {
             // expect to end up here
@@ -28,17 +28,17 @@ public final class JsonStringTest {
 
     @Test
     public void testEquals() {
-        assertEquals(JsonNodeFactories.aJsonString("co"), JsonNodeFactories.aJsonString("co"));
-        assertFalse(JsonNodeFactories.aJsonString("ho").equals(JsonNodeFactories.aJsonString("bo")));
+        assertEquals(JsonNodeFactories.string("co"), JsonNodeFactories.string("co"));
+        assertFalse(JsonNodeFactories.string("ho").equals(JsonNodeFactories.string("bo")));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(JsonNodeFactories.aJsonString("po").hashCode(), JsonNodeFactories.aJsonString("po").hashCode());
+        assertEquals(JsonNodeFactories.string("po").hashCode(), JsonNodeFactories.string("po").hashCode());
     }
 
     @Test
     public void testToString() {
-        JsonNodeFactories.aJsonString("lo");
+        JsonNodeFactories.string("lo");
     }
 }

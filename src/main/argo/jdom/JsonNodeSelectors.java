@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -330,7 +330,7 @@ public final class JsonNodeSelectors {
     }
 
     public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final String fieldName) {
-        return aField(argo.jdom.JsonNodeFactories.aJsonString(fieldName));
+        return aField(JsonNodeFactories.string(fieldName));
     }
 
     public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final JsonStringNode fieldName) {

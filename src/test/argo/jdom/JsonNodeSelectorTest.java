@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -25,13 +25,11 @@ public final class JsonNodeSelectorTest {
     public void chainingUsingWithChildMatches() throws Exception {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.anObjectNode()
                 .with(JsonNodeSelectors.aField("Hello"));
-        final JsonRootNode node = aJsonObject(
-                new HashMap<JsonStringNode, JsonNode>() {{
-                    put(aJsonString("Hello"), aJsonNumber("12.5"));
-                }}
-        );
+        final JsonRootNode node = object(new HashMap<JsonStringNode, JsonNode>() {{
+            put(string("Hello"), number("12.5"));
+        }});
         assertTrue(jsonNodeSelector.matches(node));
-        assertThat(jsonNodeSelector.getValue(node), equalTo(aJsonNumber("12.5")));
+        assertThat(jsonNodeSelector.getValue(node), equalTo(number("12.5")));
     }
 
     @Test

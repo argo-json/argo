@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,7 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
-import static argo.jdom.JsonNodeFactories.aJsonString;
 
 /**
  * Builder for <code>JsonRootNode</code>s representing JSON objects.
@@ -35,7 +34,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
      * @return the modified object builder.
      */
     public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder value) {
-        return withField(aJsonString(name), value);
+        return withField(JsonNodeFactories.string(name), value);
     }
 
     /**
@@ -61,7 +60,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
     }
 
     public JsonRootNode build() {
-        return JsonNodeFactories.aJsonObject(new HashMap<JsonStringNode, JsonNode>() {{
+        return JsonNodeFactories.object(new HashMap<JsonStringNode, JsonNode>() {{
             for (JsonFieldBuilder fieldBuilder : fieldBuilders) {
                 put(fieldBuilder.buildKey(), fieldBuilder.buildValue());
             }

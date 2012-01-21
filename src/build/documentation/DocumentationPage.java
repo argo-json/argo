@@ -63,7 +63,7 @@ final class DocumentationPage {
                 ),
                 paragraphTag(xhtmlText("and three types of leaf entity:")),
                 unorderedListTag(
-                        listItemTag(xhtmlText("Strings - essentially the same a Java Strings.")),
+                        listItemTag(xhtmlText("Strings - essentially the same as a Java String.")),
                         listItemTag(xhtmlText("Numbers - an unlimited precision number.")),
                         listItemTag(xhtmlText("Constants - true, false, and null."))
                 ),
@@ -80,20 +80,20 @@ final class DocumentationPage {
                         xhtmlText("A "), JSON_ROOT_NODE,
                         xhtmlText(" represents either a JSON object or a JSON array. They can have fields and elements consisting of instances of "),
                         JSON_NODE, xhtmlText(", which is the superclass of "), JSON_ROOT_NODE,
-                        xhtmlText(". A number of factory methods are provided for constructing "), JSON_NODE, xhtmlText(" and "),
+                        xhtmlText(". A number of factory methods are provided for constructing "), JSON_NODE, xhtmlText("s and "),
                         JSON_ROOT_NODE, xhtmlText("s in the "), simpleNameOf(JsonNodeFactories.class), xhtmlText(" class:")
                 ),
                 codeBlock("import static argo.jdom.JsonNodeFactories.*;\n" +
                         "\n" +
                         "...\n" +
                         "\n" +
-                        "JsonRootNode json = aJsonObject(\n" +
-                        "        aJsonField(\"name\", aJsonString(\"Black Lace\"))\n" +
-                        "        , aJsonField(\"sales\", aJsonNumber(\"110921\"))\n" +
-                        "        , aJsonField(\"totalRoyalties\", aJsonNumber(\"10223.82\"))\n" +
-                        "        , aJsonField(\"singles\", aJsonArray(\n" +
-                        "                aJsonString(\"Superman\")\n" +
-                        "                , aJsonString(\"Agadoo\")\n" +
+                        "JsonRootNode json = object(\n" +
+                        "        field(\"name\", string(\"Black Lace\")),\n" +
+                        "        field(\"sales\", number(\"110921\")),\n" +
+                        "        field(\"totalRoyalties\", number(\"10223.82\")),\n" +
+                        "        field(\"singles\", array(\n" +
+                        "                string(\"Superman\"),\n" +
+                        "                string(\"Agadoo\")\n" +
                         "        ))\n" +
                         ");"),
                 paragraphTag(

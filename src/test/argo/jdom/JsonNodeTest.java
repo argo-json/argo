@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -27,41 +27,41 @@ import static org.junit.Assert.fail;
 
 public final class JsonNodeTest {
 
-    private static final JsonRootNode SAMPLE_JSON = aJsonObject(
-            aJsonField("name", aJsonString("Rossi"))
-            , aJsonField("championships", aJsonArray(
-            aJsonNumber("2002")
-            , aJsonNumber("2003")
-            , aJsonNumber("2004")
-            , aJsonNumber("2005")
-            , aJsonNumber("2008")
-            , aJsonNumber("2009")
-    ))
-            , aJsonField("retirement age", aJsonNull())
+    private static final JsonRootNode SAMPLE_JSON = object(
+            field("name", string("Rossi")),
+            field("championships", array(
+                    number("2002"),
+                    number("2003"),
+                    number("2004"),
+                    number("2005"),
+                    number("2008"),
+                    number("2009"))
+            ),
+            field("retirement age", nullNode())
     );
 
     @Test
     public void matchesABooleanNode() throws Exception {
-        assertThat(aJsonTrue().isBooleanValue(), equalTo(true));
-        assertThat(aJsonNull().isBooleanValue(), equalTo(false));
+        assertThat(trueNode().isBooleanValue(), equalTo(true));
+        assertThat(nullNode().isBooleanValue(), equalTo(false));
         assertThat(SAMPLE_JSON.isBooleanValue("some", "missing", "path"), equalTo(false));
-        assertThat(aJsonTrue().getBooleanValue(), equalTo(Boolean.TRUE));
+        assertThat(trueNode().getBooleanValue(), equalTo(Boolean.TRUE));
     }
 
     @Test
     public void matchesANullBooleanNode() throws Exception {
-        assertThat(aJsonTrue().isNullableBooleanValue(), equalTo(true));
-        assertThat(aJsonNull().isNullableBooleanValue(), equalTo(true));
-        assertThat(aJsonNumber("12").isNullableBooleanValue(), equalTo(false));
+        assertThat(trueNode().isNullableBooleanValue(), equalTo(true));
+        assertThat(nullNode().isNullableBooleanValue(), equalTo(true));
+        assertThat(number("12").isNullableBooleanValue(), equalTo(false));
         assertThat(SAMPLE_JSON.getNullableBooleanValue("retirement age"), is(nullValue()));
     }
 
     @Test
     public void matchesAStringNode() throws Exception {
-        final JsonStringNode node = aJsonString("hello");
+        final JsonStringNode node = string("hello");
         assertThat(node.isStringValue(), equalTo(true));
-        assertThat(aJsonTrue().isStringValue(), equalTo(false));
-        assertThat(aJsonNull().isStringValue(), equalTo(false));
+        assertThat(trueNode().isStringValue(), equalTo(false));
+        assertThat(nullNode().isStringValue(), equalTo(false));
         assertThat(node.getStringValue(), equalTo("hello"));
     }
 
@@ -77,10 +77,10 @@ public final class JsonNodeTest {
 
     @Test
     public void matchesANumberNode() throws Exception {
-        final JsonNode node = aJsonNumber("12.1");
+        final JsonNode node = number("12.1");
         assertThat(node.isNumberValue(), equalTo(true));
-        assertThat(aJsonNull().isNumberValue(), equalTo(false));
-        assertThat(aJsonString("Hiya!").isNumberValue(), equalTo(false));
+        assertThat(nullNode().isNumberValue(), equalTo(false));
+        assertThat(string("Hiya!").isNumberValue(), equalTo(false));
         assertThat(node.getNumberValue(), equalTo("12.1"));
     }
 
@@ -99,27 +99,27 @@ public final class JsonNodeTest {
         assertThat(SAMPLE_JSON.isNullNode("retirement age"), equalTo(true));
         assertThat(SAMPLE_JSON.isNullNode("name"), equalTo(false));
         assertThat(SAMPLE_JSON.isNullNode("some", "missing", "path"), equalTo(false));
-        assertThat(SAMPLE_JSON.getNullNode("retirement age"), equalTo(aJsonNull()));
+        assertThat(SAMPLE_JSON.getNullNode("retirement age"), equalTo(nullNode()));
     }
 
     @Test
     public void matchesAnObjectNode() throws Exception {
         final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
-            put(aJsonString("Barry"), aJsonString("Lemons"));
+            put(string("Barry"), string("Lemons"));
         }};
-        final JsonNode node = aJsonObject(someJsonMappings);
+        final JsonNode node = object(someJsonMappings);
         assertThat(node.isObjectNode(), equalTo(true));
-        assertThat(aJsonNull().isObjectNode(), equalTo(false));
-        assertThat(aJsonString("Some string").isObjectNode(), equalTo(false));
+        assertThat(nullNode().isObjectNode(), equalTo(false));
+        assertThat(string("Some string").isObjectNode(), equalTo(false));
         assertThat(node.getObjectNode(), equalTo(someJsonMappings));
     }
 
     @Test
     public void matchesANullableObjectNode() throws Exception {
         final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
-            put(aJsonString("Barry"), aJsonString("Lemons"));
+            put(string("Barry"), string("Lemons"));
         }};
-        final JsonNode node = aJsonObject(someJsonMappings);
+        final JsonNode node = object(someJsonMappings);
         assertThat(node.isNullableObjectNode(), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableObjectNode("retirement age"), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableObjectNode("name"), equalTo(false));
@@ -130,18 +130,18 @@ public final class JsonNodeTest {
 
     @Test
     public void matchesAnArrayNode() throws Exception {
-        final List<JsonNode> someJsonNodes = asList(aJsonNumber("30"));
-        final JsonNode node = aJsonArray(someJsonNodes);
+        final List<JsonNode> someJsonNodes = asList(number("30"));
+        final JsonNode node = array(someJsonNodes);
         assertThat(node.isArrayNode(), equalTo(true));
-        assertThat(aJsonNull().isArrayNode(), equalTo(false));
-        assertThat(aJsonString("Hi").isArrayNode(), equalTo(false));
+        assertThat(nullNode().isArrayNode(), equalTo(false));
+        assertThat(string("Hi").isArrayNode(), equalTo(false));
         assertThat(node.getArrayNode(), equalTo(someJsonNodes));
     }
 
     @Test
     public void matchesANullableArrayNode() throws Exception {
-        final List<JsonNode> someJsonNodes = asList(aJsonNumber("30"));
-        final JsonNode node = aJsonArray(someJsonNodes);
+        final List<JsonNode> someJsonNodes = asList(number("30"));
+        final JsonNode node = array(someJsonNodes);
         assertThat(node.isNullableArrayNode(), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableArrayNode("retirement age"), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableArrayNode("name"), equalTo(false));
@@ -194,46 +194,46 @@ public final class JsonNodeTest {
 
     @Test
     public void hasTextReturnsCorrectValueForAllNodeTypes() throws Exception {
-        assertThat(aJsonNull().hasText(), equalTo(false));
-        assertThat(aJsonArray().hasText(), equalTo(false));
-        assertThat(aJsonFalse().hasText(), equalTo(false));
-        assertThat(aJsonNumber("22.2").hasText(), equalTo(true));
-        assertThat(aJsonObject().hasText(), equalTo(false));
-        assertThat(aJsonString("Goggle").hasText(), equalTo(true));
-        assertThat(aJsonTrue().hasText(), equalTo(false));
+        assertThat(nullNode().hasText(), equalTo(false));
+        assertThat(array().hasText(), equalTo(false));
+        assertThat(falseNode().hasText(), equalTo(false));
+        assertThat(number("22.2").hasText(), equalTo(true));
+        assertThat(object().hasText(), equalTo(false));
+        assertThat(string("Goggle").hasText(), equalTo(true));
+        assertThat(trueNode().hasText(), equalTo(false));
     }
 
     @Test
     public void hasFieldsReturnsCorrectValueForAllNodeTypes() throws Exception {
-        assertThat(aJsonNull().hasFields(), equalTo(false));
-        assertThat(aJsonArray().hasFields(), equalTo(false));
-        assertThat(aJsonFalse().hasFields(), equalTo(false));
-        assertThat(aJsonNumber("22.2").hasFields(), equalTo(false));
-        assertThat(aJsonObject().hasFields(), equalTo(true));
-        assertThat(aJsonString("Goggle").hasFields(), equalTo(false));
-        assertThat(aJsonTrue().hasFields(), equalTo(false));
+        assertThat(nullNode().hasFields(), equalTo(false));
+        assertThat(array().hasFields(), equalTo(false));
+        assertThat(falseNode().hasFields(), equalTo(false));
+        assertThat(number("22.2").hasFields(), equalTo(false));
+        assertThat(object().hasFields(), equalTo(true));
+        assertThat(string("Goggle").hasFields(), equalTo(false));
+        assertThat(trueNode().hasFields(), equalTo(false));
     }
 
     @Test
     public void hasElementsReturnsCorrectValueForAllNodeTypes() throws Exception {
-        assertThat(aJsonNull().hasElements(), equalTo(false));
-        assertThat(aJsonArray().hasElements(), equalTo(true));
-        assertThat(aJsonFalse().hasElements(), equalTo(false));
-        assertThat(aJsonNumber("22.2").hasElements(), equalTo(false));
-        assertThat(aJsonObject().hasElements(), equalTo(false));
-        assertThat(aJsonString("Goggle").hasElements(), equalTo(false));
-        assertThat(aJsonTrue().hasElements(), equalTo(false));
+        assertThat(nullNode().hasElements(), equalTo(false));
+        assertThat(array().hasElements(), equalTo(true));
+        assertThat(falseNode().hasElements(), equalTo(false));
+        assertThat(number("22.2").hasElements(), equalTo(false));
+        assertThat(object().hasElements(), equalTo(false));
+        assertThat(string("Goggle").hasElements(), equalTo(false));
+        assertThat(trueNode().hasElements(), equalTo(false));
     }
 
     @Test
     public void isNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
-        assertThat(aJsonNull().isNode(), equalTo(true));
-        assertThat(aJsonArray().isNode(), equalTo(true));
-        assertThat(aJsonFalse().isNode(), equalTo(true));
-        assertThat(aJsonNumber("22.2").isNode(), equalTo(true));
-        assertThat(aJsonObject().isNode(), equalTo(true));
-        assertThat(aJsonString("Goggle").isNode(), equalTo(true));
-        assertThat(aJsonTrue().isNode(), equalTo(true));
+        assertThat(nullNode().isNode(), equalTo(true));
+        assertThat(array().isNode(), equalTo(true));
+        assertThat(falseNode().isNode(), equalTo(true));
+        assertThat(number("22.2").isNode(), equalTo(true));
+        assertThat(object().isNode(), equalTo(true));
+        assertThat(string("Goggle").isNode(), equalTo(true));
+        assertThat(trueNode().isNode(), equalTo(true));
 
         assertThat(SAMPLE_JSON.isNode(), equalTo(true));
         assertThat(SAMPLE_JSON.isNode("name"), equalTo(true));
@@ -246,37 +246,30 @@ public final class JsonNodeTest {
 
     @Test
     public void getNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
-        assertThat(aJsonNull().getNode(), equalTo(aJsonNull()));
-        assertThat(aJsonArray().getNode(), equalTo((JsonNode) aJsonArray()));
-        assertThat(aJsonFalse().getNode(), equalTo(aJsonFalse()));
-        assertThat(aJsonNumber("22.2").getNode(), equalTo(aJsonNumber("22.2")));
-        assertThat(aJsonObject().getNode(), equalTo((JsonNode) aJsonObject()));
-        assertThat(aJsonString("Goggle").getNode(), equalTo((JsonNode) aJsonString("Goggle")));
-        assertThat(aJsonTrue().getNode(), equalTo(aJsonTrue()));
+        assertThat(nullNode().getNode(), equalTo(nullNode()));
+        assertThat(array().getNode(), equalTo((JsonNode) array()));
+        assertThat(falseNode().getNode(), equalTo(falseNode()));
+        assertThat(number("22.2").getNode(), equalTo(number("22.2")));
+        assertThat(object().getNode(), equalTo((JsonNode) object()));
+        assertThat(string("Goggle").getNode(), equalTo((JsonNode) string("Goggle")));
+        assertThat(trueNode().getNode(), equalTo(trueNode()));
 
         assertThat(SAMPLE_JSON.getNode(), equalTo((JsonNode) SAMPLE_JSON));
-        assertThat(SAMPLE_JSON.getNode("name"), equalTo((JsonNode) aJsonString("Rossi")));
-        assertThat(SAMPLE_JSON.getNode("championships"), equalTo((JsonNode) aJsonArray(
-                aJsonNumber("2002")
-                , aJsonNumber("2003")
-                , aJsonNumber("2004")
-                , aJsonNumber("2005")
-                , aJsonNumber("2008")
-                , aJsonNumber("2009")
-        )));
-        assertThat(SAMPLE_JSON.getNode("retirement age"), equalTo(aJsonNull()));
-        assertThat(SAMPLE_JSON.getNode("championships", 2), equalTo(aJsonNumber("2004")));
+        assertThat(SAMPLE_JSON.getNode("name"), equalTo((JsonNode) string("Rossi")));
+        assertThat(SAMPLE_JSON.getNode("championships"), equalTo((JsonNode) array(number("2002"), number("2003"), number("2004"), number("2005"), number("2008"), number("2009"))));
+        assertThat(SAMPLE_JSON.getNode("retirement age"), equalTo(nullNode()));
+        assertThat(SAMPLE_JSON.getNode("championships", 2), equalTo(number("2004")));
     }
 
     @Test
     public void isRootNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
-        assertThat(aJsonNull().isRootNode(), equalTo(false));
-        assertThat(aJsonArray().isRootNode(), equalTo(true));
-        assertThat(aJsonFalse().isRootNode(), equalTo(false));
-        assertThat(aJsonNumber("22.2").isRootNode(), equalTo(false));
-        assertThat(aJsonObject().isRootNode(), equalTo(true));
-        assertThat(aJsonString("Goggle").isRootNode(), equalTo(false));
-        assertThat(aJsonTrue().isRootNode(), equalTo(false));
+        assertThat(nullNode().isRootNode(), equalTo(false));
+        assertThat(array().isRootNode(), equalTo(true));
+        assertThat(falseNode().isRootNode(), equalTo(false));
+        assertThat(number("22.2").isRootNode(), equalTo(false));
+        assertThat(object().isRootNode(), equalTo(true));
+        assertThat(string("Goggle").isRootNode(), equalTo(false));
+        assertThat(trueNode().isRootNode(), equalTo(false));
 
         assertThat(SAMPLE_JSON.isRootNode(), equalTo(true));
         assertThat(SAMPLE_JSON.isRootNode("name"), equalTo(false));
@@ -289,17 +282,10 @@ public final class JsonNodeTest {
 
     @Test
     public void getRootNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
-        assertThat(aJsonArray().getRootNode(), equalTo((JsonNode) aJsonArray()));
-        assertThat(aJsonObject().getRootNode(), equalTo((JsonNode) aJsonObject()));
+        assertThat(array().getRootNode(), equalTo((JsonNode) array()));
+        assertThat(object().getRootNode(), equalTo((JsonNode) object()));
 
         assertThat(SAMPLE_JSON.getRootNode(), equalTo(SAMPLE_JSON));
-        assertThat(SAMPLE_JSON.getRootNode("championships"), equalTo(aJsonArray(
-                aJsonNumber("2002")
-                , aJsonNumber("2003")
-                , aJsonNumber("2004")
-                , aJsonNumber("2005")
-                , aJsonNumber("2008")
-                , aJsonNumber("2009")
-        )));
+        assertThat(SAMPLE_JSON.getRootNode("championships"), equalTo(array(number("2002"), number("2003"), number("2004"), number("2005"), number("2008"), number("2009"))));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,7 +16,6 @@ import java.util.Stack;
 
 import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
 import static argo.jdom.JsonNodeBuilders.*;
-import static argo.jdom.JsonNodeFactories.aJsonString;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
 
@@ -70,7 +69,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final String name) {
-        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(aJsonString(name));
+        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(JsonNodeFactories.string(name));
         stack.peek().addField(fieldBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
