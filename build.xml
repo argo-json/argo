@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2011 Mark Slater
+  ~ Copyright 2012 Mark Slater
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
   ~
@@ -358,6 +358,10 @@
             <artifact:arg value="-s${release.directory.maven}/settings.xml"/>
             <artifact:arg value="-Dnexus.serverAuthId=${maven-staging-repository-id}"/>
             <artifact:arg value="-Dnexus.url=https://oss.sonatype.org"/>
+            <artifact:arg value="-Dnexus.repositoryId=https://oss.sonatype.org"/>
+            <artifact:arg value="-Dnexus.artifactId=argo"/>
+            <artifact:arg value="-Dnexus.groupId=net.sourceforge.argo"/>
+            <artifact:arg value="-Dnexus.automatic=true"/>
         </artifact:mvn>
 
         <!-- release the staging repository -->
@@ -367,6 +371,8 @@
             <artifact:arg value="-Dnexus.serverAuthId=${maven-staging-repository-id}"/>
             <artifact:arg value="-Dnexus.url=https://oss.sonatype.org"/>
             <artifact:arg value="-Dnexus.promote.autoSelectOverride=true"/>
+            <artifact:arg value="-Dnexus.automatic=true"/>
+            <artifact:arg value="-DtargetRepositoryId=releases"/>
         </artifact:mvn>
     </target>
 
