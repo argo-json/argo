@@ -40,7 +40,6 @@ final class DocumentationPage {
 
     @SuppressWarnings({"StaticMethodOnlyUsedInOneClass"})
     static HtmlTag documentationPage() {
-        String jsonText = "jsonText";
         return anArgoPage(
                 h2Tag(xhtmlText("Documentation")),
                 h3Tag(xhtmlText("Introduction")),
@@ -133,7 +132,7 @@ final class DocumentationPage {
                 h3Tag(xhtmlText("Parsing JSON into an Object")),
                 paragraphTag(
                         xhtmlText("All the examples in this section are based on the following JSON, which is assumed to be available in a "),
-                        STRING, xhtmlText(" variable called "), variableName(jsonText), xhtmlText(".")
+                        STRING, xhtmlText(" variable called "), variableName("jsonText"), xhtmlText(".")
                 ),
                 codeBlock("{\n" +
                         "    \"name\": \"Black Lace\",\n" +
