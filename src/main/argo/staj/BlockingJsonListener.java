@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -107,13 +107,6 @@ final class BlockingJsonListener implements JsonListener {
 
     void close() {
         synchronized (lock) {
-            while (hasNext) {
-                try {
-                    lock.wait();
-                } catch (final InterruptedException e) {
-                    throw new RuntimeException("Coding failure in Argo:  Interrupted waiting to apply close.");
-                }
-            }
             if (!terminated()) {
                 state = State.CLOSED;
                 lock.notifyAll();
