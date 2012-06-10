@@ -240,6 +240,7 @@
 
     <target name="documentation">
         <property name="location.dist.documentation" value="${location.dist}/documentation/${version}"/>
+        <property name="location.dist.resources" value="${location.dist}/resources/"/>
         <mkdir dir="${location.dist.documentation}"/>
         <copy todir="${location.dist.documentation}">
             <fileset dir="${location.documentation}"/>
@@ -252,7 +253,9 @@
             </classpath>
         </typedef>
         <rasterize result="image/png" src="resources/favicon.svg"
-                   dest="${location.dist.documentation}/favicon-32x32.png" classname="jaxp"/>
+                   dest="${location.dist.documentation}/favicon-32x32.png" classname="jaxp" width="32" height="32"/>
+        <rasterize result="image/png" src="resources/favicon.svg"
+                   dest="${location.dist.resources}/favicon-48x48.png" classname="jaxp" width="48" height="48"/>
         <taskdef name="svg2ico" classname="net.sourceforge.svg2ico.Svg2IcoTask"
                  classpath="${location.lib}/build/svg2ico-0.14.jar"/>
         <svg2ico src="resources/favicon.svg" dest="${location.dist.documentation}/favicon.ico" width="32" height="32"/>
