@@ -244,6 +244,18 @@
         <copy todir="${location.dist.documentation}">
             <fileset dir="${location.documentation}"/>
         </copy>
+        <typedef name="rasterize" classname="org.apache.tools.ant.taskdefs.optional.RasterizerTask">
+            <classpath>
+                <pathelement location="${location.lib}/build/RasterizerTask.jar"/>
+                <pathelement location="${location.lib}/build/batik-all.jar"/>
+                <pathelement location="${location.lib}/build/xml-apis-ext.jar"/>
+            </classpath>
+        </typedef>
+        <rasterize result="image/png" src="resources/favicon.svg"
+                   dest="${location.dist.documentation}/favicon-32x32.png" classname="jaxp"/>
+        <taskdef name="svg2ico" classname="net.sourceforge.svg2ico.Svg2IcoTask"
+                 classpath="${location.lib}/build/svg2ico-0.14.jar"/>
+        <svg2ico src="resources/favicon.svg" dest="${location.dist.documentation}/favicon.ico" width="32" height="32"/>
         <java classname="documentation.DocumentationGenerator" failonerror="true" fork="true">
             <arg value="${location.dist.documentation}"/>
             <classpath>

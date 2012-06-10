@@ -25,7 +25,6 @@ import static org.sourceforge.xazzle.xhtml.MetaName.metaName;
 import static org.sourceforge.xazzle.xhtml.MimeType.mimeType;
 import static org.sourceforge.xazzle.xhtml.Relationship.STYLESHEET;
 import static org.sourceforge.xazzle.xhtml.Relationship.relationship;
-import static org.sourceforge.xazzle.xhtml.ScriptSource.scriptSource;
 import static org.sourceforge.xazzle.xhtml.Tags.*;
 import static org.sourceforge.xazzle.xhtml.XhtmlDimension.pixels;
 
@@ -125,18 +124,7 @@ final class ArgoPage {
                                                 )
                                         )
                                 ).withId(id("footer"))
-                        ).withId(id("root")),
-                        divTag(
-                                scriptTag(mimeType("text/javascript")).withSource(scriptSource("piwik_1.js")),
-                                scriptTag(mimeType("text/javascript")).withSource(scriptSource("piwik_2.js")),
-                                objectTag(
-                                        noScriptTag(
-                                                paragraphTag(
-                                                        imageTag(imageSource("http://sourceforge.net/apps/piwik/argo/piwik.php?idsite=1"), alternateText("piwik"))
-                                                )
-                                        )
-                                )
-                        )
+                        ).withId(id("root"))
                 )
         );
     }
