@@ -8,23 +8,26 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.jdom;
+package argo;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.google.common.base.Supplier;
 
-final class JsonObject extends AbstractJsonObject {
+import java.util.List;
+import java.util.Random;
 
-    private final Map<JsonStringNode, JsonNode> fields;
+import static com.google.common.collect.Lists.asList;
 
-    JsonObject(final Map<JsonStringNode, JsonNode> fields) {
-        this.fields = Collections.unmodifiableMap(new LinkedHashMap<JsonStringNode, JsonNode>(fields));
+public final class RandomSupplierSwitcher<T> implements Supplier<T> {
+
+    private static final Random RANDOM = new Random();
+
+    private final List<Supplier<T>> suppliers;
+
+    public RandomSupplierSwitcher(final Supplier<T> supplier, final Supplier<T>... suppliers) {
+        this.suppliers = asList(supplier, suppliers);
     }
 
-    @Override
-    public Map<JsonStringNode, JsonNode> getFields() {
-        return fields;
+    public T get() {
+        return suppliers.get(RANDOM.nextInt(suppliers.size())).get();
     }
-
 }

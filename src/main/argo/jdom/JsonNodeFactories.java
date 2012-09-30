@@ -197,7 +197,7 @@ public final class JsonNodeFactories {
     }
 
     public static JsonRootNode object(final Iterable<JsonField> fields) {
-        return object(new HashMap<JsonStringNode, JsonNode>() {{
+        return object(new LinkedHashMap<JsonStringNode, JsonNode>() {{
             for (final JsonField field : fields) {
                 put(field.getName(), field.getValue());
             }
@@ -243,7 +243,7 @@ public final class JsonNodeFactories {
     }
 
     /**
-     * @param name the name of the field
+     * @param name  the name of the field
      * @param value the value of the field
      * @return a JSON field with the given name and value
      * @deprecated Use {@link #field(String, JsonNode)} instead
@@ -258,7 +258,7 @@ public final class JsonNodeFactories {
     }
 
     /**
-     * @param name the name of the field
+     * @param name  the name of the field
      * @param value the value of the field
      * @return a JSON field with the given name and value
      * @deprecated Use {@link #field(JsonStringNode, JsonNode)} instead

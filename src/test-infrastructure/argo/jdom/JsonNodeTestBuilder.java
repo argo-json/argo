@@ -10,19 +10,120 @@
 
 package argo.jdom;
 
-import java.math.BigDecimal;
+import argo.RandomFunctionSwitcher;
+import argo.RandomSupplierSwitcher;
+import com.google.common.base.Function;
+import com.google.common.base.Supplier;
 
-import static argo.jdom.JsonNodeFactories.number;
-import static argo.jdom.JsonNodeFactories.string;
-import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
-import static org.apache.commons.lang.math.RandomUtils.nextDouble;
+import java.util.ArrayList;
+import java.util.Random;
+
+import static argo.jdom.JsonNodeFactories.*;
+import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
+import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 
 public final class JsonNodeTestBuilder {
-    public static JsonStringNode aStringNode() {
-        return string(randomAlphanumeric(5));
+
+    private static final Random RANDOM = new Random();
+    private static final Supplier<JsonNode> RANDOM_LEAF_NODE = new RandomSupplierSwitcher<JsonNode>(
+            new Supplier<JsonNode>() {
+                public JsonNode get() {
+                    return aStringNode();
+                }
+            },
+            new Supplier<JsonNode>() {
+                public JsonNode get() {
+                    return aNumberNode();
+                }
+            },
+            new Supplier<JsonNode>() {
+                public JsonNode get() {
+                    return nullNode();
+                }
+            },
+            new Supplier<JsonNode>() {
+                public JsonNode get() {
+                    return trueNode();
+                }
+            },
+            new Supplier<JsonNode>() {
+                public JsonNode get() {
+                    return falseNode();
+                }
+            }
+    );
+
+    private static final Function<Integer, JsonRootNode> RANDOM_ROOT_NODE = new RandomFunctionSwitcher<Integer, JsonRootNode>(
+            new Function<Integer, JsonRootNode>() {
+                public JsonRootNode apply(final Integer maxDepth) {
+                    return anArrayNode(maxDepth);
+                }
+            },
+            new Function<Integer, JsonRootNode>() {
+                public JsonRootNode apply(final Integer maxDepth) {
+                    return anObjectNode(maxDepth);
+                }
+            }
+    );
+
+    private static final Function<Integer, JsonNode> RANDOM_NODE = new RandomFunctionSwitcher<Integer, JsonNode>(
+            new Function<Integer, JsonNode>() {
+                public JsonNode apply(final Integer maxDepth) {
+                    return aJsonRootNode(maxDepth);
+                }
+            },
+            new Function<Integer, JsonNode>() {
+                public JsonNode apply(final Integer integer) {
+                    return aJsonLeafNode();
+                }
+            }
+    );
+
+    public static JsonRootNode anArrayNode() {
+        return anArrayNode(10);
     }
 
-    public static JsonNode aNumberNode() {
-        return number(BigDecimal.valueOf(nextDouble()));
+    private static JsonRootNode anArrayNode(final int maxDepth) {
+        return array(new ArrayList<JsonNode>() {{
+            for (int i = 0; i < RANDOM.nextInt(5); i++) {
+                add(aJsonNode(maxDepth));
+            }
+        }});
+    }
+
+    public static JsonRootNode anObjectNode() {
+        return anObjectNode(10);
+    }
+
+    private static JsonRootNode anObjectNode(final int maxDepth) {
+        return object(new ArrayList<JsonField>() {{
+            for (int i = 0; i < RANDOM.nextInt(5); i++) {
+                add(field(aStringNode(), aJsonNode(maxDepth)));
+            }
+        }});
+    }
+
+    public static JsonNode aJsonLeafNode() {
+        return RANDOM_LEAF_NODE.get();
+    }
+
+    public static JsonRootNode aJsonRootNode() {
+        return aJsonRootNode(10);
+    }
+
+    private static JsonRootNode aJsonRootNode(final int defaultDepth) {
+        return RANDOM_ROOT_NODE.apply(defaultDepth);
+    }
+
+    public static JsonNode aJsonNode() {
+        return aJsonNode(10);
+    }
+
+    private static JsonNode aJsonNode(int maxDepth) {
+        if (maxDepth <= 0) {
+            return aJsonLeafNode();
+        } else {
+            return RANDOM_NODE.apply(maxDepth - 1);
+        }
     }
 }

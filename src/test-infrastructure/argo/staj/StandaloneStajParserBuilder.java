@@ -8,23 +8,15 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.jdom;
+package argo.staj;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import argo.format.PrettyJsonBuilder;
+import argo.jdom.JsonRootNode;
 
-final class JsonObject extends AbstractJsonObject {
+import java.io.StringReader;
 
-    private final Map<JsonStringNode, JsonNode> fields;
-
-    JsonObject(final Map<JsonStringNode, JsonNode> fields) {
-        this.fields = Collections.unmodifiableMap(new LinkedHashMap<JsonStringNode, JsonNode>(fields));
+public final class StandaloneStajParserBuilder {
+    public static StandaloneStajParser standaloneStajParser(final JsonRootNode jsonRootNode) {
+        return new StandaloneStajParser(new StringReader(PrettyJsonBuilder.json(jsonRootNode)));
     }
-
-    @Override
-    public Map<JsonStringNode, JsonNode> getFields() {
-        return fields;
-    }
-
 }
