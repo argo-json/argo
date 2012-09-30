@@ -10,24 +10,44 @@
 
 package argo.staj;
 
+import argo.saj.InvalidSyntaxException;
+
 /**
  * Thrown to indicate a given character stream is not valid JSON.
  */
-public final class InvalidSyntaxRuntimeException extends RuntimeException {
+public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
 
     private final int column;
     private final int row;
 
-    InvalidSyntaxRuntimeException(final String s, final ThingWithPosition thingWithPosition) {
+    private InvalidSyntaxRuntimeException(final String s, final ThingWithPosition thingWithPosition) {
         super("At line " + thingWithPosition.getRow() + ", column " + thingWithPosition.getColumn() + ":  " + s);
         this.column = thingWithPosition.getColumn();
         this.row = thingWithPosition.getRow();
     }
 
-    InvalidSyntaxRuntimeException(final String s, final Throwable throwable, final ThingWithPosition thingWithPosition) {
+    private InvalidSyntaxRuntimeException(final String s, final Throwable throwable, final ThingWithPosition thingWithPosition) {
         super("At line " + thingWithPosition.getRow() + ", column " + thingWithPosition.getColumn() + ":  " + s, throwable);
         this.column = thingWithPosition.getColumn();
         this.row = thingWithPosition.getRow();
+    }
+
+    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final ThingWithPosition thingWithPosition) {
+        return new InvalidSyntaxRuntimeException(s, thingWithPosition) {
+            @Override
+            public InvalidSyntaxException asInvalidSyntaxException() {
+                return new InvalidSyntaxException(s, thingWithPosition.getRow(), thingWithPosition.getColumn());
+            }
+        };
+    }
+
+    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final Throwable throwable, final ThingWithPosition thingWithPosition) {
+        return new InvalidSyntaxRuntimeException(s, throwable, thingWithPosition) {
+            @Override
+            public InvalidSyntaxException asInvalidSyntaxException() {
+                return new InvalidSyntaxException(s, throwable, thingWithPosition.getRow(), thingWithPosition.getColumn());
+            }
+        };
     }
 
     public int getColumn() {
@@ -37,4 +57,6 @@ public final class InvalidSyntaxRuntimeException extends RuntimeException {
     public int getLine() {
         return row;
     }
+
+    public abstract InvalidSyntaxException asInvalidSyntaxException();
 }

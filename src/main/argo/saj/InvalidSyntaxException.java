@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,16 +18,16 @@ public final class InvalidSyntaxException extends Exception {
     private final int column;
     private final int row;
 
-    InvalidSyntaxException(final String s, final ThingWithPosition thingWithPosition) {
-        super("At line " + thingWithPosition.getRow() + ", column " + thingWithPosition.getColumn() + ":  " + s);
-        this.column = thingWithPosition.getColumn();
-        this.row = thingWithPosition.getRow();
+    public InvalidSyntaxException(final String s, int row, int column) {
+        super("At line " + row + ", column " + column + ":  " + s);
+        this.column = column;
+        this.row = row;
     }
 
-    InvalidSyntaxException(final String s, final Throwable throwable, final ThingWithPosition thingWithPosition) {
-        super("At line " + thingWithPosition.getRow() + ", column " + thingWithPosition.getColumn() + ":  " + s, throwable);
-        this.column = thingWithPosition.getColumn();
-        this.row = thingWithPosition.getRow();
+    public InvalidSyntaxException(final String s, final Throwable throwable, int row, int column) {
+        super("At line " + row + ", column " + column + ":  " + s, throwable);
+        this.column = column;
+        this.row = row;
     }
 
     public int getColumn() {
