@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -71,11 +71,7 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append("JsonStringNode value:[")
-                .append(value)
-                .append("]")
-                .toString();
+        return "JsonStringNode value:[" + value + "]";
     }
 
     public int compareTo(final JsonStringNode that) {

@@ -53,10 +53,6 @@ abstract class AbstractJsonArray extends JsonRootNode {
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append("JsonArray elements:[")
-                .append(getElements())
-                .append("]")
-                .toString();
+        return "JsonArray elements:[" + getElements() + "]";
     }
 }
