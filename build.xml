@@ -18,6 +18,7 @@
     <property name="location.lib.build" value="${location.lib}/build"/>
     <property name="location.documentation" value="docs"/>
     <property name="location.src" value="src/main"/>
+    <property name="location.src.test-infrastructure" value="src/test-infrastructure"/>
     <property name="location.src.test" value="src/test"/>
     <property name="location.src.performance-test" value="src/performance-test"/>
     <property name="location.src.code-sample" value="src/code-samples"/>
@@ -26,6 +27,7 @@
     <property name="location.build" value="build"/>
     <property name="location.classes" value="${location.build}/classes"/>
     <property name="location.optimised-classes" value="${location.build}/optimised-classes"/>
+    <property name="location.test-infrastructure-classes" value="${location.build}/test-infrastructure-classes"/>
     <property name="location.test-classes" value="${location.build}/test-classes"/>
     <property name="location.test-results" value="${location.build}/test-results"/>
     <property name="location.performance-test-classes" value="${location.build}/performance-test-classes"/>
@@ -91,6 +93,8 @@
         <mkdir dir="${location.classes}"/>
         <delete dir="${location.optimised-classes}"/>
         <mkdir dir="${location.optimised-classes}"/>
+        <delete dir="${location.test-infrastructure-classes}"/>
+        <mkdir dir="${location.test-infrastructure-classes}"/>
         <delete dir="${location.test-classes}"/>
         <mkdir dir="${location.test-classes}"/>
         <delete dir="${location.performance-test-classes}"/>
@@ -108,10 +112,17 @@
             <src path="${location.src}"/>
         </javac>
 
+        <javac destdir="${location.test-infrastructure-classes}" debug="on" source="1.6" target="1.6">
+            <src path="${location.src.test-infrastructure}"/>
+            <classpath refid="test-compile-libs"/>
+            <classpath location="${location.classes}"/>
+        </javac>
+
         <javac destdir="${location.test-classes}" debug="on" source="1.6" target="1.6">
             <src path="${location.src.test}"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
+            <classpath location="${location.test-infrastructure-classes}"/>
         </javac>
 
         <javac destdir="${location.performance-test-classes}" debug="on" source="1.6" target="1.6">
@@ -138,6 +149,10 @@
             <fileset dir="src/main"/>
         </copy>
 
+        <copy todir="${location.test-infrastructure-classes}">
+            <fileset dir="src/test-infrastructure"/>
+        </copy>
+
         <copy todir="${location.test-classes}">
             <fileset dir="src/test"/>
         </copy>
@@ -158,6 +173,7 @@
         <mkdir dir="${location.test-results}"/>
         <junit printsummary="yes" errorproperty="unit-test-failure">
             <classpath>
+                <pathelement location="${location.test-infrastructure-classes}"/>
                 <pathelement location="${location.test-classes}"/>
                 <pathelement location="${location.classes}"/>
                 <path refid="test-compile-libs"/>
