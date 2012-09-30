@@ -10,12 +10,19 @@
 
 package argo.jdom;
 
-public class JsonNodeTestBuilder {
+import java.math.BigDecimal;
+
+import static argo.jdom.JsonNodeFactories.number;
+import static argo.jdom.JsonNodeFactories.string;
+import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
+import static org.apache.commons.lang.math.RandomUtils.nextDouble;
+
+public final class JsonNodeTestBuilder {
     public static JsonStringNode aStringNode() {
-        return JsonNodeFactories.string("arse");
+        return string(randomAlphanumeric(5));
     }
 
     public static JsonNode aNumberNode() {
-        return JsonNodeFactories.number("1234.5");
+        return number(BigDecimal.valueOf(nextDouble()));
     }
 }
