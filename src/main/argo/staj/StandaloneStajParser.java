@@ -54,6 +54,6 @@ public final class StandaloneStajParser implements Iterator<JsonStreamElement> {
     }
 
     public void remove() {
-        throw new UnsupportedOperationException("StajParser cannot remove elements from JSON it has parsed.");
+        throw new UnsupportedOperationException("StandaloneStajParser cannot remove elements from JSON it has parsed.");
     }
 }

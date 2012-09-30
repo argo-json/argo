@@ -21,6 +21,8 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import static argo.format.JsonEscapedString.escapeString;
+
 /**
  * JsonFormat that formats JSON in a human-readable form.  Instances of this class can safely be shared between threads.
  */
@@ -45,7 +47,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
             case ARRAY:
                 writer.append('[');
                 final Iterator<JsonNode> elements = jsonNode.getElements().iterator();
-                while(elements.hasNext()) {
+                while (elements.hasNext()) {
                     final JsonNode node = elements.next();
                     writer.println();
                     addTabs(writer, indent + 1);
@@ -63,7 +65,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
             case OBJECT:
                 writer.append('{');
                 final Iterator<JsonStringNode> jsonStringNodes = new TreeSet<JsonStringNode>(jsonNode.getFields().keySet()).iterator();
-                while(jsonStringNodes.hasNext()) {
+                while (jsonStringNodes.hasNext()) {
                     final JsonStringNode field = jsonStringNodes.next();
                     writer.println();
                     addTabs(writer, indent + 1);
@@ -82,7 +84,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
                 break;
             case STRING:
                 writer.append('"')
-                        .append(new JsonEscapedString(jsonNode.getText()).toString())
+                        .append(escapeString(jsonNode.getText()))
                         .append('"');
                 break;
             case NUMBER:

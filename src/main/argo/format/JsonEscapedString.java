@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,22 +12,18 @@ package argo.format;
 
 final class JsonEscapedString {
 
-    private final String escapedString;
+    private JsonEscapedString() {
+    }
 
-    JsonEscapedString(final String unescapedString) {
-        escapedString = unescapedString
+    static String escapeString(String unescapedString) {
+        return unescapedString
                 .replace("\\", "\\\\")
                 .replace("\"", "\\\"")
                 .replace("\b", "\\b")
                 .replace("\f", "\\f")
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")
-                .replace("\t", "\\t")
-                ;
+                .replace("\t", "\\t");
     }
 
-    @Override
-    public String toString() {
-        return escapedString;
-    }
 }

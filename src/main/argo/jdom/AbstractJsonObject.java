@@ -12,7 +12,7 @@ package argo.jdom;
 
 import java.util.List;
 
-public abstract class AbstractJsonObject extends JsonRootNode {
+abstract class AbstractJsonObject extends JsonRootNode {
 
     public JsonNodeType getType() {
         return JsonNodeType.OBJECT;
