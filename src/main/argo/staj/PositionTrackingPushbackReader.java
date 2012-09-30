@@ -48,7 +48,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
             updateCharacterAndLineCounts(result);
             return result;
         } catch (final IOException e) {
-            throw new IllegalStateException("Failed to read from Reader", e);
+            throw new JsonStreamException("Failed to read from Reader", e);
         }
     }
 

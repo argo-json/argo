@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -13,7 +13,7 @@ package argo.staj;
 /**
  * Thrown to indicate that it was not possible to read any further along the JSON stream.
  */
-public final class JsonStreamException extends Exception {
+public final class JsonStreamException extends RuntimeException {
     public JsonStreamException() {
         super();
     }
