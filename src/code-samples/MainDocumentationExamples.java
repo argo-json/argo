@@ -13,8 +13,9 @@ import argo.format.PrettyJsonFormatter;
 import argo.jdom.*;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
+import argo.staj.JsonStreamElement;
 import argo.staj.JsonStreamElementType;
-import argo.staj.StajParser;
+import argo.staj.StandaloneStajParser;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
@@ -59,15 +60,15 @@ public final class MainDocumentationExamples {
 
     @Test
     public void producesJsonFromFactory() throws Exception {
-JsonRootNode json = object(
-        field("name", string("Black Lace")),
-        field("sales", number("110921")),
-        field("totalRoyalties", number("10223.82")),
-        field("singles", array(
-                string("Superman"),
-                string("Agadoo")
-        ))
-);
+        JsonRootNode json = object(
+                field("name", string("Black Lace")),
+                field("sales", number("110921")),
+                field("totalRoyalties", number("10223.82")),
+                field("singles", array(
+                        string("Superman"),
+                        string("Agadoo")
+                ))
+        );
         assertThat(json, equalTo(SAMPLE_JSON));
     }
 
@@ -174,17 +175,12 @@ JsonRootNode json = object(
     public void parsesUsingStaj() throws Exception {
         final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
         Set<String> fieldNames = new HashSet<String>();
-        StajParser stajParser = null;
-        try {
-            stajParser = new StajParser(jsonReader);
-            while (stajParser.hasNext()) {
-                if (stajParser.next() == JsonStreamElementType.START_FIELD) {
-                    fieldNames.add(stajParser.getText());
-                }
-            }
-        } finally {
-            if (stajParser != null) {
-                stajParser.close();
+        StandaloneStajParser stajParser = null;
+        stajParser = new StandaloneStajParser(jsonReader);
+        while (stajParser.hasNext()) {
+            JsonStreamElement next = stajParser.next();
+            if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {
+                fieldNames.add(next.text());
             }
         }
         assertThat(fieldNames, equalTo((Set<String>) new HashSet<String>(Arrays.asList("name", "sales", "totalRoyalties", "singles"))));

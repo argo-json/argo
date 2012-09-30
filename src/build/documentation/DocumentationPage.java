@@ -16,7 +16,7 @@ import argo.format.PrettyJsonFormatter;
 import argo.jdom.*;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
-import argo.staj.StajParser;
+import argo.staj.StandaloneStajParser;
 import org.sourceforge.xazzle.xhtml.HtmlTag;
 import org.sourceforge.xazzle.xhtml.InlineTag;
 
@@ -243,34 +243,24 @@ final class DocumentationPage {
                         "});"),
                 h3Tag(xhtmlText("Parsing JSON through iteration")),
                 paragraphTag(
-                        xhtmlText("The "), simpleNameOf(StajParser.class),
+                        xhtmlText("The "), simpleNameOf(StandaloneStajParser.class),
                         xhtmlText(" class allows the calling code to request parsing events from a stream of JSON text, similar to how the StAX parser works for XML.")
                 ),
                 paragraphTag(
                         xhtmlText("The following code gets the names of all the fields in a piece of JSON using the "),
-                        simpleNameOf(StajParser.class), xhtmlText(". Again, it assumes "), variableName("jsonReader"),
+                        simpleNameOf(StandaloneStajParser.class), xhtmlText(". Again, it assumes "), variableName("jsonReader"),
                         xhtmlText(" refers to a "), simpleNameOf(Reader.class),
                         xhtmlText(" of the example JSON in the previous section.")
                 ),
                 codeBlock("Set<String> fieldNames = new HashSet<String>();\n" +
-                        "StajParser stajParser = null;\n" +
-                        "try {\n" +
-                        "    stajParser = new StajParser(jsonReader);\n" +
-                        "    while (stajParser.hasNext()) {\n" +
-                        "        if (stajParser.next() == JsonStreamElementType.START_FIELD) {\n" +
-                        "            fieldNames.add(stajParser.getText());\n" +
-                        "        }\n" +
+                        "StandaloneStajParser stajParser = null;\n" +
+                        "stajParser = new StandaloneStajParser(jsonReader);\n" +
+                        "while (stajParser.hasNext()) {\n" +
+                        "    JsonStreamElement next = stajParser.next();\n" +
+                        "    if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {\n" +
+                        "        fieldNames.add(next.text());\n" +
                         "    }\n" +
-                        "} finally {\n" +
-                        "    if (stajParser != null) {\n" +
-                        "        stajParser.close();\n" +
-                        "    }\n" +
-                        "}"),
-                paragraphTag(
-                        xhtmlText("Note that it is important to call "), codeSnippet("close()"),
-                        xhtmlText(" when finished with an instance of "), simpleNameOf(StajParser.class),
-                        xhtmlText(" to free up resource associated with it.")
-                )
+                        "}\n")
         );
     }
 

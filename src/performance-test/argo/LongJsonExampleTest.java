@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -13,7 +13,7 @@ package argo;
 import argo.jdom.JdomParser;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
-import argo.staj.StajParser;
+import argo.staj.StandaloneStajParser;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -95,16 +95,9 @@ public final class LongJsonExampleTest {
     @Test
     public void testArgoStaj() throws Exception {
         for (final Reader reader : jsonReaders) {
-            StajParser stajParser = null;
-            try {
-                stajParser = new StajParser(reader);
-                while (stajParser.hasNext()) {
-                    stajParser.next();
-                }
-            } finally {
-                if (stajParser != null) {
-                    stajParser.close();
-                }
+            final StandaloneStajParser stajParser = new StandaloneStajParser(reader);
+            while (stajParser.hasNext()) {
+                stajParser.next();
             }
         }
     }
