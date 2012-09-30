@@ -15,8 +15,8 @@ import argo.jdom.JsonRootNode;
 
 import java.io.StringReader;
 
-public final class StandaloneStajParserBuilder {
-    public static StandaloneStajParser standaloneStajParser(final JsonRootNode jsonRootNode) {
-        return new StandaloneStajParser(new StringReader(PrettyJsonBuilder.json(jsonRootNode)));
+public final class StajParserBuilder {
+    public static StajParser stajParser(final JsonRootNode jsonRootNode) {
+        return new StajParser(new StringReader(PrettyJsonBuilder.json(jsonRootNode)));
     }
 }

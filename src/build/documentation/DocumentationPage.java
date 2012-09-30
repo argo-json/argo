@@ -16,7 +16,7 @@ import argo.format.PrettyJsonFormatter;
 import argo.jdom.*;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
-import argo.staj.StandaloneStajParser;
+import argo.staj.StajParser;
 import org.sourceforge.xazzle.xhtml.HtmlTag;
 import org.sourceforge.xazzle.xhtml.InlineTag;
 
@@ -243,18 +243,18 @@ final class DocumentationPage {
                         "});"),
                 h3Tag(xhtmlText("Parsing JSON through iteration")),
                 paragraphTag(
-                        xhtmlText("The "), simpleNameOf(StandaloneStajParser.class),
+                        xhtmlText("The "), simpleNameOf(StajParser.class),
                         xhtmlText(" class allows the calling code to request parsing events from a stream of JSON text, similar to how the StAX parser works for XML.")
                 ),
                 paragraphTag(
                         xhtmlText("The following code gets the names of all the fields in a piece of JSON using the "),
-                        simpleNameOf(StandaloneStajParser.class), xhtmlText(". Again, it assumes "), variableName("jsonReader"),
+                        simpleNameOf(StajParser.class), xhtmlText(". Again, it assumes "), variableName("jsonReader"),
                         xhtmlText(" refers to a "), simpleNameOf(Reader.class),
                         xhtmlText(" of the example JSON in the previous section.")
                 ),
                 codeBlock("Set<String> fieldNames = new HashSet<String>();\n" +
-                        "StandaloneStajParser stajParser = null;\n" +
-                        "stajParser = new StandaloneStajParser(jsonReader);\n" +
+                        "StajParser stajParser = null;\n" +
+                        "stajParser = new StajParser(jsonReader);\n" +
                         "while (stajParser.hasNext()) {\n" +
                         "    JsonStreamElement next = stajParser.next();\n" +
                         "    if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {\n" +

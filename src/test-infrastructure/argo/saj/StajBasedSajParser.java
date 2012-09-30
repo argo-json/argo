@@ -11,7 +11,7 @@
 package argo.saj;
 
 import argo.staj.JsonStreamElement;
-import argo.staj.StandaloneStajParser;
+import argo.staj.StajParser;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -39,13 +39,13 @@ public final class StajBasedSajParser {
      *                             thrown to indicate the characters read from <code>in</code> did not constitute valid JSON.
      */
     public void parse(final Reader in, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
-        final StandaloneStajParser standaloneStajParser = new StandaloneStajParser(in);
-        parse(standaloneStajParser, jsonListener);
+        final StajParser stajParser = new StajParser(in);
+        parse(stajParser, jsonListener);
     }
 
-    public void parse(final StandaloneStajParser standaloneStajParser, final JsonListener jsonListener) {
-        while (standaloneStajParser.hasNext()) {
-            final JsonStreamElement jsonStreamElement = standaloneStajParser.next();
+    public void parse(final StajParser stajParser, final JsonListener jsonListener) {
+        while (stajParser.hasNext()) {
+            final JsonStreamElement jsonStreamElement = stajParser.next();
             switch (jsonStreamElement.jsonStreamElementType()) {
                 case START_DOCUMENT:
                     jsonListener.startDocument();

@@ -15,7 +15,7 @@ import argo.saj.JsonListener;
 import argo.saj.SajParser;
 import argo.staj.JsonStreamElement;
 import argo.staj.JsonStreamElementType;
-import argo.staj.StandaloneStajParser;
+import argo.staj.StajParser;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
@@ -175,8 +175,8 @@ public final class MainDocumentationExamples {
     public void parsesUsingStaj() throws Exception {
         final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
         Set<String> fieldNames = new HashSet<String>();
-        StandaloneStajParser stajParser = null;
-        stajParser = new StandaloneStajParser(jsonReader);
+        StajParser stajParser = null;
+        stajParser = new StajParser(jsonReader);
         while (stajParser.hasNext()) {
             JsonStreamElement next = stajParser.next();
             if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {

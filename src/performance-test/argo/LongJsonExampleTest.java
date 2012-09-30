@@ -13,7 +13,7 @@ package argo;
 import argo.jdom.JdomParser;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
-import argo.staj.StandaloneStajParser;
+import argo.staj.StajParser;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -95,7 +95,7 @@ public final class LongJsonExampleTest {
     @Test
     public void testArgoStaj() throws Exception {
         for (final Reader reader : jsonReaders) {
-            final StandaloneStajParser stajParser = new StandaloneStajParser(reader);
+            final StajParser stajParser = new StajParser(reader);
             while (stajParser.hasNext()) {
                 stajParser.next();
             }

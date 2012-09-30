@@ -12,7 +12,7 @@ package argo.jdom;
 
 import argo.saj.InvalidSyntaxException;
 import argo.saj.StajBasedSajParser;
-import argo.staj.StandaloneStajParser;
+import argo.staj.StajParser;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -34,13 +34,13 @@ public final class StajBasedJdomParser {
      *                             if the characters streamed from the specified <code>Reader</code> does not represent valid JSON.
      */
     public JsonRootNode parse(final Reader reader) throws IOException, InvalidSyntaxException {
-        final StandaloneStajParser standaloneStajParser = new StandaloneStajParser(reader);
-        return parse(standaloneStajParser);
+        final StajParser stajParser = new StajParser(reader);
+        return parse(stajParser);
     }
 
-    public JsonRootNode parse(final StandaloneStajParser standaloneStajParser) {
+    public JsonRootNode parse(final StajParser stajParser) {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
-        new StajBasedSajParser().parse(standaloneStajParser, jsonListenerToJdomAdapter);
+        new StajBasedSajParser().parse(stajParser, jsonListenerToJdomAdapter);
         return jsonListenerToJdomAdapter.getDocument();
     }
 

@@ -18,21 +18,21 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public final class ElementTrackingStandaloneStajParserMatcher extends TypeSafeDiagnosingMatcher<StandaloneStajParser> {
+public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMatcher<StajParser> {
     private final JsonStreamElement[] jsonStreamElements;
 
-    private ElementTrackingStandaloneStajParserMatcher(final JsonStreamElement... jsonStreamElements) {
+    private ElementTrackingStajParserMatcher(final JsonStreamElement... jsonStreamElements) {
         this.jsonStreamElements = jsonStreamElements;
     }
 
-    public static Matcher<StandaloneStajParser> generatesElements(final JsonStreamElement... jsonStreamElements) {
-        return new ElementTrackingStandaloneStajParserMatcher(jsonStreamElements);
+    public static Matcher<StajParser> generatesElements(final JsonStreamElement... jsonStreamElements) {
+        return new ElementTrackingStajParserMatcher(jsonStreamElements);
     }
 
     private Collection<JsonStreamElement> actual = new ArrayList<JsonStreamElement>();
 
     @Override
-    protected boolean matchesSafely(final StandaloneStajParser item, final Description mismatchDescription) {
+    protected boolean matchesSafely(final StajParser item, final Description mismatchDescription) {
         boolean matches = true;
         for (JsonStreamElement jsonStreamElement : jsonStreamElements) {
             final boolean hasNextItem = item.hasNext();
@@ -51,12 +51,12 @@ public final class ElementTrackingStandaloneStajParserMatcher extends TypeSafeDi
             actual.add(item.next());
         }
         if (!matches) {
-            mismatchDescription.appendText("a StandaloneStajParser actually generated sequence ").appendValueList("", ", ", "", actual);
+            mismatchDescription.appendText("a StajParser actually generated sequence ").appendValueList("", ", ", "", actual);
         }
         return matches;
     }
 
     public void describeTo(final Description description) {
-        description.appendText("a StandaloneStajParser that generates the sequence ").appendValueList("", ", ", "", jsonStreamElements);
+        description.appendText("a StajParser that generates the sequence ").appendValueList("", ", ", "", jsonStreamElements);
     }
 }

@@ -14,14 +14,14 @@ import java.io.Reader;
 import java.util.Iterator;
 import java.util.Stack;
 
-public final class StandaloneStajParser implements Iterator<JsonStreamElement> {
+public final class StajParser implements Iterator<JsonStreamElement> {
 
     private final PositionTrackingPushbackReader pushbackReader;
     private final Stack<JsonStreamElementType> stack = new Stack<JsonStreamElementType>();
     private JsonStreamElement current;
     private JsonStreamElement next;
 
-    public StandaloneStajParser(final Reader in) {
+    public StajParser(final Reader in) {
         this.pushbackReader = new PositionTrackingPushbackReader(in);
     }
 
@@ -54,6 +54,6 @@ public final class StandaloneStajParser implements Iterator<JsonStreamElement> {
     }
 
     public void remove() {
-        throw new UnsupportedOperationException("StandaloneStajParser cannot remove elements from JSON it has parsed.");
+        throw new UnsupportedOperationException("StajParser cannot remove elements from JSON it has parsed.");
     }
 }

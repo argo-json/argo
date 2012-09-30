@@ -19,7 +19,7 @@ public final class ParserToJsonStreamReaderAdapterTest {
 
     @Test(expected = JsonStreamException.class)
     public void handlesIoExceptionDuringParsing() throws Exception {
-        new StandaloneStajParser(new Reader() {
+        new StajParser(new Reader() {
             public int read(char[] chars, int offset, int length) throws IOException {
                 throw new IOException("An IOException");
             }
@@ -31,7 +31,7 @@ public final class ParserToJsonStreamReaderAdapterTest {
 
     @Test(expected = MyTestRuntimeException.class)
     public void handlesRuntimeExceptionDuringParsing() throws Exception {
-        new StandaloneStajParser(new Reader() {
+        new StajParser(new Reader() {
             public int read(char[] chars, int offset, int length) throws IOException {
                 throw new MyTestRuntimeException();
             }

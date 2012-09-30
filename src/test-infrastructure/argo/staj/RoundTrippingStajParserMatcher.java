@@ -19,24 +19,24 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
-public final class RoundTrippingStandaloneStajParserMatcher extends TypeSafeDiagnosingMatcher<StandaloneStajParser> {
+public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatcher<StajParser> {
 
     private final Matcher<String> stringMatcher;
     private final JsonRootNode jsonRootNode;
     private JsonRootNode parseResult;
 
-    private RoundTrippingStandaloneStajParserMatcher(final JsonRootNode jsonRootNode) {
+    private RoundTrippingStajParserMatcher(final JsonRootNode jsonRootNode) {
         this.jsonRootNode = jsonRootNode;
         stringMatcher = equalTo(PrettyJsonBuilder.json(jsonRootNode));
         parseResult = null;
     }
 
-    public static Matcher<StandaloneStajParser> parsesTo(final JsonRootNode jsonRootNode) {
-        return new RoundTrippingStandaloneStajParserMatcher(jsonRootNode);
+    public static Matcher<StajParser> parsesTo(final JsonRootNode jsonRootNode) {
+        return new RoundTrippingStajParserMatcher(jsonRootNode);
     }
 
     @Override
-    protected boolean matchesSafely(final StandaloneStajParser item, final Description mismatchDescription) {
+    protected boolean matchesSafely(final StajParser item, final Description mismatchDescription) {
         if (parseResult == null) {
             parseResult = new StajBasedJdomParser().parse(item);
         }
@@ -48,6 +48,6 @@ public final class RoundTrippingStandaloneStajParserMatcher extends TypeSafeDiag
     }
 
     public void describeTo(final Description description) {
-        description.appendText("StandaloneStajParser that generates JSON equal to ").appendValue(PrettyJsonBuilder.json(jsonRootNode));
+        description.appendText("StajParser that generates JSON equal to ").appendValue(PrettyJsonBuilder.json(jsonRootNode));
     }
 }
