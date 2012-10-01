@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
 /**
@@ -26,39 +27,21 @@ public final class JsonNodeFactories {
 
     /**
      * @return a JSON null
-     * @deprecated Use {@link #nullNode()} instead
      */
-    @Deprecated
-    public static JsonNode aJsonNull() {
-        return nullNode();
-    }
-
     public static JsonNode nullNode() {
         return JsonConstants.NULL;
     }
 
     /**
      * @return a JSON true
-     * @deprecated Use {@link #trueNode()} instead
      */
-    @Deprecated
-    public static JsonNode aJsonTrue() {
-        return trueNode();
-    }
-
     public static JsonNode trueNode() {
         return JsonConstants.TRUE;
     }
 
     /**
      * @return a JSON false
-     * @deprecated Use {@link #falseNode()} instead
      */
-    @Deprecated
-    public static JsonNode aJsonFalse() {
-        return falseNode();
-    }
-
     public static JsonNode falseNode() {
         return JsonConstants.FALSE;
     }
@@ -66,13 +49,7 @@ public final class JsonNodeFactories {
     /**
      * @param value the Java String to represent as a JSON string
      * @return a JSON string representation of the given String
-     * @deprecated Use {@link #string(String)} instead
      */
-    @Deprecated
-    public static JsonStringNode aJsonString(final String value) {
-        return string(value);
-    }
-
     public static JsonStringNode string(final String value) {
         return new JsonStringNode(value);
     }
@@ -80,13 +57,7 @@ public final class JsonNodeFactories {
     /**
      * @param value a Java String to represent as a JSON number
      * @return a JSON number representation of the given String
-     * @deprecated Use {@link #number(String)} instead
      */
-    @Deprecated
-    public static JsonNode aJsonNumber(final String value) {
-        return number(value);
-    }
-
     public static JsonNode number(final String value) {
         return new JsonNumberNode(value);
     }
@@ -94,13 +65,7 @@ public final class JsonNodeFactories {
     /**
      * @param value a Java BigDecimal to represent as a JSON number
      * @return a JSON number representation of the given BigDecimal
-     * @deprecated Use {@link #number(java.math.BigDecimal)} instead
      */
-    @Deprecated
-    public static JsonNode aJsonNumber(final BigDecimal value) {
-        return number(value);
-    }
-
     public static JsonNode number(final BigDecimal value) {
         return new JsonNumberNode(value.toString());
     }
@@ -108,17 +73,15 @@ public final class JsonNodeFactories {
     /**
      * @param value a Java BigInteger to represent as a JSON number
      * @return a JSON number representation of the given BigInteger
-     * @deprecated Use {@link #number(java.math.BigInteger)} instead
      */
-    @Deprecated
-    public static JsonNode aJsonNumber(final BigInteger value) {
-        return number(value);
-    }
-
     public static JsonNode number(final BigInteger value) {
         return new JsonNumberNode(value.toString());
     }
 
+    /**
+     * @param value a Java long to represent as a JSON number
+     * @return a JSON number representation of the given BigInteger
+     */
     public static JsonNode number(final long value) {
         return new JsonNumberNode(Long.toString(value));
     }
@@ -126,13 +89,7 @@ public final class JsonNodeFactories {
     /**
      * @param elements <code>JsonNode</code>s that will populate the array
      * @return a JSON array of the given <code>JsonNode</code>s
-     * @deprecated Use {@link #array(Iterable)} instead
      */
-    @Deprecated
-    public static JsonRootNode aJsonArray(final Iterable<JsonNode> elements) {
-        return array(elements);
-    }
-
     public static JsonRootNode array(final Iterable<JsonNode> elements) {
         return new JsonArray(elements);
     }
@@ -140,17 +97,20 @@ public final class JsonNodeFactories {
     /**
      * @param elements <code>JsonNode</code>s that will populate the array
      * @return a JSON array of the given <code>JsonNode</code>s
-     * @deprecated Use {@link #array(JsonNode...)} instead
      */
-    @Deprecated
-    public static JsonRootNode aJsonArray(final JsonNode... elements) {
-        return array(elements);
-    }
-
     public static JsonRootNode array(final JsonNode... elements) {
-        return array(Arrays.asList(elements));
+        return array(asList(elements));
     }
 
+    /**
+     * Generates an array where the members are only evaluated on request.  This means that arrays generated
+     * by this method might not be immutable, depending on the implementation of {@code List} used in the
+     * argument.  If you supply a list of elements, and then add an item to the list, that item will also be
+     * part of the array.
+     *
+     * @param elements <code>JsonNode</code>s that will populate the array
+     * @return a JSON array of the given <code>JsonNode</code>s
+     */
     public static JsonRootNode lazyArray(final List<JsonNode> elements) {
         return new AbstractJsonArray() {
             @Override
@@ -163,13 +123,7 @@ public final class JsonNodeFactories {
     /**
      * @param fields <code>JsonField</code>s that the object will contain
      * @return a JSON object containing the given fields
-     * @deprecated Use {@link #object(java.util.Map)} instead
      */
-    @Deprecated
-    public static JsonRootNode aJsonObject(final Map<JsonStringNode, JsonNode> fields) {
-        return object(fields);
-    }
-
     public static JsonRootNode object(final Map<JsonStringNode, JsonNode> fields) {
         return new JsonObject(new ArrayList<JsonField>() {{
             for (final Map.Entry<JsonStringNode, JsonNode> entry : fields.entrySet()) {
@@ -181,31 +135,28 @@ public final class JsonNodeFactories {
     /**
      * @param fields <code>JsonField</code>s that the object will contain
      * @return a JSON object containing the given fields
-     * @deprecated Use {@link #object(JsonField...)} instead
      */
-    @Deprecated
-    public static JsonRootNode aJsonObject(final JsonField... fields) {
-        return object(fields);
-    }
-
     public static JsonRootNode object(final JsonField... fields) {
-        return object(Arrays.asList(fields));
+        return object(asList(fields));
     }
 
     /**
      * @param fields <code>JsonField</code>s that the object will contain
      * @return a JSON object containing the given fields
-     * @deprecated Use {@link #object(Iterable)} instead
      */
-    @Deprecated
-    public static JsonRootNode aJsonObject(final Iterable<JsonField> fields) {
-        return object(fields);
-    }
-
     public static JsonRootNode object(final Iterable<JsonField> fields) {
         return new JsonObject(fields);
     }
 
+    /**
+     * Generates an object where the members are only evaluated on request.  This means that objects generated
+     * by this method might not be immutable, depending on the implementation of {@code List} used in the
+     * argument.  If you supply a list of fields, and then add an item to the list, that item will also be
+     * part of the object.
+     *
+     * @param fields <code>JsonField</code>s that the object will contain
+     * @return a JSON object containing the given fields
+     */
     public static JsonRootNode lazyObject(final List<JsonField> fields) {
         return new AbstractJsonObject() {
             @Override
@@ -253,13 +204,7 @@ public final class JsonNodeFactories {
      * @param name  the name of the field
      * @param value the value of the field
      * @return a JSON field with the given name and value
-     * @deprecated Use {@link #field(String, JsonNode)} instead
      */
-    @Deprecated
-    public static JsonField aJsonField(final String name, final JsonNode value) {
-        return field(name, value);
-    }
-
     public static JsonField field(final String name, final JsonNode value) {
         return new JsonField(string(name), value);
     }
@@ -268,13 +213,7 @@ public final class JsonNodeFactories {
      * @param name  the name of the field
      * @param value the value of the field
      * @return a JSON field with the given name and value
-     * @deprecated Use {@link #field(JsonStringNode, JsonNode)} instead
      */
-    @Deprecated
-    public static JsonField aJsonField(final JsonStringNode name, final JsonNode value) {
-        return field(name, value);
-    }
-
     public static JsonField field(final JsonStringNode name, final JsonNode value) {
         return new JsonField(name, value);
     }
@@ -282,13 +221,7 @@ public final class JsonNodeFactories {
     /**
      * @param value the Java boolean to represent as a JSON Boolean
      * @return a JSON Boolean representation of the given boolean
-     * @deprecated Use {@link #booleanNode(boolean)} instead
      */
-    @Deprecated
-    public static JsonNode aJsonBoolean(final boolean value) {
-        return booleanNode(value);
-    }
-
     public static JsonNode booleanNode(final boolean value) {
         return value ? trueNode() : falseNode();
     }
