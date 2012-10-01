@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 import static argo.jdom.JsonNodeFactories.*;
+import static argo.jdom.JsonNodeTestBuilder.aJsonLeafNode;
+import static argo.jdom.JsonStringNodeTestBuilder.aValidJsonString;
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -287,5 +290,13 @@ public final class JsonNodeTest {
 
         assertThat(SAMPLE_JSON.getRootNode(), equalTo(SAMPLE_JSON));
         assertThat(SAMPLE_JSON.getRootNode("championships"), equalTo(array(number("2002"), number("2003"), number("2004"), number("2005"), number("2008"), number("2009"))));
+    }
+
+    @Test
+    public void getFieldListReturnsAllFieldsEvenWhenKeysAreDuplicated() throws Exception {
+        final String aKeyString = aValidJsonString();
+        final JsonField aField = field(aKeyString, aJsonLeafNode());
+        final JsonField anotherField = field(aKeyString, aJsonLeafNode());
+        assertThat(object(aField, anotherField).getFieldList(), contains(aField, anotherField));
     }
 }

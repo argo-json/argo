@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -9,6 +9,8 @@
  */
 
 package argo.jdom;
+
+import static argo.jdom.JsonNodeFactories.field;
 
 final class JsonFieldBuilder {
 
@@ -38,5 +40,9 @@ final class JsonFieldBuilder {
 
     JsonNode buildValue() {
         return valueBuilder.build();
+    }
+
+    JsonField build() {
+        return field(buildKey(), buildValue());
     }
 }

@@ -10,7 +10,7 @@
 
 package argo.jdom;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -60,9 +60,9 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
     }
 
     public JsonRootNode build() {
-        return JsonNodeFactories.object(new LinkedHashMap<JsonStringNode, JsonNode>() {{
-            for (JsonFieldBuilder fieldBuilder : fieldBuilders) {
-                put(fieldBuilder.buildKey(), fieldBuilder.buildValue());
+        return JsonNodeFactories.object(new ArrayList<JsonField>() {{
+            for (final JsonFieldBuilder fieldBuilder : fieldBuilders) {
+                add(fieldBuilder.build());
             }
         }});
     }

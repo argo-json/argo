@@ -10,6 +10,7 @@
 
 package argo.jdom;
 
+import java.util.List;
 import java.util.Map;
 
 abstract class AbstractJsonArray extends JsonRootNode {
@@ -30,6 +31,11 @@ abstract class AbstractJsonArray extends JsonRootNode {
     }
 
     public Map<JsonStringNode, JsonNode> getFields() {
+        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
+    }
+
+    @Override
+    public List<JsonField> getFieldList() {
         throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
     }
 

@@ -10,14 +10,13 @@
 
 package argo.format;
 
+import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonRootNode;
-import argo.jdom.JsonStringNode;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.TreeSet;
 
 import static argo.format.JsonEscapedString.escapeString;
 
@@ -56,14 +55,14 @@ public final class CompactJsonFormatter implements JsonFormatter {
                 break;
             case OBJECT:
                 writer.append('{');
-                for (final JsonStringNode field : new TreeSet<JsonStringNode>(jsonNode.getFields().keySet())) {
+                for (final JsonField field : jsonNode.getFieldList()) {
                     if (!first) {
                         writer.append(',');
                     }
                     first = false;
-                    formatJsonNode(field, writer);
+                    formatJsonNode(field.getName(), writer);
                     writer.append(':');
-                    formatJsonNode(jsonNode.getFields().get(field), writer);
+                    formatJsonNode(field.getValue(), writer);
                 }
                 writer.append('}');
                 break;

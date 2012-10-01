@@ -10,16 +10,15 @@
 
 package argo.format;
 
+import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonRootNode;
-import argo.jdom.JsonStringNode;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.TreeSet;
 
 import static argo.format.JsonEscapedString.escapeString;
 
@@ -64,19 +63,19 @@ public final class PrettyJsonFormatter implements JsonFormatter {
                 break;
             case OBJECT:
                 writer.append('{');
-                final Iterator<JsonStringNode> jsonStringNodes = new TreeSet<JsonStringNode>(jsonNode.getFields().keySet()).iterator();
+                final Iterator<JsonField> jsonStringNodes = jsonNode.getFieldList().iterator();
                 while (jsonStringNodes.hasNext()) {
-                    final JsonStringNode field = jsonStringNodes.next();
+                    final JsonField field = jsonStringNodes.next();
                     writer.println();
                     addTabs(writer, indent + 1);
-                    formatJsonNode(field, writer, indent + 1);
+                    formatJsonNode(field.getName(), writer, indent + 1);
                     writer.append(": ");
-                    formatJsonNode(jsonNode.getFields().get(field), writer, indent + 1);
+                    formatJsonNode(field.getValue(), writer, indent + 1);
                     if (jsonStringNodes.hasNext()) {
                         writer.append(",");
                     }
                 }
-                if (!jsonNode.getFields().isEmpty()) {
+                if (!jsonNode.getFieldList().isEmpty()) {
                     writer.println();
                     addTabs(writer, indent);
                 }

@@ -44,16 +44,16 @@ abstract class AbstractJsonObject extends JsonRootNode {
         if (that == null || !AbstractJsonObject.class.isAssignableFrom(that.getClass())) return false;
 
         final AbstractJsonObject thatJsonObject = (AbstractJsonObject) that;
-        return this.getFields().equals(thatJsonObject.getFields());
+        return this.getFieldList().equals(thatJsonObject.getFieldList());
     }
 
     @Override
     public int hashCode() {
-        return getFields().hashCode();
+        return getFieldList().hashCode();
     }
 
     @Override
     public String toString() {
-        return "JsonObject fields:[" + getFields() + "]";
+        return "JsonObject fields:[" + getFieldList() + "]";
     }
 }

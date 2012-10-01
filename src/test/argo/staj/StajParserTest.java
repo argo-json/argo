@@ -77,8 +77,8 @@ public final class StajParserTest {
 
     @Test
     public void objectWithFieldsHasCorrectElements() throws Exception {
-        final JsonStringNode aFieldName = JsonStringNodeTestBuilder.aStringNode();
-        final JsonStringNode anotherFieldName = JsonStringNodeTestBuilder.aStringNode();
+        final JsonStringNode aFieldName = aStringNode();
+        final JsonStringNode anotherFieldName = aStringNode();
         assertThat(stajParser(object(field(aFieldName, array()), field(anotherFieldName, object()))), generatesElements(
                 startDocument(),
                 startObject(),

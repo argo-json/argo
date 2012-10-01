@@ -10,21 +10,33 @@
 
 package argo.jdom;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+
+import static java.util.Collections.unmodifiableList;
 
 final class JsonObject extends AbstractJsonObject {
 
-    private final Map<JsonStringNode, JsonNode> fields;
+    private final List<JsonField> fields;
 
-    JsonObject(final Map<JsonStringNode, JsonNode> fields) {
-        this.fields = Collections.unmodifiableMap(new LinkedHashMap<JsonStringNode, JsonNode>(fields));
+    JsonObject(final Iterable<JsonField> fields) {
+        this.fields = unmodifiableList(new ArrayList<JsonField>() {{
+            for (final JsonField field : fields) {
+                add(field);
+            }
+        }});
     }
 
     @Override
     public Map<JsonStringNode, JsonNode> getFields() {
-        return fields;
+        return Collections.unmodifiableMap(new LinkedHashMap<JsonStringNode, JsonNode>() {{
+            for (final JsonField field : fields) {
+                put(field.getName(), field.getValue());
+            }
+        }});
     }
 
+    @Override
+    public List<JsonField> getFieldList() {
+        return fields;
+    }
 }

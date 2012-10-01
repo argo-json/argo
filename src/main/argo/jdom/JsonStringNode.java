@@ -47,6 +47,11 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
         throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
     }
 
+    @Override
+    public List<JsonField> getFieldList() {
+        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
+    }
+
     public boolean hasElements() {
         return false;
     }

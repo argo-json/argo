@@ -52,6 +52,11 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
         throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
     }
 
+    @Override
+    public List<JsonField> getFieldList() {
+        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
+    }
+
     public boolean hasElements() {
         return false;
     }

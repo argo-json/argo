@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+import static java.util.Collections.unmodifiableList;
+
 /**
  * Factories for <code>JsonNode</code>s.
  */
@@ -169,7 +171,11 @@ public final class JsonNodeFactories {
     }
 
     public static JsonRootNode object(final Map<JsonStringNode, JsonNode> fields) {
-        return new JsonObject(fields);
+        return new JsonObject(new ArrayList<JsonField>() {{
+            for (final Map.Entry<JsonStringNode, JsonNode> entry : fields.entrySet()) {
+                add(field(entry.getKey(), entry.getValue()));
+            }
+        }});
     }
 
     /**
@@ -197,11 +203,7 @@ public final class JsonNodeFactories {
     }
 
     public static JsonRootNode object(final Iterable<JsonField> fields) {
-        return object(new LinkedHashMap<JsonStringNode, JsonNode>() {{
-            for (final JsonField field : fields) {
-                put(field.getName(), field.getValue());
-            }
-        }});
+        return new JsonObject(fields);
     }
 
     public static JsonRootNode lazyObject(final List<JsonField> fields) {
@@ -238,6 +240,11 @@ public final class JsonNodeFactories {
                         };
                     }
                 };
+            }
+
+            @Override
+            public List<JsonField> getFieldList() {
+                return unmodifiableList(fields);
             }
         };
     }
