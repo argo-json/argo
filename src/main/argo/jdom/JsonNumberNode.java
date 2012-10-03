@@ -81,7 +81,7 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
 
     @Override
     public String toString() {
-        return "JsonNumberNode value:[" + value + "]";
+        return "JsonNumberNode{value='" + value + "\'}";
     }
 
     public JsonNode build() {

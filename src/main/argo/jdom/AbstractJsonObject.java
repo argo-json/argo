@@ -54,6 +54,6 @@ abstract class AbstractJsonObject extends JsonRootNode {
 
     @Override
     public String toString() {
-        return "JsonObject fields:[" + getFieldList() + "]";
+        return "JsonObject{fields=" + getFieldList() + "}";
     }
 }

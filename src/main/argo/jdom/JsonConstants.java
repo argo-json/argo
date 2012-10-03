@@ -61,4 +61,9 @@ final class JsonConstants extends JsonNode implements JsonNodeBuilder<JsonNode> 
     public JsonNode build() {
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "JsonNode{jsonNodeType=" + jsonNodeType + '}';
+    }
 }

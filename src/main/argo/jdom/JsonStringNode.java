@@ -76,7 +76,7 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
 
     @Override
     public String toString() {
-        return "JsonStringNode value:[" + value + "]";
+        return "JsonStringNode{value='" + value + "\'}";
     }
 
     public int compareTo(final JsonStringNode that) {
