@@ -175,8 +175,7 @@ public final class MainDocumentationExamples {
     public void parsesUsingStaj() throws Exception {
         final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
         Set<String> fieldNames = new HashSet<String>();
-        StajParser stajParser = null;
-        stajParser = new StajParser(jsonReader);
+        final StajParser stajParser = new StajParser(jsonReader);
         while (stajParser.hasNext()) {
             JsonStreamElement next = stajParser.next();
             if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {
