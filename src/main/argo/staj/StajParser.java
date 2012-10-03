@@ -11,6 +11,7 @@
 package argo.staj;
 
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.Stack;
 
@@ -25,13 +26,21 @@ public final class StajParser implements Iterator<JsonStreamElement> {
     private JsonStreamElement next;
 
     /**
-     * Constructs a StajParser reading from the specified {@code Reader)
-     * .
+     * Constructs a StajParser reading from the specified {@code Reader}
      *
      * @param in the {@code Reader} to convert into {@code JsonStreamElement}s.
      */
     public StajParser(final Reader in) {
         this.pushbackReader = new PositionTrackingPushbackReader(in);
+    }
+
+    /**
+     * Constructs a StajParser reading from the given {@code String}
+     *
+     * @param json the {@code String} to convert into {@code JsonStreamElement}s.
+     */
+    public StajParser(final String json) {
+        this.pushbackReader = new PositionTrackingPushbackReader(new StringReader(json));
     }
 
     /**

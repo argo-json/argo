@@ -10,6 +10,7 @@
 
 package argo.staj;
 
+import argo.format.PrettyJsonBuilder;
 import argo.jdom.*;
 import org.junit.Test;
 
@@ -131,6 +132,12 @@ public final class StajParserTest {
     public void aRandomRootNodeHasCorrectElements() throws Exception {
         final JsonRootNode jsonRootNode = aJsonRootNode();
         assertThat(stajParser(jsonRootNode), parsesTo(jsonRootNode));
+    }
+
+    @Test
+    public void aRandomRootNodeFromStringHasCorrectElements() throws Exception {
+        final JsonRootNode jsonRootNode = aJsonRootNode();
+        assertThat(new StajParser(PrettyJsonBuilder.json(jsonRootNode)), parsesTo(jsonRootNode));
     }
 
     @Test
