@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,7 +15,7 @@ import argo.format.JsonFormatter;
 
 import static argo.jdom.JsonNodeDoesNotMatchChainedJsonNodeSelectorException.getShortFormFailPath;
 
-public final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMatchJsonNodeSelectorException {
+final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMatchJsonNodeSelectorException {
 
     private static final JsonFormatter JSON_FORMATTER = new CompactJsonFormatter();
 
@@ -28,7 +28,7 @@ public final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoe
     }
 
     private static String formatMessage(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
-        return "Failed to find " + delegate.failedNode.toString() + " at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) +  ".";
+        return "Failed to find " + delegate.failedNode.toString() + " at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) + ".";
     }
 
     private static String commaSeparate(final Object[] pathElements) {
