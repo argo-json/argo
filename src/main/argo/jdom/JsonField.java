@@ -24,7 +24,13 @@ public final class JsonField {
      * @param value any <code>JsonNode</code> representing the value of the field.
      */
     public JsonField(final JsonStringNode name, final JsonNode value) {
+        if (name == null) {
+            throw new NullPointerException("Attempt to construct a JsonField with a null name.");
+        }
         this.name = name;
+        if (value == null) {
+            throw new NullPointerException("Attempt to construct a JsonField with a null value.");
+        }
         this.value = value;
     }
 
@@ -43,20 +49,25 @@ public final class JsonField {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         final JsonField jsonField = (JsonField) o;
 
-        return !(name != null ? !name.equals(jsonField.name) : jsonField.name != null) && !(value != null ? !value.equals(jsonField.value) : jsonField.value != null);
+        return name.equals(jsonField.name) && value.equals(jsonField.value);
 
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (value != null ? value.hashCode() : 0);
+        int result = name.hashCode();
+        result = 31 * result + value.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "JsonField{name=" + name + ", value=" + value + '}';
     }
 }
