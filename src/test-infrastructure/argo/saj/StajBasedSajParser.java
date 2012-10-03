@@ -17,10 +17,10 @@ import java.io.IOException;
 import java.io.Reader;
 
 /**
- * Converts a character stream into calls to a <code>JsonListener</code>.
+ * Converts a character stream into calls to a {@code JsonListener}.
  * <p/>
- * Instances of <code>SajParser</code> are threadsafe in that concurrent calls to <code>parse</code> are safe, provided
- * each call is made with a different <code>Reader</code> and a different <code>JsonListener</code>.
+ * Instances of {@code SajParser} are threadsafe in that concurrent calls to {@code parse} are safe, provided
+ * each call is made with a different {@code Reader} and a different {@code JsonListener}.
  *
  * @see argo.saj.JsonListener
  */
@@ -34,9 +34,9 @@ public final class StajBasedSajParser {
      *
      * @param in           the character stream to parse
      * @param jsonListener the JsonListener to notify of parsing events
-     * @throws java.io.IOException bubbled up from exceptions thrown reading from <code>in</code>
+     * @throws java.io.IOException bubbled up from exceptions thrown reading from {@code in}
      * @throws argo.saj.InvalidSyntaxException
-     *                             thrown to indicate the characters read from <code>in</code> did not constitute valid JSON.
+     *                             thrown to indicate the characters read from {@code in} did not constitute valid JSON.
      */
     public void parse(final Reader in, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
         final StajParser stajParser = new StajParser(in);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -11,14 +11,16 @@
 package argo.jdom;
 
 /**
- * Classes that implement <code>JsonNodeBuilder</code> provide methods for specifying details of a <code>JsonNode</code> and then constructing it.
- * @param <T> the type of <code>JsonNode</code> that will be built.
+ * Classes that implement {@code JsonNodeBuilder} provide methods for specifying details of a {@code JsonNode} and then constructing it.
+ *
+ * @param <T> the type of {@code JsonNode} that will be built.
  */
 public interface JsonNodeBuilder<T extends JsonNode> {
 
     /**
-     * Generates an instance of <code>T</code>, as specified by calls to any other methods provided by implementations of <code>JsonNodeBuilder</code>.
-     * @return an instance of <code>T</code>.
+     * Generates an instance of {@code T}, as specified by calls to any other methods provided by implementations of {@code JsonNodeBuilder}.
+     *
+     * @return an instance of {@code T}.
      */
     T build();
 }

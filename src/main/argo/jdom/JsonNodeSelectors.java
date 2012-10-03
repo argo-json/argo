@@ -17,17 +17,17 @@ import java.util.Map;
 import static argo.jdom.JsonNodeType.*;
 
 /**
- * <p>Factories for <code>JsonNodeSelectors</code>.</p>
+ * <p>Factories for {@code JsonNodeSelectors}.</p>
  * <p/>
- * <p>Methods in this class fall into two broad categories - those that take a varargs argument of <code>Object</code>s
+ * <p>Methods in this class fall into two broad categories - those that take a varargs argument of {@code Object}s
  * and navigate down an entire hierarchy, and those that address a single node in a hierarchy.</p>
  * <p>For example,
- * <code>aStringNode(Object... pathElements)</code> takes a series of <code>String</code>s and
- * <code>Integer</code>s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
- * The <code>String</code>s tell it to select a field with the given name from an object, and the <code>Integer</code>s
+ * {@code aStringNode(Object... pathElements)} takes a series of {@code String}s and
+ * {@code Integer}s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
+ * The {@code String}s tell it to select a field with the given name from an object, and the {@code Integer}s
  * tell it to select an element with the given index from an array.</p>
  * <p/>
- * <p>By contrast, <code>anArrayNodeWithElement(int index)</code> addresses a single array node only, selecting the
+ * <p>By contrast, {@code anArrayNodeWithElement(int index)} addresses a single array node only, selecting the
  * element at the given index from it.</p>
  */
 public final class JsonNodeSelectors {

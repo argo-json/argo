@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <code>JsonNode</code> that explicitly represents a JSON String.
+ * {@code JsonNode} that explicitly represents a JSON String.
  */
 public final class JsonStringNode extends JsonNode implements Comparable<JsonStringNode>, JsonNodeBuilder<JsonStringNode> {
 

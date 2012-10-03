@@ -14,13 +14,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Builder for <code>JsonRootNode</code>s representing JSON arrays.
+ * Builder for {@code JsonRootNode}s representing JSON arrays.
  */
 public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonRootNode> {
 
     private final List<JsonNodeBuilder> elementBuilders = new LinkedList<JsonNodeBuilder>();
 
-    JsonArrayNodeBuilder() { }
+    JsonArrayNodeBuilder() {
+    }
 
     /**
      * Adds the given element to the array that will be built.

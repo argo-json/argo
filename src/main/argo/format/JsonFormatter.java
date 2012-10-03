@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,24 +16,24 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * A <code>JsonFormat</code> provides operations to turn <code>JsonRootNode</code>s into valid JSON text.
+ * A {@code JsonFormat} provides operations to turn {@code JsonRootNode}s into valid JSON text.
  */
 public interface JsonFormatter {
 
     /**
-     * Returns the specified <code>JsonRootNode</code> formatted as a String.
+     * Returns the specified {@code JsonRootNode} formatted as a String.
      *
-     * @param jsonRootNode the <code>JsonRootNode</code> to format.
-     * @return the specified <code>JsonRootNode</code> formatted as a String.
+     * @param jsonRootNode the {@code JsonRootNode} to format.
+     * @return the specified {@code JsonRootNode} formatted as a String.
      */
     String format(JsonRootNode jsonRootNode);
 
     /**
-     * Streams the specified <code>JsonRootNode</code> formatted to the specified <code>Writer</code>.
+     * Streams the specified {@code JsonRootNode} formatted to the specified {@code Writer}.
      *
-     * @param jsonRootNode the <code>JsonRootNode</code> to format.
-     * @param writer       the <code>Writer</code> to stream the formatted <code>JsonRootNode</code> to.
-     * @throws IOException if there was a problem writing to the <code>Writer</code>.
+     * @param jsonRootNode the {@code JsonRootNode} to format.
+     * @param writer       the {@code Writer} to stream the formatted {@code JsonRootNode} to.
+     * @throws IOException if there was a problem writing to the {@code Writer}.
      */
     void format(JsonRootNode jsonRootNode, Writer writer) throws IOException;
 

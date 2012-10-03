@@ -18,7 +18,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
 /**
- * Factories for <code>JsonNode</code>s.
+ * Factories for {@code JsonNode}s.
  */
 public final class JsonNodeFactories {
 
@@ -87,16 +87,16 @@ public final class JsonNodeFactories {
     }
 
     /**
-     * @param elements <code>JsonNode</code>s that will populate the array
-     * @return a JSON array of the given <code>JsonNode</code>s
+     * @param elements {@code JsonNode}s that will populate the array
+     * @return a JSON array of the given {@code JsonNode}s
      */
     public static JsonRootNode array(final Iterable<JsonNode> elements) {
         return new JsonArray(elements);
     }
 
     /**
-     * @param elements <code>JsonNode</code>s that will populate the array
-     * @return a JSON array of the given <code>JsonNode</code>s
+     * @param elements {@code JsonNode}s that will populate the array
+     * @return a JSON array of the given {@code JsonNode}s
      */
     public static JsonRootNode array(final JsonNode... elements) {
         return array(asList(elements));
@@ -108,8 +108,8 @@ public final class JsonNodeFactories {
      * argument.  If you supply a list of elements, and then add an item to the list, that item will also be
      * part of the array.
      *
-     * @param elements <code>JsonNode</code>s that will populate the array
-     * @return a JSON array of the given <code>JsonNode</code>s
+     * @param elements {@code JsonNode}s that will populate the array
+     * @return a JSON array of the given {@code JsonNode}s
      */
     public static JsonRootNode lazyArray(final List<JsonNode> elements) {
         return new AbstractJsonArray() {
@@ -121,7 +121,7 @@ public final class JsonNodeFactories {
     }
 
     /**
-     * @param fields <code>JsonField</code>s that the object will contain
+     * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
     public static JsonRootNode object(final Map<JsonStringNode, JsonNode> fields) {
@@ -133,7 +133,7 @@ public final class JsonNodeFactories {
     }
 
     /**
-     * @param fields <code>JsonField</code>s that the object will contain
+     * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
     public static JsonRootNode object(final JsonField... fields) {
@@ -141,7 +141,7 @@ public final class JsonNodeFactories {
     }
 
     /**
-     * @param fields <code>JsonField</code>s that the object will contain
+     * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
     public static JsonRootNode object(final Iterable<JsonField> fields) {
@@ -154,7 +154,7 @@ public final class JsonNodeFactories {
      * argument.  If you supply a list of fields, and then add an item to the list, that item will also be
      * part of the object.
      *
-     * @param fields <code>JsonField</code>s that the object will contain
+     * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
     public static JsonRootNode lazyObject(final List<JsonField> fields) {

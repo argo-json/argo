@@ -18,10 +18,10 @@ public final class JsonField {
     private final JsonNode value;
 
     /**
-     * Constructs an instance of <code>JsonField<code> with the given name and value.
+     * Constructs an instance of {@code JsonField{@code  with the given name and value.
      *
      * @param name  a JSON string representing the key.
-     * @param value any <code>JsonNode</code> representing the value of the field.
+     * @param value any {@code JsonNode} representing the value of the field.
      */
     public JsonField(final JsonStringNode name, final JsonNode value) {
         if (name == null) {

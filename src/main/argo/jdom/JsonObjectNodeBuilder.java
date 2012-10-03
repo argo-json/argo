@@ -17,7 +17,7 @@ import java.util.List;
 import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
 
 /**
- * Builder for <code>JsonRootNode</code>s representing JSON objects.
+ * Builder for {@code JsonRootNode}s representing JSON objects.
  */
 public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode> {
 

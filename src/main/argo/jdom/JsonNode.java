@@ -19,19 +19,19 @@ import static argo.jdom.JsonNodeDoesNotMatchPathElementsException.jsonNodeDoesNo
  * <p>A node (leaf or otherwise) in a JSON document.</p>
  * <p/>
  * <p>Supplies methods for examining the node, and also examining and navigating the hierarchy at and below this node.
- * Methods for navigating the hierarchy are of the form <code>getXXXValue(Object... pathElements)</code>.</p>
+ * Methods for navigating the hierarchy are of the form {@code getXXXValue(Object... pathElements)}.</p>
  * <p/>
- * <p>For example, {@link #getStringValue(Object...)} takes a series of <code>String</code>s and
- * <code>Integer</code>s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
- * The <code>String</code>s tell it to select a field with the given name from an object, and the <code>Integer</code>s
+ * <p>For example, {@link #getStringValue(Object...)} takes a series of {@code String}s and
+ * {@code Integer}s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
+ * The {@code String}s tell it to select a field with the given name from an object, and the {@code Integer}s
  * tell it to select an element with the given index from an array.</p> If no field of that name exists, or the field
- * exists, but it isn't a JSON string, an <code>IllegalArgumentException</code> is thrown.</p>
+ * exists, but it isn't a JSON string, an {@code IllegalArgumentException} is thrown.</p>
  * <p/>
  * <p>Methods for examining the hierarchy work on the same principal as the
- * <code>getXXXValue(Object... pathElements)</code> methods, but return a <code>boolean</code> indicating whether
+ * {@code getXXXValue(Object... pathElements)} methods, but return a {@code boolean} indicating whether
  * or not the element at the given path exists and is of the type specified, for example,
- * <code>getStringValue("my field")</code> returns <code>true</code> if the node has a field called
- * "<code>my field</code>", and its value is a JSON string.</p>
+ * {@code getStringValue("my field")} returns {@code true} if the node has a field called
+ * "{@code my field}", and its value is a JSON string.</p>
  */
 public abstract class JsonNode {
 
@@ -82,7 +82,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON node exists at the path given.
      */
     public boolean isNode(final Object... pathElements) {
@@ -90,10 +90,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>JsonNode</code> by navigating the hierarchy below this node.
+     * Gets a {@code JsonNode} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return the <code>JsonNode</code> at the path given.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return the {@code JsonNode} at the path given.
      * @throws IllegalArgumentException if there is no node at the given path.
      */
     public JsonNode getNode(final Object... pathElements) {
@@ -103,7 +103,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a root type - either a JSON object or JSON array.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON root node exists at the path given.
      */
     public boolean isRootNode(final Object... pathElements) {
@@ -111,10 +111,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>JsonRootNode</code> by navigating the hierarchy below this node.
+     * Gets a {@code JsonRootNode} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return the <code>JsonRootNode</code> at the path given.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return the {@code JsonRootNode} at the path given.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON root node.
      */
     public JsonRootNode getRootNode(final Object... pathElements) {
@@ -124,7 +124,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON boolean.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON boolean exists at the path given.
      */
     public final boolean isBooleanValue(final Object... pathElements) {
@@ -132,10 +132,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>Boolean</code> by navigating the hierarchy below this node.
+     * Gets a {@code Boolean} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return the <code>Boolean</code> at the path given.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return the {@code Boolean} at the path given.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON boolean.
      */
     public final Boolean getBooleanValue(final Object... pathElements) {
@@ -145,7 +145,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON boolean or a JSON null.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON boolean or a JSON null exists at the path given.
      */
     public final boolean isNullableBooleanValue(final Object... pathElements) {
@@ -153,10 +153,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>Boolean</code> or <code>null</code> by navigating the hierarchy below this node.
+     * Gets a {@code Boolean} or {@code null} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return the <code>Boolean</code> at the path given, or null, if there is a JSON null at the path given.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return the {@code Boolean} at the path given, or null, if there is a JSON null at the path given.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON boolean or a JSON null.
      */
     public final Boolean getNullableBooleanValue(final Object... pathElements) {
@@ -166,7 +166,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON string.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON string exists at the path given.
      */
     public final boolean isStringValue(final Object... pathElements) {
@@ -174,10 +174,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>String</code> by navigating the hierarchy below this node.
+     * Gets a {@code String} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return the <code>String</code> at the path given
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return the {@code String} at the path given
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON string.
      */
     public final String getStringValue(final Object... pathElements) {
@@ -187,7 +187,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON string or a JSON null.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON string or a JSON null exists at the path given.
      */
     public final boolean isNullableStringValue(final Object... pathElements) {
@@ -195,10 +195,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>String</code> or <code>null</code> by navigating the hierarchy below this node.
+     * Gets a {@code String} or {@code null} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return the <code>String</code> at the path given, or null, if there is a JSON null at the path given.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return the {@code String} at the path given, or null, if there is a JSON null at the path given.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON string or a JSON null.
      */
     public final String getNullableStringValue(final Object... pathElements) {
@@ -208,7 +208,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON number.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON number exists at the path given.
      */
     public final boolean isNumberValue(final Object... pathElements) {
@@ -216,10 +216,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a numeric <code>String</code> by navigating the hierarchy below this node.
+     * Gets a numeric {@code String} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return the numeric <code>String</code> at the path given.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return the numeric {@code String} at the path given.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON number.
      */
     public final String getNumberValue(final Object... pathElements) {
@@ -229,7 +229,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON number or a JSON null.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON number or a JSON null exists at the path given.
      */
     public final boolean isNullableNumberNode(final Object... pathElements) {
@@ -237,10 +237,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a numeric <code>String</code> or <code>null</code> by navigating the hierarchy below this node.
+     * Gets a numeric {@code String} or {@code null} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return the numeric <code>String</code> at the path given, or null, if there is a JSON null at the path given.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return the numeric {@code String} at the path given, or null, if there is a JSON null at the path given.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON number or a JSON null.
      */
     public final String getNullableNumberValue(final Object... pathElements) {
@@ -250,7 +250,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON null.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON null exists at the path given.
      */
     public final boolean isNullNode(final Object... pathElements) {
@@ -258,10 +258,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>JsonNode</code> representing null by navigating the hierarchy below this node.
+     * Gets a {@code JsonNode} representing null by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return a <code>JsonNode</code> representing null.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return a {@code JsonNode} representing null.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON null.
      */
     public final JsonNode getNullNode(final Object... pathElements) {
@@ -271,7 +271,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON object.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON object exists at the path given.
      */
     public final boolean isObjectNode(final Object... pathElements) {
@@ -279,10 +279,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>Map</code> of <code>String</code> field names to <code>JsonNode</code>s, representing a JSON object, by navigating the hierarchy below this node.
+     * Gets a {@code Map} of {@code String} field names to {@code JsonNode}s, representing a JSON object, by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return a <code>Map</code> of <code>String</code> field names to <code>JsonNode</code>s representing a JSON object.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return a {@code Map} of {@code String} field names to {@code JsonNode}s representing a JSON object.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON object.
      */
     public final Map<JsonStringNode, JsonNode> getObjectNode(final Object... pathElements) {
@@ -292,7 +292,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON object or a JSON null.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON object or a JSON null exists at the path given.
      */
     public final boolean isNullableObjectNode(final Object... pathElements) {
@@ -300,10 +300,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>Map</code> of <code>String</code> field names to <code>JsonNode</code>s, representing a JSON object, or <code>null</code> by navigating the hierarchy below this node.
+     * Gets a {@code Map} of {@code String} field names to {@code JsonNode}s, representing a JSON object, or {@code null} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return a <code>Map</code> of <code>String</code> field names to <code>JsonNode</code>s representing a JSON object at the path given, or null, if there is a JSON null at the path given.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return a {@code Map} of {@code String} field names to {@code JsonNode}s representing a JSON object at the path given, or null, if there is a JSON null at the path given.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON object or a JSON null.
      */
     public final Map<JsonStringNode, JsonNode> getNullableObjectNode(final Object... pathElements) {
@@ -313,7 +313,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON array.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON array exists at the path given.
      */
     public final boolean isArrayNode(final Object... pathElements) {
@@ -321,10 +321,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>List</code> of <code>JsonNode</code>s, representing a JSON array, by navigating the hierarchy below this node.
+     * Gets a {@code List} of {@code JsonNode}s, representing a JSON array, by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return a <code>List</code> of <code>JsonNode</code>s representing a JSON array.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return a {@code List} of {@code JsonNode}s representing a JSON array.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON array.
      */
     public final List<JsonNode> getArrayNode(final Object... pathElements) {
@@ -334,7 +334,7 @@ public abstract class JsonNode {
     /**
      * Determines whether the node at the given path exists and is a JSON array or a JSON null.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON array or a JSON null exists at the path given.
      */
     public final boolean isNullableArrayNode(final Object... pathElements) {
@@ -342,10 +342,10 @@ public abstract class JsonNode {
     }
 
     /**
-     * Gets a <code>List</code> of <code>JsonNode</code>s, representing a JSON array, or <code>null</code> by navigating the hierarchy below this node.
+     * Gets a {@code List} of {@code JsonNode}s, representing a JSON array, or {@code null} by navigating the hierarchy below this node.
      *
-     * @param pathElements a series of <code>String</code>s, representing the names of fields on objects, and <code>Integer</code>s, representing elements of arrays indicating how to navigate from this node.
-     * @return a <code>List</code> of <code>JsonNode</code>s representing a JSON array, or null, if there is a JSON null at the path given.
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return a {@code List} of {@code JsonNode}s representing a JSON array, or null, if there is a JSON null at the path given.
      * @throws IllegalArgumentException if there is no node at the given path, or the node at the given path is not a JSON array or a JSON null.
      */
     public final List<JsonNode> getNullableArrayNode(final Object... pathElements) {

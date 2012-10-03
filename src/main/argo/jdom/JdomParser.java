@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,18 +18,18 @@ import java.io.Reader;
 import java.io.StringReader;
 
 /**
- * Parses a JSON character stream into a <code>JsonRootNode</code> object.  Instances of this class can safely be shared
+ * Parses a JSON character stream into a {@code JsonRootNode} object.  Instances of this class can safely be shared
  * between threads.
  */
 public final class JdomParser {
 
     /**
-     * Parse the character stream from the specified <code>Reader</code> into a <code>JsonRootNode</code> object.
+     * Parse the character stream from the specified {@code Reader} into a {@code JsonRootNode} object.
      *
-     * @param reader the <code>Reader</code> to parse.
-     * @return a <code>JsonRootNode</code> representing the JSON read from the specified <code>Reader</code>.
-     * @throws IOException            bubbled up from exceptions thrown reading from the specified <code>Reader</code>.
-     * @throws InvalidSyntaxException if the characters streamed from the specified <code>Reader</code> does not represent valid JSON.
+     * @param reader the {@code Reader} to parse.
+     * @return a {@code JsonRootNode} representing the JSON read from the specified {@code Reader}.
+     * @throws IOException            bubbled up from exceptions thrown reading from the specified {@code Reader}.
+     * @throws InvalidSyntaxException if the characters streamed from the specified {@code Reader} does not represent valid JSON.
      */
     public JsonRootNode parse(final Reader reader) throws IOException, InvalidSyntaxException {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
@@ -38,11 +38,11 @@ public final class JdomParser {
     }
 
     /**
-     * Parse the specified JSON <code>String</code> into a <code>JsonRootNode</code> object.
+     * Parse the specified JSON {@code String} into a {@code JsonRootNode} object.
      *
-     * @param json the <code>String</code> to parse.
-     * @return a <code>JsonRootNode</code> representing the JSON read from the specified <code>String</code>.
-     * @throws InvalidSyntaxException if the characters streamed from the specified <code>String</code> does not represent valid JSON.
+     * @param json the {@code String} to parse.
+     * @return a {@code JsonRootNode} representing the JSON read from the specified {@code String}.
+     * @throws InvalidSyntaxException if the characters streamed from the specified {@code String} does not represent valid JSON.
      */
     public JsonRootNode parse(final String json) throws InvalidSyntaxException {
         final JsonRootNode result;

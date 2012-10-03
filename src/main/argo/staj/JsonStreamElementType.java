@@ -17,7 +17,7 @@ import java.util.Stack;
 import static argo.staj.JsonStreamElement.*;
 
 /**
- * Types of element a <code>JsonStreamReader</code> can produce.
+ * Types of element a {@code JsonStreamReader} can produce.
  */
 public enum JsonStreamElementType {
     START_ARRAY {

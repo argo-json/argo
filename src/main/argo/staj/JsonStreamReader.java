@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -11,7 +11,7 @@
 package argo.staj;
 
 /**
- * A <code>JsonStreamReader</code> provides operations to read from a JSON stream.
+ * A {@code JsonStreamReader} provides operations to read from a JSON stream.
  */
 public interface JsonStreamReader {
 
@@ -38,7 +38,7 @@ public interface JsonStreamReader {
     public void close();
 
     /**
-     * Returns the type of the current element, in other words, what the previous call to <code>next</code> returned.
+     * Returns the type of the current element, in other words, what the previous call to {@code next} returned.
      *
      * @return the type of the current element.
      */
