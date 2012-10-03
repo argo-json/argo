@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,8 +12,7 @@ package documentation;
 
 import org.sourceforge.xazzle.xhtml.HtmlTag;
 
-import static documentation.ArgoPage.anArgoPage;
-import static documentation.ArgoPage.codeBlock;
+import static documentation.ArgoPage.*;
 import static org.sourceforge.xazzle.xhtml.Href.href;
 import static org.sourceforge.xazzle.xhtml.Tags.*;
 
@@ -22,7 +21,7 @@ final class DownloadsPage {
     private DownloadsPage() {
     }
 
-    @SuppressWarnings({"StaticMethodOnlyUsedInOneClass"})
+    @SuppressWarnings({"StaticMethodOnlyUsedInOneClass" })
     static HtmlTag downloadsPage(final String version) {
         String standardJarUrl = "https://sourceforge.net/projects/argo/files/argo/" + version + "/argo-" + version + ".jar/download";
         String smallJarUrl = "https://sourceforge.net/projects/argo/files/argo/" + version + "/argo-small-" + version + ".jar/download";
@@ -50,6 +49,9 @@ final class DownloadsPage {
                         listItemTag(
                                 xhtmlText("or as the full source code including tests etc. using Subversion from "), codeTag(anchorTag(xhtmlText(subversionUrl)).withHref(href(subversionUrl))), xhtmlText(".")
                         )
+                ),
+                paragraphTag(
+                        xhtmlText("Previous versions are "), anchorTag(codeSnippet("also available")).withHref(href("http://sourceforge.net/projects/argo/files/argo/")), xhtmlText(".")
                 ),
                 paragraphTag(
                         xhtmlText("It has no runtime dependencies, and all dependencies used in tests are in Subversion.")
