@@ -38,7 +38,7 @@ final class DocumentationPage {
     private DocumentationPage() {
     }
 
-    @SuppressWarnings({"StaticMethodOnlyUsedInOneClass"})
+    @SuppressWarnings({"StaticMethodOnlyUsedInOneClass" })
     static HtmlTag documentationPage() {
         return anArgoPage(
                 h2Tag(xhtmlText("Documentation")),
@@ -260,7 +260,10 @@ final class DocumentationPage {
                         "    if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {\n" +
                         "        fieldNames.add(next.text());\n" +
                         "    }\n" +
-                        "}\n")
+                        "}\n"),
+                paragraphTag(xhtmlText("Iterating through the elements of a piece of JSON like this has the advantage that the parser " +
+                        "only holds the current and next element in memory, so the above example would work for a piece of JSON larger " +
+                        "than the available memory."))
         );
     }
 
