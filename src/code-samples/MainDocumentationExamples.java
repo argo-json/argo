@@ -34,8 +34,7 @@ import static org.junit.Assert.assertThat;
 
 public final class MainDocumentationExamples {
 
-    private static final JsonFormatter JSON_FORMATTER
-            = new PrettyJsonFormatter();
+    private static final JsonFormatter JSON_FORMATTER = new PrettyJsonFormatter();
 
     private static final JsonRootNode SAMPLE_JSON = object(
             field("name", string("Black Lace")),
