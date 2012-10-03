@@ -14,6 +14,9 @@ import java.io.Reader;
 import java.util.Iterator;
 import java.util.Stack;
 
+/**
+ * Parses a JSON character stream into an {@code iterator} of {@code JsonStreamElement}s.
+ */
 public final class StajParser implements Iterator<JsonStreamElement> {
 
     private final PositionTrackingPushbackReader pushbackReader;
@@ -21,20 +24,41 @@ public final class StajParser implements Iterator<JsonStreamElement> {
     private JsonStreamElement current;
     private JsonStreamElement next;
 
+    /**
+     * Constructs a StajParser reading from the specified {@code Reader)
+     * .
+     *
+     * @param in the {@code Reader} to convert into {@code JsonStreamElement}s.
+     */
     public StajParser(final Reader in) {
         this.pushbackReader = new PositionTrackingPushbackReader(in);
     }
 
+    /**
+     * Determines whether there are any more elements.
+     *
+     * @return true if there are more elements.
+     * @throws InvalidSyntaxRuntimeException if the next element could not be read, for example if the next element turns out not to be valid JSON
+     * @throws JsonStreamException           if the underlying character stream failed.
+     */
     public boolean hasNext() {
         if (current != null && current.jsonStreamElementType().equals(JsonStreamElementType.END_DOCUMENT)) {
             return false;
-        }
-        if (next == null) {
+        } else if (next == null) {
             next = getNextElement();
         }
         return true;
     }
 
+    /**
+     * Gets the next element in the stream.
+     *
+     * @return the next element in the stream.
+     * @throws InvalidSyntaxRuntimeException if the next element could not be read, for example if the next element turns out not to be valid JSON
+     * @throws JsonStreamException           if the underlying character stream failed.
+     * @throws java.util.NoSuchElementException
+     *                                       if there are no more elements to read.
+     */
     public JsonStreamElement next() {
         if (next != null) {
             current = next;
@@ -53,6 +77,9 @@ public final class StajParser implements Iterator<JsonStreamElement> {
         }
     }
 
+    /**
+     * Not supported.
+     */
     public void remove() {
         throw new UnsupportedOperationException("StajParser cannot remove elements from JSON it has parsed.");
     }

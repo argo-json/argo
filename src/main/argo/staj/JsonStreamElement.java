@@ -10,6 +10,9 @@
 
 package argo.staj;
 
+/**
+ * An element of a JSON document.
+ */
 public abstract class JsonStreamElement {
 
     private static final JsonStreamElement START_DOCUMENT = nonTextJsonStreamElement(JsonStreamElementType.START_DOCUMENT);
@@ -119,11 +122,27 @@ public abstract class JsonStreamElement {
         this.jsonStreamElementType = jsonStreamElementType;
     }
 
+    /**
+     * Gets the type of this element.
+     *
+     * @return the type of the element.
+     */
     public final JsonStreamElementType jsonStreamElementType() {
         return jsonStreamElementType;
     }
 
+    /**
+     * Determines whether the element has text.
+     *
+     * @return true if the element has text.
+     */
     public abstract boolean hasText();
 
+    /**
+     * Gets the text associated with the element.
+     *
+     * @return the text associated with the element.
+     * @throws IllegalStateException if the element doesn't have any text associated with it.
+     */
     public abstract String text();
 }

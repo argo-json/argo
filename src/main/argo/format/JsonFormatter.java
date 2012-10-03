@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * A {@code JsonFormat} provides operations to turn {@code JsonRootNode}s into valid JSON text.
+ * A {@code JsonFormatter} provides operations to turn {@code JsonRootNode}s into valid JSON text.
  */
 public interface JsonFormatter {
 

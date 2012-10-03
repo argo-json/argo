@@ -23,26 +23,26 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
     private int lineCount = 1;
     private boolean lastCharacterWasCarriageReturn = false;
 
-    public PositionTrackingPushbackReader(final Reader in) {
+    PositionTrackingPushbackReader(final Reader in) {
         this.pushbackReader = new PushbackReader(in);
     }
 
-    public void unread(final char c) {
+    void unread(final char c) throws JsonStreamException {
         characterCount--;
         if (characterCount < 0) characterCount = 0;
         try {
             pushbackReader.unread(c);
         } catch (final IOException e) {
-            throw new IllegalStateException("Failed to read from Reader", e);
+            throw new JsonStreamException("Failed to read from Reader", e);
         }
     }
 
-    public void uncount(final char[] resultCharArray) {
+    void uncount(final char[] resultCharArray) {
         characterCount = characterCount - resultCharArray.length;
         if (characterCount < 0) characterCount = 0;
     }
 
-    public int read() {
+    int read() throws JsonStreamException {
         try {
             final int result = pushbackReader.read();
             updateCharacterAndLineCounts(result);
@@ -52,7 +52,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
         }
     }
 
-    public int read(final char[] buffer) {
+    int read(final char[] buffer) throws JsonStreamException {
         try {
             final int result = pushbackReader.read(buffer);
             for (char character : buffer) {
@@ -60,7 +60,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
             }
             return result;
         } catch (final IOException e) {
-            throw new IllegalStateException("Failed to read from Reader", e);
+            throw new JsonStreamException("Failed to read from Reader", e);
         }
     }
 
