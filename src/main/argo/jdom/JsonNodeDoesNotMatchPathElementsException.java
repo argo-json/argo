@@ -17,7 +17,7 @@ import static argo.jdom.JsonNodeDoesNotMatchChainedJsonNodeSelectorException.get
 
 final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMatchJsonNodeSelectorException {
 
-    private static final JsonFormatter JSON_FORMATTER = new CompactJsonFormatter();
+    private static final JsonFormatter JSON_FORMATTER = CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter();
 
     static JsonNodeDoesNotMatchPathElementsException jsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
         return new JsonNodeDoesNotMatchPathElementsException(delegate, pathElements, rootNode);

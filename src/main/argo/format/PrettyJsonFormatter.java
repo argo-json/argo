@@ -27,6 +27,24 @@ import static argo.format.JsonEscapedString.escapeString;
  */
 public final class PrettyJsonFormatter implements JsonFormatter {
 
+    private final FieldSorter fieldSorter;
+
+    public PrettyJsonFormatter() {
+        this(DO_NOTHING_FIELD_SORTER);
+    }
+
+    public PrettyJsonFormatter(final FieldSorter fieldSorter) {
+        this.fieldSorter = fieldSorter;
+    }
+
+    public static PrettyJsonFormatter fieldOrderPreservingPrettyJsonFormatter() {
+        return new PrettyJsonFormatter();
+    }
+
+    public static PrettyJsonFormatter fieldOrderNormalisingPrettyJsonFormatter() {
+        return new PrettyJsonFormatter(ALPHABETIC_FIELD_SORTER);
+    }
+
     public String format(final JsonRootNode jsonNode) {
         final StringWriter stringWriter = new StringWriter();
         try {
@@ -63,7 +81,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
                 break;
             case OBJECT:
                 writer.append('{');
-                final Iterator<JsonField> jsonStringNodes = jsonNode.getFieldList().iterator();
+                final Iterator<JsonField> jsonStringNodes = fieldSorter.sort(jsonNode.getFieldList()).iterator();
                 while (jsonStringNodes.hasNext()) {
                     final JsonField field = jsonStringNodes.next();
                     writer.println();

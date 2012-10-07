@@ -14,17 +14,19 @@ import argo.jdom.JsonNode;
 import argo.jdom.JsonStringNode;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
+import static argo.format.CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter;
+import static argo.format.CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter;
 import static argo.jdom.JsonNodeFactories.*;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public final class CompactJsonFormatterTest {
     @Test
     public void formatsAJsonObject() throws Exception {
-        assertThat(new CompactJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Hello"), string("World"));
             put(string("Foo"), string("Bar"));
         }})), equalTo("{\"Foo\":\"Bar\",\"Hello\":\"World\"}"));
@@ -32,14 +34,14 @@ public final class CompactJsonFormatterTest {
 
     @Test
     public void formatsAJsonNumber() throws Exception {
-        assertThat(new CompactJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
             put(string("S"), number("7"));
         }})), equalTo("{\"S\":7}"));
     }
 
     @Test
     public void formatsAJsonArray() throws Exception {
-        assertThat(new CompactJsonFormatter().format(array(Arrays.asList(
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
                 number("12")
                 , string("tie")
         ))), equalTo("[12,\"tie\"]"));
@@ -47,7 +49,7 @@ public final class CompactJsonFormatterTest {
 
     @Test
     public void formatsTheJsonConstants() throws Exception {
-        assertThat(new CompactJsonFormatter().format(array(Arrays.asList(
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
                 nullNode()
                 , trueNode()
                 , falseNode()
@@ -56,13 +58,23 @@ public final class CompactJsonFormatterTest {
 
     @Test
     public void formatsAJsonStringWithEscapedCharacters() throws Exception {
-        assertThat(new CompactJsonFormatter().format(array(Arrays.asList(
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
                 (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo("[\"\\\" \\\\ \\b \\f \\n \\r \\t\"]"));
     }
 
     @Test
     public void formatsAStringWithinAString() throws Exception {
-        assertThat(new CompactJsonFormatter().format(array(Arrays.asList(
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
                 (JsonNode) string("\"\\\"A String\\\" within a String\"")))), equalTo("[\"\\\"\\\\\\\"A String\\\\\\\" within a String\\\"\"]"));
+    }
+
+    @Test
+    public void orderPreservingFormatterPreservesFieldOrder() throws Exception {
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo("{\"b\":\"A String\",\"a\":\"A String\"}"));
+    }
+
+    @Test
+    public void orderNormalisingFormatterNormalisesFieldOrder() throws Exception {
+        assertThat(fieldOrderNormalisingCompactJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo("{\"a\":\"A String\",\"b\":\"A String\"}"));
     }
 }

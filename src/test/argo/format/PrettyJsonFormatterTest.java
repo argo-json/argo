@@ -18,12 +18,14 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
 import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
+import static argo.format.PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter;
+import static argo.format.PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter;
 import static argo.jdom.JsonNodeFactories.*;
+import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -31,7 +33,7 @@ import static org.junit.Assert.assertThat;
 public final class PrettyJsonFormatterTest {
     @Test
     public void formatsAJsonObject() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Hello"), string("World"));
             put(string("Foo"), string("Bar"));
         }})), equalTo(
@@ -46,7 +48,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAnEmptyJsonObject() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Hello"), object(new HashMap<JsonStringNode, JsonNode>()));
         }})), equalTo(
                 aJsonStringResultBuilder()
@@ -60,7 +62,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAJsonArray() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(array(Arrays.asList(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(asList(
                 string("BobBob")
                 , number("23")
         ))), equalTo(
@@ -76,7 +78,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAnEmptyJsonArray() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(array(Collections.<JsonNode>emptyList())), equalTo(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(Collections.<JsonNode>emptyList())), equalTo(
                 aJsonStringResultBuilder()
                         .print("[]")
                         .build()
@@ -86,7 +88,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAJsonStringWithEscapedCharacters() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(array(Arrays.asList(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(asList(
                 (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
@@ -99,7 +101,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAStringWithinAString() throws Exception {
-        assertThat(new PrettyJsonFormatter().format(array(Arrays.asList(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(asList(
                 (JsonNode) string("\"\\\"A String\\\" within a String\"")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
@@ -115,9 +117,33 @@ public final class PrettyJsonFormatterTest {
         final String json = readFileToString(longJsonExample);
         final JdomParser jdomParser = new JdomParser();
         final JsonRootNode node = jdomParser.parse(json);
-        final JsonFormatter jsonFormatter = new PrettyJsonFormatter();
+        final JsonFormatter jsonFormatter = fieldOrderPreservingPrettyJsonFormatter();
         final String expected = jsonFormatter.format(node);
         assertThat(jdomParser.parse(expected), Matchers.equalTo(node));
+    }
+
+    @Test
+    public void orderPreservingFormatterPreservesFieldOrder() throws Exception {
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo(
+                aJsonStringResultBuilder()
+                        .printLine("{")
+                        .printLine("\t\"b\": \"A String\",")
+                        .printLine("\t\"a\": \"A String\"")
+                        .print("}")
+                        .build()
+        ));
+    }
+
+    @Test
+    public void orderNormalisingFormatterNormalisesFieldOrder() throws Exception {
+        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo(
+                aJsonStringResultBuilder()
+                        .printLine("{")
+                        .printLine("\t\"a\": \"A String\",")
+                        .printLine("\t\"b\": \"A String\"")
+                        .print("}")
+                        .build()
+        ));
     }
 
 }

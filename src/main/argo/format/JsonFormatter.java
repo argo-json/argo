@@ -10,15 +10,40 @@
 
 package argo.format;
 
+import argo.jdom.JsonField;
 import argo.jdom.JsonRootNode;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A {@code JsonFormatter} provides operations to turn {@code JsonRootNode}s into valid JSON text.
  */
 public interface JsonFormatter {
+
+    FieldSorter DO_NOTHING_FIELD_SORTER = new FieldSorter() {
+        public List<JsonField> sort(List<JsonField> unsorted) {
+            return unsorted;
+        }
+    };
+
+    Comparator<JsonField> JSON_FIELD_COMPARATOR = new Comparator<JsonField>() {
+        public int compare(JsonField jsonField, JsonField jsonField1) {
+            return jsonField.getName().compareTo(jsonField1.getName());
+        }
+    };
+
+    FieldSorter ALPHABETIC_FIELD_SORTER = new FieldSorter() {
+        public List<JsonField> sort(List<JsonField> unsorted) {
+            final List<JsonField> sorted = new ArrayList<JsonField>(unsorted);
+            Collections.sort(sorted, JSON_FIELD_COMPARATOR);
+            return sorted;
+        }
+    };
 
     /**
      * Returns the specified {@code JsonRootNode} formatted as a String.
@@ -37,4 +62,7 @@ public interface JsonFormatter {
      */
     void format(JsonRootNode jsonRootNode, Writer writer) throws IOException;
 
+    static interface FieldSorter {
+        List<JsonField> sort(final List<JsonField> unsorted);
+    }
 }
