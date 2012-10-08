@@ -29,18 +29,31 @@ public final class PrettyJsonFormatter implements JsonFormatter {
 
     private final FieldSorter fieldSorter;
 
+    /**
+     * Constructs a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in the order they were defined.
+     */
     public PrettyJsonFormatter() {
         this(DO_NOTHING_FIELD_SORTER);
     }
 
-    public PrettyJsonFormatter(final FieldSorter fieldSorter) {
+    private PrettyJsonFormatter(final FieldSorter fieldSorter) {
         this.fieldSorter = fieldSorter;
     }
 
+    /**
+     * Gets a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in the order they were defined.
+     *
+     * @return a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in the order they were defined.
+     */
     public static PrettyJsonFormatter fieldOrderPreservingPrettyJsonFormatter() {
         return new PrettyJsonFormatter();
     }
 
+    /**
+     * Gets a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in alphabetic order.
+     *
+     * @return a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in alphabetic order.
+     */
     public static PrettyJsonFormatter fieldOrderNormalisingPrettyJsonFormatter() {
         return new PrettyJsonFormatter(ALPHABETIC_FIELD_SORTER);
     }

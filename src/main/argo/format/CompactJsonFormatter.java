@@ -35,14 +35,27 @@ public final class CompactJsonFormatter implements JsonFormatter {
         this.fieldSorter = fieldSorter;
     }
 
+    /**
+     * Gets a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in the order they were defined.
+     *
+     * @return a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in the order they were defined.
+     */
     public static CompactJsonFormatter fieldOrderPreservingCompactJsonFormatter() {
         return new CompactJsonFormatter();
     }
 
+    /**
+     * Gets a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in alphabetic order.
+     *
+     * @return a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in alphabetic order.
+     */
     public static CompactJsonFormatter fieldOrderNormalisingCompactJsonFormatter() {
         return new CompactJsonFormatter(ALPHABETIC_FIELD_SORTER);
     }
 
+    /**
+     * Constructs a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in the order they were defined.
+     */
     public String format(final JsonRootNode jsonNode) {
         final StringWriter stringWriter = new StringWriter();
         try {
