@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.Stack;
 
 /**
- * Parses a JSON character stream into an {@code iterator} of {@code JsonStreamElement}s.
+ * Parses a JSON character stream into an {@code Iterator} of {@code JsonStreamElement}s.
  */
 public final class StajParser implements Iterator<JsonStreamElement> {
 
