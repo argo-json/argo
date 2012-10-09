@@ -39,7 +39,10 @@ public final class SajParser {
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
      */
     public void parse(final Reader in, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
-        final StajParser stajParser = new StajParser(in);
+        parse(jsonListener, new StajParser(in));
+    }
+
+    void parse(final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException {
         try {
             while (stajParser.hasNext()) {
                 final JsonStreamElement jsonStreamElement = stajParser.next();

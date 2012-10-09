@@ -10,86 +10,14 @@
 
 package argo.saj;
 
-import argo.staj.JsonStreamElement;
 import argo.staj.StajParser;
 
-import java.io.IOException;
-import java.io.Reader;
-
-/**
- * Converts a character stream into calls to a {@code JsonListener}.
- * <p/>
- * Instances of {@code SajParser} are threadsafe in that concurrent calls to {@code parse} are safe, provided
- * each call is made with a different {@code Reader} and a different {@code JsonListener}.
- *
- * @see argo.saj.JsonListener
- */
 public final class StajBasedSajParser {
 
-    public StajBasedSajParser() {
-    }
+    private static final SajParser SAJ_PARSER = new SajParser();
 
-    /**
-     * Parses the given character stream into calls to the given JsonListener.
-     *
-     * @param in           the character stream to parse
-     * @param jsonListener the JsonListener to notify of parsing events
-     * @throws java.io.IOException bubbled up from exceptions thrown reading from {@code in}
-     * @throws argo.saj.InvalidSyntaxException
-     *                             thrown to indicate the characters read from {@code in} did not constitute valid JSON.
-     */
-    public void parse(final Reader in, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
-        final StajParser stajParser = new StajParser(in);
-        parse(stajParser, jsonListener);
-    }
-
-    public void parse(final StajParser stajParser, final JsonListener jsonListener) {
-        while (stajParser.hasNext()) {
-            final JsonStreamElement jsonStreamElement = stajParser.next();
-            switch (jsonStreamElement.jsonStreamElementType()) {
-                case START_DOCUMENT:
-                    jsonListener.startDocument();
-                    break;
-                case END_DOCUMENT:
-                    jsonListener.endDocument();
-                    break;
-                case START_ARRAY:
-                    jsonListener.startArray();
-                    break;
-                case END_ARRAY:
-                    jsonListener.endArray();
-                    break;
-                case START_OBJECT:
-                    jsonListener.startObject();
-                    break;
-                case END_OBJECT:
-                    jsonListener.endObject();
-                    break;
-                case START_FIELD:
-                    jsonListener.startField(jsonStreamElement.text());
-                    break;
-                case END_FIELD:
-                    jsonListener.endField();
-                    break;
-                case NULL:
-                    jsonListener.nullValue();
-                    break;
-                case TRUE:
-                    jsonListener.trueValue();
-                    break;
-                case FALSE:
-                    jsonListener.falseValue();
-                    break;
-                case STRING:
-                    jsonListener.stringValue(jsonStreamElement.text());
-                    break;
-                case NUMBER:
-                    jsonListener.numberValue(jsonStreamElement.text());
-                    break;
-                default:
-                    throw new IllegalStateException("Got a JsonStreamElement of unexpected type: " + jsonStreamElement);
-            }
-        }
+    public void parse(final StajParser stajParser, final JsonListener jsonListener) throws InvalidSyntaxException {
+        SAJ_PARSER.parse(jsonListener, stajParser);
     }
 
 }
