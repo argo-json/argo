@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -163,6 +163,30 @@ public final class SajParserTest {
             inSequence(expectedSequence);
         }});
         new SajParser().parse(new StringReader("{\"hello\":\"world\"}"), jsonListener);
+        context.assertIsSatisfied();
+    }
+
+    @Test
+    public void tokenizesSimpleJsonStringObjectFromJsonString() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startField("hello");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).stringValue("world");
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endField();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endObject();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
+        }});
+        new SajParser().parse("{\"hello\":\"world\"}", jsonListener);
         context.assertIsSatisfied();
     }
 

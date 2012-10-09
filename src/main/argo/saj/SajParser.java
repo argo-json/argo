@@ -16,6 +16,7 @@ import argo.staj.StajParser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 
 /**
  * Converts a character stream into calls to a {@code JsonListener}.
@@ -28,6 +29,18 @@ import java.io.Reader;
 public final class SajParser {
 
     public SajParser() {
+    }
+
+    /**
+     * Parses the given JSON {@code String} into calls to the given JsonListener.
+     *
+     * @param json         the {@code String} to parse.
+     * @param jsonListener the JsonListener to notify of parsing events
+     * @throws IOException            bubbled up from exceptions thrown reading from {@code in}
+     * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
+     */
+    public void parse(final String json, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
+        parse(jsonListener, new StajParser(new StringReader(json)));
     }
 
     /**
