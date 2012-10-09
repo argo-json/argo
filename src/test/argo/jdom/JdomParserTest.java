@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2012 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -36,6 +36,11 @@ public final class JdomParserTest {
     @Test
     public void parsesSomeUnicodeStuff() throws Exception {
         assertThat(new JdomParser().parse("{ \"v\":\"\\u2000\\u20ff\"}").getStringValue("v"), equalTo("\u2000\u20ff"));
+    }
+
+    @Test
+    public void parsesEscapedStuff() throws Exception {
+        assertThat(new JdomParser().parse("{ \"v\":\"\\\" \\\\ \\b \\t \\n \\r \\f\"}").getStringValue("v"), equalTo("\" \\ \b \t \n \r \f"));
     }
 
     @Test(expected = InvalidSyntaxException.class)
