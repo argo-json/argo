@@ -26,7 +26,7 @@ public final class StajParser implements Iterator<JsonStreamElement> {
     private JsonStreamElement next;
 
     /**
-     * Constructs a StajParser reading from the specified {@code Reader}
+     * Constructs a StajParser reading from the specified {@code Reader}.
      *
      * @param in the {@code Reader} to convert into {@code JsonStreamElement}s.
      */
@@ -35,7 +35,7 @@ public final class StajParser implements Iterator<JsonStreamElement> {
     }
 
     /**
-     * Constructs a StajParser reading from the given {@code String}
+     * Constructs a StajParser reading from the given {@code String}.
      *
      * @param json the {@code String} to convert into {@code JsonStreamElement}s.
      */
