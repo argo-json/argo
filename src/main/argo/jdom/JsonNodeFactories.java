@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -90,7 +90,7 @@ public final class JsonNodeFactories {
      * @param elements {@code JsonNode}s that will populate the array
      * @return a JSON array of the given {@code JsonNode}s
      */
-    public static JsonRootNode array(final Iterable<JsonNode> elements) {
+    public static JsonRootNode array(final Iterable<? extends JsonNode> elements) {
         return new JsonArray(elements);
     }
 
@@ -111,11 +111,21 @@ public final class JsonNodeFactories {
      * @param elements {@code JsonNode}s that will populate the array
      * @return a JSON array of the given {@code JsonNode}s
      */
-    public static JsonRootNode lazyArray(final List<JsonNode> elements) {
+    public static JsonRootNode lazyArray(final List<? extends JsonNode> elements) {
         return new AbstractJsonArray() {
             @Override
             public List<JsonNode> getElements() {
-                return elements;
+                return new AbstractList<JsonNode>() {
+                    @Override
+                    public JsonNode get(int i) {
+                        return elements.get(i);
+                    }
+
+                    @Override
+                    public int size() {
+                        return elements.size();
+                    }
+                };
             }
         };
     }
@@ -124,9 +134,9 @@ public final class JsonNodeFactories {
      * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
-    public static JsonRootNode object(final Map<JsonStringNode, JsonNode> fields) {
+    public static JsonRootNode object(final Map<JsonStringNode, ? extends JsonNode> fields) {
         return new JsonObject(new ArrayList<JsonField>() {{
-            for (final Map.Entry<JsonStringNode, JsonNode> entry : fields.entrySet()) {
+            for (final Map.Entry<JsonStringNode, ? extends JsonNode> entry : fields.entrySet()) {
                 add(field(entry.getKey(), entry.getValue()));
             }
         }});

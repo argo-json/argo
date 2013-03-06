@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -19,9 +19,9 @@ final class JsonArray extends AbstractJsonArray {
 
     private final List<JsonNode> elements;
 
-    JsonArray(final Iterable<JsonNode> elements) {
+    JsonArray(final Iterable<? extends JsonNode> elements) {
         this.elements = unmodifiableList(new ArrayList<JsonNode>() {{
-            for (JsonNode element : elements) {
+            for (final JsonNode element : elements) {
                 this.add(element);
             }
         }});
