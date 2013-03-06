@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,7 +18,7 @@ public final class JsonField {
     private final JsonNode value;
 
     /**
-     * Constructs an instance of {@code JsonField{@code  with the given name and value.
+     * Constructs an instance of {@code JsonField} with the given name and value.
      *
      * @param name  a JSON string representing the key.
      * @param value any {@code JsonNode} representing the value of the field.
