@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2012 Mark Slater
+  ~ Copyright 2013 Mark Slater
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
   ~
@@ -104,41 +104,41 @@
         <delete dir="${location.build-classes}"/>
         <mkdir dir="${location.build-classes}"/>
 
-        <javac destdir="${location.classes}" debug="on" source="1.6" target="1.6">
+        <javac destdir="${location.classes}" debug="on" source="1.5" target="1.5">
             <src path="${location.src}"/>
         </javac>
 
-        <javac destdir="${location.optimised-classes}" debug="on" optimize="true" source="1.6" target="1.6">
+        <javac destdir="${location.optimised-classes}" debug="on" optimize="true" source="1.5" target="1.5">
             <src path="${location.src}"/>
         </javac>
 
-        <javac destdir="${location.test-infrastructure-classes}" debug="on" source="1.6" target="1.6">
+        <javac destdir="${location.test-infrastructure-classes}" debug="on" source="1.7" target="1.7">
             <src path="${location.src.test-infrastructure}"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
         </javac>
 
-        <javac destdir="${location.test-classes}" debug="on" source="1.6" target="1.6">
+        <javac destdir="${location.test-classes}" debug="on" source="1.7" target="1.7">
             <src path="${location.src.test}"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
             <classpath location="${location.test-infrastructure-classes}"/>
         </javac>
 
-        <javac destdir="${location.performance-test-classes}" debug="on" source="1.6" target="1.6">
+        <javac destdir="${location.performance-test-classes}" debug="on" source="1.7" target="1.7">
             <src path="${location.src.performance-test}"/>
             <classpath refid="performance-test-compile-libs"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
         </javac>
 
-        <javac destdir="${location.code-sample-test-classes}" debug="on" source="1.6" target="1.6">
+        <javac destdir="${location.code-sample-test-classes}" debug="on" source="1.7" target="1.7">
             <src path="${location.src.code-sample}"/>
             <classpath refid="test-compile-libs"/>
             <classpath location="${location.classes}"/>
         </javac>
 
-        <javac destdir="${location.build-classes}" debug="on" source="1.6" target="1.6"
+        <javac destdir="${location.build-classes}" debug="on" source="1.7" target="1.7"
                includeantruntime="false">
             <src path="${location.src.build}"/>
             <classpath refid="documentation-libs"/>

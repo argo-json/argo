@@ -10,12 +10,12 @@
 
 package documentation;
 
-import org.sourceforge.xazzle.xhtml.HtmlTag;
+import net.sourceforge.xazzle.xhtml.HtmlTag;
 
 import static documentation.ArgoPage.anArgoPage;
 import static documentation.ArgoPage.codeBlock;
-import static org.sourceforge.xazzle.xhtml.Href.href;
-import static org.sourceforge.xazzle.xhtml.Tags.*;
+import static net.sourceforge.xazzle.xhtml.Href.href;
+import static net.sourceforge.xazzle.xhtml.Tags.*;
 
 final class DownloadsPage {
 

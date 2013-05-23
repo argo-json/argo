@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,31 +10,28 @@
 
 package documentation;
 
-import org.sourceforge.xazzle.xhtml.BlockLevelTag;
-import org.sourceforge.xazzle.xhtml.Href;
-import org.sourceforge.xazzle.xhtml.HtmlTag;
-import org.sourceforge.xazzle.xhtml.InlineTag;
+import net.sourceforge.xazzle.xhtml.*;
 
-import static org.sourceforge.xazzle.xhtml.AlternateText.alternateText;
-import static org.sourceforge.xazzle.xhtml.ClassName.className;
-import static org.sourceforge.xazzle.xhtml.Href.href;
-import static org.sourceforge.xazzle.xhtml.Id.id;
-import static org.sourceforge.xazzle.xhtml.ImageSource.imageSource;
-import static org.sourceforge.xazzle.xhtml.MetaContent.metaContent;
-import static org.sourceforge.xazzle.xhtml.MetaName.metaName;
-import static org.sourceforge.xazzle.xhtml.MimeType.mimeType;
-import static org.sourceforge.xazzle.xhtml.Relationship.STYLESHEET;
-import static org.sourceforge.xazzle.xhtml.Relationship.relationship;
-import static org.sourceforge.xazzle.xhtml.Tags.*;
-import static org.sourceforge.xazzle.xhtml.XhtmlDimension.pixels;
+import static net.sourceforge.xazzle.xhtml.AlternateText.alternateText;
+import static net.sourceforge.xazzle.xhtml.ClassName.className;
+import static net.sourceforge.xazzle.xhtml.Href.href;
+import static net.sourceforge.xazzle.xhtml.Id.id;
+import static net.sourceforge.xazzle.xhtml.ImageSource.imageSource;
+import static net.sourceforge.xazzle.xhtml.MetaContent.metaContent;
+import static net.sourceforge.xazzle.xhtml.MetaName.metaName;
+import static net.sourceforge.xazzle.xhtml.MimeType.mimeType;
+import static net.sourceforge.xazzle.xhtml.Relationship.STYLESHEET;
+import static net.sourceforge.xazzle.xhtml.Relationship.relationship;
+import static net.sourceforge.xazzle.xhtml.Tags.*;
+import static net.sourceforge.xazzle.xhtml.XhtmlDimension.pixels;
 
 final class ArgoPage {
 
     private ArgoPage() {
     }
 
-    static HtmlTag anArgoPage(final BlockLevelTag... content) {
-        final Href projectSiteHref = href("https://sourceforge.net/projects/argo");
+    static HtmlTag anArgoPage(final BlockElement<DoesNotContainFormTag>... content) {
+        final Href projectSiteHref = Href.href("https://sourceforge.net/projects/argo");
         return htmlTag(
                 headTag(
                         titleTag("Argo - A simple JSON parser and generator for Java"),
@@ -141,7 +138,7 @@ final class ArgoPage {
         return codeTag(xhtmlText(snippet));
     }
 
-    static BlockLevelTag codeBlock(String someCode) {
+    static BlockElement codeBlock(String someCode) {
         return divTag(
                 xhtmlText(someCode)
         ).withClass(className("code"));

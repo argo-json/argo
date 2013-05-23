@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -17,15 +17,15 @@ import argo.jdom.*;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
 import argo.staj.StajParser;
-import org.sourceforge.xazzle.xhtml.HtmlTag;
-import org.sourceforge.xazzle.xhtml.InlineTag;
+import net.sourceforge.xazzle.xhtml.HtmlTag;
+import net.sourceforge.xazzle.xhtml.InlineTag;
 
 import java.io.Reader;
 import java.math.BigDecimal;
 
 import static documentation.ArgoPage.*;
-import static org.sourceforge.xazzle.xhtml.Href.href;
-import static org.sourceforge.xazzle.xhtml.Tags.*;
+import static net.sourceforge.xazzle.xhtml.Href.href;
+import static net.sourceforge.xazzle.xhtml.Tags.*;
 
 final class DocumentationPage {
 
@@ -38,7 +38,7 @@ final class DocumentationPage {
     private DocumentationPage() {
     }
 
-    @SuppressWarnings({"StaticMethodOnlyUsedInOneClass" })
+    @SuppressWarnings({"StaticMethodOnlyUsedInOneClass"})
     static HtmlTag documentationPage() {
         return anArgoPage(
                 h2Tag(xhtmlText("Documentation")),

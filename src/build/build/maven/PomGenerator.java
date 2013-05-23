@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,7 +10,7 @@
 
 package build.maven;
 
-import org.sourceforge.writexml.*;
+import net.sourceforge.writexml.*;
 
 import java.io.File;
 import java.io.FileReader;
@@ -20,10 +20,9 @@ import java.net.URI;
 import java.util.Properties;
 
 import static java.util.Arrays.asList;
-import static org.sourceforge.writexml.Attributes.attributes;
-import static org.sourceforge.writexml.Namespace.namespace;
-import static org.sourceforge.writexml.TagName.tagName;
-import static org.sourceforge.writexml.Text.text;
+import static net.sourceforge.writexml.Attributes.attributes;
+import static net.sourceforge.writexml.Document.document;
+import static net.sourceforge.writexml.Namespace.namespace;
 
 public class PomGenerator {
 
@@ -36,71 +35,63 @@ public class PomGenerator {
     }
 
     private static Tag settings(final String serverId, final String username, final String password, final String gpgPassphrase) {
-        return settingsTag(tagName("settings"),
-                settingsTag(tagName("servers"),
-                        settingsTag(tagName("server"),
-                                settingsTag(tagName("id"), text(serverId)),
-                                settingsTag(tagName("username"), text(username)),
-                                settingsTag(tagName("password"), text(password))
+        return settingsTag(TagName.tagName("settings"),
+                settingsTag(TagName.tagName("servers"),
+                        settingsTag(TagName.tagName("server"),
+                                settingsTag(TagName.tagName("id"), Text.text(serverId)),
+                                settingsTag(TagName.tagName("username"), Text.text(username)),
+                                settingsTag(TagName.tagName("password"), Text.text(password))
                         )
                 ),
-                settingsTag(tagName("pluginGroups"),
-                        settingsTag(tagName("pluginGroup"), text("org.sonatype.plugins"))
+                settingsTag(TagName.tagName("pluginGroups"),
+                        settingsTag(TagName.tagName("pluginGroup"), Text.text("org.sonatype.plugins"))
                 ),
-                settingsTag(tagName("profiles"),
-                        settingsTag(tagName("profile"),
-                                settingsTag(tagName("id"), text("gpg")),
-                                settingsTag(tagName("properties"),
-                                        settingsTag(tagName("gpg.passphrase"), text(gpgPassphrase))
+                settingsTag(TagName.tagName("profiles"),
+                        settingsTag(TagName.tagName("profile"),
+                                settingsTag(TagName.tagName("id"), Text.text("gpg")),
+                                settingsTag(TagName.tagName("properties"),
+                                        settingsTag(TagName.tagName("gpg.passphrase"), Text.text(gpgPassphrase))
                                 )
                         )
                 )
         );
     }
 
-    private static Tag server(final String serverName, final String username, final String password) {
-        return settingsTag(tagName("server"),
-                settingsTag(tagName("id"), text(serverName)),
-                settingsTag(tagName("username"), text(username)),
-                settingsTag(tagName("password"), text(password))
-        );
-    }
-
     private static Tag pom(final String version) {
-        return pomTag(tagName("project"),
-                pomTag(tagName("modelVersion"), text("4.0.0")),
-                pomTag(tagName("groupId"), text("net.sourceforge.argo")),
-                pomTag(tagName("artifactId"), text("argo")),
-                pomTag(tagName("version"), text(version)),
-                pomTag(tagName("packaging"), text("jar")),
-                pomTag(tagName("name"), text("Argo")),
-                pomTag(tagName("description"), text("Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.")),
-                pomTag(tagName("url"), text("http://argo.sourceforge.net")),
-                pomTag(tagName("licenses"),
-                        pomTag(tagName("license"),
-                                pomTag(tagName("name"), text("The Apache Software License, Version 2.0")),
-                                pomTag(tagName("url"), text("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-                                pomTag(tagName("distribution"), text("repo"))
+        return pomTag(TagName.tagName("project"),
+                pomTag(TagName.tagName("modelVersion"), Text.text("4.0.0")),
+                pomTag(TagName.tagName("groupId"), Text.text("net.sourceforge.argo")),
+                pomTag(TagName.tagName("artifactId"), Text.text("argo")),
+                pomTag(TagName.tagName("version"), Text.text(version)),
+                pomTag(TagName.tagName("packaging"), Text.text("jar")),
+                pomTag(TagName.tagName("name"), Text.text("Argo")),
+                pomTag(TagName.tagName("description"), Text.text("Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.")),
+                pomTag(TagName.tagName("url"), Text.text("http://argo.sourceforge.net")),
+                pomTag(TagName.tagName("licenses"),
+                        pomTag(TagName.tagName("license"),
+                                pomTag(TagName.tagName("name"), Text.text("The Apache Software License, Version 2.0")),
+                                pomTag(TagName.tagName("url"), Text.text("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+                                pomTag(TagName.tagName("distribution"), Text.text("repo"))
                         )
                 ),
-                pomTag(tagName("scm"),
-                        pomTag(tagName("url"), text("https://argo.svn.sourceforge.net/svnroot/argo/tags/" + version))
+                pomTag(TagName.tagName("scm"),
+                        pomTag(TagName.tagName("url"), Text.text("https://argo.svn.sourceforge.net/svnroot/argo/tags/" + version))
                 ),
-                pomTag(tagName("dependencies")),
-                pomTag(tagName("parent"),
-                        pomTag(tagName("groupId"), text("org.sonatype.oss")),
-                        pomTag(tagName("artifactId"), text("oss-parent")),
-                        pomTag(tagName("version"), text("7"))
+                pomTag(TagName.tagName("dependencies")),
+                pomTag(TagName.tagName("parent"),
+                        pomTag(TagName.tagName("groupId"), Text.text("org.sonatype.oss")),
+                        pomTag(TagName.tagName("artifactId"), Text.text("oss-parent")),
+                        pomTag(TagName.tagName("version"), Text.text("7"))
                 )
         );
     }
 
-    private static Tag pomTag(final TagName tagName, final WriteableToXml... children) {
-        return new Tag(namespace(URI.create("http://maven.apache.org/POM/4.0.0")), tagName, attributes(), asList(children));
+    private static Tag pomTag(final TagName tagName, final TagContent... children) {
+        return Tag.tag(namespace(URI.create("http://maven.apache.org/POM/4.0.0")), tagName, attributes(), asList(children));
     }
 
-    private static Tag settingsTag(final TagName tagName, final WriteableToXml... children) {
-        return new Tag(namespace(URI.create("http://maven.apache.org/SETTINGS/1.0.0")), tagName, attributes(), asList(children));
+    private static Tag settingsTag(final TagName tagName, final TagContent... children) {
+        return Tag.tag(namespace(URI.create("http://maven.apache.org/SETTINGS/1.0.0")), tagName, attributes(), asList(children));
     }
 
     private static String versionString() throws IOException {
@@ -109,10 +100,10 @@ public class PomGenerator {
         return properties.getProperty("argo.version.major") + "." + properties.getProperty("argo.version.minor");
     }
 
-    private static void writeXml(final Tag root, final File destination, final String fileName) throws IOException, XmlWriterException {
+    private static void writeXml(final Tag root, final File destination, final String fileName) throws IOException, XmlWriteException {
         final File file = new File(destination, fileName);
         final FileWriter fileWriter = new FileWriter(file);
-        new JaxpXmlWriter(fileWriter).write(new Document(root));
+        new PrettyXmlFormatter().write(document(root), fileWriter);
         fileWriter.close();
     }
 

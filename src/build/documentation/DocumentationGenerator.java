@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,10 +10,9 @@
 
 package documentation;
 
-import org.sourceforge.writexml.Document;
-import org.sourceforge.writexml.JaxpXmlWriter;
-import org.sourceforge.writexml.XmlWriterException;
-import org.sourceforge.xazzle.xhtml.HtmlTag;
+import net.sourceforge.writexml.CompactXmlFormatter;
+import net.sourceforge.writexml.XmlWriteException;
+import net.sourceforge.xazzle.xhtml.HtmlTag;
 
 import java.io.File;
 import java.io.FileReader;
@@ -27,6 +26,8 @@ import static documentation.IndexPage.indexPage;
 import static documentation.SupportPage.supportPage;
 
 public class DocumentationGenerator {
+    private static final CompactXmlFormatter XML_FORMATTER = new CompactXmlFormatter();
+
     public static void main(String[] args) throws Exception {
         final File destination = new File(args[0]);
         final String version = versionString();
@@ -43,10 +44,10 @@ public class DocumentationGenerator {
         return properties.getProperty("argo.version.major") + "." + properties.getProperty("argo.version.minor");
     }
 
-    private static void writePage(final HtmlTag indexPage, final File destination, final String fileName) throws IOException, XmlWriterException {
+    private static void writePage(final HtmlTag page, final File destination, final String fileName) throws IOException, XmlWriteException {
         final File file = new File(destination, fileName);
         final FileWriter fileWriter = new FileWriter(file);
-        new JaxpXmlWriter(fileWriter).write(new Document(indexPage.asWriteableToXml()));
+        XML_FORMATTER.write(page.asDocument(), fileWriter);
         fileWriter.close();
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,11 +10,11 @@
 
 package documentation;
 
-import org.sourceforge.xazzle.xhtml.HtmlTag;
+import net.sourceforge.xazzle.xhtml.Href;
+import net.sourceforge.xazzle.xhtml.HtmlTag;
 
 import static documentation.ArgoPage.*;
-import static org.sourceforge.xazzle.xhtml.Href.href;
-import static org.sourceforge.xazzle.xhtml.Tags.*;
+import static net.sourceforge.xazzle.xhtml.Tags.*;
 
 final class IndexPage {
 
@@ -30,9 +30,9 @@ final class IndexPage {
                         "free for you to use.")),
                 paragraphTag(
                         xhtmlText("The latest version of Argo available for download is "),
-                        anchorTag(xhtmlText(version)).withHref(href("https://sourceforge.net/projects/argo/files/latest")),
+                        anchorTag(xhtmlText(version)).withHref(Href.href("https://sourceforge.net/projects/argo/files/latest")),
                         xhtmlText(".  The "),
-                        anchorTag(xhtmlText("javadoc")).withHref(href("javadoc/")),
+                        anchorTag(xhtmlText("javadoc")).withHref(Href.href("javadoc/")),
                         xhtmlText(" is also available online.")
                 ),
                 h2Tag(xhtmlText("Example")),

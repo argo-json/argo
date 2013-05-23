@@ -13,12 +13,12 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="test compile" level="project" />
-    <orderEntry type="library" name="performance test compile" level="project" />
-    <orderEntry type="library" name="test run" level="project" />
-    <orderEntry type="library" name="performance test run" level="project" />
-    <orderEntry type="library" name="build run" level="project" />
-    <orderEntry type="library" name="documentation run" level="project" />
+    <orderEntry type="library" scope="TEST" name="test compile" level="project" />
+    <orderEntry type="library" scope="TEST" name="performance test compile" level="project" />
+    <orderEntry type="library" scope="TEST" name="test run" level="project" />
+    <orderEntry type="library" scope="TEST" name="performance test run" level="project" />
+    <orderEntry type="library" scope="TEST" name="build run" level="project" />
+    <orderEntry type="library" scope="TEST" name="documentation run" level="project" />
   </component>
 </module>
 
