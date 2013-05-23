@@ -26,7 +26,7 @@ final class DownloadsPage {
     static HtmlTag downloadsPage(final String version) {
         String standardJarUrl = "https://sourceforge.net/projects/argo/files/argo/" + version + "/argo-" + version + ".jar/download";
         String smallJarUrl = "https://sourceforge.net/projects/argo/files/argo/" + version + "/argo-small-" + version + ".jar/download";
-        String subversionUrl = "https://argo.svn.sourceforge.net/svnroot/argo/tags/" + version;
+        String subversionUrl = "https://svn.code.sf.net/p/argo/code/tags/" + version;
         return anArgoPage(
                 h2Tag(xhtmlText("Downloads")),
                 paragraphTag(

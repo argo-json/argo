@@ -417,14 +417,14 @@
         <input addproperty="gpg.passphrase" message="GPG passphrase"/>
 
         <svn username="${ssh.username}" password="${ssh.password}">
-            <info target="https://argo.svn.sourceforge.net/svnroot/argo/trunk"/>
+            <info target="https://svn.code.sf.net/p/argo/code/trunk"/>
         </svn>
         <property name="release.revision" value="${svn.info.rev}"/>
         <echo message="Attempting to release revision ${release.revision}"/>
         <property name="release.directory" value="${location.build}/release/${release.revision}"/>
         <delete dir="${location.build}"/>
         <svn username="${ssh.username}" password="${ssh.password}">
-            <export srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk" destpath="${release.directory}"
+            <export srcurl="https://svn.code.sf.net/p/argo/code/trunk" destpath="${release.directory}"
                     revision="${svn.info.rev}"/>
         </svn>
         <subant target="prepare-release" buildpath="${release.directory}">
@@ -435,8 +435,8 @@
         <property file="${release.directory}/version.properties"/>
         <property name="version" value="${argo.version.major}.${argo.version.minor}"/>
         <svn username="${ssh.username}" password="${ssh.password}">
-            <copy srcurl="https://argo.svn.sourceforge.net/svnroot/argo/trunk"
-                  desturl="https://argo.svn.sourceforge.net/svnroot/argo/tags/${version}" revision="${svn.info.rev}"
+            <copy srcurl="https://svn.code.sf.net/p/argo/code/trunk"
+                  desturl="https://svn.code.sf.net/p/argo/code/tags/${version}" revision="${svn.info.rev}"
                   message="Tag for release ${version}."/>
         </svn>
         <sshexec host="shell.sourceforge.net" username="${ssh.username},argo" password="${ssh.password}"

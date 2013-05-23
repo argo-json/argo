@@ -75,7 +75,7 @@ public class PomGenerator {
                         )
                 ),
                 pomTag(TagName.tagName("scm"),
-                        pomTag(TagName.tagName("url"), Text.text("https://argo.svn.sourceforge.net/svnroot/argo/tags/" + version))
+                        pomTag(TagName.tagName("url"), Text.text("https://svn.code.sf.net/p/argo/code/tags/" + version))
                 ),
                 pomTag(TagName.tagName("dependencies")),
                 pomTag(TagName.tagName("parent"),
