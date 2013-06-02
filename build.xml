@@ -385,20 +385,20 @@
 
         <!-- close the staging repository, whatever that means -->
         <artifact:mvn>
-            <artifact:arg value="nexus-staging:rc-close"/>
+            <artifact:arg value="org.sonatype.plugins:nexus-staging-maven-plugin:rc-close"/>
             <artifact:arg value="-s${release.directory.maven}/settings.xml"/>
             <artifact:arg value="-DserverId=${maven-staging-repository-id}"/>
             <artifact:arg value="-DnexusUrl=https://oss.sonatype.org"/>
-            <artifact:arg value="-DstagingRepositoryId=https://oss.sonatype.org"/>
+            <artifact:arg value="-DstagingRepositoryId=net.sourceforge.argo"/>
         </artifact:mvn>
 
         <!-- release the staging repository -->
         <artifact:mvn>
-            <artifact:arg value="nexus-staging:rc-release"/>
+            <artifact:arg value="org.sonatype.plugins:nexus-staging-maven-plugin:rc-release"/>
             <artifact:arg value="-s${release.directory.maven}/settings.xml"/>
             <artifact:arg value="-DserverId=${maven-staging-repository-id}"/>
             <artifact:arg value="-DnexusUrl=https://oss.sonatype.org"/>
-            <artifact:arg value="-DstagingRepositoryId=https://oss.sonatype.org"/>
+            <artifact:arg value="-DstagingRepositoryId=net.sourceforge.argo"/>
         </artifact:mvn>
     </target>
 
