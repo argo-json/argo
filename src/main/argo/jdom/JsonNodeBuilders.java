@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -53,10 +53,31 @@ public final class JsonNodeBuilders {
         return new JsonStringNode(value);
     }
 
+    /**
+     * Builder for a JSON object that permits duplicated field names, and preserves field order.
+     * Fields in the built JSON object appear in the order they were added to the builder.
+     *
+     * @return a builder for a {@code JsonRootNode} representing an object.
+     */
     public static JsonObjectNodeBuilder anObjectBuilder() {
-        return new JsonObjectNodeBuilder();
+        return JsonObjectNodeBuilder.duplicateFieldPermittingJsonObjectNodeBuilder();
     }
 
+    /**
+     * Builder for a JSON object that has unique field names.
+     * Adding two fields with the same name results in an IllegalArgumentException being thrown.
+     *
+     * @return a builder for a {@code JsonRootNode} representing an object.
+     */
+    public static JsonObjectNodeBuilder aUniqueFieldNameObjectBuilder() {
+        return JsonObjectNodeBuilder.duplicateFieldRejectingJsonObjectNodeBuilder();
+    }
+
+    /**
+     * Builder for a JSON array.
+     *
+     * @return a builder for a {@code JsonRootNode} representing an array.
+     */
     public static JsonArrayNodeBuilder anArrayBuilder() {
         return new JsonArrayNodeBuilder();
     }

@@ -13,16 +13,18 @@ package argo.jdom;
 import org.junit.Test;
 
 import static argo.jdom.JsonNodeBuilderTestBuilder.aJsonNodeBuilder;
+import static argo.jdom.JsonNodeBuilders.aUniqueFieldNameObjectBuilder;
 import static argo.jdom.JsonNodeBuilders.anObjectBuilder;
 import static argo.jdom.JsonNodeFactories.field;
 import static argo.jdom.JsonNodeFactories.object;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.fail;
 
 public final class JsonObjectNodeBuilderTest {
     @Test
-    public void permitsDuplicatedFieldNames() throws Exception {
+    public void standardObjectBuilderPermitsDuplicatedFieldNames() throws Exception {
         final JsonStringNode fieldName = aStringNode();
         final JsonNodeBuilder firstValue = aJsonNodeBuilder();
         final JsonNodeBuilder secondValue = aJsonNodeBuilder();
@@ -35,6 +37,41 @@ public final class JsonObjectNodeBuilderTest {
                         object(
                                 field(fieldName, firstValue.build()),
                                 field(fieldName, secondValue.build())
+                        )));
+    }
+
+    @Test
+    public void uniqueFieldNameObjectBuilderThrowsIllegalArgumentExceptionOnDuplicateNames() throws Exception {
+        final JsonStringNode fieldName = aStringNode();
+        try {
+            aUniqueFieldNameObjectBuilder()
+                    .withField(fieldName, aJsonNodeBuilder())
+                    .withField(fieldName, aJsonNodeBuilder());
+            fail("Should have thrown IllegalArgumentException");
+        } catch (Exception e) {
+            assertThat(e.getMessage(), equalTo("Attempt to add a field with pre-existing key [" + fieldName + "]"));
+        }
+    }
+
+    @Test
+    public void uniqueFieldNameObjectBuilderPreservesFieldOrder() throws Exception {
+        final JsonStringNode firstFieldName = aStringNode();
+        final JsonNodeBuilder firstValue = aJsonNodeBuilder();
+        final JsonStringNode secondFieldName = aStringNode();
+        final JsonNodeBuilder secondValue = aJsonNodeBuilder();
+        final JsonStringNode thirdFieldName = aStringNode();
+        final JsonNodeBuilder thirdValue = aJsonNodeBuilder();
+        assertThat(
+                aUniqueFieldNameObjectBuilder()
+                        .withField(firstFieldName, firstValue)
+                        .withField(secondFieldName, secondValue)
+                        .withField(thirdFieldName, thirdValue)
+                        .build(),
+                equalTo(
+                        object(
+                                field(firstFieldName, firstValue.build()),
+                                field(secondFieldName, secondValue.build()),
+                                field(thirdFieldName, thirdValue.build())
                         )));
     }
 

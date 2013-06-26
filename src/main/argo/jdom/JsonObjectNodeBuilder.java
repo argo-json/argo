@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,9 +10,7 @@
 
 package argo.jdom;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
 
@@ -21,9 +19,73 @@ import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
  */
 public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode> {
 
-    private final List<JsonFieldBuilder> fieldBuilders = new LinkedList<JsonFieldBuilder>();
+    static JsonObjectNodeBuilder duplicateFieldPermittingJsonObjectNodeBuilder() {
+        return new JsonObjectNodeBuilder(new FieldCollector() {
+            private final List<JsonFieldBuilder> fieldBuilders = new LinkedList<JsonFieldBuilder>();
 
-    JsonObjectNodeBuilder() {
+            public void add(final JsonFieldBuilder jsonFieldBuilder) {
+                fieldBuilders.add(jsonFieldBuilder);
+            }
+
+            public Iterator<JsonField> iterator() {
+                final Iterator<JsonFieldBuilder> delegate = fieldBuilders.iterator();
+                return new Iterator<JsonField>() {
+                    public boolean hasNext() {
+                        return delegate.hasNext();
+                    }
+
+                    public JsonField next() {
+                        return delegate.next().build();
+                    }
+
+                    public void remove() {
+                        delegate.remove();
+                    }
+                };
+            }
+        });
+    }
+
+    static JsonObjectNodeBuilder duplicateFieldRejectingJsonObjectNodeBuilder() {
+        return new JsonObjectNodeBuilder(new FieldCollector() {
+            private final Map<JsonStringNode, JsonFieldBuilder> fieldBuilders = new LinkedHashMap<JsonStringNode, JsonFieldBuilder>();
+
+            public void add(final JsonFieldBuilder jsonFieldBuilder) {
+                final JsonStringNode key = jsonFieldBuilder.buildKey();
+                if (fieldBuilders.containsKey(key)) {
+                    throw new IllegalArgumentException("Attempt to add a field with pre-existing key [" + key + "]");
+                } else {
+                    fieldBuilders.put(key, jsonFieldBuilder);
+                }
+            }
+
+            public Iterator<JsonField> iterator() {
+                final Iterator<Map.Entry<JsonStringNode, JsonFieldBuilder>> delegate = fieldBuilders.entrySet().iterator();
+                return new Iterator<JsonField>() {
+                    public boolean hasNext() {
+                        return delegate.hasNext();
+                    }
+
+                    public JsonField next() {
+                        return delegate.next().getValue().build();
+                    }
+
+                    public void remove() {
+                        delegate.remove();
+                    }
+                };
+            }
+        });
+    }
+
+    private interface FieldCollector extends Iterable<JsonField> {
+        void add(JsonFieldBuilder jsonFieldBuilder);
+    }
+
+    private final FieldCollector fieldCollector;
+
+    private JsonObjectNodeBuilder(final FieldCollector fieldCollector) {
+        this.fieldCollector = fieldCollector;
     }
 
     /**
@@ -55,14 +117,14 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
      * @return the modified object builder.
      */
     public JsonObjectNodeBuilder withFieldBuilder(final JsonFieldBuilder jsonFieldBuilder) {
-        fieldBuilders.add(jsonFieldBuilder);
+        fieldCollector.add(jsonFieldBuilder);
         return this;
     }
 
     public JsonRootNode build() {
         return JsonNodeFactories.object(new ArrayList<JsonField>() {{
-            for (final JsonFieldBuilder fieldBuilder : fieldBuilders) {
-                add(fieldBuilder.build());
+            for (final JsonField field : fieldCollector) {
+                add(field);
             }
         }});
     }
