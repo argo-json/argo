@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -144,6 +144,19 @@ public final class PrettyJsonFormatterTest {
                         .print("}")
                         .build()
         ));
+    }
+
+    @Test
+    public void formatsEcmaSurrogatePairExamples() throws Exception {
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(asList(
+                (JsonNode) string("\ud834\udd1e")))), equalTo(
+                aJsonStringResultBuilder()
+                        .printLine("[")
+                        .printLine("\t\"\ud834\udd1e\"")
+                        .print("]")
+                        .build()
+        )
+        );
     }
 
 }
