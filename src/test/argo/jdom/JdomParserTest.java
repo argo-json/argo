@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -41,6 +41,19 @@ public final class JdomParserTest {
     @Test
     public void parsesEscapedStuff() throws Exception {
         assertThat(new JdomParser().parse("{ \"v\":\"\\\" \\\\ \\b \\t \\n \\r \\f\"}").getStringValue("v"), equalTo("\" \\ \b \t \n \r \f"));
+    }
+
+    @Test
+    public void parsesEcmaForwardSlashExamples() throws Exception {
+        assertThat(new JdomParser().parse("[\"\\u002F\"]").getStringValue(0), equalTo("/"));
+        assertThat(new JdomParser().parse("[\"\\u002f\"]").getStringValue(0), equalTo("/"));
+        assertThat(new JdomParser().parse("[\"\\/\"]").getStringValue(0), equalTo("/"));
+        assertThat(new JdomParser().parse("[\"/\"]").getStringValue(0), equalTo("/"));
+    }
+
+    @Test
+    public void parsesEcmaUtf16SurrogatePairExample() throws Exception {
+        assertThat(new JdomParser().parse("[\"\\uD834\\uDD1E\"]").getStringValue(0), equalTo("\ud834\udd1e"));
     }
 
     @Test(expected = InvalidSyntaxException.class)
