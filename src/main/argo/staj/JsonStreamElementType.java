@@ -295,10 +295,12 @@ public enum JsonStreamElementType {
         final ThingWithPosition openDoubleQuotesPosition = in.snapshotOfPosition();
         boolean stringClosed = false;
         while (!stringClosed) {
-            final char nextChar = (char) in.read();
+            final int nextInt = in.read();
+            if (-1 == nextInt) {
+                throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
+            }
+            final char nextChar = (char) nextInt;
             switch (nextChar) {
-                case (char) -1:
-                    throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
                 case DOUBLE_QUOTE:
                     stringClosed = true;
                     break;

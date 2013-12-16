@@ -11,7 +11,6 @@
 package argo.jdom;
 
 import argo.saj.InvalidSyntaxException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -73,8 +72,7 @@ public final class JdomParserTest {
     }
 
     @Test
-    @Ignore("Not implemented yet")
     public void canParseCharacterMinusOne() throws Exception {
-        assertThat(new JdomParser().parse("[\"" + (char) -1 + "\"]").getStringValue(0), equalTo(String.valueOf((char) -1)));
+        assertThat(new JdomParser().parse("[\"" + ((char) -1) + "\"]").getStringValue(0), equalTo(String.valueOf((char) -1)));
     }
 }
