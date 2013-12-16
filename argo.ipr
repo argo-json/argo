@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AntConfiguration">
-    <defaultAnt bundledAnt="true" />
     <buildFile url="file://$PROJECT_DIR$/build.xml">
       <additionalClassPath>
         <entry path="file://$PROJECT_DIR$/lib/build/ant-jsch-1.6.5.jar" />
         <entry path="file://$PROJECT_DIR$/lib/build/jsch-0.1.24.jar" />
       </additionalClassPath>
-      <antReference projectDefault="true" />
-      <customJdkName value="" />
-      <maximumHeapSize value="128" />
       <maximumStackSize value="32" />
-      <properties />
     </buildFile>
   </component>
   <component name="BuildJarProjectSettings">
@@ -116,7 +111,11 @@
       <entry name="?*.tld" />
       <entry name="?*.json" />
     </wildcardResourcePatterns>
-    <annotationProcessing enabled="false" useClasspath="true" />
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+    </annotationProcessing>
   </component>
   <component name="CopyrightManager" default="Apache 2.0">
     <copyright>
@@ -193,6 +192,7 @@
         </inspection_tool>
         <inspection_tool class="ClassReferencesSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="ConstructorCount" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="ignoreDeprecatedConstructors" value="false" />
           <option name="m_limit" value="5" />
         </inspection_tool>
         <inspection_tool class="DeclareCollectionAsInterface" enabled="true" level="WARNING" enabled_by_default="true">
