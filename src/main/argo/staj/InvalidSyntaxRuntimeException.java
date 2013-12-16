@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,6 +16,8 @@ import argo.saj.InvalidSyntaxException;
  * Thrown to indicate a given character stream is not valid JSON.
  */
 public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
+
+    static final char END_OF_STREAM = (char) -1;
 
     private final int column;
     private final int row;
@@ -46,6 +48,16 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
             @Override
             public InvalidSyntaxException asInvalidSyntaxException() {
                 return new InvalidSyntaxException(s, throwable, thingWithPosition.getRow(), thingWithPosition.getColumn());
+            }
+        };
+    }
+
+    static InvalidSyntaxRuntimeException unexpectedCharacterInvalidSyntaxRuntimeException(final String expectation, final char actual, final ThingWithPosition thingWithPosition) {
+        return new InvalidSyntaxRuntimeException(expectation, thingWithPosition) {
+            @Override
+            public InvalidSyntaxException asInvalidSyntaxException() {
+                final String message = expectation + (END_OF_STREAM == actual ? " but reached end of input." : " but got [" + actual + "].");
+                return new InvalidSyntaxException(message, thingWithPosition.getRow(), thingWithPosition.getColumn());
             }
         };
     }

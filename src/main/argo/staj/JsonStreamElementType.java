@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import static argo.staj.InvalidSyntaxRuntimeException.invalidSyntaxRuntimeException;
+import static argo.staj.InvalidSyntaxRuntimeException.*;
 import static argo.staj.JsonStreamElement.*;
 
 /**
@@ -56,7 +56,7 @@ public enum JsonStreamElementType {
         JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
             final char separatorChar = (char) readNextNonWhitespaceChar(pushbackReader);
             if (separatorChar != ':') {
-                throw invalidSyntaxRuntimeException("Expected object identifier to be followed by : but got [" + separatorChar + "].", pushbackReader);
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to be followed by :", separatorChar, pushbackReader);
             }
             return aJsonValue(pushbackReader, stack);
         }
@@ -109,7 +109,7 @@ public enum JsonStreamElementType {
                     stack.push(START_ARRAY);
                     return startArray();
                 default:
-                    throw invalidSyntaxRuntimeException("Expected either [ or { but got [" + nextChar + "].", pushbackReader);
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either [ or {", nextChar, pushbackReader);
             }
         }
     },
@@ -128,7 +128,7 @@ public enum JsonStreamElementType {
             pushbackReader.unread(nextChar);
             return startDocument();
         } else {
-            throw invalidSyntaxRuntimeException("Expected either [ or { but got [" + nextChar + "].", pushbackReader);
+            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either [ or {", nextChar, pushbackReader);
         }
     }
 
@@ -174,7 +174,7 @@ public enum JsonStreamElementType {
                     stack.pop();
                     return endObject();
                 default:
-                    throw invalidSyntaxRuntimeException("Expected either , or } but got [" + nextChar + "].", pushbackReader);
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or }", (char) nextChar, pushbackReader);
             }
         } else if (peek.equals(START_ARRAY)) {
             switch (nextChar) {
@@ -184,7 +184,7 @@ public enum JsonStreamElementType {
                     stack.pop();
                     return endArray();
                 default:
-                    throw invalidSyntaxRuntimeException("Expected either , or ] but got [" + nextChar + "].", pushbackReader);
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", (char) nextChar, pushbackReader);
             }
         } else {
             switch (nextChar) {
@@ -196,7 +196,7 @@ public enum JsonStreamElementType {
                     pushbackReader.unread((char) nextChar);
                     return endField();
                 default:
-                    throw invalidSyntaxRuntimeException("Expected either , or ] but got [" + nextChar + "].", pushbackReader);
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", (char) nextChar, pushbackReader);
             }
         }
     }
@@ -272,14 +272,14 @@ public enum JsonStreamElementType {
                 stack.push(START_ARRAY);
                 return startArray();
             default:
-                throw invalidSyntaxRuntimeException("Invalid character at start of value [" + nextChar + "].", pushbackReader);
+                throw invalidSyntaxRuntimeException(END_OF_STREAM == nextChar ? "Unexpectedly reached end of input at start of value." : "Invalid character at start of value [" + nextChar + "].", pushbackReader);
         }
     }
 
     private static JsonStreamElement aFieldToken(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
         final char nextChar = (char) readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
-            throw invalidSyntaxRuntimeException("Expected object identifier to begin with [\"] but got [" + nextChar + "].", pushbackReader);
+            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to begin with [\"]", nextChar, pushbackReader);
         }
         pushbackReader.unread(nextChar);
         stack.push(START_FIELD);
@@ -290,7 +290,7 @@ public enum JsonStreamElementType {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if (DOUBLE_QUOTE != firstChar) {
-            throw invalidSyntaxRuntimeException("Expected [" + DOUBLE_QUOTE + "] but got [" + firstChar + "].", in);
+            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected [" + DOUBLE_QUOTE + "]", firstChar, in);
         }
         final ThingWithPosition openDoubleQuotesPosition = in.snapshotOfPosition();
         boolean stringClosed = false;
@@ -345,7 +345,7 @@ public enum JsonStreamElementType {
                 result = (char) hexadecimalNumber(in);
                 break;
             default:
-                throw invalidSyntaxRuntimeException("Unrecognised escape character [" + firstChar + "].", in);
+                throw invalidSyntaxRuntimeException(END_OF_STREAM == firstChar ? "Unexpectedly reached end of input during escaped character." : "Unrecognised escape character [" + firstChar + "].", in);
         }
         return result;
     }
@@ -411,7 +411,7 @@ public enum JsonStreamElementType {
                 result = nextChar;
                 break;
             default:
-                throw invalidSyntaxRuntimeException("Expected a digit 1 - 9 but got [" + nextChar + "].", in);
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 1 - 9", nextChar, in);
         }
         return result;
     }
@@ -433,7 +433,7 @@ public enum JsonStreamElementType {
                 result = nextChar;
                 break;
             default:
-                throw invalidSyntaxRuntimeException("Expected a digit 1 - 9 but got [" + nextChar + "].", in);
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 1 - 9", nextChar, in);
         }
         return result;
     }

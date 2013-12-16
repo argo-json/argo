@@ -734,4 +734,136 @@ public final class SajParserTest {
         }
     }
 
+    @Test
+    public void rejectsPrematureEndOfStreamDuringNumberWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[1";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 3:  Expected either , or ] but reached end of input."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamDuringExponentWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[1E";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected a digit 1 - 9 but reached end of input."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamDuringFractionalPartOfNumberWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[1.";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected a digit 1 - 9 but reached end of input."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamDuringNegativeNumberWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[-";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 3:  Expected a digit 1 - 9 but reached end of input."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamDuringEscapedCharacterWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[\"\\";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 4:  Unexpectedly reached end of input during escaped character."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamStartingArrayOrObjectWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 1:  Expected either [ or { but reached end of input."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamEndingArrayWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 2:  Unexpectedly reached end of input at start of value."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamEndingPopulatedArrayWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[1";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 3:  Expected either , or ] but reached end of input."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamEndingObjectWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "{";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected object identifier to begin with [\"] but reached end of input."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamFollwingFieldNameWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "{\"a\"";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 5:  Expected object identifier to be followed by : but reached end of input."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamFollwingFieldNameAndSeparatorWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "{\"a\":";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 6:  Unexpectedly reached end of input at start of value."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamEndingPopulatedObjectWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "{\"a\":1";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 7:  Expected either , or ] but reached end of input."));
+        }
+    }
+
 }
