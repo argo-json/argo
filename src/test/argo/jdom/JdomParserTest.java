@@ -11,6 +11,7 @@
 package argo.jdom;
 
 import argo.saj.InvalidSyntaxException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -64,5 +65,16 @@ public final class JdomParserTest {
     @Test(expected = InvalidSyntaxException.class)
     public void parsesMismatchedDoubleQuotesInAnObject() throws Exception {
         new JdomParser().parse("{\"a\":\"b}");
+    }
+
+    @Test
+    public void canParseCharacterZero() throws Exception {
+        assertThat(new JdomParser().parse("[\"\u0000\"]").getStringValue(0), equalTo("\u0000"));
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void canParseCharacterMinusOne() throws Exception {
+        assertThat(new JdomParser().parse("[\"" + (char) -1 + "\"]").getStringValue(0), equalTo(String.valueOf((char) -1)));
     }
 }

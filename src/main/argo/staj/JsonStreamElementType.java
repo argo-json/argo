@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -230,7 +230,7 @@ public enum JsonStreamElementType {
                 final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
                 if (trueTokenCharactersRead != 3 || remainingTrueTokenCharacters[0] != 'r' || remainingTrueTokenCharacters[1] != 'u' || remainingTrueTokenCharacters[2] != 'e') {
                     pushbackReader.uncount(remainingTrueTokenCharacters);
-                    throw invalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]], but got [" + Arrays.toString(remainingTrueTokenCharacters) + "].", pushbackReader);
+                    throw invalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]], but got [" + Arrays.toString(Arrays.copyOf(remainingTrueTokenCharacters, trueTokenCharactersRead)) + "].", pushbackReader);
                 } else {
                     return trueValue();
                 }
@@ -239,7 +239,7 @@ public enum JsonStreamElementType {
                 final int falseTokenCharactersRead = pushbackReader.read(remainingFalseTokenCharacters);
                 if (falseTokenCharactersRead != 4 || remainingFalseTokenCharacters[0] != 'a' || remainingFalseTokenCharacters[1] != 'l' || remainingFalseTokenCharacters[2] != 's' || remainingFalseTokenCharacters[3] != 'e') {
                     pushbackReader.uncount(remainingFalseTokenCharacters);
-                    throw invalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]], but got [" + Arrays.toString(remainingFalseTokenCharacters) + "].", pushbackReader);
+                    throw invalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]], but got [" + Arrays.toString(Arrays.copyOf(remainingFalseTokenCharacters, falseTokenCharactersRead)) + "].", pushbackReader);
                 } else {
                     return falseValue();
                 }
@@ -248,7 +248,7 @@ public enum JsonStreamElementType {
                 final int nullTokenCharactersRead = pushbackReader.read(remainingNullTokenCharacters);
                 if (nullTokenCharactersRead != 3 || remainingNullTokenCharacters[0] != 'u' || remainingNullTokenCharacters[1] != 'l' || remainingNullTokenCharacters[2] != 'l') {
                     pushbackReader.uncount(remainingNullTokenCharacters);
-                    throw invalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]], but got [" + Arrays.toString(remainingNullTokenCharacters) + "].", pushbackReader);
+                    throw invalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]], but got [" + Arrays.toString(Arrays.copyOf(remainingNullTokenCharacters, nullTokenCharactersRead)) + "].", pushbackReader);
                 } else {
                     return nullValue();
                 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2013 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -20,6 +20,7 @@ import java.io.StringReader;
 
 import static argo.saj.InvalidSyntaxExceptionMatcher.anInvalidSyntaxExceptionAtPosition;
 import static junit.framework.Assert.fail;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public final class SajParserTest {
@@ -687,6 +688,50 @@ public final class SajParserTest {
         }});
         new SajParser().parse(new StringReader("[" + jsonFragment + "]"), jsonListener);
         context.assertIsSatisfied();
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamDuringTrueValueWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[tru";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected 't' to be followed by [[r, u, e]], but got [[r, u]]."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamDuringFalseValueWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[fal";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected 'f' to be followed by [[a, l, s, e]], but got [[a, l]]."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamDuringNullValueWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[nul";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected 'n' to be followed by [[u, l, l]], but got [[u, l]]."));
+        }
+    }
+
+    @Test
+    public void rejectsPrematureEndOfStreamDuringHexCharacterWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+        final String inputString = "[\"\\uab";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 8:  Expected a 4 digit hexadecimal number but got only [2], namely [ab]."));
+        }
     }
 
 }
