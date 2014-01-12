@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2014 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -28,7 +28,7 @@ public final class CompactJsonFormatter implements JsonFormatter {
     private final FieldSorter fieldSorter;
 
     public CompactJsonFormatter() {
-        this(DO_NOTHING_FIELD_SORTER);
+        this(FieldSorter.DO_NOTHING_FIELD_SORTER);
     }
 
     private CompactJsonFormatter(final FieldSorter fieldSorter) {
@@ -50,7 +50,7 @@ public final class CompactJsonFormatter implements JsonFormatter {
      * @return a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in alphabetic order.
      */
     public static CompactJsonFormatter fieldOrderNormalisingCompactJsonFormatter() {
-        return new CompactJsonFormatter(ALPHABETIC_FIELD_SORTER);
+        return new CompactJsonFormatter(FieldSorter.ALPHABETIC_FIELD_SORTER);
     }
 
     /**
