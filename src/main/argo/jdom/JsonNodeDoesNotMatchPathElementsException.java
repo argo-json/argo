@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2014 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -28,7 +28,9 @@ final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMat
     }
 
     private static String formatMessage(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
-        return "Failed to find " + delegate.failedNode.toString() + " at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) + ".";
+        return delegate.failPath.size() == 1 && pathElements.length == 1
+                ? "Failed to find " + delegate.failedNode.toString() + " while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) + "."
+                : "Failed to find " + delegate.failedNode.toString() + " at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) + ".";
     }
 
     private static String commaSeparate(final Object[] pathElements) {

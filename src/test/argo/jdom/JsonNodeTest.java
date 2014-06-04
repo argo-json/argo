@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2014 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -192,6 +192,50 @@ public final class JsonNodeTest {
             assertThat(
                     e.getMessage(),
                     equalTo("Failed to find an element at index [22] at [\"championships\".22] while resolving [\"championships\".22] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
+        }
+    }
+
+    @Test
+    public void getArrayNodeFromObjectForSingleElementPathHandledNicely() throws Exception {
+        try {
+            SAMPLE_JSON.getStringValue(12);
+            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
+        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
+            assertThat(e.getMessage(), equalTo("Failed to find an array while resolving [12] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
+        }
+    }
+
+    @Test
+    public void getFromWrongTypeOfPathElementsForSingleElementPathHandledNicely() throws Exception {
+        final JsonRootNode aNode = SAMPLE_JSON.getRootNode("championships");
+        try {
+            aNode.getStringValue("bob");
+            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
+        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
+            assertThat(e.getMessage(), equalTo("Failed to find an object while resolving [\"bob\"] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(aNode) + "]."));
+        }
+    }
+
+    @Test
+    public void getFromMissingFieldNameElementsForSingleElementPathHandledNicely() throws Exception {
+        try {
+            SAMPLE_JSON.getStringValue("wrong field name");
+            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
+        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
+            assertThat(e.getMessage(), equalTo("Failed to find a field called [\"wrong field name\"] while resolving [\"wrong field name\"] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
+        }
+    }
+
+    @Test
+    public void getFromMissingIndexElementsForSingleElementPathHandledNicely() throws Exception {
+        final JsonRootNode aNode = SAMPLE_JSON.getRootNode("championships");
+        try {
+            aNode.getStringValue(22);
+            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
+        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
+            assertThat(
+                    e.getMessage(),
+                    equalTo("Failed to find an element at index [22] while resolving [22] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(aNode) + "]."));
         }
     }
 
