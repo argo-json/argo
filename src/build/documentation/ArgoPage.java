@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -45,6 +45,7 @@ final class ArgoPage {
                                 .withHref(href("favicon-32x32.png")),
                         metaTag(metaName("description"), metaContent("Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.  It is free to download and use in your project.")),
                         metaTag(metaName("verify-v1"), metaContent("8/1zmu6pwHM286FJ1VE9nWTdr1SF5VE819uJDcFXTj4=")),
+                        metaTag(metaName("viewport"), metaContent("width=device-width, initial-scale=1")),
                         scriptTag(mimeType("text/javascript"), xhtmlText("  var _gaq = _gaq || [];\n" +
                                 "  _gaq.push(['_setAccount', 'UA-16431822-6']);\n" +
                                 "  _gaq.push(['_trackPageview']);\n" +
