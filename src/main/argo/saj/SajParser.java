@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -14,7 +14,6 @@ import argo.staj.InvalidSyntaxRuntimeException;
 import argo.staj.JsonStreamElement;
 import argo.staj.StajParser;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -36,10 +35,9 @@ public final class SajParser {
      *
      * @param json         the {@code String} to parse.
      * @param jsonListener the JsonListener to notify of parsing events
-     * @throws IOException            bubbled up from exceptions thrown reading from {@code in}
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
      */
-    public void parse(final String json, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
+    public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
         parse(jsonListener, new StajParser(new StringReader(json)));
     }
 
@@ -48,10 +46,9 @@ public final class SajParser {
      *
      * @param in           the character stream to parse
      * @param jsonListener the JsonListener to notify of parsing events
-     * @throws IOException            bubbled up from exceptions thrown reading from {@code in}
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
      */
-    public void parse(final Reader in, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
+    public void parse(final Reader in, final JsonListener jsonListener) throws InvalidSyntaxException {
         parse(jsonListener, new StajParser(in));
     }
 

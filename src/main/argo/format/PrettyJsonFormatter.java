@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -72,7 +72,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
         formatJsonNode(jsonNode, new PrintWriter(writer), 0);
     }
 
-    private void formatJsonNode(final JsonNode jsonNode, final PrintWriter writer, final int indent) throws IOException {
+    private void formatJsonNode(final JsonNode jsonNode, final PrintWriter writer, final int indent) {
         switch (jsonNode.getType()) {
             case ARRAY:
                 writer.append('[');
