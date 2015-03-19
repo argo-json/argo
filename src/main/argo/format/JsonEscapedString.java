@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 final class JsonEscapedString {
 
-    private static final Pattern ESCAPE_CHARACTERS_PATTERN = Pattern.compile("(\\\\|\\\"|\b|\\f|\\n|\\r|\\t)");
+    private static final Pattern ESCAPE_CHARACTERS_PATTERN = Pattern.compile("(\\\\|\"|\b|\\f|\\n|\\r|\\t)");
 
     private JsonEscapedString() {
     }
