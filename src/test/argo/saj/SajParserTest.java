@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,7 +15,6 @@ import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.io.StringReader;
 
 import static argo.saj.InvalidSyntaxExceptionMatcher.anInvalidSyntaxExceptionAtPosition;
@@ -671,7 +670,7 @@ public final class SajParserTest {
         context.assertIsSatisfied();
     }
 
-    private void assertJsonValueFragmentResultsInStringValue(final String jsonFragment, final String expectedStringValue) throws IOException, InvalidSyntaxException {
+    private void assertJsonValueFragmentResultsInStringValue(final String jsonFragment, final String expectedStringValue) throws InvalidSyntaxException {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{

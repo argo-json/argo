@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,13 +15,11 @@ import argo.saj.JsonListener;
 import argo.saj.StajBasedSajParser;
 import argo.staj.StajParser;
 
-import java.io.IOException;
-
 public final class StajBasedJdomParser {
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
 
-    public JsonRootNode parse(final StajParser stajParser) throws IOException, InvalidSyntaxException {
+    public JsonRootNode parse(final StajParser stajParser) throws InvalidSyntaxException {
         return JDOM_PARSER.parse(new JdomParser.JsonListenerBasedParser() {
             public void parse(JsonListener jsonListener) throws InvalidSyntaxException {
                 new StajBasedSajParser().parse(stajParser, jsonListener);

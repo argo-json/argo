@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -17,8 +17,6 @@ import argo.saj.InvalidSyntaxException;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-
-import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -43,8 +41,6 @@ public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatc
         if (parseResult == null) {
             try {
                 parseResult = new StajBasedJdomParser().parse(item);
-            } catch (IOException e) {
-                throw new RuntimeException("Caught exception matching", e);
             } catch (InvalidSyntaxException e) {
                 throw new RuntimeException("Caught exception matching", e);
             }
