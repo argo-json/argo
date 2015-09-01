@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -135,7 +135,7 @@ public final class JsonNodeFactories {
      * @return a JSON object containing the given fields
      */
     public static JsonRootNode object(final Map<JsonStringNode, ? extends JsonNode> fields) {
-        return new JsonObject(new ArrayList<JsonField>() {{
+        return new JsonObject(new ArrayList<JsonField>(fields.size()) {{
             for (final Map.Entry<JsonStringNode, ? extends JsonNode> entry : fields.entrySet()) {
                 add(field(entry.getKey(), entry.getValue()));
             }

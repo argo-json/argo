@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,21 +10,16 @@
 
 package argo.jdom;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.unmodifiableList;
+import static argo.jdom.ImmutableListFactories.immutableListOf;
 
 final class JsonArray extends AbstractJsonArray {
 
     private final List<JsonNode> elements;
 
     JsonArray(final Iterable<? extends JsonNode> elements) {
-        this.elements = unmodifiableList(new ArrayList<JsonNode>() {{
-            for (final JsonNode element : elements) {
-                this.add(element);
-            }
-        }});
+        this.elements = immutableListOf(elements);
     }
 
     public List<JsonNode> getElements() {

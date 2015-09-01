@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -19,12 +19,22 @@ import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
  */
 public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode> {
 
+    private final FieldCollector fieldCollector;
+
+    private JsonObjectNodeBuilder(final FieldCollector fieldCollector) {
+        this.fieldCollector = fieldCollector;
+    }
+
     static JsonObjectNodeBuilder duplicateFieldPermittingJsonObjectNodeBuilder() {
         return new JsonObjectNodeBuilder(new FieldCollector() {
             private final List<JsonFieldBuilder> fieldBuilders = new LinkedList<JsonFieldBuilder>();
 
             public void add(final JsonFieldBuilder jsonFieldBuilder) {
                 fieldBuilders.add(jsonFieldBuilder);
+            }
+
+            public int size() {
+                return fieldBuilders.size();
             }
 
             public Iterator<JsonField> iterator() {
@@ -59,6 +69,10 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
                 }
             }
 
+            public int size() {
+                return fieldBuilders.size();
+            }
+
             public Iterator<JsonField> iterator() {
                 final Iterator<Map.Entry<JsonStringNode, JsonFieldBuilder>> delegate = fieldBuilders.entrySet().iterator();
                 return new Iterator<JsonField>() {
@@ -76,16 +90,6 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
                 };
             }
         });
-    }
-
-    private interface FieldCollector extends Iterable<JsonField> {
-        void add(JsonFieldBuilder jsonFieldBuilder);
-    }
-
-    private final FieldCollector fieldCollector;
-
-    private JsonObjectNodeBuilder(final FieldCollector fieldCollector) {
-        this.fieldCollector = fieldCollector;
     }
 
     /**
@@ -122,10 +126,16 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
     }
 
     public JsonRootNode build() {
-        return JsonNodeFactories.object(new ArrayList<JsonField>() {{
+        return JsonNodeFactories.object(new ArrayList<JsonField>(fieldCollector.size()) {{
             for (final JsonField field : fieldCollector) {
-                add(field);
+                this.add(field);
             }
         }});
+    }
+
+    private interface FieldCollector extends Iterable<JsonField> {
+        void add(JsonFieldBuilder jsonFieldBuilder);
+
+        int size();
     }
 }

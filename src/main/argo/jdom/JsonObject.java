@@ -10,12 +10,11 @@
 
 package argo.jdom;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.unmodifiableList;
+import static argo.jdom.ImmutableListFactories.immutableListOf;
 import static java.util.Collections.unmodifiableMap;
 
 final class JsonObject extends AbstractJsonObject {
@@ -23,11 +22,7 @@ final class JsonObject extends AbstractJsonObject {
     private final List<JsonField> fields;
 
     JsonObject(final Iterable<JsonField> fields) {
-        this.fields = unmodifiableList(new ArrayList<JsonField>() {{
-            for (final JsonField field : fields) {
-                add(field);
-            }
-        }});
+        this.fields = immutableListOf(fields);
     }
 
     @Override
