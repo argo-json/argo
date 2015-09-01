@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,9 +10,13 @@
 
 package argo.jdom;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 
 final class JsonObject extends AbstractJsonObject {
 
@@ -28,7 +32,7 @@ final class JsonObject extends AbstractJsonObject {
 
     @Override
     public Map<JsonStringNode, JsonNode> getFields() {
-        return Collections.unmodifiableMap(new LinkedHashMap<JsonStringNode, JsonNode>() {{
+        return unmodifiableMap(new LinkedHashMap<JsonStringNode, JsonNode>(fields.size() * 4 / 3 + 1) {{
             for (final JsonField field : fields) {
                 put(field.getName(), field.getValue());
             }
