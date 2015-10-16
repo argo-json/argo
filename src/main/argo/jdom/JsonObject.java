@@ -20,6 +20,7 @@ import static java.util.Collections.unmodifiableMap;
 final class JsonObject extends AbstractJsonObject {
 
     private final List<JsonField> fields;
+    private transient Map<JsonStringNode, JsonNode> fieldMap;
 
     JsonObject(final Iterable<JsonField> fields) {
         this.fields = immutableListOf(fields);
@@ -27,11 +28,14 @@ final class JsonObject extends AbstractJsonObject {
 
     @Override
     public Map<JsonStringNode, JsonNode> getFields() {
-        return unmodifiableMap(new LinkedHashMap<JsonStringNode, JsonNode>(fields.size() * 4 / 3 + 1) {{
-            for (final JsonField field : fields) {
-                put(field.getName(), field.getValue());
-            }
-        }});
+        if (fieldMap == null) {
+            fieldMap = unmodifiableMap(new LinkedHashMap<JsonStringNode, JsonNode>(fields.size() * 4 / 3 + 1) {{
+                for (final JsonField field : fields) {
+                    put(field.getName(), field.getValue());
+                }
+            }});
+        }
+        return fieldMap;
     }
 
     @Override
