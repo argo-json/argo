@@ -22,19 +22,16 @@ final class ImmutableListFactories {
     }
 
     static <T> List<T> immutableListOf(final Iterable<? extends T> elements) {
+        final List<T> copy;
         if (elements instanceof Collection) {
-            return unmodifiableList(new ArrayList<T>(((Collection) elements).size()) {{
-                for (final T element : elements) {
-                    this.add(element);
-                }
-            }});
+            copy = new ArrayList<T>((Collection) elements);
         } else {
-            return unmodifiableList(new ArrayList<T>() {{
-                for (final T element : elements) {
-                    this.add(element);
-                }
-            }});
+            copy = new ArrayList<T>();
+            for (final T element : elements) {
+                copy.add(element);
+            }
         }
+        return unmodifiableList(copy);
 
     }
 }
