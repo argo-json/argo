@@ -10,31 +10,8 @@
 
 package argo.jdom;
 
-import static argo.jdom.JsonNodeFactories.field;
+interface JsonFieldBuilder {
+    JsonStringNode buildKey();
 
-final class JsonFieldBuilder {
-
-    private final JsonStringNode key;
-    private JsonNodeBuilder valueBuilder;
-
-    private JsonFieldBuilder(final JsonStringNode key) {
-        this.key = key;
-    }
-
-    static JsonFieldBuilder aJsonFieldBuilder(final JsonStringNode key) {
-        return new JsonFieldBuilder(key);
-    }
-
-    JsonFieldBuilder withValue(final JsonNodeBuilder jsonNodeBuilder) {
-        valueBuilder = jsonNodeBuilder;
-        return this;
-    }
-
-    JsonStringNode buildKey() {
-        return key;
-    }
-
-    JsonField build() {
-        return field(buildKey(), valueBuilder.build());
-    }
+    JsonField build();
 }

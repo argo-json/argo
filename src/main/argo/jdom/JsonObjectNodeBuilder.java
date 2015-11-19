@@ -12,7 +12,7 @@ package argo.jdom;
 
 import java.util.*;
 
-import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
+import static argo.jdom.UnmodifiableJsonFieldBuilder.anUnmodifiableJsonFieldBuilder;
 
 /**
  * Builder for {@code JsonRootNode}s representing JSON objects.
@@ -111,7 +111,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
      * @return the modified object builder.
      */
     public JsonObjectNodeBuilder withField(final JsonStringNode name, final JsonNodeBuilder value) {
-        return withFieldBuilder(aJsonFieldBuilder(name).withValue(value));
+        return withFieldBuilder(anUnmodifiableJsonFieldBuilder(name, value));
     }
 
     /**

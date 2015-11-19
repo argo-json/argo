@@ -14,8 +14,8 @@ import argo.saj.JsonListener;
 
 import java.util.Stack;
 
-import static argo.jdom.JsonFieldBuilder.aJsonFieldBuilder;
 import static argo.jdom.JsonNodeBuilders.*;
+import static argo.jdom.JsonNodeFactories.field;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
 
@@ -53,17 +53,9 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final String name) {
-        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder(JsonNodeFactories.string(name));
-        stack.peek().addField(fieldBuilder);
-        stack.push(new NodeContainer() {
-            public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
-                fieldBuilder.withValue(jsonNodeBuilder);
-            }
-
-            public void addField(final JsonFieldBuilder jsonFieldBuilder) {
-                throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field.");
-            }
-        });
+        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(JsonNodeFactories.string(name));
+        stack.peek().addField(fieldNodeContainer);
+        stack.push(fieldNodeContainer);
     }
 
     public void endField() {
@@ -139,6 +131,35 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
         public JsonRootNode build() {
             return objectNodeBuilder.build();
+        }
+    }
+
+    private static final class FieldNodeContainer implements NodeContainer, JsonFieldBuilder {
+        private final JsonStringNode key;
+        private JsonNodeBuilder valueBuilder;
+
+        FieldNodeContainer(JsonStringNode key) {
+            this.key = key;
+        }
+
+        public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
+            valueBuilder = jsonNodeBuilder;
+        }
+
+        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field.");
+        }
+
+        public JsonStringNode buildKey() {
+            return key;
+        }
+
+        public JsonField build() {
+            if (valueBuilder == null) {
+                throw new RuntimeException("Coding failure in Argo:  Attempt to create a field without a value.");
+            } else {
+                return field(buildKey(), valueBuilder.build());
+            }
         }
     }
 }
