@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -33,17 +33,9 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startArray() {
-        final JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
-        addRootNode(arrayBuilder);
-        stack.push(new NodeContainer() {
-            public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
-                arrayBuilder.withElement(jsonNodeBuilder);
-            }
-
-            public void addField(final JsonFieldBuilder jsonFieldBuilder) {
-                throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array.");
-            }
-        });
+        final ArrayNodeContainer arrayNodeContainer = new ArrayNodeContainer();
+        addRootNode(arrayNodeContainer);
+        stack.push(arrayNodeContainer);
     }
 
     public void endArray() {
@@ -51,17 +43,9 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startObject() {
-        final JsonObjectNodeBuilder objectNodeBuilder = anObjectBuilder();
-        addRootNode(objectNodeBuilder);
-        stack.push(new NodeContainer() {
-            public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
-                throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object.");
-            }
-
-            public void addField(final JsonFieldBuilder jsonFieldBuilder) {
-                objectNodeBuilder.withFieldBuilder(jsonFieldBuilder);
-            }
-        });
+        final ObjectNodeContainer objectNodeContainer = new ObjectNodeContainer();
+        addRootNode(objectNodeContainer);
+        stack.push(objectNodeContainer);
     }
 
     public void endObject() {
@@ -69,7 +53,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final String name) {
-        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder().withKey(JsonNodeFactories.string(name));
+        final JsonFieldBuilder fieldBuilder = aJsonFieldBuilder(JsonNodeFactories.string(name));
         stack.peek().addField(fieldBuilder);
         stack.push(new NodeContainer() {
             public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -124,5 +108,37 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
         void addField(JsonFieldBuilder jsonFieldBuilder);
 
+    }
+
+    private static final class ArrayNodeContainer implements NodeContainer, JsonNodeBuilder<JsonRootNode> {
+        private final JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
+
+        public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
+            arrayBuilder.withElement(jsonNodeBuilder);
+        }
+
+        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array.");
+        }
+
+        public JsonRootNode build() {
+            return arrayBuilder.build();
+        }
+    }
+
+    private static final class ObjectNodeContainer implements NodeContainer, JsonNodeBuilder<JsonRootNode> {
+        private final JsonObjectNodeBuilder objectNodeBuilder = anObjectBuilder();
+
+        public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object.");
+        }
+
+        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+            objectNodeBuilder.withFieldBuilder(jsonFieldBuilder);
+        }
+
+        public JsonRootNode build() {
+            return objectNodeBuilder.build();
+        }
     }
 }

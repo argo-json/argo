@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2015 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -14,19 +14,15 @@ import static argo.jdom.JsonNodeFactories.field;
 
 final class JsonFieldBuilder {
 
-    private JsonStringNode key;
+    private final JsonStringNode key;
     private JsonNodeBuilder valueBuilder;
 
-    private JsonFieldBuilder() {
+    private JsonFieldBuilder(final JsonStringNode key) {
+        this.key = key;
     }
 
-    static JsonFieldBuilder aJsonFieldBuilder() {
-        return new JsonFieldBuilder();
-    }
-
-    JsonFieldBuilder withKey(final JsonStringNode jsonStringNode) {
-        key = jsonStringNode;
-        return this;
+    static JsonFieldBuilder aJsonFieldBuilder(final JsonStringNode key) {
+        return new JsonFieldBuilder(key);
     }
 
     JsonFieldBuilder withValue(final JsonNodeBuilder jsonNodeBuilder) {
