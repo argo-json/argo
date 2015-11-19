@@ -34,11 +34,7 @@ final class JsonFieldBuilder {
         return key;
     }
 
-    JsonNode buildValue() {
-        return valueBuilder.build();
-    }
-
     JsonField build() {
-        return field(buildKey(), buildValue());
+        return field(buildKey(), valueBuilder.build());
     }
 }
