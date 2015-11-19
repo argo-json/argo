@@ -24,7 +24,7 @@ final class ImmutableListFactories {
     static <T> List<T> immutableListOf(final Iterable<? extends T> elements) {
         final List<T> copy;
         if (elements instanceof Collection) {
-            copy = new ArrayList<T>((Collection) elements);
+            copy = new ArrayList<T>((Collection<? extends T>) elements);
         } else {
             copy = new ArrayList<T>();
             for (final T element : elements) {
