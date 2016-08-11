@@ -156,79 +156,6 @@
     <option name="OUTPUT_DIRECTORY" />
   </component>
   <component name="IdProvider" IDEtalkID="B0CF0857EA01BB16A9BD590373EFF1F0" />
-  <component name="InspectionProjectProfileManager">
-    <profiles>
-      <profile version="1.0" is_locked="false">
-        <option name="myName" value="Project Default" />
-        <option name="myLocal" value="false" />
-        <inspection_tool class="AnonymousClassComplexity" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="m_limit" value="5" />
-        </inspection_tool>
-        <inspection_tool class="AnonymousClassMethodCount" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="m_limit" value="3" />
-        </inspection_tool>
-        <inspection_tool class="AssignmentToCatchBlockParameter" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="AssignmentToForLoopParameter" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="m_checkForeachParameters" value="false" />
-        </inspection_tool>
-        <inspection_tool class="AssignmentToMethodParameter" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="ignoreTransformationOfOriginalParameter" value="false" />
-        </inspection_tool>
-        <inspection_tool class="AssignmentToStaticFieldFromInstanceMethod" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="AssignmentUsedAsCondition" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="ClassComplexity" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="m_limit" value="80" />
-        </inspection_tool>
-        <inspection_tool class="ClassCoupling" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="m_includeJavaClasses" value="false" />
-          <option name="m_includeLibraryClasses" value="false" />
-          <option name="m_limit" value="15" />
-        </inspection_tool>
-        <inspection_tool class="ClassInheritanceDepth" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="m_limit" value="2" />
-        </inspection_tool>
-        <inspection_tool class="ClassNestingDepth" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="m_limit" value="1" />
-        </inspection_tool>
-        <inspection_tool class="ClassReferencesSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="ConstructorCount" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="ignoreDeprecatedConstructors" value="false" />
-          <option name="m_limit" value="5" />
-        </inspection_tool>
-        <inspection_tool class="DeclareCollectionAsInterface" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="ignoreLocalVariables" value="false" />
-          <option name="ignorePrivateMethodsAndFields" value="false" />
-        </inspection_tool>
-        <inspection_tool class="FinalMethodInFinalClass" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="IncrementDecrementUsedAsExpression" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="InstanceofThis" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="LiteralAsArgToStringEquals" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="MethodOnlyUsedFromInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="ignoreMethodsAccessedFromAnonymousClass" value="false" />
-          <option name="ignoreStaticMethodsFromNonStaticInnerClass" value="false" />
-          <option name="onlyReportStaticMethods" value="false" />
-        </inspection_tool>
-        <inspection_tool class="MissortedModifiers" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="m_requireAnnotationsFirst" value="true" />
-        </inspection_tool>
-        <inspection_tool class="NestedAssignment" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="OverlyStrongTypeCast" enabled="true" level="WARNING" enabled_by_default="true">
-          <option name="ignoreInMatchingInstanceof" value="false" />
-        </inspection_tool>
-        <inspection_tool class="StaticMethodOnlyUsedInOneClass" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="SystemOutErr" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="ThreadDumpStack" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="ThrowablePrintStackTrace" enabled="true" level="WARNING" enabled_by_default="true" />
-        <inspection_tool class="UnnecessaryLocalVariable" enabled="false" level="WARNING" enabled_by_default="false">
-          <option name="m_ignoreImmediatelyReturnedVariables" value="false" />
-          <option name="m_ignoreAnnotatedVariables" value="false" />
-        </inspection_tool>
-      </profile>
-    </profiles>
-    <option name="PROJECT_PROFILE" value="Project Default" />
-    <option name="USE_PROJECT_PROFILE" value="true" />
-    <version value="1.0" />
-  </component>
   <component name="IvyIDEA.ProjectSettings">
     <option name="artifactTypeSettings">
       <ArtifactTypeSettings />
@@ -461,7 +388,7 @@
   <component name="ProjectResources">
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ProjectRunConfigurationManager">
@@ -631,4 +558,3 @@
     <setting name="isActivated" value="false" />
   </component>
 </project>
-
