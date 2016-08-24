@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Mark Slater
+ * Copyright 2016 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,6 +12,10 @@ package argo.jdom;
 
 import argo.saj.InvalidSyntaxException;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -74,5 +78,46 @@ public final class JdomParserTest {
     @Test
     public void canParseCharacterMinusOne() throws Exception {
         assertThat(new JdomParser().parse("[\"" + ((char) -1) + "\"]").getStringValue(0), equalTo(String.valueOf((char) -1)));
+    }
+
+    @Test
+    /**
+     * This test exposes a bug in PositionTrackingPushbackReader where PTPR doesn't call Reader.read(cbuf, ...) in the intended manner.
+     *    (When read's return value != supplied buffer's length, caller should keep calling!)
+     * Reader.read(...) may return 'some input', but not enough to fill the supplied buffer.
+     * In that case the consumer is expected to call again to fill the supplied buffer.
+     * When testing with Readers backed by readily available data (ie a local file), this seems to not happen.
+     * However, when reading from Readers backed by a network buffer, we've seen it happen.
+     *
+     * @author Henrik Sjöstrand
+     */
+    public void whenReaderReturnsSome_thenReadMore() throws Exception {
+        final JsonNode jsonNode = new JdomParser().parse(new ChoppingReader(new StringReader("{\"nullField\":null}")));
+        final String result = JsonNodeSelectors.aNullableStringNode("nullField").getValue(jsonNode);
+        assertThat(result, equalTo(null));
+    }
+
+    /**
+     * Implementation of Reader that wraps underlying Reader, but forces Reader.read(...) to read at most 1 character.
+     * This makes it useful for exposing the case when a 'some input' is available, but not enough to fill the supplied buffer.
+     * It's expected of the Reader's consumer to keep calling read, until the supplied buffer is filled.
+     *
+     * @author Henrik Sjöstrand
+     */
+    private static final class ChoppingReader extends Reader {
+        private final Reader reader;
+
+        ChoppingReader(Reader reader) {
+            this.reader = reader;
+        }
+
+        @Override
+        public int read(char[] cbuf, int off, int len) throws IOException {
+            return reader.read(cbuf, off, (len == 0) ? 0 : 1);
+        }
+
+        @Override
+        public void close() throws IOException {
+        }
     }
 }

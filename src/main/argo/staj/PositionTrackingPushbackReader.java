@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2016 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
 
+/**
+ * @author Mark Slater
+ * @author Henrik Sjöstrand
+ */
 final class PositionTrackingPushbackReader implements ThingWithPosition {
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
@@ -54,7 +58,16 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
 
     int read(final char[] buffer) throws JsonStreamException {
         try {
-            final int result = pushbackReader.read(buffer);
+            int result = 0;
+            for (int latestCharactersRead = 0; latestCharactersRead != -1 && result < buffer.length; latestCharactersRead = pushbackReader.read(buffer, result, buffer.length - result)) {
+                if (latestCharactersRead == -1) {
+                    if (result == 0) {
+                        result = -1;
+                    }
+                } else {
+                    result = result + latestCharactersRead;
+                }
+            }
             for (char character : buffer) {
                 updateCharacterAndLineCounts(character);
             }
