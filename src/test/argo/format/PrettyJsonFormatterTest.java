@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Mark Slater
+ * Copyright 2016 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -25,6 +25,7 @@ import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
 import static argo.format.PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter;
 import static argo.format.PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter;
 import static argo.jdom.JsonNodeFactories.*;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -33,10 +34,10 @@ import static org.junit.Assert.assertThat;
 public final class PrettyJsonFormatterTest {
     @Test
     public void formatsAJsonObject() throws Exception {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Hello"), string("World"));
-            put(string("Foo"), string("Bar"));
-        }})), equalTo(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(newArrayList(
+                field(string("Foo"), string("Bar")),
+                field(string("Hello"), string("World"))
+        ))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("{")
                         .printLine("\t\"Foo\": \"Bar\",")
