@@ -168,8 +168,8 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
         session(remotes.sourceforgeWeb) {
             put from: "build/distributions/documentation-${version}.tgz", into: '/home/project-web/argo/'
             put from: "build/libs/argo-${version}-javadoc.jar", into: '/home/project-web/argo/'
-            put from: "build/libs/argo-${version}-combined.jar", into: "/home/frs/project/a/ar/argo/argo/argo-${version}.jar"
-            put from: "build/libs/argo-${version}.jar", into: "/home/frs/project/a/ar/argo/argo/argo-small-${version}.jar"
+            put from: "build/libs/argo-${version}-combined.jar", into: "/home/frs/project/argo/argo/${version}/argo-${version}.jar"
+            put from: "build/libs/argo-${version}.jar", into: "/home/frs/project/argo/argo/${version}/argo-small-${version}.jar"
         }
         session(remotes.sourceforgeShell) {
             execute "mkdir -p /home/project-web/argo/${version}/javadoc && tar -xvf /home/project-web/argo/documentation-${version}.tgz -C /home/project-web/argo/${version} && unzip -d /home/project-web/argo/${version}/javadoc /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/documentation-${version}.tgz && rm /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${version} /home/project-web/argo/htdocs"
