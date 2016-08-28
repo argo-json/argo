@@ -33,6 +33,10 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.14.1'
 }
 
+build.mustRunAfter clean
+uploadArchives.mustRunAfter build
+closeAndPromoteRepository.mustRunAfter uploadArchives
+
 task svnTag(type: at.bxm.gradleplugins.svntools.tasks.SvnTag) {
     tagName = "$version"
     svnUrl = 'https://svn.code.sf.net/p/argo/code/trunk'
@@ -239,4 +243,8 @@ uploadArchives {
 nexusStaging {
     username = ossrhUser
     password = ossrhPassword
+}
+
+task performRelease (dependsOn: [copyToSourceforge, closeAndPromoteRepository, svnTag]) << {
+    println 'BOOM!'
 }
