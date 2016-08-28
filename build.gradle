@@ -141,6 +141,7 @@ task buildDocumentation(type:JavaExec, dependsOn: documentationDirectory) {
 
 task documentationJar(type: Tar, dependsOn: [ buildDocumentation, ico]) {
     from 'build/documentation'
+    from 'docs'
     baseName 'documentation'
     compression = Compression.GZIP
 }
@@ -180,7 +181,6 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
     // todo auto-increment version number
     // todo commit auto-incremented version number
     // todo drop repository post-promotion
-    // todo include static documentation
 }
 
 apply plugin: 'signing'
