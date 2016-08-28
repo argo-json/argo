@@ -12,14 +12,14 @@ package argo.jdom;
 
 /**
  * Instances of {@code JsonNodeSelector} extract values from {@code Object}s of a specified type.
- * <p/>
- * <p>For example, given a {@code JsonNode} representing {@code {"Fee":{"fi":"fo"}}},
+ * 
+ * For example, given a {@code JsonNode} representing {@code {"Fee":{"fi":"fo"}}},
  * <pre>
  * anObjectNodeWithField("Fee")
  * .withChild(anObjectNodeWithField("fi"))
  * .withChild(aStringNode())
  * .getValue(jsonNode)
- * </pre> will return the {@code String} "fo".</p>
+ * </pre> will return the {@code String} "fo".
  *
  * @param <T> The type of Object worked on.
  * @param <U> The type of Object returned.
@@ -47,7 +47,7 @@ public final class JsonNodeSelector<T, U> {
      *
      * @param argument the {@code JsonNode} to extract a value from.
      * @return the extracted value.
-     * @throws IllegalArgumentException if calling {@code matches{@code  with the given {@code JsonNode} would return false, indicating no value can be extracted from it.
+     * @throws IllegalArgumentException if calling {@code matches} with the given {@code JsonNode} would return false, indicating no value can be extracted from it.
      */
     public U getValue(final T argument) {
         return valueGetter.applyTo(argument);
@@ -55,7 +55,7 @@ public final class JsonNodeSelector<T, U> {
 
     /**
      * <p>Constructs a JsonNodeSelector consisting of this chained with the given {@code JsonNodeSelector}.</p>
-     * <p/>
+     * 
      * <p>For example, if we have {@code JsonNodeSelectors} for the first element of an array, and another that
      * selects the second element of an array, and we chain them together in that order, we will get a selector that
      * works on nested arrays, selecting the second element from an array stored in the first element of a parent

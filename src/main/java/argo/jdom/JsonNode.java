@@ -17,16 +17,16 @@ import static argo.jdom.JsonNodeDoesNotMatchPathElementsException.jsonNodeDoesNo
 
 /**
  * <p>A node (leaf or otherwise) in a JSON document.</p>
- * <p/>
+ *     
  * <p>Supplies methods for examining the node, and also examining and navigating the hierarchy at and below this node.
  * Methods for navigating the hierarchy are of the form {@code getXXXValue(Object... pathElements)}.</p>
- * <p/>
+ * 
  * <p>For example, {@link #getStringValue(Object...)} takes a series of {@code String}s and
  * {@code Integer}s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
  * The {@code String}s tell it to select a field with the given name from an object, and the {@code Integer}s
- * tell it to select an element with the given index from an array.</p> If no field of that name exists, or the field
+ * tell it to select an element with the given index from an array.  If no field of that name exists, or the field
  * exists, but it isn't a JSON string, an {@code IllegalArgumentException} is thrown.</p>
- * <p/>
+ * 
  * <p>Methods for examining the hierarchy work on the same principal as the
  * {@code getXXXValue(Object... pathElements)} methods, but return a {@code boolean} indicating whether
  * or not the element at the given path exists and is of the type specified, for example,

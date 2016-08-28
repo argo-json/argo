@@ -18,11 +18,11 @@
     <property name="location.lib.build" value="${location.lib}/build"/>
     <property name="location.documentation" value="docs"/>
     <property name="location.src" value="src/main"/>
-    <property name="location.src.test-infrastructure" value="src/test-infrastructure"/>
+    <property name="location.src.test-infrastructure" value="src/testInfrastructure"/>
     <property name="location.src.test" value="src/test"/>
-    <property name="location.src.performance-test" value="src/performance-test"/>
-    <property name="location.src.code-sample" value="src/code-samples"/>
-    <property name="location.src.build" value="src/build"/>
+    <property name="location.src.performance-test" value="src/performanceTest"/>
+    <property name="location.src.code-sample" value="src/codeSamples"/>
+    <property name="location.src.build" value="src/documentation"/>
 
     <property name="location.build" value="build"/>
     <property name="location.classes" value="${location.build}/classes"/>
@@ -151,7 +151,7 @@
         </copy>
 
         <copy todir="${location.test-infrastructure-classes}">
-            <fileset dir="src/test-infrastructure"/>
+            <fileset dir="src/testInfrastructure"/>
         </copy>
 
         <copy todir="${location.test-classes}">
@@ -159,11 +159,11 @@
         </copy>
 
         <copy todir="${location.performance-test-classes}">
-            <fileset dir="src/performance-test"/>
+            <fileset dir="src/performanceTest"/>
         </copy>
 
         <copy todir="${location.code-sample-test-classes}">
-            <fileset dir="src/code-samples"/>
+            <fileset dir="src/codeSamples"/>
         </copy>
 
         <echo message="Finished compile"/>
@@ -208,7 +208,7 @@
                 <path refid="performance-test-compile-libs"/>
                 <path refid="test-compile-libs"/>
                 <path refid="performance-test-run-libs"/>
-                <pathelement location="${location.src.performance-test}"/>
+                <pathelement location="performanceTest"/>
             </classpath>
             <batchtest fork="yes" todir="${location.performance-test-results}">
                 <fileset dir="${location.performance-test-classes}">

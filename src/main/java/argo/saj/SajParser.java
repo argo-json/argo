@@ -19,7 +19,7 @@ import java.io.StringReader;
 
 /**
  * Converts a character stream into calls to a {@code JsonListener}.
- * <p/>
+ *
  * Instances of {@code SajParser} are threadsafe in that concurrent calls to {@code parse} are safe, provided
  * each call is made with a different {@code Reader} and a different {@code JsonListener}.
  *
