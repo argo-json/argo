@@ -165,6 +165,7 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
     ssh.run {
         session(remotes.sourceforgeShell) {
             execute 'create'
+            execute "mkdir -p /home/frs/project/argo/argo/${version}"
         }
         session(remotes.sourceforgeWeb) {
             put from: "build/distributions/documentation-${version}.tgz", into: '/home/project-web/argo/'
