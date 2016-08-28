@@ -37,14 +37,6 @@ build.mustRunAfter clean
 uploadArchives.mustRunAfter build
 closeAndPromoteRepository.mustRunAfter uploadArchives
 
-task svnTag(type: at.bxm.gradleplugins.svntools.tasks.SvnTag) {
-    tagName = "$version"
-    svnUrl = 'https://svn.code.sf.net/p/argo/code/trunk'
-    commitMessage = "Tag for release ${version}."
-    username = "$sourceforgeUser"
-    password = "$sourceforgePassword"
-}
-
 sourceSets {
     testInfrastructure
     performanceTest
@@ -244,6 +236,14 @@ uploadArchives {
 nexusStaging {
     username = ossrhUser
     password = ossrhPassword
+}
+
+task svnTag(type: at.bxm.gradleplugins.svntools.tasks.SvnTag) {
+    tagName = "$version"
+    svnUrl = 'https://svn.code.sf.net/p/argo/code/trunk'
+    commitMessage = "Tag for release ${version}."
+    username = "$sourceforgeUser"
+    password = "$sourceforgePassword"
 }
 
 task performRelease (dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag]) << {
