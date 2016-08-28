@@ -245,6 +245,6 @@ nexusStaging {
     password = ossrhPassword
 }
 
-task performRelease (dependsOn: [copyToSourceforge, closeAndPromoteRepository, svnTag]) << {
+task performRelease (dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag]) << {
     println 'BOOM!'
 }
