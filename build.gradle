@@ -180,6 +180,7 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
     // todo auto-increment version number
     // todo commit auto-incremented version number
     // todo drop repository post-promotion
+    // todo include static documentation
 }
 
 apply plugin: 'signing'
