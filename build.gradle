@@ -81,12 +81,6 @@ archivesBaseName = 'argo'
 version = 3.24
 description = 'Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.'
 
-task deploy(group: 'release', description: 'Push the latest to Maven Central', dependsOn: ['clean', 'build', 'uploadArchives', 'closeAndPromoteRepository']) << {
-    ant.propertyfile(file: file('gradle.properties')) {
-        entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
-    }
-}
-
 compileJava {
     sourceCompatibility = 1.5
     targetCompatibility = 1.5
@@ -261,5 +255,7 @@ closeAndPromoteRepository.mustRunAfter uploadArchives
 updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
 task performRelease (dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload]) << {
-    println 'BOOM!'
+    ant.propertyfile(file: file('version.properties')) {
+        entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
+    }
 }
