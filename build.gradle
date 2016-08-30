@@ -37,11 +37,6 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.14.1'
 }
 
-build.mustRunAfter clean
-uploadArchives.mustRunAfter build
-closeAndPromoteRepository.mustRunAfter uploadArchives
-updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
-
 sourceSets {
     testInfrastructure
     performanceTest
@@ -259,6 +254,11 @@ task svnTag(type: at.bxm.gradleplugins.svntools.tasks.SvnTag) {
     username = "$sourceforgeUser"
     password = "$sourceforgePassword"
 }
+
+build.mustRunAfter clean
+uploadArchives.mustRunAfter build
+closeAndPromoteRepository.mustRunAfter uploadArchives
+updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
 task performRelease (dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload]) << {
     println 'BOOM!'
