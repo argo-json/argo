@@ -255,6 +255,6 @@ updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
 task performRelease (dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload]) << {
     ant.propertyfile(file: file('version.properties')) {
-        entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
+        entry(key: 'argo.version.minor', type: 'int', operation: '+', value: 1)
     }
 }
