@@ -78,7 +78,7 @@ dependencies {
 group = 'net.sourceforge.argo'
 archivesBaseName = 'argo'
 //version = "${majorVersion}.${minorVersion}"
-version = 3.23
+version = 3.24
 description = 'Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.'
 
 task deploy(group: 'release', description: 'Push the latest to Maven Central', dependsOn: ['clean', 'build', 'uploadArchives', 'closeAndPromoteRepository']) << {
