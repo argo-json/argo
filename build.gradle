@@ -207,7 +207,7 @@ uploadArchives {
                 mappings.clear()
             }
             pom.project {
-                name project.name
+                name 'Argo'
                 description project.description
                 packaging 'jar'
                 url 'http://argo.sourceforge.net'
