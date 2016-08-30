@@ -175,6 +175,7 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
     // todo auto-increment version number
     // todo commit auto-incremented version number
     // todo check pom from central
+    // todo build exported version
 }
 
 
