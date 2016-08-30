@@ -70,7 +70,7 @@ dependencies {
     documentationCompile sourceSets.main.output
     performanceTestCompile sourceSets.testInfrastructure.output
     performanceTestCompile group: 'net.sf.json-lib', name: 'json-lib', version: '2.2.2', classifier: 'jdk15'
-    documentationCompile group: 'net.sourceforge.writexml', name: 'writexml', version: '1.1' // TODO - just for POM generation?
+    documentationCompile group: 'net.sourceforge.writexml', name: 'writexml', version: '1.1'
     documentationCompile group: 'net.sourceforge.xazzle', name: 'xazzle', version: '0.39'
     svg2ico group: 'net.sourceforge.svg2ico', name: 'svg2ico', version: '1.5'
 }
