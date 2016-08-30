@@ -172,10 +172,8 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
         }
     }
     // todo turn off debug information in tiny jar (existing bug)
-    // todo update default download
     // todo auto-increment version number
     // todo commit auto-incremented version number
-    // todo drop repository post-promotion (maybe happens of its own accord?)
     // todo check pom from central
 }
 
