@@ -20,10 +20,14 @@ buildscript {
 plugins {
     id 'org.hidetake.ssh' version '2.1.0'
     id 'at.bxm.svntools' version '1.6.1'
+    id 'org.tenne.rest' version '0.4.2'
 }
 
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'java'
+apply plugin: 'signing'
+apply plugin: 'maven'
+
 
 repositories {
     mavenCentral()
@@ -36,6 +40,7 @@ task wrapper(type: Wrapper) {
 build.mustRunAfter clean
 uploadArchives.mustRunAfter build
 closeAndPromoteRepository.mustRunAfter uploadArchives
+updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
 sourceSets {
     testInfrastructure
@@ -185,8 +190,14 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
     // todo check pom from central
 }
 
-apply plugin: 'signing'
-apply plugin: 'maven'
+
+task updateSourceforgeDefaultDownload(type: org._10ne.gradle.rest.RestTask) {
+    httpMethod = 'put'
+    uri = "https://sourceforge.net/projects/argo/files/argo/${version}//argo-${version}.jar"
+    requestContentType = groovyx.net.http.ContentType.URLENC
+    contentType = groovyx.net.http.ContentType.JSON
+    requestBody = "default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others&download_label=${version}%20with%20source&api_key=$sourceforgeApiKey"
+}
 
 // Signature of artifacts
 signing {
@@ -249,6 +260,6 @@ task svnTag(type: at.bxm.gradleplugins.svntools.tasks.SvnTag) {
     password = "$sourceforgePassword"
 }
 
-task performRelease (dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag]) << {
+task performRelease (dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload]) << {
     println 'BOOM!'
 }
