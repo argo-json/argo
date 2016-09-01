@@ -312,7 +312,7 @@ public enum JsonStreamElementType {
                     result.append(nextChar);
             }
         }
-        return result.toString();
+        return result.length() == 0 ? "" : result.toString();
     }
 
     private static char escapedStringChar(final PositionTrackingPushbackReader in) {
@@ -377,10 +377,11 @@ public enum JsonStreamElementType {
             in.unread(firstChar);
         }
         result.append(nonNegativeNumberToken(in));
-        return result.toString();
+        final String numberToken = result.toString();
+        return "0".equals(numberToken) ? "0" : numberToken;
     }
 
-    private static String nonNegativeNumberToken(final PositionTrackingPushbackReader in) {
+    private static StringBuilder nonNegativeNumberToken(final PositionTrackingPushbackReader in) {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) in.read();
         if ('0' == firstChar) {
@@ -394,7 +395,7 @@ public enum JsonStreamElementType {
             result.append(possibleFractionalComponent(in));
             result.append(possibleExponent(in));
         }
-        return result.toString();
+        return result;
     }
 
     private static char nonZeroDigitToken(final PositionTrackingPushbackReader in) {
@@ -440,7 +441,7 @@ public enum JsonStreamElementType {
         return result;
     }
 
-    private static String digitString(final PositionTrackingPushbackReader in) {
+    private static StringBuilder digitString(final PositionTrackingPushbackReader in) {
         final StringBuilder result = new StringBuilder();
         boolean gotANonDigit = false;
         while (!gotANonDigit) {
@@ -463,10 +464,10 @@ public enum JsonStreamElementType {
                     in.unread(nextChar);
             }
         }
-        return result.toString();
+        return result;
     }
 
-    private static String possibleFractionalComponent(final PositionTrackingPushbackReader pushbackReader) {
+    private static StringBuilder possibleFractionalComponent(final PositionTrackingPushbackReader pushbackReader) {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '.') {
@@ -476,10 +477,10 @@ public enum JsonStreamElementType {
         } else {
             pushbackReader.unread(firstChar);
         }
-        return result.toString();
+        return result;
     }
 
-    private static String possibleExponent(final PositionTrackingPushbackReader pushbackReader) {
+    private static StringBuilder possibleExponent(final PositionTrackingPushbackReader pushbackReader) {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         switch (firstChar) {
@@ -500,10 +501,10 @@ public enum JsonStreamElementType {
                 pushbackReader.unread(firstChar);
                 break;
         }
-        return result.toString();
+        return result;
     }
 
-    private static String possibleSign(final PositionTrackingPushbackReader pushbackReader) {
+    private static StringBuilder possibleSign(final PositionTrackingPushbackReader pushbackReader) {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         if (firstChar == '+' || firstChar == '-') {
@@ -511,7 +512,7 @@ public enum JsonStreamElementType {
         } else {
             pushbackReader.unread(firstChar);
         }
-        return result.toString();
+        return result;
     }
 
 }
