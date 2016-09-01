@@ -256,7 +256,7 @@ task incrementVersionNumber {
 }
 
 task commitVersionNumber(type: SvnCommit, dependsOn: incrementVersionNumber) {
-    source = file('gradle.properties')
+    source << file('gradle.properties')
     commitMessage = 'Increment version number'
     username = "$sourceforgeUser"
     password = "$sourceforgePassword"
@@ -266,6 +266,6 @@ uploadArchives.mustRunAfter build
 closeAndPromoteRepository.mustRunAfter uploadArchives
 updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
-task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload, commitVersionNumber]) << {
+task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload]) << {
     println 'Release complete :)'
 }
