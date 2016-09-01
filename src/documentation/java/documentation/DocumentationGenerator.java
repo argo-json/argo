@@ -40,8 +40,8 @@ public class DocumentationGenerator {
 
     private static String versionString() throws IOException {
         final Properties properties = new Properties();
-        properties.load(new FileReader("version.properties"));
-        return properties.getProperty("argo.version.major") + "." + properties.getProperty("argo.version.minor");
+        properties.load(new FileReader("gradle.properties"));
+        return properties.getProperty("majorVersion") + "." + properties.getProperty("minorVersion");
     }
 
     private static void writePage(final HtmlTag page, final File destination, final String fileName) throws IOException, XmlWriteException {

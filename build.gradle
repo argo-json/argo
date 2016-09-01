@@ -77,8 +77,7 @@ dependencies {
 
 group = 'net.sourceforge.argo'
 archivesBaseName = 'argo'
-//version = "${majorVersion}.${minorVersion}"
-version = 3.25
+version = "${majorVersion}.${minorVersion}"
 description = 'Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.'
 
 compileJava {
@@ -178,7 +177,6 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
     // todo build exported version
 }
 
-
 task updateSourceforgeDefaultDownload(type: org._10ne.gradle.rest.RestTask) {
     httpMethod = 'put'
     uri = "https://sourceforge.net/projects/argo/files/argo/${version}//argo-${version}.jar"
@@ -254,7 +252,7 @@ closeAndPromoteRepository.mustRunAfter uploadArchives
 updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
 task performRelease (dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload]) << {
-    ant.propertyfile(file: file('version.properties')) {
-        entry(key: 'argo.version.minor', type: 'int', operation: '+', value: 1)
+    ant.propertyfile(file: file('gradle.properties')) {
+        entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
     }
 }
