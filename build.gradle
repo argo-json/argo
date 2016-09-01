@@ -1,3 +1,4 @@
+import at.bxm.gradleplugins.svntools.tasks.SvnCommit
 import at.bxm.gradleplugins.svntools.tasks.SvnTag
 
 /*
@@ -248,13 +249,23 @@ task svnTag(type: SvnTag) {
     password = "$sourceforgePassword"
 }
 
+task incrementVersionNumber {
+    ant.propertyfile(file: file('gradle.properties')) {
+        entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
+    }
+}
+
+task commitVersionNumber(type: SvnCommit, dependsOn: incrementVersionNumber) {
+    source = file('gradle.properties')
+    commitMessage = 'Increment version number'
+    username = "$sourceforgeUser"
+    password = "$sourceforgePassword"
+}
 build.mustRunAfter clean
 uploadArchives.mustRunAfter build
 closeAndPromoteRepository.mustRunAfter uploadArchives
 updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
-task performRelease (dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload]) << {
-    ant.propertyfile(file: file('gradle.properties')) {
-        entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
-    }
+task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload, commitVersionNumber]) << {
+    println 'Release complete :)'
 }
