@@ -40,7 +40,7 @@ public final class JsonNodeBuilders {
      * @throws IllegalArgumentException if the given {@code String} does not conform to the JSON number specification.
      */
     public static JsonNodeBuilder<JsonNode> aNumberBuilder(final String value) {
-        return new JsonNumberNode(value);
+        return JsonNumberNode.jsonNumberNode(value);
     }
 
     /**
@@ -50,7 +50,7 @@ public final class JsonNodeBuilders {
      * @return a builder for a {@code JsonNode} representing the string given.
      */
     public static JsonNodeBuilder<JsonStringNode> aStringBuilder(final String value) {
-        return new JsonStringNode(value);
+        return JsonStringNode.jsonStringNode(value);
     }
 
     /**

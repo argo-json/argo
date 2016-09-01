@@ -18,13 +18,19 @@ import java.util.Map;
  */
 public final class JsonStringNode extends JsonNode implements Comparable<JsonStringNode>, JsonNodeBuilder<JsonStringNode> {
 
+    private static final JsonStringNode EMPTY = new JsonStringNode("");
+
     private final String value;
 
-    JsonStringNode(final String value) {
+    private JsonStringNode(final String value) {
         if (value == null) {
             throw new NullPointerException("Attempt to construct a JsonString with a null value.");
         }
         this.value = value;
+    }
+
+    static JsonStringNode jsonStringNode(final String value) {
+        return "".equals(value) ? EMPTY : new JsonStringNode(value);
     }
 
     public JsonNodeType getType() {

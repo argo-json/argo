@@ -51,7 +51,7 @@ public final class JsonNodeFactories {
      * @return a JSON string representation of the given String
      */
     public static JsonStringNode string(final String value) {
-        return new JsonStringNode(value);
+        return JsonStringNode.jsonStringNode(value);
     }
 
     /**
@@ -59,7 +59,7 @@ public final class JsonNodeFactories {
      * @return a JSON number representation of the given String
      */
     public static JsonNode number(final String value) {
-        return new JsonNumberNode(value);
+        return JsonNumberNode.jsonNumberNode(value);
     }
 
     /**
@@ -67,7 +67,7 @@ public final class JsonNodeFactories {
      * @return a JSON number representation of the given BigDecimal
      */
     public static JsonNode number(final BigDecimal value) {
-        return new JsonNumberNode(value.toString());
+        return JsonNumberNode.jsonNumberNode(value.toString());
     }
 
     /**
@@ -75,7 +75,7 @@ public final class JsonNodeFactories {
      * @return a JSON number representation of the given BigInteger
      */
     public static JsonNode number(final BigInteger value) {
-        return new JsonNumberNode(value.toString());
+        return JsonNumberNode.jsonNumberNode(value.toString());
     }
 
     /**
@@ -83,7 +83,7 @@ public final class JsonNodeFactories {
      * @return a JSON number representation of the given BigInteger
      */
     public static JsonNode number(final long value) {
-        return new JsonNumberNode(Long.toString(value));
+        return JsonNumberNode.jsonNumberNode(Long.toString(value));
     }
 
     /**

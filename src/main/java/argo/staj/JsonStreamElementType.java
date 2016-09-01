@@ -378,7 +378,13 @@ public enum JsonStreamElementType {
         }
         result.append(nonNegativeNumberToken(in));
         final String numberToken = result.toString();
-        return "0".equals(numberToken) ? "0" : numberToken;
+        if ("0".equals(numberToken)) {
+            return "0";
+        } else if ("1".equals(numberToken)) {
+            return "1";
+        } else {
+            return numberToken;
+        }
     }
 
     private static StringBuilder nonNegativeNumberToken(final PositionTrackingPushbackReader in) {

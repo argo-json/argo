@@ -20,9 +20,12 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
 
     private static final Pattern PATTERN = Pattern.compile("(-?)(0|([1-9]([0-9]*)))(\\.[0-9]+)?((e|E)(\\+|-)?[0-9]+)?");
 
+    private static final JsonNumberNode ZERO = new JsonNumberNode("0");
+    private static final JsonNumberNode ONE = new JsonNumberNode("1");
+
     private final String value;
 
-    JsonNumberNode(final String value) {
+    private JsonNumberNode(final String value) {
         if (value == null) {
             throw new NullPointerException("Attempt to construct a JsonNumber with a null value.");
         }
@@ -30,6 +33,16 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
             throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification.");
         }
         this.value = value;
+    }
+
+    static JsonNumberNode jsonNumberNode(final String value) {
+        if ("0".equals(value)) {
+            return ZERO;
+        } else if ("1".equals(value)) {
+            return ONE;
+        } else {
+            return new JsonNumberNode(value);
+        }
     }
 
     public JsonNodeType getType() {
