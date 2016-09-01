@@ -174,10 +174,10 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
         }
     }
     // todo turn off debug information in tiny jar (existing bug)
-    // todo auto-increment version number
-    // todo commit auto-incremented version number
     // todo check pom from central
     // todo build exported version
+    // todo naughty methods that weren't in Java 1.5
+    // todo counterintuitive name for release task
 }
 
 task updateSourceforgeDefaultDownload(type: org._10ne.gradle.rest.RestTask) {
