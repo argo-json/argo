@@ -1,3 +1,5 @@
+import at.bxm.gradleplugins.svntools.tasks.SvnTag
+
 /*
  * Copyright 2016 Mark Slater
  *
@@ -238,7 +240,7 @@ nexusStaging {
     password = ossrhPassword
 }
 
-task svnTag(type: at.bxm.gradleplugins.svntools.tasks.SvnTag) {
+task svnTag(type: SvnTag) {
     tagName = "$version"
     svnUrl = 'https://svn.code.sf.net/p/argo/code/trunk'
     commitMessage = "Tag for release ${version}."
