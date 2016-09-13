@@ -185,7 +185,7 @@ public final class JsonNodeFactories {
 
                                     public Entry<JsonStringNode, JsonNode> next() {
                                         JsonField jsonField = fieldIterator.next();
-                                        return new SimpleEntry<JsonStringNode, JsonNode>(jsonField.getName(), jsonField.getValue());
+                                        return new JsonFieldEntry(jsonField.getName(), jsonField.getValue());
                                     }
 
                                     public void remove() {
@@ -208,6 +208,28 @@ public final class JsonNodeFactories {
                 return unmodifiableList(fields);
             }
         };
+    }
+
+    private static final class JsonFieldEntry implements Map.Entry<JsonStringNode, JsonNode> {
+        private final JsonStringNode key;
+        private final JsonNode value;
+
+        private JsonFieldEntry(JsonStringNode key, JsonNode value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public JsonStringNode getKey() {
+            return key;
+        }
+
+        public JsonNode getValue() {
+            return value;
+        }
+
+        public JsonNode setValue(JsonNode value) {
+            throw new UnsupportedOperationException("Not supported");
+        }
     }
 
     /**
