@@ -249,6 +249,20 @@ task svnTag(type: SvnTag) {
     password = "$sourceforgePassword"
 }
 
+task cleanExport(type: at.bxm.gradleplugins.svntools.tasks.SvnExport, dependsOn: [clean]) {
+    svnUrl = "https://svn.code.sf.net/p/argo/code/tags/3.31" // TODO this should be the parameterized version number
+    targetDir = "$project.buildDir/export"
+}
+
+task foo << {
+    echo "Foo running version ${version}"
+}
+
+task buildAndDeployCleanVersion(type: GradleBuild, dependsOn: cleanExport) {
+    buildFile = "$project.buildDir/export/build.gradle"
+    tasks = ['clean', 'test', 'foo']
+}
+
 build.mustRunAfter clean
 uploadArchives.mustRunAfter build
 closeAndPromoteRepository.mustRunAfter uploadArchives
