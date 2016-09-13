@@ -10,7 +10,6 @@
 
 package argo.staj;
 
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
@@ -230,7 +229,7 @@ public enum JsonStreamElementType {
                 final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
                 if (trueTokenCharactersRead != 3 || remainingTrueTokenCharacters[0] != 'r' || remainingTrueTokenCharacters[1] != 'u' || remainingTrueTokenCharacters[2] != 'e') {
                     pushbackReader.uncount(remainingTrueTokenCharacters);
-                    throw invalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]], but got [" + Arrays.toString(Arrays.copyOf(remainingTrueTokenCharacters, trueTokenCharactersRead)) + "].", pushbackReader);
+                    throw invalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]], but got [" + stringify(remainingTrueTokenCharacters, trueTokenCharactersRead) + "].", pushbackReader);
                 } else {
                     return trueValue();
                 }
@@ -239,7 +238,7 @@ public enum JsonStreamElementType {
                 final int falseTokenCharactersRead = pushbackReader.read(remainingFalseTokenCharacters);
                 if (falseTokenCharactersRead != 4 || remainingFalseTokenCharacters[0] != 'a' || remainingFalseTokenCharacters[1] != 'l' || remainingFalseTokenCharacters[2] != 's' || remainingFalseTokenCharacters[3] != 'e') {
                     pushbackReader.uncount(remainingFalseTokenCharacters);
-                    throw invalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]], but got [" + Arrays.toString(Arrays.copyOf(remainingFalseTokenCharacters, falseTokenCharactersRead)) + "].", pushbackReader);
+                    throw invalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]], but got [" + stringify(remainingFalseTokenCharacters, falseTokenCharactersRead) + "].", pushbackReader);
                 } else {
                     return falseValue();
                 }
@@ -248,7 +247,7 @@ public enum JsonStreamElementType {
                 final int nullTokenCharactersRead = pushbackReader.read(remainingNullTokenCharacters);
                 if (nullTokenCharactersRead != 3 || remainingNullTokenCharacters[0] != 'u' || remainingNullTokenCharacters[1] != 'l' || remainingNullTokenCharacters[2] != 'l') {
                     pushbackReader.uncount(remainingNullTokenCharacters);
-                    throw invalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]], but got [" + Arrays.toString(Arrays.copyOf(remainingNullTokenCharacters, nullTokenCharactersRead)) + "].", pushbackReader);
+                    throw invalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]], but got [" + stringify(remainingNullTokenCharacters, nullTokenCharactersRead) + "].", pushbackReader);
                 } else {
                     return nullValue();
                 }
@@ -274,6 +273,18 @@ public enum JsonStreamElementType {
             default:
                 throw invalidSyntaxRuntimeException(END_OF_STREAM == nextChar ? "Unexpectedly reached end of input at start of value." : "Invalid character at start of value [" + nextChar + "].", pushbackReader);
         }
+    }
+
+    private static String stringify(char[] chars, int maxLength) {
+        final StringBuilder result = new StringBuilder("[");
+        for (int i = 0; i < chars.length && i < maxLength; i++) {
+            if (i > 0) {
+                result.append(", ");
+            }
+            result.append(chars[i]);
+        }
+        result.append("]");
+        return result.toString();
     }
 
     private static JsonStreamElement aFieldToken(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
