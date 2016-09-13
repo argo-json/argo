@@ -174,10 +174,7 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
         }
     }
     // todo turn off debug information in tiny jar (existing bug)
-    // todo check pom from central
-    // todo build exported version
     // todo naughty methods that weren't in Java 1.5
-    // todo counterintuitive name for release task
 }
 
 task updateSourceforgeDefaultDownload(type: org._10ne.gradle.rest.RestTask) {
@@ -280,3 +277,5 @@ task commitVersionNumber(type: SvnCommit, dependsOn: incrementVersionNumber) {
     username = "$sourceforgeUser"
     password = "$sourceforgePassword"
 }
+
+task deploy(dependsOn: commitVersionNumber) << {}
