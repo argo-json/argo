@@ -174,7 +174,6 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
         }
     }
     // todo turn off debug information in tiny jar (existing bug)
-    // todo naughty methods that weren't in Java 1.5
 }
 
 task updateSourceforgeDefaultDownload(type: org._10ne.gradle.rest.RestTask) {
