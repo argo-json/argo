@@ -249,18 +249,14 @@ task svnTag(type: SvnTag) {
     password = "$sourceforgePassword"
 }
 
-task cleanExport(type: at.bxm.gradleplugins.svntools.tasks.SvnExport, dependsOn: [clean]) {
-    svnUrl = "https://svn.code.sf.net/p/argo/code/tags/3.31" // TODO this should be the parameterized version number
+task cleanExport(type: at.bxm.gradleplugins.svntools.tasks.SvnExport, dependsOn: [clean, svnTag]) {
+    svnUrl = "https://svn.code.sf.net/p/argo/code/tags/${version}"
     targetDir = "$project.buildDir/export"
-}
-
-task foo << {
-    echo "Foo running version ${version}"
 }
 
 task buildAndDeployCleanVersion(type: GradleBuild, dependsOn: cleanExport) {
     buildFile = "$project.buildDir/export/build.gradle"
-    tasks = ['clean', 'test', 'foo']
+    tasks = ['clean', 'performRelease']
 }
 
 build.mustRunAfter clean
@@ -268,11 +264,11 @@ uploadArchives.mustRunAfter build
 closeAndPromoteRepository.mustRunAfter uploadArchives
 updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
-task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, svnTag, updateSourceforgeDefaultDownload]) << {
+task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, updateSourceforgeDefaultDownload]) << {
     println 'Release complete :)'
 }
 
-task incrementVersionNumber(dependsOn: performRelease) << {
+task incrementVersionNumber(dependsOn: buildAndDeployCleanVersion) << {
     ant.propertyfile(file: file('gradle.properties')) {
         entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
     }
