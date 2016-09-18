@@ -58,6 +58,7 @@ configurations {
         extendsFrom testInfrastructureCompile
     }
     svg2ico
+    batik
 }
 
 dependencies {
@@ -76,6 +77,9 @@ dependencies {
     documentationCompile group: 'net.sourceforge.writexml', name: 'writexml', version: '1.1'
     documentationCompile group: 'net.sourceforge.xazzle', name: 'xazzle', version: '0.39'
     svg2ico group: 'net.sourceforge.svg2ico', name: 'svg2ico', version: '1.5'
+    batik group: 'org.apache.xmlgraphics', name: 'batik-rasterizer', version: '1.8'
+    batik group: 'org.apache.xmlgraphics', name: 'xmlgraphics-commons', version: '2.0'
+    batik group: 'org.apache.xmlgraphics', name: 'batik-codec', version: '1.8'
 }
 
 group = 'net.sourceforge.argo'
@@ -126,8 +130,18 @@ task ico(dependsOn: documentationDirectory) << {
             width: '32',
             height: '32'
     )
-    // todo png favicons
 }
+
+task iconsDirectory << {
+    mkdir("${project.buildDir}/icons")
+}
+
+task png(type: JavaExec, dependsOn: iconsDirectory) {
+    main = 'org.apache.batik.apps.rasterizer.Main'
+    classpath = configurations.batik
+    args '-d', "${project.buildDir}/icons/", '-scriptSecurityOff', '-m', 'image/png', '-w', '48', '-h', '48', 'resources/favicon.svg'
+}
+
 
 task buildDocumentation(type:JavaExec, dependsOn: documentationDirectory) {
     main = 'documentation.DocumentationGenerator'
