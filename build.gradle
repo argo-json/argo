@@ -275,7 +275,7 @@ uploadArchives.mustRunAfter build
 closeAndPromoteRepository.mustRunAfter uploadArchives
 updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
-task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, closeAndPromoteRepository, updateSourceforgeDefaultDownload]) << {
+task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, png, closeAndPromoteRepository, updateSourceforgeDefaultDownload]) << {
     println 'Release complete :)'
 }
 
