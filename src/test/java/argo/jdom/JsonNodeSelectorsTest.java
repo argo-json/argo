@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -159,7 +159,7 @@ public final class JsonNodeSelectorsTest {
     @Test
     public void matchesAnArrayNode() throws Exception {
         final JsonNodeSelector<JsonNode, List<JsonNode>> jsonNodeSelector = JsonNodeSelectors.anArrayNode();
-        final List<JsonNode> someJsonNodes = asList(number("12"));
+        final List<JsonNode> someJsonNodes = singletonList(number("12"));
         final JsonRootNode node = array(someJsonNodes);
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo(someJsonNodes));
@@ -168,7 +168,7 @@ public final class JsonNodeSelectorsTest {
     @Test
     public void matchesANullableArrayNode() throws Exception {
         final JsonNodeSelector<JsonNode, List<JsonNode>> jsonNodeSelector = JsonNodeSelectors.aNullableArrayNode();
-        final List<JsonNode> someJsonNodes = asList(number("12"));
+        final List<JsonNode> someJsonNodes = singletonList(number("12"));
         final JsonRootNode node = array(someJsonNodes);
         assertTrue(jsonNodeSelector.matches(node));
         assertTrue(jsonNodeSelector.matches(nullNode()));
@@ -179,7 +179,7 @@ public final class JsonNodeSelectorsTest {
     @Test
     public void matchesAnElementOfAnArrayNode() throws Exception {
         final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.anElement(0);
-        final List<JsonNode> node = asList((JsonNode) string("hello"));
+        final List<JsonNode> node = singletonList(string("hello"));
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode) string("hello")));
     }
@@ -187,7 +187,7 @@ public final class JsonNodeSelectorsTest {
     @Test
     public void matchesAnArrayWithElement() throws Exception {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.anArrayNodeWithElement(0);
-        final JsonNode node = array(asList((JsonNode) string("hello")));
+        final JsonNode node = array(singletonList((JsonNode) string("hello")));
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode) string("hello")));
     }
@@ -195,13 +195,13 @@ public final class JsonNodeSelectorsTest {
     @Test
     public void rejectsAnElementOfAnArrayNodeGreaterThanArraySize() throws Exception {
         final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.anElement(0);
-        assertFalse(jsonNodeSelector.matches(new LinkedList<JsonNode>()));
+        assertFalse(jsonNodeSelector.matches(new LinkedList<>()));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void doesNotGetValueOfAnElementOfAnArrayNodeGreaterThanArraySize() throws Exception {
         final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.anElement(0);
-        jsonNodeSelector.getValue(new LinkedList<JsonNode>());
+        jsonNodeSelector.getValue(new LinkedList<>());
     }
 
     @Test

@@ -21,7 +21,10 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileReader;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.AbstractList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static argo.format.JsonNumberUtils.asBigDecimal;
 import static argo.jdom.JsonNodeBuilders.*;
@@ -29,6 +32,7 @@ import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeSelectors.aStringNode;
 import static argo.jdom.JsonNodeSelectors.anArrayNode;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -119,14 +123,14 @@ public final class MainDocumentationExamples {
         };
         BigDecimal totalRoyalties = asBigDecimal(json.getNumberValue("totalRoyalties"));
         assertThat(secondSingle, equalTo("Agadoo"));
-        assertThat(singles, equalTo(Arrays.asList("Superman", "Agadoo")));
+        assertThat(singles, equalTo(asList("Superman", "Agadoo")));
         assertThat(totalRoyalties, equalTo(new BigDecimal("10223.82")));
     }
 
     @Test
     public void parsesUsingSaj() throws Exception {
         final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
-        final Set<String> fieldNames = new HashSet<String>();
+        final Set<String> fieldNames = new HashSet<>();
         SAJ_PARSER.parse(jsonReader, new JsonListener() {
             public void startField(String name) {
                 fieldNames.add(name);
@@ -168,13 +172,13 @@ public final class MainDocumentationExamples {
             public void nullValue() {
             }
         });
-        assertThat(fieldNames, equalTo((Set<String>) new HashSet<String>(Arrays.asList("name", "sales", "totalRoyalties", "singles"))));
+        assertThat(fieldNames, equalTo((Set<String>) new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));
     }
 
     @Test
     public void parsesUsingStaj() throws Exception {
         final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
-        Set<String> fieldNames = new HashSet<String>();
+        Set<String> fieldNames = new HashSet<>();
         final StajParser stajParser = new StajParser(jsonReader);
         while (stajParser.hasNext()) {
             JsonStreamElement next = stajParser.next();
@@ -182,6 +186,6 @@ public final class MainDocumentationExamples {
                 fieldNames.add(next.text());
             }
         }
-        assertThat(fieldNames, equalTo((Set<String>) new HashSet<String>(Arrays.asList("name", "sales", "totalRoyalties", "singles"))));
+        assertThat(fieldNames, equalTo((Set<String>) new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));
     }
 }

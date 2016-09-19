@@ -18,7 +18,6 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.HashMap;
 
 import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
@@ -28,6 +27,8 @@ import static argo.jdom.JsonNodeFactories.*;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -51,7 +52,7 @@ public final class PrettyJsonFormatterTest {
     @Test
     public void formatsAnEmptyJsonObject() throws Exception {
         assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Hello"), object(new HashMap<JsonStringNode, JsonNode>()));
+                    put(string("Hello"), object(new HashMap<>()));
         }})), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("{")
@@ -80,7 +81,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAnEmptyJsonArray() throws Exception {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(Collections.<JsonNode>emptyList())), equalTo(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(emptyList())), equalTo(
                 aJsonStringResultBuilder()
                         .print("[]")
                         .build()
@@ -90,7 +91,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAJsonStringWithEscapedCharacters() throws Exception {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(asList(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
                 (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
@@ -103,7 +104,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsAStringWithinAString() throws Exception {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(asList(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
                 (JsonNode) string("\"\\\"A String\\\" within a String\"")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
@@ -150,7 +151,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsEcmaSurrogatePairExamples() throws Exception {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(asList(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
                 (JsonNode) string("\ud834\udd1e")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
@@ -164,7 +165,7 @@ public final class PrettyJsonFormatterTest {
 
     @Test
     public void formatsControlCharacters() throws Exception {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(asList(
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
                         (JsonNode) string("\u0000")))), equalTo(
                         aJsonStringResultBuilder()
                                 .printLine("[")
