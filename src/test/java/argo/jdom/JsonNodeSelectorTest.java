@@ -15,9 +15,9 @@ import org.junit.Test;
 import java.util.HashMap;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class JsonNodeSelectorTest {
 

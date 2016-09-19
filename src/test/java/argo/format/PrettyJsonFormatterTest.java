@@ -26,6 +26,7 @@ import static argo.format.PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFor
 import static argo.format.PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter;
 import static argo.jdom.JsonNodeFactories.*;
 import static com.google.common.collect.Lists.newArrayList;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -115,7 +116,7 @@ public final class PrettyJsonFormatterTest {
     @Test
     public void testRoundTrip() throws Exception {
         final File longJsonExample = new File(this.getClass().getResource("Sample.json").getFile());
-        final String json = readFileToString(longJsonExample);
+        final String json = readFileToString(longJsonExample, UTF_8);
         final JdomParser jdomParser = new JdomParser();
         final JsonRootNode node = jdomParser.parse(json);
         final JsonFormatter jsonFormatter = fieldOrderPreservingPrettyJsonFormatter();

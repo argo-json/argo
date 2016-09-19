@@ -16,7 +16,6 @@ import argo.saj.SajParser;
 import argo.staj.JsonStreamElement;
 import argo.staj.JsonStreamElementType;
 import argo.staj.StajParser;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -29,6 +28,8 @@ import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeSelectors.aStringNode;
 import static argo.jdom.JsonNodeSelectors.anArrayNode;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -94,7 +95,7 @@ public final class MainDocumentationExamples {
 
     @Test
     public void parsesJsonAndGetsElementsWithCallToJsonNode() throws Exception {
-        final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+        final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
         final JsonRootNode json = JDOM_PARSER.parse(jsonText);
         String secondSingle = json.getStringValue("singles", 1);
         assertThat(secondSingle, equalTo("Agadoo"));
@@ -104,7 +105,7 @@ public final class MainDocumentationExamples {
 
     @Test
     public void parsesJsonAndGetsElementsWithJsonNodeSelector() throws Exception {
-        final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+        final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
         final JsonRootNode json = JDOM_PARSER.parse(jsonText);
         String secondSingle = SECOND_SINGLE.getValue(json);
         List<String> singles = new AbstractList<String>() {

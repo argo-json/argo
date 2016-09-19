@@ -9,11 +9,12 @@
  */
 
 import argo.jdom.JdomParser;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.File;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -21,7 +22,7 @@ public final class SimpleJdomExamples {
 
     @Test
     public void ParseSimpleExample() throws Exception {
-        final String jsonText = FileUtils.readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+        final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
         String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
         assertThat(secondSingle, equalTo("Agadoo"));
     }

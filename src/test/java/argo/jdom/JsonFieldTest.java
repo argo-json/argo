@@ -14,10 +14,10 @@ import org.junit.Test;
 
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.fail;
 
 public class JsonFieldTest {
     @Test

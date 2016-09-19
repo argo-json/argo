@@ -18,9 +18,9 @@ import org.junit.Test;
 import java.io.StringReader;
 
 import static argo.saj.InvalidSyntaxExceptionMatcher.anInvalidSyntaxExceptionAtPosition;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public final class SajParserTest {
     private static final JsonListener BLACK_HOLE_LISTENER = new JsonListener() {

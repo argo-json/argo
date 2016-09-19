@@ -15,13 +15,16 @@ import argo.saj.JsonListener;
 import argo.saj.SajParser;
 import argo.staj.StajParser;
 import net.sf.json.JSONObject;
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.io.FileUtils.readFileToString;
+
 
 public final class LongJsonExampleTest {
 
@@ -71,7 +74,7 @@ public final class LongJsonExampleTest {
     @Before
     public void getJson() throws Exception {
         final File longJsonExample = new File(this.getClass().getResource("LongJsonExample.json").getFile());
-        final String json = FileUtils.readFileToString(longJsonExample);
+        final String json = readFileToString(longJsonExample, UTF_8);
         for (int i = 0; i < jsonReaders.length; i++) {
             jsonReaders[i] = new StringReader(json);
         }

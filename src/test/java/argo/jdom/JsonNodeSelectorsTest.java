@@ -20,12 +20,10 @@ import java.util.Map;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public final class JsonNodeSelectorsTest {
 
