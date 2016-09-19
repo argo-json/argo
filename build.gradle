@@ -92,6 +92,19 @@ compileJava {
     targetCompatibility = 1.5
 }
 
+task codeSamplesTest(type: Test) {
+    testClassesDir = sourceSets.codeSamples.output.classesDir
+    classpath = sourceSets.codeSamples.runtimeClasspath
+}
+
+task performanceTest(type: Test) {
+    testClassesDir = sourceSets.performanceTest.output.classesDir
+    classpath = sourceSets.performanceTest.runtimeClasspath
+}
+
+check.dependsOn codeSamplesTest
+check.dependsOn performanceTest
+
 task myJavadoc(type: Javadoc) {
     source = sourceSets.main.allJava
     title = "Argo version ${version}"
