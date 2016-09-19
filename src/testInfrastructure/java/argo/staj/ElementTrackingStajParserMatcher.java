@@ -10,7 +10,7 @@
 
 package argo.staj;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
@@ -29,7 +29,7 @@ public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMa
         return new ElementTrackingStajParserMatcher(jsonStreamElements);
     }
 
-    private Collection<JsonStreamElement> actual = new ArrayList<JsonStreamElement>();
+    private Collection<JsonStreamElement> actual = new ArrayList<>();
 
     @Override
     protected boolean matchesSafely(final StajParser item, final Description mismatchDescription) {

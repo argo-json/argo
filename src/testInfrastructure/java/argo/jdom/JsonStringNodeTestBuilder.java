@@ -12,7 +12,7 @@ package argo.jdom;
 
 import argo.RandomSupplierSwitcher;
 import com.google.common.base.Supplier;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Random;
 
@@ -24,7 +24,7 @@ public final class JsonStringNodeTestBuilder {
     private static final String ESCAPED_REVERSE_SOLIDUS = "\\\\";
     private static final Random RANDOM = new Random();
 
-    private static final Supplier<String> RANDOM_ESCAPED_STRING = new RandomSupplierSwitcher<String>(
+    private static final Supplier<String> RANDOM_ESCAPED_STRING = new RandomSupplierSwitcher<>(
             new Supplier<String>() {
                 public String get() {
                     return ESCAPED_DOUBLE_QUOTE;
@@ -73,7 +73,7 @@ public final class JsonStringNodeTestBuilder {
             }
     );
 
-    private static final Supplier<String> RANDOM_JSON_STRING_SINGLE_TOKEN = new RandomSupplierSwitcher<String>(
+    private static final Supplier<String> RANDOM_JSON_STRING_SINGLE_TOKEN = new RandomSupplierSwitcher<>(
             new Supplier<String>() {
                 public String get() {
                     return RANDOM_ESCAPED_STRING.get();
