@@ -10,17 +10,24 @@
 
 package argo.jdom;
 
+import net.sourceforge.ickles.RandomSizeListSupplier;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static argo.RandomListFactory.aList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public final class ImmutableListFactoriesTest {
+
+    private static final RandomSizeListSupplier<Object> RANDOM_SIZE_OBJECT_LIST_FACTORY = new RandomSizeListSupplier<>(Object::new);
+
+    private static List<Object> aList() {
+        return RANDOM_SIZE_OBJECT_LIST_FACTORY.get();
+    }
+
     @Test
     public void handlesEmptyList() throws Exception {
         assertThat(ImmutableListFactories.immutableListOf(emptyList()), is(emptyList()));
@@ -35,7 +42,7 @@ public final class ImmutableListFactoriesTest {
     @Test
     public void returnedListIsImmutable() throws Exception {
         final List<Object> originalSourceList = aList();
-        final List<Object> mutableSourceList = new ArrayList<Object>(originalSourceList);
+        final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
         final List<Object> immutableList = ImmutableListFactories.immutableListOf(mutableSourceList);
         mutableSourceList.add(new Object());
         assertThat(immutableList, equalTo(originalSourceList));
