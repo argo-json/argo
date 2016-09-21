@@ -10,16 +10,17 @@
 
 package argo.jdom;
 
-import argo.RandomFunctionSwitcher;
-import com.google.common.base.Function;
+import net.sourceforge.ickles.RandomListMemberSupplier;
 import net.sourceforge.ickles.RandomSupplierSwitcher;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
+import static java.util.Arrays.asList;
 
 public final class JsonNodeTestBuilder {
 
@@ -32,19 +33,15 @@ public final class JsonNodeTestBuilder {
             JsonNodeFactories::falseNode
     );
 
-    private static final Function<Integer, JsonRootNode> RANDOM_ROOT_NODE = new RandomFunctionSwitcher<>(
+    private static final Supplier<Function<Integer, JsonRootNode>> RANDOM_ROOT_NODE = new RandomListMemberSupplier<>(asList(
             JsonNodeTestBuilder::anArrayNode,
             JsonNodeTestBuilder::anObjectNode
-    );
+    ));
 
-    private static final Function<Integer, JsonNode> RANDOM_NODE = new RandomFunctionSwitcher<Integer, JsonNode>(
+    private static final Supplier<Function<Integer, JsonNode>> RANDOM_NODE = new RandomListMemberSupplier<>(asList(
             JsonNodeTestBuilder::aJsonRootNode,
             integer -> aJsonLeafNode()
-    );
-
-    public static JsonRootNode anArrayNode() {
-        return anArrayNode(10);
-    }
+    ));
 
     private static JsonRootNode anArrayNode(final int maxDepth) {
         return array(new ArrayList<JsonNode>() {{
@@ -52,10 +49,6 @@ public final class JsonNodeTestBuilder {
                 add(aJsonNode(maxDepth));
             }
         }});
-    }
-
-    public static JsonRootNode anObjectNode() {
-        return anObjectNode(10);
     }
 
     private static JsonRootNode anObjectNode(final int maxDepth) {
@@ -75,7 +68,7 @@ public final class JsonNodeTestBuilder {
     }
 
     private static JsonRootNode aJsonRootNode(final int defaultDepth) {
-        return RANDOM_ROOT_NODE.apply(defaultDepth);
+        return RANDOM_ROOT_NODE.get().apply(defaultDepth);
     }
 
     public static JsonNode aJsonNode() {
@@ -86,7 +79,7 @@ public final class JsonNodeTestBuilder {
         if (maxDepth <= 0) {
             return aJsonLeafNode();
         } else {
-            return RANDOM_NODE.apply(maxDepth - 1);
+            return RANDOM_NODE.get().apply(maxDepth - 1);
         }
     }
 }
