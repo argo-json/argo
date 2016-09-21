@@ -11,72 +11,35 @@
 package argo.jdom;
 
 import argo.RandomFunctionSwitcher;
-import argo.RandomSupplierSwitcher;
 import com.google.common.base.Function;
-import com.google.common.base.Supplier;
+import net.sourceforge.ickles.RandomSupplierSwitcher;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.function.Supplier;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 
 public final class JsonNodeTestBuilder {
 
     private static final Random RANDOM = new Random();
-    private static final Supplier<JsonNode> RANDOM_LEAF_NODE = new RandomSupplierSwitcher<JsonNode>(
-            new Supplier<JsonNode>() {
-                public JsonNode get() {
-                    return aStringNode();
-                }
-            },
-            new Supplier<JsonNode>() {
-                public JsonNode get() {
-                    return aNumberNode();
-                }
-            },
-            new Supplier<JsonNode>() {
-                public JsonNode get() {
-                    return nullNode();
-                }
-            },
-            new Supplier<JsonNode>() {
-                public JsonNode get() {
-                    return trueNode();
-                }
-            },
-            new Supplier<JsonNode>() {
-                public JsonNode get() {
-                    return falseNode();
-                }
-            }
+    private static final Supplier<JsonNode> RANDOM_LEAF_NODE = new RandomSupplierSwitcher<>(
+            JsonStringNodeTestBuilder::aStringNode,
+            JsonNumberNodeTestBuilder::aNumberNode,
+            JsonNodeFactories::nullNode,
+            JsonNodeFactories::trueNode,
+            JsonNodeFactories::falseNode
     );
 
-    private static final Function<Integer, JsonRootNode> RANDOM_ROOT_NODE = new RandomFunctionSwitcher<Integer, JsonRootNode>(
-            new Function<Integer, JsonRootNode>() {
-                public JsonRootNode apply(final Integer maxDepth) {
-                    return anArrayNode(maxDepth);
-                }
-            },
-            new Function<Integer, JsonRootNode>() {
-                public JsonRootNode apply(final Integer maxDepth) {
-                    return anObjectNode(maxDepth);
-                }
-            }
+    private static final Function<Integer, JsonRootNode> RANDOM_ROOT_NODE = new RandomFunctionSwitcher<>(
+            JsonNodeTestBuilder::anArrayNode,
+            JsonNodeTestBuilder::anObjectNode
     );
 
     private static final Function<Integer, JsonNode> RANDOM_NODE = new RandomFunctionSwitcher<Integer, JsonNode>(
-            new Function<Integer, JsonNode>() {
-                public JsonNode apply(final Integer maxDepth) {
-                    return aJsonRootNode(maxDepth);
-                }
-            },
-            new Function<Integer, JsonNode>() {
-                public JsonNode apply(final Integer integer) {
-                    return aJsonLeafNode();
-                }
-            }
+            JsonNodeTestBuilder::aJsonRootNode,
+            integer -> aJsonLeafNode()
     );
 
     public static JsonRootNode anArrayNode() {

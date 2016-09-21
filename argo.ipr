@@ -284,6 +284,15 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="Gradle: net.sourceforge.ickles:ickles:0.13">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.ickles/ickles/0.13/dd501e0fc2217ec652c53ee422cde827c5e4c2d5/ickles-0.13.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.ickles/ickles/0.13/3247b42016408882d7b59949aaeb4a2b5894c6d2/ickles-0.13-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: net.sourceforge.writexml:writexml:1.1">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.writexml/writexml/1.1/ba433e70667aa22728c517f66aaca1416bb908f7/writexml-1.1.jar!/" />

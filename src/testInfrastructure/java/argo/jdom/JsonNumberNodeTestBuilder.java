@@ -10,10 +10,10 @@
 
 package argo.jdom;
 
-import argo.RandomSupplierSwitcher;
-import com.google.common.base.Supplier;
+import net.sourceforge.ickles.RandomSupplierSwitcher;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
 import static argo.jdom.JsonNodeFactories.number;
 
@@ -21,126 +21,58 @@ public final class JsonNumberNodeTestBuilder {
 
     private static final Random RANDOM = new Random();
 
-    private static final Supplier<String> RANDOM_OPTIONAL_NEGATIVE_PREFIX = new RandomSupplierSwitcher<String>(
-            new Supplier<String>() {
-                public String get() {
-                    return "";
-                }
-            },
-            new Supplier<String>() {
-                public String get() {
-                    return "-";
-                }
-            }
-    );
+    private static final Supplier<String> RANDOM_NON_ZERO_DIGIT = () -> Integer.toString(RANDOM.nextInt(9) + 1);
 
-    private static final Supplier<String> RANDOM_OPTIONAL_FRACTIONAL_PART = new RandomSupplierSwitcher<String>(
-            new Supplier<String>() {
-                public String get() {
-                    return "";
-                }
-            },
-            new Supplier<String>() {
-                public String get() {
-                    return "." + RANDOM_DIGITS.get();
-                }
-            }
-    );
+    private static final Supplier<String> RANDOM_DIGIT = () -> Integer.toString(RANDOM.nextInt(10));
 
-    private static final Supplier<String> RANDOM_OPTIONAL_EXPONENTIAL_PART = new RandomSupplierSwitcher<String>(
-            new Supplier<String>() {
-                public String get() {
-                    return "";
-                }
-            },
-            new Supplier<String>() {
-                public String get() {
-                    return RANDOM_EXPONENTIAL_PART.get();
-                }
-            }
-    );
-
-    private static final Supplier<String> RANDOM_EXPONENTIAL_PART = new Supplier<String>() {
-        public String get() {
-            return RANDOM_EXPONENT_SIGN.get() + RANDOM_PLUS_MINUS_OR_NOTHING.get() + RANDOM_DIGITS.get();
+    private static final Supplier<String> RANDOM_DIGITS_WITHOUT_LEADING_ZERO = () -> {
+        StringBuilder result = new StringBuilder(RANDOM_NON_ZERO_DIGIT.get());
+        for (int i = 0; i < RANDOM.nextInt(10); i++) {
+            result.append(RANDOM_DIGIT.get());
         }
+        return result.toString();
     };
 
-    private static final Supplier<String> RANDOM_EXPONENT_SIGN = new RandomSupplierSwitcher<String>(
-            new Supplier<String>() {
-                public String get() {
-                    return "e";
-                }
-            },
-            new Supplier<String>() {
-                public String get() {
-                    return "E";
-                }
-            }
+    private static final Supplier<String> RANDOM_DIGITS = () -> {
+        StringBuilder result = new StringBuilder(RANDOM_DIGIT.get());
+        for (int i = 0; i < RANDOM.nextInt(10); i++) {
+            result.append(RANDOM_DIGIT.get());
+        }
+        return result.toString();
+    };
+
+    private static final Supplier<String> RANDOM_OPTIONAL_NEGATIVE_PREFIX = new RandomSupplierSwitcher<>(
+            () -> "",
+            () -> "-"
     );
 
-    private static final Supplier<String> RANDOM_PLUS_MINUS_OR_NOTHING = new RandomSupplierSwitcher<String>(
-            new Supplier<String>() {
-                public String get() {
-                    return "+";
-                }
-            },
-            new Supplier<String>() {
-                public String get() {
-                    return "";
-                }
-            },
-            new Supplier<String>() {
-                public String get() {
-                    return "-";
-                }
-            }
+    private static final Supplier<String> RANDOM_OPTIONAL_FRACTIONAL_PART = new RandomSupplierSwitcher<>(
+            () -> "",
+            () -> "." + RANDOM_DIGITS.get()
     );
 
-    private static final Supplier<String> RANDOM_ZERO_OR_DIGITS = new RandomSupplierSwitcher<String>(
-            new Supplier<String>() {
-                public String get() {
-                    return "0";
-                }
-            },
-            new Supplier<String>() {
-                public String get() {
-                    return RANDOM_DIGITS_WITHOUT_LEADING_ZERO.get();
-                }
-            }
+    private static final Supplier<String> RANDOM_EXPONENT_SIGN = new RandomSupplierSwitcher<>(
+            () -> "e",
+            () -> "E"
     );
 
-    private static final Supplier<String> RANDOM_NON_ZERO_DIGIT = new Supplier<String>() {
-        public String get() {
-            return Integer.toString(RANDOM.nextInt(9) + 1);
-        }
-    };
+    private static final Supplier<String> RANDOM_PLUS_MINUS_OR_NOTHING = new RandomSupplierSwitcher<>(
+            () -> "+",
+            () -> "",
+            () -> "-"
+    );
 
-    private static final Supplier<String> RANDOM_DIGIT = new Supplier<String>() {
-        public String get() {
-            return Integer.toString(RANDOM.nextInt(10));
-        }
-    };
+    private static final Supplier<String> RANDOM_EXPONENTIAL_PART = () -> RANDOM_EXPONENT_SIGN.get() + RANDOM_PLUS_MINUS_OR_NOTHING.get() + RANDOM_DIGITS.get();
 
-    private static final Supplier<String> RANDOM_DIGITS_WITHOUT_LEADING_ZERO = new Supplier<String>() {
-        public String get() {
-            StringBuilder result = new StringBuilder(RANDOM_NON_ZERO_DIGIT.get());
-            for (int i = 0; i < RANDOM.nextInt(10); i++) {
-                result.append(RANDOM_DIGIT.get());
-            }
-            return result.toString();
-        }
-    };
+    private static final Supplier<String> RANDOM_OPTIONAL_EXPONENTIAL_PART = new RandomSupplierSwitcher<>(
+            () -> "",
+            RANDOM_EXPONENTIAL_PART
+    );
 
-    private static final Supplier<String> RANDOM_DIGITS = new Supplier<String>() {
-        public String get() {
-            StringBuilder result = new StringBuilder(RANDOM_DIGIT.get());
-            for (int i = 0; i < RANDOM.nextInt(10); i++) {
-                result.append(RANDOM_DIGIT.get());
-            }
-            return result.toString();
-        }
-    };
+    private static final Supplier<String> RANDOM_ZERO_OR_DIGITS = new RandomSupplierSwitcher<>(
+            () -> "0",
+            RANDOM_DIGITS_WITHOUT_LEADING_ZERO
+    );
 
     public static JsonNode aNumberNode() {
         return number(

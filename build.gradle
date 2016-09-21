@@ -67,6 +67,7 @@ dependencies {
     testInfrastructureCompile group: 'commons-io', name: 'commons-io', version: '2.5'
     testInfrastructureCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
     testInfrastructureCompile group: 'com.google.guava', name: 'guava', version: '19.0'
+    testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.13'
     testInfrastructureCompile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     testInfrastructureCompile group: 'org.jmock', name: 'jmock', version: '2.8.2'
     testInfrastructureCompile group: 'junit', name: 'junit', version: '4.12'
