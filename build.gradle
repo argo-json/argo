@@ -93,6 +93,15 @@ compileJava {
     targetCompatibility = 1.5
 }
 
+task compileTinyJava(type: JavaCompile) {
+    sourceCompatibility = 1.5
+    targetCompatibility = 1.5
+    source sourceSets.main.allSource
+    classpath = sourceSets.main.compileClasspath
+    destinationDir = file("${project.buildDir}/tiny-classes/main")
+    options.compilerArgs = ['-g:none']
+}
+
 task codeSamplesTest(type: Test) {
     testClassesDir = sourceSets.codeSamples.output.classesDir
     classpath = sourceSets.codeSamples.runtimeClasspath
