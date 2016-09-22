@@ -125,6 +125,11 @@ task javadocJar(type: Jar) {
     from myJavadoc
 }
 
+task tinyJar(type: Jar, dependsOn: compileTinyJava) {
+    classifier = 'tiny'
+    from file("${project.buildDir}/tiny-classes/main")
+}
+
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -194,7 +199,7 @@ remotes {
     }
 }
 
-task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJar]) << {
+task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJar, tinyJar]) << {
     ssh.run {
         session(remotes.sourceforgeShell) {
             execute 'create'
@@ -204,7 +209,7 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
             put from: "${project.buildDir}/distributions/documentation-${version}.tgz", into: '/home/project-web/argo/'
             put from: "${project.buildDir}/libs/argo-${version}-javadoc.jar", into: '/home/project-web/argo/'
             put from: "${project.buildDir}/libs/argo-${version}-combined.jar", into: "/home/frs/project/argo/argo/${version}/argo-${version}.jar"
-            put from: "${project.buildDir}/libs/argo-${version}.jar", into: "/home/frs/project/argo/argo/${version}/argo-small-${version}.jar"
+            put from: "${project.buildDir}/libs/argo-${version}-tiny.jar", into: "/home/frs/project/argo/argo/${version}/argo-small-${version}.jar"
         }
         session(remotes.sourceforgeShell) {
             execute "mkdir -p /home/project-web/argo/${version}/javadoc && tar -xvf /home/project-web/argo/documentation-${version}.tgz -C /home/project-web/argo/${version} && unzip -d /home/project-web/argo/${version}/javadoc /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/documentation-${version}.tgz && rm /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${version} /home/project-web/argo/htdocs"
