@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
 
 public final class JsonArrayTest {
@@ -35,6 +37,7 @@ public final class JsonArrayTest {
             jsonArray.getElements().add(JsonNodeFactories.number("1"));
             fail("modifying the elements retrieved from a JsonArray should result in an UnsupportedOperationException");
         } catch (UnsupportedOperationException e) {
+            assertThat(e.getMessage(), is(nullValue()));
             // expect to end up here
         }
     }

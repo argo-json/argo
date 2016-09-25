@@ -39,7 +39,7 @@ public final class JsonNodeFactoriesTest {
 
     @Test
     public void createsALazyJsonArrayNode() throws Exception {
-        List<JsonNode> elements = new ArrayList<JsonNode>();
+        List<JsonNode> elements = new ArrayList<>();
         JsonRootNode jsonRootNode = lazyArray(elements);
         elements.add(string("late element"));
         assertThat(
@@ -77,7 +77,7 @@ public final class JsonNodeFactoriesTest {
 
     @Test
     public void createsALazyJsonObjectNode() throws Exception {
-        List<JsonField> fields = new ArrayList<JsonField>();
+        List<JsonField> fields = new ArrayList<>();
         JsonRootNode jsonRootNode = lazyObject(fields);
         fields.add(field("late", string("field")));
         assertThat(
@@ -90,7 +90,7 @@ public final class JsonNodeFactoriesTest {
     @Test
     public void createsJsonNumberNodeUsingABigInteger() throws Exception {
         assertThat(
-                object(field("Number of shots to give it", number(new BigInteger("1"))))
+                object(field("Number of shots to give it", number(BigInteger.ONE)))
                 , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Number of shots to give it"), number("1"));
         }}))

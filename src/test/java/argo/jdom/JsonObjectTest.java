@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static argo.jdom.JsonNodeFactories.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
 
 public final class JsonObjectTest {
@@ -39,6 +41,7 @@ public final class JsonObjectTest {
             jsonObject.getFields().put(string("Another key"), number("1"));
             fail("modifying the fields retrieved from a JsonObject should result in an UnsupportedOperationException");
         } catch (Exception e) {
+            assertThat(e.getMessage(), is(nullValue()));
             // expect to end up here
         }
     }

@@ -51,7 +51,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return ("any node");
+                return "any node";
             }
         }));
     }
@@ -72,7 +72,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return ("any root node");
+                return "any root node";
             }
         }));
     }
@@ -93,7 +93,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return ("a value that is a string");
+                return "a value that is a string";
             }
         }));
     }
@@ -114,7 +114,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return ("a value that is a string");
+                return "a value that is a string";
             }
         }));
     }
@@ -135,7 +135,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return ("a value that is a number");
+                return "a value that is a number";
             }
         }));
     }
@@ -156,7 +156,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return ("a value that is a number");
+                return "a value that is a number";
             }
         }));
     }
@@ -177,7 +177,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return ("a true or false");
+                return "a true or false";
             }
         }));
     }
@@ -206,7 +206,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return ("a true or false");
+                return "a true or false";
             }
         }));
     }

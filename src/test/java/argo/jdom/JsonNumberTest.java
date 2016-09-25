@@ -12,6 +12,7 @@ package argo.jdom;
 
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 
 public final class JsonNumberTest {
@@ -20,8 +21,9 @@ public final class JsonNumberTest {
     public void testConstructorRejectsNullValue() {
         try {
             JsonNodeFactories.number((String) null);
-            fail("Constructing a JsonNumber with a null argument should throw an IllegalArgumentException.");
+            fail("Constructing a JsonNumber with a null argument should throw a NullPointerException.");
         } catch (final NullPointerException e) {
+            assertThat(e.getMessage(), equalTo("Attempt to construct a JsonNumber with a null value."));
             // expect to end up here
         }
     }

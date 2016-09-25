@@ -38,7 +38,7 @@ public final class JsonNumberUtilsTest {
         assertThat(asBigDecimal("0.0E-10"), equalTo(new BigDecimal("0.00000000000")));
         assertThat(asBigDecimal("0.0E+10"), equalTo(new BigDecimal("0.0E10")));
         assertThat(asBigDecimal("0.0E10"), equalTo(new BigDecimal("0.0E10")));
-        assertThat(asBigDecimal("10"), equalTo(new BigDecimal("10")));
+        assertThat(asBigDecimal("10"), equalTo(BigDecimal.TEN));
         assertThat(asBigDecimal("-10"), equalTo(new BigDecimal("-10")));
         assertThat(asBigDecimal("10.2"), equalTo(new BigDecimal("10.2")));
         assertThat(asBigDecimal("-0.1234"), equalTo(new BigDecimal("-0.1234")));
@@ -59,7 +59,7 @@ public final class JsonNumberUtilsTest {
         assertThat(asBigInteger("0.0e10"), equalTo(BigInteger.ZERO));
         assertThat(asBigInteger("0.0E-10"), equalTo(BigInteger.ZERO));
         assertThat(asBigInteger("0.0E+10"), equalTo(BigInteger.ZERO));
-        assertThat(asBigInteger("10"), equalTo(new BigInteger("10")));
+        assertThat(asBigInteger("10"), equalTo(BigInteger.TEN));
         assertThat(asBigInteger("-10"), equalTo(new BigInteger("-10")));
         assertThat(asBigInteger("10E5"), equalTo(new BigInteger("1000000")));
     }
