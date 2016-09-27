@@ -17,8 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public final class JsonObjectTest {
@@ -62,6 +61,6 @@ public final class JsonObjectTest {
 
     @Test
     public void testToString() {
-        object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).toString();
+        assertThat(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).toString(), is(not(nullValue())));
     }
 }

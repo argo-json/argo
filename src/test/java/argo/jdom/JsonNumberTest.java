@@ -12,7 +12,7 @@ package argo.jdom;
 
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public final class JsonNumberTest {
@@ -41,6 +41,6 @@ public final class JsonNumberTest {
 
     @Test
     public void testToString() {
-        JsonNodeFactories.number("0").toString();
+        assertThat(JsonNodeFactories.number("0").toString(), is(not(nullValue())));
     }
 }

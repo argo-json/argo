@@ -19,7 +19,9 @@ import argo.staj.StajParser;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.AbstractList;
 import java.util.HashSet;
@@ -129,7 +131,7 @@ public final class MainDocumentationExamples {
 
     @Test
     public void parsesUsingSaj() throws Exception {
-        final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+        final Reader jsonReader = new InputStreamReader(new FileInputStream(new File(this.getClass().getResource("SimpleExample.json").getFile())), UTF_8);
         final Set<String> fieldNames = new HashSet<>();
         SAJ_PARSER.parse(jsonReader, new JsonListener() {
             public void startField(String name) {
@@ -177,7 +179,7 @@ public final class MainDocumentationExamples {
 
     @Test
     public void parsesUsingStaj() throws Exception {
-        final FileReader jsonReader = new FileReader(new File(this.getClass().getResource("SimpleExample.json").getFile()));
+        final Reader jsonReader = new InputStreamReader(new FileInputStream(new File(this.getClass().getResource("SimpleExample.json").getFile())), UTF_8);
         Set<String> fieldNames = new HashSet<>();
         final StajParser stajParser = new StajParser(jsonReader);
         while (stajParser.hasNext()) {

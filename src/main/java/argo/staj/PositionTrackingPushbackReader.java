@@ -60,13 +60,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
         try {
             int result = 0;
             for (int latestCharactersRead = 0; latestCharactersRead != -1 && result < buffer.length; latestCharactersRead = pushbackReader.read(buffer, result, buffer.length - result)) {
-                if (latestCharactersRead == -1) {
-                    if (result == 0) {
-                        result = -1;
-                    }
-                } else {
-                    result = result + latestCharactersRead;
-                }
+                result = result + latestCharactersRead;
             }
             for (char character : buffer) {
                 updateCharacterAndLineCounts(character);

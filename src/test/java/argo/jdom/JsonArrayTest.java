@@ -17,8 +17,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public final class JsonArrayTest {
@@ -57,6 +56,6 @@ public final class JsonArrayTest {
 
     @Test
     public void testToString() {
-        JsonNodeFactories.array(Collections.<JsonNode>singletonList(JsonNodeFactories.number("0"))).toString();
+        assertThat(JsonNodeFactories.array(Collections.<JsonNode>singletonList(JsonNodeFactories.number("0"))).toString(), is(not(nullValue())));
     }
 }

@@ -29,6 +29,7 @@ plugins {
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'java'
 apply plugin: 'pmd'
+apply plugin: 'findbugs'
 apply plugin: 'signing'
 apply plugin: 'maven'
 

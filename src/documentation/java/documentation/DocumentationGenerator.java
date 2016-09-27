@@ -14,16 +14,14 @@ import net.sourceforge.writexml.CompactXmlFormatter;
 import net.sourceforge.writexml.XmlWriteException;
 import net.sourceforge.xazzle.xhtml.HtmlTag;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
 import static documentation.DocumentationPage.documentationPage;
 import static documentation.DownloadsPage.downloadsPage;
 import static documentation.IndexPage.indexPage;
 import static documentation.SupportPage.supportPage;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class DocumentationGenerator {
     private static final CompactXmlFormatter XML_FORMATTER = new CompactXmlFormatter();
@@ -40,15 +38,17 @@ public class DocumentationGenerator {
 
     private static String versionString() throws IOException {
         final Properties properties = new Properties();
-        properties.load(new FileReader("gradle.properties"));
+        try (final InputStreamReader reader = new InputStreamReader(new FileInputStream("gradle.properties"), UTF_8)) {
+            properties.load(reader);
+        }
         return properties.getProperty("majorVersion") + "." + properties.getProperty("minorVersion");
     }
 
     private static void writePage(final HtmlTag page, final File destination, final String fileName) throws IOException, XmlWriteException {
         final File file = new File(destination, fileName);
-        final FileWriter fileWriter = new FileWriter(file);
-        XML_FORMATTER.write(page.asDocument(), fileWriter);
-        fileWriter.close();
+        try (final Writer fileWriter = new OutputStreamWriter(new FileOutputStream(file), UTF_8)) {
+            XML_FORMATTER.write(page.asDocument(), fileWriter);
+        }
     }
 
 }

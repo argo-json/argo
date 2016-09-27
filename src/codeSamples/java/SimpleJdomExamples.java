@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
 public final class SimpleJdomExamples {
 
     @Test
-    public void ParseSimpleExample() throws Exception {
+    public void parseSimpleExample() throws Exception {
         final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
         String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
         assertThat(secondSingle, equalTo("Agadoo"));
