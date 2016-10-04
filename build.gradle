@@ -300,12 +300,18 @@ task buildAndDeployCleanVersion(type: GradleBuild, dependsOn: cleanExport) {
     tasks = ['clean', 'performRelease']
 }
 
+task aMomentOfReflection() << {
+    sleep(30 * 1000)
+}
+
 build.mustRunAfter clean
 uploadArchives.mustRunAfter build
-closeAndPromoteRepository.mustRunAfter uploadArchives
+closeRepository.mustRunAfter uploadArchives
+aMomentOfReflection.mustRunAfter closeRepository
+promoteRepository.mustRunAfter aMomentOfReflection
 updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
-task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, png, closeAndPromoteRepository, updateSourceforgeDefaultDownload]) << {
+task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, png, closeRepository, aMomentOfReflection, promoteRepository, updateSourceforgeDefaultDownload]) << {
     println 'Release complete :)'
 }
 
