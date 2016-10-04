@@ -91,16 +91,14 @@ public final class CompactJsonFormatter implements JsonFormatter {
                         writer.append(',');
                     }
                     first = false;
-                    formatJsonNode(field.getName(), writer);
+                    writeEscapedString(field.getNameText(), writer);
                     writer.append(':');
                     formatJsonNode(field.getValue(), writer);
                 }
                 writer.append('}');
                 break;
             case STRING:
-                writer.append('"')
-                        .append(escapeString(jsonNode.getText()))
-                        .append('"');
+                writeEscapedString(jsonNode.getText(), writer);
                 break;
             case NUMBER:
                 writer.append(jsonNode.getText());
@@ -117,5 +115,11 @@ public final class CompactJsonFormatter implements JsonFormatter {
             default:
                 throw new RuntimeException("Coding failure in Argo:  Attempt to format a JsonNode of unknown type [" + jsonNode.getType() + "];");
         }
+    }
+
+    private static void writeEscapedString(String text, Writer writer) throws IOException {
+        writer.append('"')
+                .append(escapeString(text))
+                .append('"');
     }
 }

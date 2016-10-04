@@ -21,9 +21,21 @@ import static org.junit.Assert.fail;
 
 public class JsonFieldTest {
     @Test
-    public void rejectsNullNameInConstructor() throws Exception {
+    public void rejectsNullStringNameInConstructor() throws Exception {
+        final String name = null;
         try {
-            new JsonField(null, aJsonNode());
+            new JsonField(name, aJsonNode());
+            fail("Expected JsonField constructed with a null name to throw a NullPointerException");
+        } catch (final NullPointerException e) {
+            assertThat(e.getMessage(), equalTo("Attempt to construct a JsonField with a null name."));
+        }
+    }
+
+    @Test
+    public void rejectsNullJsonStringNameInConstructor() throws Exception {
+        final JsonStringNode name = null;
+        try {
+            new JsonField(name, aJsonNode());
             fail("Expected JsonField constructed with a null name to throw a NullPointerException");
         } catch (final NullPointerException e) {
             assertThat(e.getMessage(), equalTo("Attempt to construct a JsonField with a null name."));

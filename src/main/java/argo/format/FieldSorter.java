@@ -27,7 +27,7 @@ interface FieldSorter {
 
     Comparator<JsonField> JSON_FIELD_COMPARATOR = new Comparator<JsonField>() {
         public int compare(JsonField jsonField, JsonField jsonField1) {
-            return jsonField.getName().compareTo(jsonField1.getName());
+            return jsonField.getNameText().compareTo(jsonField1.getNameText());
         }
     };
 

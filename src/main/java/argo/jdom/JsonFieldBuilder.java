@@ -11,7 +11,7 @@
 package argo.jdom;
 
 interface JsonFieldBuilder {
-    JsonStringNode buildKey();
+    String name();
 
     JsonField build();
 }

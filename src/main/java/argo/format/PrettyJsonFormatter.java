@@ -99,7 +99,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
                     final JsonField field = jsonStringNodes.next();
                     writer.println();
                     addTabs(writer, indent + 1);
-                    formatJsonNode(field.getName(), writer, indent + 1);
+                    writeEscapedString(field.getNameText(), writer);
                     writer.append(": ");
                     formatJsonNode(field.getValue(), writer, indent + 1);
                     if (jsonStringNodes.hasNext()) {
@@ -113,9 +113,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
                 writer.append('}');
                 break;
             case STRING:
-                writer.append('"')
-                        .append(escapeString(jsonNode.getText()))
-                        .append('"');
+                writeEscapedString(jsonNode.getText(), writer);
                 break;
             case NUMBER:
                 writer.append(jsonNode.getText());
@@ -134,7 +132,13 @@ public final class PrettyJsonFormatter implements JsonFormatter {
         }
     }
 
-    private void addTabs(final PrintWriter writer, final int tabs) {
+    private static void writeEscapedString(String text, PrintWriter writer) {
+        writer.append('"')
+                .append(escapeString(text))
+                .append('"');
+    }
+
+    private static void addTabs(final PrintWriter writer, final int tabs) {
         for (int i = 0; i < tabs; i++) {
             writer.write('\t');
         }

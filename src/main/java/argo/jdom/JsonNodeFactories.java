@@ -238,7 +238,7 @@ public final class JsonNodeFactories {
      * @return a JSON field with the given name and value
      */
     public static JsonField field(final String name, final JsonNode value) {
-        return new JsonField(string(name), value);
+        return new JsonField(name, value);
     }
 
     /**

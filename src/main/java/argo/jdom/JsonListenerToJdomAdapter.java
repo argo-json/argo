@@ -53,7 +53,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final String name) {
-        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(JsonNodeFactories.string(name));
+        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(name);
         stack.peek().addField(fieldNodeContainer);
         stack.push(fieldNodeContainer);
     }
@@ -94,7 +94,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         stack.peek().addNode(nodeBuilder);
     }
 
-    private static interface NodeContainer {
+    private interface NodeContainer {
 
         void addNode(JsonNodeBuilder jsonNodeBuilder);
 
@@ -135,11 +135,11 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     private static final class FieldNodeContainer implements NodeContainer, JsonFieldBuilder {
-        private final JsonStringNode key;
+        private final String name;
         private JsonNodeBuilder valueBuilder;
 
-        FieldNodeContainer(JsonStringNode key) {
-            this.key = key;
+        FieldNodeContainer(String name) {
+            this.name = name;
         }
 
         public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -150,15 +150,15 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field.");
         }
 
-        public JsonStringNode buildKey() {
-            return key;
+        public String name() {
+            return name;
         }
 
         public JsonField build() {
             if (valueBuilder == null) {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to create a field without a value.");
             } else {
-                return field(buildKey(), valueBuilder.build());
+                return field(name, valueBuilder.build());
             }
         }
     }

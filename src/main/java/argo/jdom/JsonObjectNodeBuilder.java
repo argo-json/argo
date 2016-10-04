@@ -12,7 +12,9 @@ package argo.jdom;
 
 import java.util.*;
 
-import static argo.jdom.UnmodifiableJsonFieldBuilder.anUnmodifiableJsonFieldBuilder;
+import static argo.jdom.JsonNodeFactories.string;
+import static argo.jdom.UnmodifiableJsonStringNamedJsonFieldBuilder.anUnmodifiableJsonStringNamedJsonFieldBuilder;
+import static argo.jdom.UnmodifiableStringNamedJsonFieldBuilder.anUnmodifiableStringNamedJsonFieldBuilder;
 
 /**
  * Builder for {@code JsonRootNode}s representing JSON objects.
@@ -58,12 +60,12 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
 
     static JsonObjectNodeBuilder duplicateFieldRejectingJsonObjectNodeBuilder() {
         return new JsonObjectNodeBuilder(new FieldCollector() {
-            private final Map<JsonStringNode, JsonFieldBuilder> fieldBuilders = new LinkedHashMap<JsonStringNode, JsonFieldBuilder>();
+            private final Map<String, JsonFieldBuilder> fieldBuilders = new LinkedHashMap<String, JsonFieldBuilder>();
 
             public void add(final JsonFieldBuilder jsonFieldBuilder) {
-                final JsonStringNode key = jsonFieldBuilder.buildKey();
+                final String key = jsonFieldBuilder.name();
                 if (fieldBuilders.containsKey(key)) {
-                    throw new IllegalArgumentException("Attempt to add a field with pre-existing key [" + key + "]");
+                    throw new IllegalArgumentException("Attempt to add a field with pre-existing key [" + string(key) + "]");
                 } else {
                     fieldBuilders.put(key, jsonFieldBuilder);
                 }
@@ -74,7 +76,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
             }
 
             public Iterator<JsonField> iterator() {
-                final Iterator<Map.Entry<JsonStringNode, JsonFieldBuilder>> delegate = fieldBuilders.entrySet().iterator();
+                final Iterator<Map.Entry<String, JsonFieldBuilder>> delegate = fieldBuilders.entrySet().iterator();
                 return new Iterator<JsonField>() {
                     public boolean hasNext() {
                         return delegate.hasNext();
@@ -100,7 +102,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
      * @return the modified object builder.
      */
     public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder value) {
-        return withField(JsonNodeFactories.string(name), value);
+        return withFieldBuilder(anUnmodifiableStringNamedJsonFieldBuilder(name, value));
     }
 
     /**
@@ -111,7 +113,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
      * @return the modified object builder.
      */
     public JsonObjectNodeBuilder withField(final JsonStringNode name, final JsonNodeBuilder value) {
-        return withFieldBuilder(anUnmodifiableJsonFieldBuilder(name, value));
+        return withFieldBuilder(anUnmodifiableJsonStringNamedJsonFieldBuilder(name, value));
     }
 
     /**
