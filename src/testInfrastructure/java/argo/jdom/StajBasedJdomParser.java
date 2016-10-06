@@ -11,7 +11,6 @@
 package argo.jdom;
 
 import argo.saj.InvalidSyntaxException;
-import argo.saj.JsonListener;
 import argo.saj.StajBasedSajParser;
 import argo.staj.StajParser;
 
@@ -20,10 +19,8 @@ public final class StajBasedJdomParser {
     private static final JdomParser JDOM_PARSER = new JdomParser();
 
     public JsonRootNode parse(final StajParser stajParser) throws InvalidSyntaxException {
-        return JDOM_PARSER.parse(new JdomParser.JsonListenerBasedParser() {
-            public void parse(JsonListener jsonListener) throws InvalidSyntaxException {
-                new StajBasedSajParser().parse(stajParser, jsonListener);
-            }
+        return JDOM_PARSER.parse(jsonListener -> {
+            new StajBasedSajParser().parse(stajParser, jsonListener);
         });
     }
 

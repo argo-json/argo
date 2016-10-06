@@ -12,11 +12,11 @@ package argo.jdom;
 
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static argo.jdom.JsonNodeFactories.*;
+import static java.util.Collections.singletonMap;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -26,7 +26,7 @@ public final class JsonObjectTest {
     public void testImmutability() {
         final JsonStringNode baseJsonKey = string("Test");
         final JsonNode baseJsonNode = number("0");
-        final Map<JsonStringNode, JsonNode> baseElements = new HashMap<JsonStringNode, JsonNode>();
+        final Map<JsonStringNode, JsonNode> baseElements = new HashMap<>();
         baseElements.put(baseJsonKey, baseJsonNode);
         final JsonRootNode jsonObject = object(baseElements);
         assertEquals(1, jsonObject.getFields().size());
@@ -47,20 +47,20 @@ public final class JsonObjectTest {
 
     @Test
     public void testEquals() {
-        assertEquals(object(new HashMap<JsonStringNode, JsonNode>()), object(new HashMap<JsonStringNode, JsonNode>()));
-        assertEquals(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))), object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))));
-        assertFalse(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).equals(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("1")))));
-        assertFalse(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).equals(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Another test"), number("0")))));
+        assertEquals(object(new HashMap<>()), object(new HashMap<>()));
+        assertEquals(object(singletonMap(string("Test"), number("0"))), object(singletonMap(string("Test"), number("0"))));
+        assertFalse(object(singletonMap(string("Test"), number("0"))).equals(object(singletonMap(string("Test"), number("1")))));
+        assertFalse(object(singletonMap(string("Test"), number("0"))).equals(object(singletonMap(string("Another test"), number("0")))));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(object(new HashMap<JsonStringNode, JsonNode>()), object(new HashMap<JsonStringNode, JsonNode>()));
-        assertEquals(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).hashCode(), object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).hashCode());
+        assertEquals(object(new HashMap<>()), object(new HashMap<>()));
+        assertEquals(object(singletonMap(string("Test"), number("0"))).hashCode(), object(singletonMap(string("Test"), number("0"))).hashCode());
     }
 
     @Test
     public void testToString() {
-        assertThat(object(Collections.<JsonStringNode, JsonNode>singletonMap(string("Test"), number("0"))).toString(), is(not(nullValue())));
+        assertThat(object(singletonMap(string("Test"), number("0"))).toString(), is(not(nullValue())));
     }
 }

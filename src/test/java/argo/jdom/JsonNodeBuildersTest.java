@@ -12,11 +12,11 @@ package argo.jdom;
 
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import static argo.jdom.JsonNodeBuilders.*;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -54,7 +54,7 @@ public final class JsonNodeBuildersTest {
 
     @Test
     public void arrayBuilderBuildsAnArrayWithNoElements() throws Exception {
-        assertThat(anArrayBuilder().build(), equalTo(JsonNodeFactories.array(new LinkedList<JsonNode>())));
+        assertThat(anArrayBuilder().build(), equalTo(JsonNodeFactories.array(new LinkedList<>())));
     }
 
     @Test
@@ -65,14 +65,14 @@ public final class JsonNodeBuildersTest {
                         .build()
                 , equalTo(
                 JsonNodeFactories.array(new LinkedList<JsonNode>(
-                        Arrays.asList(JsonNodeFactories.string("Bob"))
+                        singletonList(JsonNodeFactories.string("Bob"))
                 ))
         ));
     }
 
     @Test
     public void objectBuilderBuildsAnObjectWithNoFields() throws Exception {
-        assertThat(anObjectBuilder().build(), equalTo(JsonNodeFactories.object(new HashMap<JsonStringNode, JsonNode>())));
+        assertThat(anObjectBuilder().build(), equalTo(JsonNodeFactories.object(new HashMap<>())));
     }
 
     @Test

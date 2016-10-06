@@ -15,10 +15,6 @@ import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 public final class JsonNodeBuilderTestBuilder {
     public static JsonNodeBuilder aJsonNodeBuilder() {
         final JsonNode jsonNode = aJsonNode();
-        return new JsonNodeBuilder() {
-            public JsonNode build() {
-                return jsonNode;
-            }
-        };
+        return () -> jsonNode;
     }
 }

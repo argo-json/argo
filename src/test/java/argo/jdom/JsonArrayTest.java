@@ -12,11 +12,10 @@ package argo.jdom;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -25,7 +24,7 @@ public final class JsonArrayTest {
     @Test
     public void testImmutability() {
         final JsonNode baseJsonNode = JsonNodeFactories.number("0");
-        final List<JsonNode> baseElements = new LinkedList<JsonNode>(Arrays.<JsonNode>asList(baseJsonNode));
+        final List<JsonNode> baseElements = new LinkedList<>(singletonList(baseJsonNode));
         final JsonNode jsonArray = JsonNodeFactories.array(baseElements);
         assertEquals(1, jsonArray.getElements().size());
         assertEquals(baseJsonNode, jsonArray.getElements().get(0));
@@ -43,19 +42,19 @@ public final class JsonArrayTest {
 
     @Test
     public void testEquals() {
-        assertEquals(JsonNodeFactories.array(new LinkedList<JsonNode>()), JsonNodeFactories.array(new LinkedList<JsonNode>()));
-        assertEquals(JsonNodeFactories.array(Collections.<JsonNode>singletonList(JsonNodeFactories.number("0"))), JsonNodeFactories.array(Collections.<JsonNode>singletonList(JsonNodeFactories.number("0"))));
-        assertFalse(JsonNodeFactories.array(Collections.<JsonNode>singletonList(JsonNodeFactories.number("0"))).equals(JsonNodeFactories.array(Collections.<JsonNode>singletonList(JsonNodeFactories.number("1")))));
+        assertEquals(JsonNodeFactories.array(new LinkedList<>()), JsonNodeFactories.array(new LinkedList<>()));
+        assertEquals(JsonNodeFactories.array(singletonList(JsonNodeFactories.number("0"))), JsonNodeFactories.array(singletonList(JsonNodeFactories.number("0"))));
+        assertFalse(JsonNodeFactories.array(singletonList(JsonNodeFactories.number("0"))).equals(JsonNodeFactories.array(singletonList(JsonNodeFactories.number("1")))));
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(JsonNodeFactories.array(new LinkedList<JsonNode>()).hashCode(), JsonNodeFactories.array(new LinkedList<JsonNode>()).hashCode());
-        assertEquals(JsonNodeFactories.array(Collections.<JsonNode>singletonList(JsonNodeFactories.number("0"))).hashCode(), JsonNodeFactories.array(Collections.<JsonNode>singletonList(JsonNodeFactories.number("0"))).hashCode());
+        assertEquals(JsonNodeFactories.array(new LinkedList<>()).hashCode(), JsonNodeFactories.array(new LinkedList<>()).hashCode());
+        assertEquals(JsonNodeFactories.array(singletonList(JsonNodeFactories.number("0"))).hashCode(), JsonNodeFactories.array(singletonList(JsonNodeFactories.number("0"))).hashCode());
     }
 
     @Test
     public void testToString() {
-        assertThat(JsonNodeFactories.array(Collections.<JsonNode>singletonList(JsonNodeFactories.number("0"))).toString(), is(not(nullValue())));
+        assertThat(JsonNodeFactories.array(singletonList(JsonNodeFactories.number("0"))).toString(), is(not(nullValue())));
     }
 }
