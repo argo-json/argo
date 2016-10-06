@@ -19,17 +19,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMatcher<StajParser> {
-    private final JsonStreamElement[] jsonStreamElements;
 
-    private ElementTrackingStajParserMatcher(final JsonStreamElement... jsonStreamElements) {
-        this.jsonStreamElements = jsonStreamElements;
-    }
+    private final Collection<JsonStreamElement> actual = new ArrayList<>();
+    private final JsonStreamElement[] jsonStreamElements;
 
     public static Matcher<StajParser> generatesElements(final JsonStreamElement... jsonStreamElements) {
         return new ElementTrackingStajParserMatcher(jsonStreamElements);
     }
 
-    private Collection<JsonStreamElement> actual = new ArrayList<>();
+    private ElementTrackingStajParserMatcher(final JsonStreamElement... jsonStreamElements) {
+        this.jsonStreamElements = jsonStreamElements;
+    }
 
     @Override
     protected boolean matchesSafely(final StajParser item, final Description mismatchDescription) {
