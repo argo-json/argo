@@ -55,7 +55,7 @@ public final class JdomParser {
         return jsonListenerToJdomAdapter.getDocument();
     }
 
-    static interface JsonListenerBasedParser {
+    interface JsonListenerBasedParser {
         void parse(JsonListener jsonListener) throws InvalidSyntaxException;
     }
 
