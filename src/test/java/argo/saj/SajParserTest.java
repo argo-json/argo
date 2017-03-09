@@ -865,4 +865,15 @@ public final class SajParserTest {
         }
     }
 
+    @Test
+    public void rejectsNumberWithTwoDecimalPoints() throws Exception {
+        final String inputString = "[1.1.1]";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 5:  Expected either , or ] but got [.]."));
+        }
+    }
+
 }

@@ -501,7 +501,6 @@ public enum JsonStreamElementType {
         final StringBuilder result = new StringBuilder();
         final char firstChar = (char) pushbackReader.read();
         switch (firstChar) {
-            case '.':
             case 'E':
                 result.append('E');
                 result.append(possibleSign(pushbackReader));
