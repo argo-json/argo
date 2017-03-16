@@ -25,7 +25,7 @@ final class IndexPage {
     static HtmlTag indexPage(final String version) {
         return anArgoPage(
                 h2Tag(xhtmlText("Introduction")),
-                paragraphTag(xhtmlText("Argo is a JSON parser and generator for Java. It offers three parse interfaces - a push parser, a " +
+                paragraphTag(xhtmlText("Argo is a JSON parser and generator compliant with "), anchorTag(xhtmlText("RFC 7159")).withHref(Href.href("https://tools.ietf.org/html/rfc7159")), xhtmlText(" for Java. It offers three parse interfaces - a push parser, a " +
                         "pull parser, and a DOM style parser. It is written to be easy to use, typesafe, and fast. It is open source, and " +
                         "free for you to use.")),
                 paragraphTag(

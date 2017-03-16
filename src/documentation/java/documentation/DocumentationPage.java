@@ -17,6 +17,7 @@ import argo.jdom.*;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
 import argo.staj.StajParser;
+import net.sourceforge.xazzle.xhtml.Href;
 import net.sourceforge.xazzle.xhtml.HtmlTag;
 import net.sourceforge.xazzle.xhtml.InlineTag;
 
@@ -51,7 +52,9 @@ final class DocumentationPage {
                 ),
                 h3Tag(xhtmlText("Model of JSON in Argo")),
                 paragraphTag(
-                        xhtmlText("There is a good explanation of "),
+                        xhtmlText("JSON is defined in "),
+                        anchorTag(xhtmlText("RFC 7159")).withHref(Href.href("https://tools.ietf.org/html/rfc7159")),
+                        xhtmlText(". There is a good explanation of "),
                         anchorTag(xhtmlText("the structure of JSON")).withHref(href("http://www.json.org/")),
                         xhtmlText(" at http://www.json.org/. Argo models JSON using five types of entity - two that can have children:")
                 ),
