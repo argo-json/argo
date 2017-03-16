@@ -16,8 +16,16 @@ public class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    public void readingAFixedNumberOfCharactersFromAnEmptyReaderZero() throws Exception {
+    public void readingAFixedNumberOfCharactersFromAnEmptyReaderReturnsZero() throws Exception {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
         assertThat(positionTrackingPushbackReader.read(new char[1]), equalTo(0));
+    }
+
+    @Test
+    public void pushingBackMinusOneCausesNextCharacterToBeMinusOne() throws Exception {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
+        assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
+        positionTrackingPushbackReader.unread(-1);
+        assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
     }
 }

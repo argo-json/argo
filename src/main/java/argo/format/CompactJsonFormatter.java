@@ -12,7 +12,6 @@ package argo.format;
 
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
-import argo.jdom.JsonRootNode;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -56,7 +55,7 @@ public final class CompactJsonFormatter implements JsonFormatter {
     /**
      * Constructs a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in the order they were defined.
      */
-    public String format(final JsonRootNode jsonNode) {
+    public String format(final JsonNode jsonNode) {
         final StringWriter stringWriter = new StringWriter();
         try {
             format(jsonNode, stringWriter);
@@ -66,7 +65,7 @@ public final class CompactJsonFormatter implements JsonFormatter {
         return stringWriter.toString();
     }
 
-    public void format(final JsonRootNode jsonNode, final Writer writer) throws IOException {
+    public void format(final JsonNode jsonNode, final Writer writer) throws IOException {
         formatJsonNode(jsonNode, writer);
     }
 

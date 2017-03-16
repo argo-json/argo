@@ -57,6 +57,14 @@ public final class JsonStringNodeTestBuilder {
         return string(aValidJsonString());
     }
 
+    public static JsonStringNode aStringNodeDifferentTo(JsonStringNode jsonStringNode) {
+        JsonStringNode result;
+        do {
+            result = string(aValidJsonString());
+        } while (result == jsonStringNode);
+        return result;
+    }
+
     public static String aValidJsonString() {
         final StringBuilder result = new StringBuilder();
         for (int i = 0; i < RANDOM.nextInt(20); i++) {

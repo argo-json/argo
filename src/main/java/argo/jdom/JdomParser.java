@@ -18,30 +18,30 @@ import java.io.Reader;
 import java.io.StringReader;
 
 /**
- * Parses a JSON character stream into a {@code JsonRootNode} object.  Instances of this class can safely be shared
+ * Parses a JSON character stream into a {@code JsonNode} object.  Instances of this class can safely be shared
  * between threads.
  */
 public final class JdomParser {
 
     /**
-     * Parse the specified JSON {@code String} into a {@code JsonRootNode} object.
+     * Parse the specified JSON {@code String} into a {@code JsonNode} object.
      *
      * @param json the {@code String} to parse.
-     * @return a {@code JsonRootNode} representing the JSON read from the specified {@code String}.
+     * @return a {@code JsonNode} representing the JSON read from the specified {@code String}.
      * @throws InvalidSyntaxException if the characters streamed from the specified {@code String} does not represent valid JSON.
      */
-    public JsonRootNode parse(final String json) throws InvalidSyntaxException {
+    public JsonNode parse(final String json) throws InvalidSyntaxException {
         return parse(new StringReader(json));
     }
 
     /**
-     * Parse the character stream from the specified {@code Reader} into a {@code JsonRootNode} object.
+     * Parse the character stream from the specified {@code Reader} into a {@code JsonNode} object.
      *
      * @param reader the {@code Reader} to parse.
-     * @return a {@code JsonRootNode} representing the JSON read from the specified {@code Reader}.
+     * @return a {@code JsonNode} representing the JSON read from the specified {@code Reader}.
      * @throws InvalidSyntaxException if the characters streamed from the specified {@code Reader} does not represent valid JSON.
      */
-    public JsonRootNode parse(final Reader reader) throws InvalidSyntaxException {
+    public JsonNode parse(final Reader reader) throws InvalidSyntaxException {
         return parse(new JsonListenerBasedParser() {
             public void parse(JsonListener jsonListener) throws InvalidSyntaxException {
                 new SajParser().parse(reader, jsonListener);
@@ -49,7 +49,7 @@ public final class JdomParser {
         });
     }
 
-    JsonRootNode parse(final JsonListenerBasedParser jsonListenerBasedParser) throws InvalidSyntaxException {
+    JsonNode parse(final JsonListenerBasedParser jsonListenerBasedParser) throws InvalidSyntaxException {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerBasedParser.parse(jsonListenerToJdomAdapter);
         return jsonListenerToJdomAdapter.getDocument();

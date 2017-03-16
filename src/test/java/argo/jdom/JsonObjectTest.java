@@ -28,7 +28,7 @@ public final class JsonObjectTest {
         final JsonNode baseJsonNode = number("0");
         final Map<JsonStringNode, JsonNode> baseElements = new HashMap<>();
         baseElements.put(baseJsonKey, baseJsonNode);
-        final JsonRootNode jsonObject = object(baseElements);
+        final JsonNode jsonObject = object(baseElements);
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));

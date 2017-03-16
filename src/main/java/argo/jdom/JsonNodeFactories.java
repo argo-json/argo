@@ -90,7 +90,7 @@ public final class JsonNodeFactories {
      * @param elements {@code JsonNode}s that will populate the array
      * @return a JSON array of the given {@code JsonNode}s
      */
-    public static JsonRootNode array(final Iterable<? extends JsonNode> elements) {
+    public static JsonNode array(final Iterable<? extends JsonNode> elements) {
         return new JsonArray(elements);
     }
 
@@ -98,7 +98,7 @@ public final class JsonNodeFactories {
      * @param elements {@code JsonNode}s that will populate the array
      * @return a JSON array of the given {@code JsonNode}s
      */
-    public static JsonRootNode array(final JsonNode... elements) {
+    public static JsonNode array(final JsonNode... elements) {
         return array(asList(elements));
     }
 
@@ -111,7 +111,7 @@ public final class JsonNodeFactories {
      * @param elements {@code JsonNode}s that will populate the array
      * @return a JSON array of the given {@code JsonNode}s
      */
-    public static JsonRootNode lazyArray(final List<? extends JsonNode> elements) {
+    public static JsonNode lazyArray(final List<? extends JsonNode> elements) {
         return new AbstractJsonArray() {
             @Override
             public List<JsonNode> getElements() {
@@ -134,7 +134,7 @@ public final class JsonNodeFactories {
      * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
-    public static JsonRootNode object(final Map<JsonStringNode, ? extends JsonNode> fields) {
+    public static JsonNode object(final Map<JsonStringNode, ? extends JsonNode> fields) {
         return new JsonObject(new ArrayList<JsonField>(fields.size()) {{
             for (final Map.Entry<JsonStringNode, ? extends JsonNode> entry : fields.entrySet()) {
                 add(field(entry.getKey(), entry.getValue()));
@@ -146,7 +146,7 @@ public final class JsonNodeFactories {
      * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
-    public static JsonRootNode object(final JsonField... fields) {
+    public static JsonNode object(final JsonField... fields) {
         return object(asList(fields));
     }
 
@@ -154,7 +154,7 @@ public final class JsonNodeFactories {
      * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
-    public static JsonRootNode object(final Iterable<JsonField> fields) {
+    public static JsonNode object(final Iterable<JsonField> fields) {
         return new JsonObject(fields);
     }
 
@@ -167,7 +167,7 @@ public final class JsonNodeFactories {
      * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
-    public static JsonRootNode lazyObject(final List<JsonField> fields) {
+    public static JsonNode lazyObject(final List<JsonField> fields) {
         return new AbstractJsonObject() {
             @Override
             public Map<JsonStringNode, JsonNode> getFields() {

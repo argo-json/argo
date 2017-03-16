@@ -57,7 +57,7 @@ public final class JsonNodeBuilders {
      * Builder for a JSON object that permits duplicated field names, and preserves field order.
      * Fields in the built JSON object appear in the order they were added to the builder.
      *
-     * @return a builder for a {@code JsonRootNode} representing an object.
+     * @return a builder for a {@code JsonNode} representing an object.
      */
     public static JsonObjectNodeBuilder anObjectBuilder() {
         return JsonObjectNodeBuilder.duplicateFieldPermittingJsonObjectNodeBuilder();
@@ -67,7 +67,7 @@ public final class JsonNodeBuilders {
      * Builder for a JSON object that has unique field names.
      * Adding two fields with the same name results in an IllegalArgumentException being thrown.
      *
-     * @return a builder for a {@code JsonRootNode} representing an object.
+     * @return a builder for a {@code JsonNode} representing an object.
      */
     public static JsonObjectNodeBuilder aUniqueFieldNameObjectBuilder() {
         return JsonObjectNodeBuilder.duplicateFieldRejectingJsonObjectNodeBuilder();
@@ -76,7 +76,7 @@ public final class JsonNodeBuilders {
     /**
      * Builder for a JSON array.
      *
-     * @return a builder for a {@code JsonRootNode} representing an array.
+     * @return a builder for a {@code JsonNode} representing an array.
      */
     public static JsonArrayNodeBuilder anArrayBuilder() {
         return new JsonArrayNodeBuilder();

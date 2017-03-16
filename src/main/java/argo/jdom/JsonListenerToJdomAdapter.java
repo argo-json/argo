@@ -20,9 +20,9 @@ import static argo.jdom.JsonNodeFactories.field;
 final class JsonListenerToJdomAdapter implements JsonListener {
 
     private final Stack<NodeContainer> stack = new Stack<NodeContainer>();
-    private JsonNodeBuilder<JsonRootNode> root;
+    private JsonNodeBuilder<? extends JsonNode> root;
 
-    JsonRootNode getDocument() {
+    JsonNode getDocument() {
         return root.build();
     }
 
@@ -34,7 +34,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
     public void startArray() {
         final ArrayNodeContainer arrayNodeContainer = new ArrayNodeContainer();
-        addRootNode(arrayNodeContainer);
+        addValue(arrayNodeContainer);
         stack.push(arrayNodeContainer);
     }
 
@@ -44,7 +44,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
     public void startObject() {
         final ObjectNodeContainer objectNodeContainer = new ObjectNodeContainer();
-        addRootNode(objectNodeContainer);
+        addValue(objectNodeContainer);
         stack.push(objectNodeContainer);
     }
 
@@ -82,16 +82,12 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         addValue(aNullBuilder());
     }
 
-    private void addRootNode(final JsonNodeBuilder<JsonRootNode> rootNodeBuilder) {
+    private void addValue(final JsonNodeBuilder<? extends JsonNode> nodeBuilder) {
         if (root == null) {
-            root = rootNodeBuilder;
+            root = nodeBuilder;
         } else {
-            addValue(rootNodeBuilder);
+            stack.peek().addNode(nodeBuilder);
         }
-    }
-
-    private void addValue(final JsonNodeBuilder nodeBuilder) {
-        stack.peek().addNode(nodeBuilder);
     }
 
     private interface NodeContainer {
@@ -102,7 +98,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
     }
 
-    private static final class ArrayNodeContainer implements NodeContainer, JsonNodeBuilder<JsonRootNode> {
+    private static final class ArrayNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
         private final JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
 
         public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -113,12 +109,12 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array.");
         }
 
-        public JsonRootNode build() {
+        public JsonNode build() {
             return arrayBuilder.build();
         }
     }
 
-    private static final class ObjectNodeContainer implements NodeContainer, JsonNodeBuilder<JsonRootNode> {
+    private static final class ObjectNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
         private final JsonObjectNodeBuilder objectNodeBuilder = anObjectBuilder();
 
         public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -129,7 +125,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             objectNodeBuilder.withFieldBuilder(jsonFieldBuilder);
         }
 
-        public JsonRootNode build() {
+        public JsonNode build() {
             return objectNodeBuilder.build();
         }
     }

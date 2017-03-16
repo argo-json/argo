@@ -29,7 +29,6 @@ import static net.sourceforge.xazzle.xhtml.Tags.*;
 
 final class DocumentationPage {
 
-    private static final InlineTag JSON_ROOT_NODE = simpleNameOf(JsonRootNode.class);
     private static final InlineTag JSON_NODE = simpleNameOf(JsonNode.class);
     private static final InlineTag STRING = simpleNameOf(String.class);
     private static final InlineTag JDOM_PARSER = simpleNameOf(JdomParser.class);
@@ -68,7 +67,7 @@ final class DocumentationPage {
                 ),
                 h3Tag(xhtmlText("Producing JSON")),
                 paragraphTag(
-                        xhtmlText("There are two steps to producing JSON using Argo: First, an instance of "), JSON_ROOT_NODE,
+                        xhtmlText("There are two steps to producing JSON using Argo: First, an instance of "), JSON_NODE,
                         xhtmlText(" representing the JSON is built, and then an instance of "),
                         simpleNameOf(JsonFormatter.class),
                         xhtmlText(" is used to turn that into a "),
@@ -76,17 +75,14 @@ final class DocumentationPage {
                         xhtmlText(" representation.")
                 ),
                 paragraphTag(
-                        xhtmlText("A "), JSON_ROOT_NODE,
-                        xhtmlText(" represents either a JSON object or a JSON array. They can have fields and elements consisting of instances of "),
-                        JSON_NODE, xhtmlText(", which is the superclass of "), JSON_ROOT_NODE,
-                        xhtmlText(". A number of factory methods are provided for constructing "), JSON_NODE, xhtmlText("s and "),
-                        JSON_ROOT_NODE, xhtmlText("s in the "), simpleNameOf(JsonNodeFactories.class), xhtmlText(" class:")
+                        xhtmlText("A number of factory methods are provided for constructing "), JSON_NODE,
+                        xhtmlText("s in the "), simpleNameOf(JsonNodeFactories.class), xhtmlText(" class:")
                 ),
                 codeBlock("import static argo.jdom.JsonNodeFactories.*;\n" +
                         "\n" +
                         "...\n" +
                         "\n" +
-                        "JsonRootNode json = object(\n" +
+                        "JsonNode json = object(\n" +
                         "        field(\"name\", string(\"Black Lace\")),\n" +
                         "        field(\"sales\", number(\"110921\")),\n" +
                         "        field(\"totalRoyalties\", number(\"10223.82\")),\n" +
@@ -96,9 +92,8 @@ final class DocumentationPage {
                         "        ))\n" +
                         ");"),
                 paragraphTag(
-                        xhtmlText("All implementations of "), JSON_NODE, xhtmlText(" and "), JSON_ROOT_NODE,
-                        xhtmlText(" are immutable. The same "), JSON_ROOT_NODE,
-                        xhtmlText(" could have been built up in a mutable manner using the methods in the "),
+                        xhtmlText("All implementations of "), JSON_NODE, xhtmlText(" are immutable. The same "),
+                        JSON_NODE, xhtmlText(" could have been built up in a mutable manner using the methods in the "),
                         simpleNameOf(JsonNodeBuilders.class), xhtmlText(" class:")
                 ),
                 codeBlock("import static argo.jdom.JsonNodeBuilders.*;\n" +
@@ -113,10 +108,10 @@ final class DocumentationPage {
                         "                .withElement(aStringBuilder(\"Superman\"))\n" +
                         "                .withElement(aStringBuilder(\"Agadoo\"))\n" +
                         "        );\n" +
-                        "JsonRootNode json = builder.build();"),
+                        "JsonNode json = builder.build();"),
                 paragraphTag(
                         xhtmlText("Finally, an instance of "), simpleNameOf(JsonFormatter.class),
-                        xhtmlText(" is needed to produce JSON text from the "), JSON_ROOT_NODE,
+                        xhtmlText(" is needed to produce JSON text from the "), JSON_NODE,
                         xhtmlText(". The two implementations provided are "), simpleNameOf(PrettyJsonFormatter.class),
                         xhtmlText(", which produces easy to read JSON, and "), simpleNameOf(CompactJsonFormatter.class),
                         xhtmlText(", which produces very brief JSON. Instances of both classes can safely be shared between threads.")
@@ -143,17 +138,16 @@ final class DocumentationPage {
                         "    ]\n" +
                         "}"),
                 paragraphTag(
-                        xhtmlText("The "), JDOM_PARSER, xhtmlText(" class is used to generate a "), JSON_ROOT_NODE,
+                        xhtmlText("The "), JDOM_PARSER, xhtmlText(" class is used to generate a "), JSON_NODE,
                         xhtmlText(" from JSON text. Instances of "), JDOM_PARSER, xhtmlText(" can safely be shared between threads.")
                 ),
                 codeBlock("private static final JdomParser JDOM_PARSER = new JdomParser();\n" +
                         "\n" +
                         "...\n" +
                         "\n" +
-                        "JsonRootNode json = JDOM_PARSER.parse(jsonText);"),
+                        "JsonNode json = JDOM_PARSER.parse(jsonText);"),
                 paragraphTag(
-                        xhtmlText("Instances of "), JSON_ROOT_NODE, xhtmlText(" are immutable. "), JSON_ROOT_NODE,
-                        xhtmlText(" and its parent "), JSON_NODE, xhtmlText(" provide methods for exploring the " +
+                        xhtmlText("Instances of "), JSON_NODE, xhtmlText(" are immutable. "), JSON_NODE, xhtmlText(" provides methods for exploring the " +
                         "generated structure, as specified in the javadoc. The simplest of these are the "),
                         codeSnippet("getXXXValue(Object... pathElements)"), xhtmlText(" methods, which are used as follows:")
                 ),
@@ -164,7 +158,7 @@ final class DocumentationPage {
                 codeBlock("boolean isString = json.isStringValue(\"singles\", 1);"),
                 paragraphTag(
                         xhtmlText("Alternatively, "), JSON_NODE_SELECTOR, xhtmlText("s can be used to extract data from the "),
-                        JSON_ROOT_NODE, xhtmlText("in a typesafe manner. "), JSON_NODE_SELECTOR, xhtmlText("s are functions that can be applied to "),
+                        JSON_NODE, xhtmlText(" in a typesafe manner. "), JSON_NODE_SELECTOR, xhtmlText("s are functions that can be applied to "),
                         JSON_NODE, xhtmlText("s to extract a value or a child "), JSON_NODE, xhtmlText(". The "),
                         simpleNameOf(JsonNodeSelectors.class), xhtmlText(" class provides a number of factory methods for constructing instances of "),
                         JSON_NODE_SELECTOR, xhtmlText(". The following code gets the name of the second single (note that like arrays, the index of the first element is zero):")

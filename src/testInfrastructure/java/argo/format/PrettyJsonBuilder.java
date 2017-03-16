@@ -10,13 +10,13 @@
 
 package argo.format;
 
-import argo.jdom.JsonRootNode;
+import argo.jdom.JsonNode;
 
 public final class PrettyJsonBuilder {
 
     private static final JsonFormatter JSON_FORMATTER = PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter();
 
-    public static String json(final JsonRootNode jsonRootNode) {
-        return JSON_FORMATTER.format(jsonRootNode);
+    public static String json(final JsonNode jsonNode) {
+        return JSON_FORMATTER.format(jsonNode);
     }
 }

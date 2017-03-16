@@ -13,7 +13,9 @@ package argo.jdom;
 import org.junit.Test;
 
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
+import static argo.jdom.JsonNodeTestBuilder.aJsonNodeDifferentTo;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
+import static argo.jdom.JsonStringNodeTestBuilder.aStringNodeDifferentTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
@@ -72,12 +74,14 @@ public class JsonFieldTest {
     @Test
     public void twoJsonFieldsWithTheEqualNamesAndDifferentValuesAreNotEqual() throws Exception {
         final JsonStringNode name = aStringNode();
-        assertThat(new JsonField(name, aJsonNode()), not(equalTo(new JsonField(name, aJsonNode()))));
+        final JsonNode value = aJsonNode();
+        assertThat(new JsonField(name, value), not(equalTo(new JsonField(name, aJsonNodeDifferentTo(value)))));
     }
 
     @Test
     public void twoJsonFieldsWithTheDifferentNamesAndEqualValuesAreNotEqual() throws Exception {
         final JsonNode value = aJsonNode();
-        assertThat(new JsonField(aStringNode(), value), not(equalTo(new JsonField(aStringNode(), value))));
+        final JsonStringNode name = aStringNode();
+        assertThat(new JsonField(name, value), not(equalTo(new JsonField(aStringNodeDifferentTo(name), value))));
     }
 }

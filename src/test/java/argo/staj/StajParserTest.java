@@ -11,7 +11,9 @@
 package argo.staj;
 
 import argo.format.PrettyJsonBuilder;
-import argo.jdom.*;
+import argo.jdom.JsonNode;
+import argo.jdom.JsonStringNode;
+import argo.jdom.JsonStringNodeTestBuilder;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,7 +21,8 @@ import java.io.Reader;
 import java.util.NoSuchElementException;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeTestBuilder.aJsonRootNode;
+import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
+import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 import static argo.staj.ElementTrackingStajParserMatcher.generatesElements;
 import static argo.staj.JsonStreamElement.*;
@@ -40,6 +43,33 @@ public final class StajParserTest {
     @Test
     public void objectOnlyDocumentHasCorrectElements() throws Exception {
         assertThat(stajParser(object()), generatesElements(startDocument(), startObject(), endObject(), endDocument()));
+    }
+
+    @Test
+    public void stringOnlyDocumentHasCorrectElements() throws Exception {
+        final JsonNode stringNode = aStringNode();
+        assertThat(stajParser(stringNode), generatesElements(startDocument(), string(stringNode.getText()), endDocument()));
+    }
+
+    @Test
+    public void numberOnlyDocumentHasCorrectElements() throws Exception {
+        final JsonNode numberNode = aNumberNode();
+        assertThat(stajParser(numberNode), generatesElements(startDocument(), number(numberNode.getText()), endDocument()));
+    }
+
+    @Test
+    public void nullOnlyDocumentHasCorrectElements() throws Exception {
+        assertThat(stajParser(nullNode()), generatesElements(startDocument(), nullValue(), endDocument()));
+    }
+
+    @Test
+    public void trueOnlyDocumentHasCorrectElements() throws Exception {
+        assertThat(stajParser(trueNode()), generatesElements(startDocument(), trueValue(), endDocument()));
+    }
+
+    @Test
+    public void falseOnlyDocumentHasCorrectElements() throws Exception {
+        assertThat(stajParser(falseNode()), generatesElements(startDocument(), falseValue(), endDocument()));
     }
 
     @Test
@@ -124,20 +154,20 @@ public final class StajParserTest {
 
     @Test
     public void arrayWithANumberNodeHasCorrectElements() throws Exception {
-        final JsonNode aNumberNode = JsonNumberNodeTestBuilder.aNumberNode();
+        final JsonNode aNumberNode = aNumberNode();
         assertThat(stajParser(array(aNumberNode)), generatesElements(startDocument(), startArray(), number(aNumberNode.getText()), endArray(), endDocument()));
     }
 
     @Test
-    public void aRandomRootNodeHasCorrectElements() throws Exception {
-        final JsonRootNode jsonRootNode = aJsonRootNode();
-        assertThat(stajParser(jsonRootNode), parsesTo(jsonRootNode));
+    public void aRandomJsonNodeHasCorrectElements() throws Exception {
+        final JsonNode aJsonNode = aJsonNode();
+        assertThat(stajParser(aJsonNode), parsesTo(aJsonNode));
     }
 
     @Test
-    public void aRandomRootNodeFromStringHasCorrectElements() throws Exception {
-        final JsonRootNode jsonRootNode = aJsonRootNode();
-        assertThat(new StajParser(PrettyJsonBuilder.json(jsonRootNode)), parsesTo(jsonRootNode));
+    public void aRandomJsonNodeFromStringHasCorrectElements() throws Exception {
+        final JsonNode jsonNode = aJsonNode();
+        assertThat(new StajParser(PrettyJsonBuilder.json(jsonNode)), parsesTo(jsonNode));
     }
 
     @Test
@@ -156,26 +186,30 @@ public final class StajParserTest {
 
     @Test(expected = JsonStreamException.class)
     public void handlesIoExceptionDuringParsing() throws Exception {
-        new StajParser(new Reader() {
+        final StajParser stajParser = new StajParser(new Reader() {
             public int read(char[] chars, int offset, int length) throws IOException {
                 throw new IOException("An IOException");
             }
 
             public void close() throws IOException {
             }
-        }).next();
+        });
+        stajParser.next();
+        stajParser.next();
     }
 
     @Test(expected = MyTestRuntimeException.class)
     public void handlesRuntimeExceptionDuringParsing() throws Exception {
-        new StajParser(new Reader() {
+        final StajParser stajParser = new StajParser(new Reader() {
             public int read(char[] chars, int offset, int length) throws IOException {
                 throw new MyTestRuntimeException();
             }
 
             public void close() throws IOException {
             }
-        }).next();
+        });
+        stajParser.next();
+        stajParser.next();
     }
 
     private static final class MyTestRuntimeException extends RuntimeException {

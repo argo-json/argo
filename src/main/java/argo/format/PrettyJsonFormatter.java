@@ -12,7 +12,6 @@ package argo.format;
 
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
-import argo.jdom.JsonRootNode;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -58,7 +57,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
         return new PrettyJsonFormatter(FieldSorter.ALPHABETIC_FIELD_SORTER);
     }
 
-    public String format(final JsonRootNode jsonNode) {
+    public String format(final JsonNode jsonNode) {
         final StringWriter stringWriter = new StringWriter();
         try {
             format(jsonNode, stringWriter);
@@ -68,7 +67,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
         return stringWriter.toString();
     }
 
-    public void format(final JsonRootNode jsonNode, final Writer writer) throws IOException {
+    public void format(final JsonNode jsonNode, final Writer writer) throws IOException {
         formatJsonNode(jsonNode, new PrintWriter(writer), 0);
     }
 

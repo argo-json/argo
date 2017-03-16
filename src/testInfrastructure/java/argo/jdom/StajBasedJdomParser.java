@@ -18,7 +18,7 @@ public final class StajBasedJdomParser {
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
 
-    public JsonRootNode parse(final StajParser stajParser) throws InvalidSyntaxException {
+    public JsonNode parse(final StajParser stajParser) throws InvalidSyntaxException {
         return JDOM_PARSER.parse(jsonListener -> {
             new StajBasedSajParser().parse(stajParser, jsonListener);
         });

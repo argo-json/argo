@@ -13,7 +13,7 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
-abstract class AbstractJsonArray extends JsonRootNode {
+abstract class AbstractJsonArray extends JsonNode {
     public JsonNodeType getType() {
         return JsonNodeType.ARRAY;
     }

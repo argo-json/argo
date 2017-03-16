@@ -11,12 +11,12 @@
 package argo.staj;
 
 import argo.format.PrettyJsonBuilder;
-import argo.jdom.JsonRootNode;
+import argo.jdom.JsonNode;
 
 import java.io.StringReader;
 
 public final class StajParserBuilder {
-    public static StajParser stajParser(final JsonRootNode jsonRootNode) {
-        return new StajParser(new StringReader(PrettyJsonBuilder.json(jsonRootNode)));
+    public static StajParser stajParser(final JsonNode jsonNode) {
+        return new StajParser(new StringReader(PrettyJsonBuilder.json(jsonNode)));
     }
 }

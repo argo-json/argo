@@ -619,6 +619,29 @@ public final class SajParserTest {
     }
 
     @Test
+    public void rejectsEmptyDocument() throws Exception {
+        final String inputString = "";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e, anInvalidSyntaxExceptionAtPosition(1, 1));
+        }
+    }
+
+
+    @Test
+    public void rejectsLeadingNonWhitespaceCharacters() throws Exception {
+        final String inputString = "whoops[]";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e, anInvalidSyntaxExceptionAtPosition(1, 1));
+        }
+    }
+
+    @Test
     public void rejectsTrailingNonWhitespaceCharacters() throws Exception {
         final String inputString = "[]whoops";
         try {
@@ -641,6 +664,17 @@ public final class SajParserTest {
     }
 
     @Test
+    public void rejectsLeadingNonWhitespaceCharactersWithNewLines() throws Exception {
+        final String inputString = "\n whoops[\n]";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e, anInvalidSyntaxExceptionAtPosition(2, 2));
+        }
+    }
+
+    @Test
     public void rejectsTrailingNonWhitespaceCharactersWithNewLines() throws Exception {
         final String inputString = "[\n]\n whoops";
         try {
@@ -649,6 +683,25 @@ public final class SajParserTest {
         } catch (final InvalidSyntaxException e) {
             assertThat(e, anInvalidSyntaxExceptionAtPosition(2, 3));
         }
+    }
+
+    @Test
+    public void tokenizesObjectLeadingWhitespaceCharacters() throws Exception {
+        final JsonListener jsonListener = context.mock(JsonListener.class);
+        final Sequence expectedSequence = context.sequence("expectedSequence");
+        context.checking(new Expectations() {{
+            oneOf(jsonListener).startDocument();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).startArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endArray();
+            inSequence(expectedSequence);
+            oneOf(jsonListener).endDocument();
+            inSequence(expectedSequence);
+        }});
+        final String inputString = " []";
+        new SajParser().parse(new StringReader(inputString), jsonListener);
+        context.assertIsSatisfied();
     }
 
     @Test
@@ -751,7 +804,7 @@ public final class SajParserTest {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
-            assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected a digit 1 - 9 but reached end of input."));
+            assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected a digit 0 - 9 but reached end of input."));
         }
     }
 
@@ -762,7 +815,7 @@ public final class SajParserTest {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
-            assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected a digit 1 - 9 but reached end of input."));
+            assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected a digit 0 - 9 but reached end of input."));
         }
     }
 
@@ -795,7 +848,7 @@ public final class SajParserTest {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
-            assertThat(e.getMessage(), equalTo("At line 1, column 1:  Expected either [ or { but reached end of input."));
+            assertThat(e.getMessage(), equalTo("At line 1, column 1:  Expected a value but reached end of input."));
         }
     }
 
@@ -806,7 +859,7 @@ public final class SajParserTest {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
-            assertThat(e.getMessage(), equalTo("At line 1, column 2:  Unexpectedly reached end of input at start of value."));
+            assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected a value but reached end of input."));
         }
     }
 
@@ -850,7 +903,7 @@ public final class SajParserTest {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
-            assertThat(e.getMessage(), equalTo("At line 1, column 6:  Unexpectedly reached end of input at start of value."));
+            assertThat(e.getMessage(), equalTo("At line 1, column 6:  Expected a value but reached end of input."));
         }
     }
 

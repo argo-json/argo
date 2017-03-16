@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeTestBuilder.aJsonLeafNode;
+import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aValidJsonString;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
@@ -30,7 +30,7 @@ import static org.junit.Assert.fail;
 
 public final class JsonNodeTest {
 
-    private static final JsonRootNode SAMPLE_JSON = object(
+    private static final JsonNode SAMPLE_JSON = object(
             field("name", string("Rossi")),
             field("championships", array(
                     number("2002"),
@@ -207,7 +207,7 @@ public final class JsonNodeTest {
 
     @Test
     public void getFromWrongTypeOfPathElementsForSingleElementPathHandledNicely() throws Exception {
-        final JsonRootNode aNode = SAMPLE_JSON.getRootNode("championships");
+        final JsonNode aNode = SAMPLE_JSON.getNode("championships");
         try {
             aNode.getStringValue("bob");
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
@@ -228,7 +228,7 @@ public final class JsonNodeTest {
 
     @Test
     public void getFromMissingIndexElementsForSingleElementPathHandledNicely() throws Exception {
-        final JsonRootNode aNode = SAMPLE_JSON.getRootNode("championships");
+        final JsonNode aNode = SAMPLE_JSON.getNode("championships");
         try {
             aNode.getStringValue(22);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
@@ -294,53 +294,25 @@ public final class JsonNodeTest {
     @Test
     public void getNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
         assertThat(nullNode().getNode(), equalTo(nullNode()));
-        assertThat(array().getNode(), equalTo((JsonNode) array()));
+        assertThat(array().getNode(), equalTo(array()));
         assertThat(falseNode().getNode(), equalTo(falseNode()));
         assertThat(number("22.2").getNode(), equalTo(number("22.2")));
-        assertThat(object().getNode(), equalTo((JsonNode) object()));
+        assertThat(object().getNode(), equalTo(object()));
         assertThat(string("Goggle").getNode(), equalTo((JsonNode) string("Goggle")));
         assertThat(trueNode().getNode(), equalTo(trueNode()));
 
-        assertThat(SAMPLE_JSON.getNode(), equalTo((JsonNode) SAMPLE_JSON));
+        assertThat(SAMPLE_JSON.getNode(), equalTo(SAMPLE_JSON));
         assertThat(SAMPLE_JSON.getNode("name"), equalTo((JsonNode) string("Rossi")));
-        assertThat(SAMPLE_JSON.getNode("championships"), equalTo((JsonNode) array(number("2002"), number("2003"), number("2004"), number("2005"), number("2008"), number("2009"))));
+        assertThat(SAMPLE_JSON.getNode("championships"), equalTo(array(number("2002"), number("2003"), number("2004"), number("2005"), number("2008"), number("2009"))));
         assertThat(SAMPLE_JSON.getNode("retirement age"), equalTo(nullNode()));
         assertThat(SAMPLE_JSON.getNode("championships", 2), equalTo(number("2004")));
     }
 
     @Test
-    public void isRootNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
-        assertThat(nullNode().isRootNode(), equalTo(false));
-        assertThat(array().isRootNode(), equalTo(true));
-        assertThat(falseNode().isRootNode(), equalTo(false));
-        assertThat(number("22.2").isRootNode(), equalTo(false));
-        assertThat(object().isRootNode(), equalTo(true));
-        assertThat(string("Goggle").isRootNode(), equalTo(false));
-        assertThat(trueNode().isRootNode(), equalTo(false));
-
-        assertThat(SAMPLE_JSON.isRootNode(), equalTo(true));
-        assertThat(SAMPLE_JSON.isRootNode("name"), equalTo(false));
-        assertThat(SAMPLE_JSON.isRootNode("championships"), equalTo(true));
-        assertThat(SAMPLE_JSON.isRootNode("retirement age"), equalTo(false));
-        assertThat(SAMPLE_JSON.isRootNode("championships", 2), equalTo(false));
-        assertThat(SAMPLE_JSON.isRootNode("championships", 22), equalTo(false));
-        assertThat(SAMPLE_JSON.isRootNode("championships", 2, 4), equalTo(false));
-    }
-
-    @Test
-    public void getRootNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
-        assertThat(array().getRootNode(), equalTo((JsonNode) array()));
-        assertThat(object().getRootNode(), equalTo((JsonNode) object()));
-
-        assertThat(SAMPLE_JSON.getRootNode(), equalTo(SAMPLE_JSON));
-        assertThat(SAMPLE_JSON.getRootNode("championships"), equalTo(array(number("2002"), number("2003"), number("2004"), number("2005"), number("2008"), number("2009"))));
-    }
-
-    @Test
     public void getFieldListReturnsAllFieldsEvenWhenKeysAreDuplicated() throws Exception {
         final String aKeyString = aValidJsonString();
-        final JsonField aField = field(aKeyString, aJsonLeafNode());
-        final JsonField anotherField = field(aKeyString, aJsonLeafNode());
+        final JsonField aField = field(aKeyString, aJsonNode());
+        final JsonField anotherField = field(aKeyString, aJsonNode());
         assertThat(object(aField, anotherField).getFieldList(), contains(aField, anotherField));
     }
 }

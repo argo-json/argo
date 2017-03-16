@@ -14,9 +14,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Builder for {@code JsonRootNode}s representing JSON arrays.
+ * Builder for {@code JsonNode}s representing JSON arrays.
  */
-public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonRootNode> {
+public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
     private final List<JsonNodeBuilder> elementBuilders = new LinkedList<JsonNodeBuilder>();
 
@@ -34,7 +34,7 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonRootNode>
         return this;
     }
 
-    public JsonRootNode build() {
+    public JsonNode build() {
         final List<JsonNode> elements = new LinkedList<JsonNode>();
         for (JsonNodeBuilder elementBuilder : elementBuilders) {
             elements.add(elementBuilder.build());

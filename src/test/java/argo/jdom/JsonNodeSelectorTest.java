@@ -25,7 +25,7 @@ public final class JsonNodeSelectorTest {
     public void chainingUsingWithChildMatches() throws Exception {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.anObjectNode()
                 .with(JsonNodeSelectors.aField("Hello"));
-        final JsonRootNode node = object(new HashMap<JsonStringNode, JsonNode>() {{
+        final JsonNode node = object(new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Hello"), number("12.5"));
         }});
         assertTrue(jsonNodeSelector.matches(node));

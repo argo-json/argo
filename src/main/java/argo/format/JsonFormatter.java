@@ -10,31 +10,31 @@
 
 package argo.format;
 
-import argo.jdom.JsonRootNode;
+import argo.jdom.JsonNode;
 
 import java.io.IOException;
 import java.io.Writer;
 
 /**
- * A {@code JsonFormatter} provides operations to turn {@code JsonRootNode}s into valid JSON text.
+ * A {@code JsonFormatter} provides operations to turn {@code JsonNode}s into valid JSON text.
  */
 public interface JsonFormatter {
 
     /**
-     * Returns the specified {@code JsonRootNode} formatted as a String.
+     * Returns the specified {@code JsonNode} formatted as a String.
      *
-     * @param jsonRootNode the {@code JsonRootNode} to format.
-     * @return the specified {@code JsonRootNode} formatted as a String.
+     * @param jsonNode the {@code JsonNode} to format.
+     * @return the specified {@code JsonNode} formatted as a String.
      */
-    String format(JsonRootNode jsonRootNode);
+    String format(JsonNode jsonNode);
 
     /**
-     * Streams the specified {@code JsonRootNode} formatted to the specified {@code Writer}.
+     * Streams the specified {@code JsonNode} formatted to the specified {@code Writer}.
      *
-     * @param jsonRootNode the {@code JsonRootNode} to format.
-     * @param writer       the {@code Writer} to stream the formatted {@code JsonRootNode} to.
+     * @param jsonNode the {@code JsonNode} to format.
+     * @param writer       the {@code Writer} to stream the formatted {@code JsonNode} to.
      * @throws IOException if there was a problem writing to the {@code Writer}.
      */
-    void format(JsonRootNode jsonRootNode, Writer writer) throws IOException;
+    void format(JsonNode jsonNode, Writer writer) throws IOException;
 
 }

@@ -22,22 +22,27 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
 
-    private final PushbackReader pushbackReader;
+    private final PushbackReader pushbackReader; // TODO the way this behaves with -1 really doesn't help - replace
     private int characterCount = 0;
     private int lineCount = 1;
     private boolean lastCharacterWasCarriageReturn = false;
+    private boolean pastEndOfStream = false;
 
     PositionTrackingPushbackReader(final Reader in) {
         this.pushbackReader = new PushbackReader(in);
     }
 
-    void unread(final char c) throws JsonStreamException {
+    void unread(final int c) throws JsonStreamException { // TODO why do you have to specify the character to push back?
         characterCount--;
         if (characterCount < 0) characterCount = 0;
-        try {
-            pushbackReader.unread(c);
-        } catch (final IOException e) {
-            throw new JsonStreamException("Failed to read from Reader", e);
+        if (c == -1) {
+            pastEndOfStream = true;
+        } else {
+            try {
+                pushbackReader.unread(c);
+            } catch (final IOException e) {
+                throw new JsonStreamException("Failed to read from Reader", e);
+            }
         }
     }
 
@@ -48,7 +53,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
 
     int read() throws JsonStreamException {
         try {
-            final int result = pushbackReader.read();
+            final int result = pastEndOfStream ? -1 : pushbackReader.read();
             updateCharacterAndLineCounts(result);
             return result;
         } catch (final IOException e) {
@@ -57,17 +62,21 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
     }
 
     int read(final char[] buffer) throws JsonStreamException {
-        try {
-            int result = 0;
-            for (int latestCharactersRead = 0; latestCharactersRead != -1 && result < buffer.length; latestCharactersRead = pushbackReader.read(buffer, result, buffer.length - result)) {
-                result = result + latestCharactersRead;
+        if (pastEndOfStream) {
+            return -1;
+        } else {
+            try {
+                int result = 0;
+                for (int latestCharactersRead = 0; latestCharactersRead != -1 && result < buffer.length; latestCharactersRead = pushbackReader.read(buffer, result, buffer.length - result)) {
+                    result = result + latestCharactersRead;
+                }
+                for (char character : buffer) {
+                    updateCharacterAndLineCounts(character);
+                }
+                return result;
+            } catch (final IOException e) {
+                throw new JsonStreamException("Failed to read from Reader", e);
             }
-            for (char character : buffer) {
-                updateCharacterAndLineCounts(character);
-            }
-            return result;
-        } catch (final IOException e) {
-            throw new JsonStreamException("Failed to read from Reader", e);
         }
     }
 
@@ -95,7 +104,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
         return lineCount;
     }
 
-    public ThingWithPosition snapshotOfPosition() {
+    ThingWithPosition snapshotOfPosition() {
         return new ThingWithPosition() {
             private final int localCharacterCount = characterCount;
             private final int localLineCount = lineCount;

@@ -12,7 +12,6 @@ package argo.format;
 
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
-import argo.jdom.JsonRootNode;
 import argo.jdom.JsonStringNode;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -90,6 +89,56 @@ public final class PrettyJsonFormatterTest {
     }
 
     @Test
+    public void formatsAString() throws Exception {
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(string("foo")), equalTo(
+                aJsonStringResultBuilder()
+                        .print("\"foo\"")
+                        .build()
+                )
+        );
+    }
+
+    @Test
+    public void formatsANumber() throws Exception {
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(number("123.456E789")), equalTo(
+                aJsonStringResultBuilder()
+                        .print("123.456E789")
+                        .build()
+                )
+        );
+    }
+
+    @Test
+    public void formatsANull() throws Exception {
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(nullNode()), equalTo(
+                aJsonStringResultBuilder()
+                        .print("null")
+                        .build()
+                )
+        );
+    }
+
+    @Test
+    public void formatsATrue() throws Exception {
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(trueNode()), equalTo(
+                aJsonStringResultBuilder()
+                        .print("true")
+                        .build()
+                )
+        );
+    }
+
+    @Test
+    public void formatsAFalse() throws Exception {
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(falseNode()), equalTo(
+                aJsonStringResultBuilder()
+                        .print("false")
+                        .build()
+                )
+        );
+    }
+
+    @Test
     public void formatsAJsonStringWithEscapedCharacters() throws Exception {
         assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
                 (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo(
@@ -119,7 +168,7 @@ public final class PrettyJsonFormatterTest {
         final File longJsonExample = new File(this.getClass().getResource("Sample.json").getFile());
         final String json = readFileToString(longJsonExample, UTF_8);
         final JdomParser jdomParser = new JdomParser();
-        final JsonRootNode node = jdomParser.parse(json);
+        final JsonNode node = jdomParser.parse(json);
         final JsonFormatter jsonFormatter = fieldOrderPreservingPrettyJsonFormatter();
         final String expected = jsonFormatter.format(node);
         assertThat(jdomParser.parse(expected), Matchers.equalTo(node));

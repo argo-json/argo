@@ -11,7 +11,7 @@
 package argo.staj;
 
 import argo.format.PrettyJsonBuilder;
-import argo.jdom.JsonRootNode;
+import argo.jdom.JsonNode;
 import argo.jdom.StajBasedJdomParser;
 import argo.saj.InvalidSyntaxException;
 import org.hamcrest.Description;
@@ -23,17 +23,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatcher<StajParser> {
 
     private final Matcher<String> stringMatcher;
-    private final JsonRootNode jsonRootNode;
-    private JsonRootNode parseResult;
+    private final JsonNode jsonNode;
+    private JsonNode parseResult;
 
-    private RoundTrippingStajParserMatcher(final JsonRootNode jsonRootNode) {
-        this.jsonRootNode = jsonRootNode;
-        stringMatcher = equalTo(PrettyJsonBuilder.json(jsonRootNode));
+    private RoundTrippingStajParserMatcher(final JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
+        stringMatcher = equalTo(PrettyJsonBuilder.json(jsonNode));
         parseResult = null;
     }
 
-    public static Matcher<StajParser> parsesTo(final JsonRootNode jsonRootNode) {
-        return new RoundTrippingStajParserMatcher(jsonRootNode);
+    public static Matcher<StajParser> parsesTo(final JsonNode jsonNode) {
+        return new RoundTrippingStajParserMatcher(jsonNode);
     }
 
     @Override
@@ -53,6 +53,6 @@ public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatc
     }
 
     public void describeTo(final Description description) {
-        description.appendText("StajParser that generates JSON equal to ").appendValue(PrettyJsonBuilder.json(jsonRootNode));
+        description.appendText("StajParser that generates JSON equal to ").appendValue(PrettyJsonBuilder.json(jsonNode));
     }
 }

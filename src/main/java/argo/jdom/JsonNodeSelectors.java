@@ -56,27 +56,6 @@ public final class JsonNodeSelectors {
         }));
     }
 
-    public static JsonNodeSelector<JsonNode, JsonRootNode> anyRootNode(final Object... pathElements) {
-        return chainOn(pathElements, new JsonNodeSelector<JsonNode, JsonRootNode>(new LeafFunctor<JsonNode, JsonRootNode>() {
-            public boolean matchesNode(final JsonNode jsonNode) {
-                return ARRAY == jsonNode.getType() || OBJECT == jsonNode.getType();
-            }
-
-            public String shortForm() {
-                return "A root node";
-            }
-
-            public JsonRootNode typeSafeApplyTo(final JsonNode jsonNode) {
-                return (JsonRootNode) jsonNode;
-            }
-
-            @Override
-            public String toString() {
-                return "any root node";
-            }
-        }));
-    }
-
     public static JsonNodeSelector<JsonNode, String> aStringNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, String>(new LeafFunctor<JsonNode, String>() {
             public boolean matchesNode(final JsonNode jsonNode) {

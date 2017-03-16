@@ -19,18 +19,18 @@ final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMat
 
     private static final JsonFormatter JSON_FORMATTER = CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter();
 
-    static JsonNodeDoesNotMatchPathElementsException jsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
-        return new JsonNodeDoesNotMatchPathElementsException(delegate, pathElements, rootNode);
+    static JsonNodeDoesNotMatchPathElementsException jsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonNode jsonNode) {
+        return new JsonNodeDoesNotMatchPathElementsException(delegate, pathElements, jsonNode);
     }
 
-    private JsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
-        super(formatMessage(delegate, pathElements, rootNode));
+    private JsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonNode jsonNode) {
+        super(formatMessage(delegate, pathElements, jsonNode));
     }
 
-    private static String formatMessage(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonRootNode rootNode) {
+    private static String formatMessage(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonNode jsonNode) {
         return delegate.failPath.size() == 1 && pathElements.length == 1
-                ? "Failed to find " + delegate.failedNode.toString() + " while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) + "."
-                : "Failed to find " + delegate.failedNode.toString() + " at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(rootNode) + ".";
+                ? "Failed to find " + delegate.failedNode.toString() + " while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(jsonNode) + "."
+                : "Failed to find " + delegate.failedNode.toString() + " at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(jsonNode) + ".";
     }
 
     private static String commaSeparate(final Object[] pathElements) {

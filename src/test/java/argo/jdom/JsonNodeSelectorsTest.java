@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 
 public final class JsonNodeSelectorsTest {
 
-    private static final JsonRootNode SAMPLE_JSON = object(
+    private static final JsonNode SAMPLE_JSON = object(
             field("name", string("Rossi")),
             field("championships", array(
                     number("2002"),
@@ -160,7 +160,7 @@ public final class JsonNodeSelectorsTest {
     public void matchesAnArrayNode() throws Exception {
         final JsonNodeSelector<JsonNode, List<JsonNode>> jsonNodeSelector = JsonNodeSelectors.anArrayNode();
         final List<JsonNode> someJsonNodes = singletonList(number("12"));
-        final JsonRootNode node = array(someJsonNodes);
+        final JsonNode node = array(someJsonNodes);
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo(someJsonNodes));
     }
@@ -169,7 +169,7 @@ public final class JsonNodeSelectorsTest {
     public void matchesANullableArrayNode() throws Exception {
         final JsonNodeSelector<JsonNode, List<JsonNode>> jsonNodeSelector = JsonNodeSelectors.aNullableArrayNode();
         final List<JsonNode> someJsonNodes = singletonList(number("12"));
-        final JsonRootNode node = array(someJsonNodes);
+        final JsonNode node = array(someJsonNodes);
         assertTrue(jsonNodeSelector.matches(node));
         assertTrue(jsonNodeSelector.matches(nullNode()));
         assertThat(jsonNodeSelector.getValue(node), equalTo(someJsonNodes));

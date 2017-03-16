@@ -17,9 +17,9 @@ import static argo.jdom.UnmodifiableJsonStringNamedJsonFieldBuilder.anUnmodifiab
 import static argo.jdom.UnmodifiableStringNamedJsonFieldBuilder.anUnmodifiableStringNamedJsonFieldBuilder;
 
 /**
- * Builder for {@code JsonRootNode}s representing JSON objects.
+ * Builder for {@code JsonNode}s representing JSON objects.
  */
-public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode> {
+public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
     private final FieldCollector fieldCollector;
 
@@ -127,7 +127,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonRootNode
         return this;
     }
 
-    public JsonRootNode build() {
+    public JsonNode build() {
         return JsonNodeFactories.object(new ArrayList<JsonField>(fieldCollector.size()) {{
             for (final JsonField field : fieldCollector) {
                 this.add(field);

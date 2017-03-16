@@ -40,10 +40,10 @@ public final class JsonNodeFactoriesTest {
     @Test
     public void createsALazyJsonArrayNode() throws Exception {
         List<JsonNode> elements = new ArrayList<>();
-        JsonRootNode jsonRootNode = lazyArray(elements);
+        JsonNode jsonNode = lazyArray(elements);
         elements.add(string("late element"));
         assertThat(
-                jsonRootNode
+                jsonNode
                 , equalTo(
                 array(asList(
                         (JsonNode) string("late element")
@@ -78,10 +78,10 @@ public final class JsonNodeFactoriesTest {
     @Test
     public void createsALazyJsonObjectNode() throws Exception {
         List<JsonField> fields = new ArrayList<>();
-        JsonRootNode jsonRootNode = lazyObject(fields);
+        JsonNode jsonNode = lazyObject(fields);
         fields.add(field("late", string("field")));
         assertThat(
-                jsonRootNode
+                jsonNode
                 , equalTo(
                 object(field("late", string("field")))
         ));

@@ -11,8 +11,8 @@
 package argo;
 
 import argo.jdom.JsonField;
+import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
-import argo.jdom.JsonRootNode;
 import argo.jdom.JsonStringNodeTestBuilder;
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ import static argo.jdom.JsonNodeFactories.field;
 public final class MegaLongGeneratedExampleTest {
     @Test
     public void generatedExamplePerformance() throws Exception {
-        final JsonRootNode generatedExample = JsonNodeFactories.object(new ArrayList<JsonField>(300000) {{
+        final JsonNode generatedExample = JsonNodeFactories.object(new ArrayList<JsonField>(300000) {{
             for (int i = 0; i < 300000; i++) {
                 add(field(JsonStringNodeTestBuilder.aStringNode(), JsonNodeFactories.object(
                         field(JsonStringNodeTestBuilder.aStringNode(), JsonStringNodeTestBuilder.aStringNode())

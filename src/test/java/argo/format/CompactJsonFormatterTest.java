@@ -18,6 +18,7 @@ import java.util.HashMap;
 
 import static argo.format.CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter;
 import static argo.format.CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter;
+import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
 import static argo.jdom.JsonNodeFactories.*;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
@@ -55,6 +56,57 @@ public final class CompactJsonFormatterTest {
                 , trueNode()
                 , falseNode()
         ))), equalTo("[null,true,false]"));
+    }
+
+
+    @Test
+    public void formatsAString() throws Exception {
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(string("foo")), equalTo(
+                aJsonStringResultBuilder()
+                        .print("\"foo\"")
+                        .build()
+                )
+        );
+    }
+
+    @Test
+    public void formatsANumber() throws Exception {
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(number("123.456E789")), equalTo(
+                aJsonStringResultBuilder()
+                        .print("123.456E789")
+                        .build()
+                )
+        );
+    }
+
+    @Test
+    public void formatsANull() throws Exception {
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(nullNode()), equalTo(
+                aJsonStringResultBuilder()
+                        .print("null")
+                        .build()
+                )
+        );
+    }
+
+    @Test
+    public void formatsATrue() throws Exception {
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(trueNode()), equalTo(
+                aJsonStringResultBuilder()
+                        .print("true")
+                        .build()
+                )
+        );
+    }
+
+    @Test
+    public void formatsAFalse() throws Exception {
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(falseNode()), equalTo(
+                aJsonStringResultBuilder()
+                        .print("false")
+                        .build()
+                )
+        );
     }
 
     @Test

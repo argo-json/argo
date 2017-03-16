@@ -43,7 +43,7 @@ public final class MainDocumentationExamples {
 
     private static final JsonFormatter JSON_FORMATTER = new PrettyJsonFormatter();
 
-    private static final JsonRootNode SAMPLE_JSON = object(
+    private static final JsonNode SAMPLE_JSON = object(
             field("name", string("Black Lace")),
             field("sales", number("110921")),
             field("totalRoyalties", number("10223.82")),
@@ -66,7 +66,7 @@ public final class MainDocumentationExamples {
 
     @Test
     public void producesJsonFromFactory() throws Exception {
-        JsonRootNode json = object(
+        JsonNode json = object(
                 field("name", string("Black Lace")),
                 field("sales", number("110921")),
                 field("totalRoyalties", number("10223.82")),
@@ -88,13 +88,13 @@ public final class MainDocumentationExamples {
                         .withElement(aStringBuilder("Superman"))
                         .withElement(aStringBuilder("Agadoo"))
                 );
-        JsonRootNode json = builder.build();
+        JsonNode json = builder.build();
         assertThat(json, equalTo(SAMPLE_JSON));
     }
 
     @Test
     public void formatsJson() throws Exception {
-        final JsonRootNode json = SAMPLE_JSON;
+        final JsonNode json = SAMPLE_JSON;
         String jsonText = JSON_FORMATTER.format(json);
         assertThat(JDOM_PARSER.parse(jsonText), equalTo(SAMPLE_JSON));
     }
@@ -102,7 +102,7 @@ public final class MainDocumentationExamples {
     @Test
     public void parsesJsonAndGetsElementsWithCallToJsonNode() throws Exception {
         final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
-        final JsonRootNode json = JDOM_PARSER.parse(jsonText);
+        final JsonNode json = JDOM_PARSER.parse(jsonText);
         String secondSingle = json.getStringValue("singles", 1);
         assertThat(secondSingle, equalTo("Agadoo"));
         boolean isString = json.isStringValue("singles", 1);
@@ -112,7 +112,7 @@ public final class MainDocumentationExamples {
     @Test
     public void parsesJsonAndGetsElementsWithJsonNodeSelector() throws Exception {
         final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
-        final JsonRootNode json = JDOM_PARSER.parse(jsonText);
+        final JsonNode json = JDOM_PARSER.parse(jsonText);
         String secondSingle = SECOND_SINGLE.getValue(json);
         List<String> singles = new AbstractList<String>() {
             public String get(int index) {
