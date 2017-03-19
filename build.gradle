@@ -217,7 +217,6 @@ task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJa
             execute "mkdir -p /home/project-web/argo/${version}/javadoc && tar -xvf /home/project-web/argo/documentation-${version}.tgz -C /home/project-web/argo/${version} && unzip -d /home/project-web/argo/${version}/javadoc /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/documentation-${version}.tgz && rm /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${version} /home/project-web/argo/htdocs"
         }
     }
-    // todo turn off debug information in tiny jar (existing bug)
     // todo modify test task to run tests from all source sets
 }
 
