@@ -22,7 +22,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
 
-    private final PushbackReader pushbackReader; // TODO the way this behaves with -1 really doesn't help - replace
+    private final PushbackReader pushbackReader;
     private int characterCount = 0;
     private int lineCount = 1;
     private boolean lastCharacterWasCarriageReturn = false;
@@ -32,7 +32,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
         this.pushbackReader = new PushbackReader(in);
     }
 
-    void unread(final int c) throws JsonStreamException { // TODO why do you have to specify the character to push back?
+    void unread(final int c) throws JsonStreamException {
         characterCount--;
         if (characterCount < 0) characterCount = 0;
         if (c == -1) {
