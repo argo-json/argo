@@ -11,7 +11,6 @@
 package argo.staj;
 
 import java.io.IOException;
-import java.io.PushbackReader;
 import java.io.Reader;
 
 /**
@@ -22,56 +21,75 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
 
-    private final PushbackReader pushbackReader;
+    private final Reader delegate;
     private int characterCount = 0;
     private int lineCount = 1;
-    private boolean lastCharacterWasCarriageReturn = false;
-    private boolean pastEndOfStream = false;
+
+    private int lastCharacter;
+    private boolean pushedBackValueAvailable = false;
 
     PositionTrackingPushbackReader(final Reader in) {
-        this.pushbackReader = new PushbackReader(in);
+        this.delegate = in;
     }
 
-    void unread(final int c) throws JsonStreamException {
-        characterCount--;
-        if (characterCount < 0) characterCount = 0;
-        if (c == -1) {
-            pastEndOfStream = true;
+    void unreadLastCharacter() {
+        if (pushedBackValueAvailable) {
+            throw new RuntimeException("Coding failure in Argo: Tried to pushback when pushback buffer is already full with " + lastCharacter);
         } else {
-            try {
-                pushbackReader.unread(c);
-            } catch (final IOException e) {
-                throw new JsonStreamException("Failed to read from Reader", e);
+            characterCount--;
+            if (characterCount < 0) {
+                characterCount = 0;
             }
+            pushedBackValueAvailable = true;
         }
     }
 
     void uncount(final char[] resultCharArray) {
         characterCount = characterCount - resultCharArray.length;
-        if (characterCount < 0) characterCount = 0;
-    }
-
-    int read() throws JsonStreamException {
-        try {
-            final int result = pastEndOfStream ? -1 : pushbackReader.read();
-            updateCharacterAndLineCounts(result);
-            return result;
-        } catch (final IOException e) {
-            throw new JsonStreamException("Failed to read from Reader", e);
+        if (characterCount < 0) {
+            characterCount = 0;
         }
     }
 
-    int read(final char[] buffer) throws JsonStreamException {
-        if (pastEndOfStream) {
-            return -1;
-        } else {
+    int read() throws JsonStreamException {
+        if (!pushedBackValueAvailable) {
             try {
-                int result = 0;
-                for (int latestCharactersRead = 0; latestCharactersRead != -1 && result < buffer.length; latestCharactersRead = pushbackReader.read(buffer, result, buffer.length - result)) {
+                lastCharacter = delegate.read();
+            } catch (final IOException e) {
+                throw new JsonStreamException("Failed to read from Reader", e);
+            }
+        }
+        pushedBackValueAvailable = false;
+        updateCharacterAndLineCounts(lastCharacter);
+        return lastCharacter;
+
+    }
+
+    int read(final char[] buffer) throws JsonStreamException {
+        if (buffer.length == 0) {
+            return 0;
+        } else {
+            int result = 0;
+            if (pushedBackValueAvailable) {
+                if (lastCharacter == -1) {
+                    updateCharacterAndLineCounts(lastCharacter);
+                    pushedBackValueAvailable = false;
+                    return -1;
+                } else {
+                    buffer[0] = (char) lastCharacter;
+                    result = 1;
+                }
+            }
+            try {
+                for (int latestCharactersRead = 0; latestCharactersRead != -1 && result < buffer.length; latestCharactersRead = delegate.read(buffer, result, buffer.length - result)) {
                     result = result + latestCharactersRead;
                 }
                 for (char character : buffer) {
                     updateCharacterAndLineCounts(character);
+                }
+                if (result > 0) {
+                    lastCharacter = buffer[result - 1];
+                    pushedBackValueAvailable = false;
                 }
                 return result;
             } catch (final IOException e) {
@@ -84,15 +102,13 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
         if (CARRIAGE_RETURN == result) {
             characterCount = 0;
             lineCount++;
-            lastCharacterWasCarriageReturn = true;
         } else {
-            if (NEWLINE == result && !lastCharacterWasCarriageReturn) {
+            if (NEWLINE == result && CARRIAGE_RETURN != lastCharacter) {
                 characterCount = 0;
                 lineCount++;
             } else {
                 characterCount++;
             }
-            lastCharacterWasCarriageReturn = false;
         }
     }
 
