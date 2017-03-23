@@ -20,7 +20,10 @@ import java.util.List;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public final class JsonNodeFactoriesTest {
@@ -45,7 +48,7 @@ public final class JsonNodeFactoriesTest {
         assertThat(
                 jsonNode
                 , equalTo(
-                array(asList(
+                        array(singletonList(
                         (JsonNode) string("late element")
                 ))
         ));
@@ -123,4 +126,19 @@ public final class JsonNodeFactoriesTest {
         );
     }
 
+    @Test
+    public void usesAConstantForEmptyObjects() throws Exception {
+        assertThat(object(), sameInstance(object()));
+    }
+
+
+    @Test
+    public void usesAConstantForEmptyObjectsConstructedFromAMap() throws Exception {
+        assertThat(object(emptyMap()), sameInstance(object(emptyMap())));
+    }
+
+    @Test
+    public void usesAConstantForEmptyArrays() throws Exception {
+        assertThat(array(), sameInstance(array()));
+    }
 }

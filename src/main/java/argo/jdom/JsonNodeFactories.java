@@ -91,7 +91,7 @@ public final class JsonNodeFactories {
      * @return a JSON array of the given {@code JsonNode}s
      */
     public static JsonNode array(final Iterable<? extends JsonNode> elements) {
-        return new JsonArray(elements);
+        return JsonArray.jsonArray(elements);
     }
 
     /**
@@ -135,7 +135,7 @@ public final class JsonNodeFactories {
      * @return a JSON object containing the given fields
      */
     public static JsonNode object(final Map<JsonStringNode, ? extends JsonNode> fields) {
-        return new JsonObject(new ArrayList<JsonField>(fields.size()) {{
+        return JsonObject.jsonObject(new ArrayList<JsonField>(fields.size()) {{
             for (final Map.Entry<JsonStringNode, ? extends JsonNode> entry : fields.entrySet()) {
                 add(field(entry.getKey(), entry.getValue()));
             }
@@ -155,7 +155,7 @@ public final class JsonNodeFactories {
      * @return a JSON object containing the given fields
      */
     public static JsonNode object(final Iterable<JsonField> fields) {
-        return new JsonObject(fields);
+        return JsonObject.jsonObject(fields);
     }
 
     /**

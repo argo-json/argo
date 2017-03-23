@@ -10,6 +10,7 @@
 
 package argo.jdom;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,18 @@ import static java.util.Collections.unmodifiableMap;
 
 final class JsonObject extends AbstractJsonObject {
 
+    private static final JsonObject EMPTY_OBJECT = new JsonObject(Collections.<JsonField>emptyList());
+
     private final List<JsonField> fields;
     private transient Map<JsonStringNode, JsonNode> fieldMap;
 
-    JsonObject(final Iterable<JsonField> fields) {
-        this.fields = immutableListOf(fields);
+    static JsonObject jsonObject(final Iterable<JsonField> fields) {
+        final List<JsonField> fieldList = immutableListOf(fields);
+        return fieldList.isEmpty() ? EMPTY_OBJECT : new JsonObject(fieldList);
+    }
+
+    private JsonObject(List<JsonField> fields) {
+        this.fields = fields;
     }
 
     @Override
