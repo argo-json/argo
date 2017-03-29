@@ -18,7 +18,7 @@ public class PositionTrackingPushbackReaderTest {
     @Test
     public void readingAFixedNumberOfCharactersFromAnEmptyReaderReturnsZero() throws Exception {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
-        assertThat(positionTrackingPushbackReader.read(new char[1]), equalTo(0));
+        assertThat(positionTrackingPushbackReader.read(new char[1]), equalTo(-1));
     }
 
     @Test

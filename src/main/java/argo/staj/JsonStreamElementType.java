@@ -209,7 +209,7 @@ public enum JsonStreamElementType {
                 final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
                 if (trueTokenCharactersRead != 3 || remainingTrueTokenCharacters[0] != 'r' || remainingTrueTokenCharacters[1] != 'u' || remainingTrueTokenCharacters[2] != 'e') {
                     pushbackReader.uncount(remainingTrueTokenCharacters);
-                    throw invalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]], but got [" + stringify(remainingTrueTokenCharacters, trueTokenCharactersRead) + "].", pushbackReader);
+                    throw readBufferInvalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]]", trueTokenCharactersRead, remainingTrueTokenCharacters, pushbackReader);
                 } else {
                     return trueValue();
                 }
@@ -218,7 +218,7 @@ public enum JsonStreamElementType {
                 final int falseTokenCharactersRead = pushbackReader.read(remainingFalseTokenCharacters);
                 if (falseTokenCharactersRead != 4 || remainingFalseTokenCharacters[0] != 'a' || remainingFalseTokenCharacters[1] != 'l' || remainingFalseTokenCharacters[2] != 's' || remainingFalseTokenCharacters[3] != 'e') {
                     pushbackReader.uncount(remainingFalseTokenCharacters);
-                    throw invalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]], but got [" + stringify(remainingFalseTokenCharacters, falseTokenCharactersRead) + "].", pushbackReader);
+                    throw readBufferInvalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]]", falseTokenCharactersRead, remainingFalseTokenCharacters, pushbackReader);
                 } else {
                     return falseValue();
                 }
@@ -227,7 +227,7 @@ public enum JsonStreamElementType {
                 final int nullTokenCharactersRead = pushbackReader.read(remainingNullTokenCharacters);
                 if (nullTokenCharactersRead != 3 || remainingNullTokenCharacters[0] != 'u' || remainingNullTokenCharacters[1] != 'l' || remainingNullTokenCharacters[2] != 'l') {
                     pushbackReader.uncount(remainingNullTokenCharacters);
-                    throw invalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]], but got [" + stringify(remainingNullTokenCharacters, nullTokenCharactersRead) + "].", pushbackReader);
+                    throw readBufferInvalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]]", nullTokenCharactersRead, remainingNullTokenCharacters, pushbackReader);
                 } else {
                     return nullValue();
                 }
@@ -346,7 +346,7 @@ public enum JsonStreamElementType {
         final char[] resultCharArray = new char[4];
         final int readSize = in.read(resultCharArray);
         if (readSize != 4) {
-            throw invalidSyntaxRuntimeException("Expected a 4 digit hexadecimal number but got only [" + readSize + "], namely [" + String.valueOf(resultCharArray, 0, readSize) + "].", in);
+            throw readBufferInvalidSyntaxRuntimeException("Expected 4 hexadecimal digits", readSize, resultCharArray, in);
         }
         int result;
         try {
@@ -510,6 +510,10 @@ public enum JsonStreamElementType {
             pushbackReader.unreadLastCharacter();
         }
         return result;
+    }
+
+    private static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, int charactersRead, char[] readBuffer, final ThingWithPosition thingWithPosition) {
+        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input." : ("got [" + stringify(readBuffer, charactersRead) + "].")), thingWithPosition);
     }
 
 }

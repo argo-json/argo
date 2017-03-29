@@ -81,9 +81,13 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
                 }
             }
             try {
-                for (int latestCharactersRead = 0; latestCharactersRead != -1 && result < buffer.length; latestCharactersRead = delegate.read(buffer, result, buffer.length - result)) {
-                    result = result + latestCharactersRead;
-                }
+                int latestCharactersRead;
+                do {
+                    latestCharactersRead = delegate.read(buffer, result, buffer.length - result);
+                    if (latestCharactersRead != -1 || result == 0) {
+                        result = result + latestCharactersRead;
+                    }
+                } while (latestCharactersRead != -1 && result < buffer.length);
                 for (char character : buffer) {
                     updateCharacterAndLineCounts(character);
                 }

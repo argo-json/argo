@@ -782,7 +782,7 @@ public final class SajParserTest {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
-            assertThat(e.getMessage(), equalTo("At line 1, column 8:  Expected a 4 digit hexadecimal number but got only [2], namely [ab]."));
+            assertThat(e.getMessage(), equalTo("At line 1, column 8:  Expected 4 hexadecimal digits, but got [[a, b]]."));
         }
     }
 
@@ -926,6 +926,50 @@ public final class SajParserTest {
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 5:  Expected either , or ] but got [.]."));
+        }
+    }
+
+    @Test
+    public void handlesIncompleteEscapedUnicodeCorrectly() throws Exception {
+        final String inputString = "\"\\u";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 7:  Expected 4 hexadecimal digits, but reached end of input."));
+        }
+    }
+
+    @Test
+    public void handlesIncompleteTrueCorrectly() throws Exception {
+        final String inputString = "t";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 1:  Expected 't' to be followed by [[r, u, e]], but reached end of input."));
+        }
+    }
+
+    @Test
+    public void handlesIncompleteFalseCorrectly() throws Exception {
+        final String inputString = "f";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 1:  Expected 'f' to be followed by [[a, l, s, e]], but reached end of input."));
+        }
+    }
+
+    @Test
+    public void handlesIncompleteNullCorrectly() throws Exception {
+        final String inputString = "n";
+        try {
+            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+        } catch (final InvalidSyntaxException e) {
+            assertThat(e.getMessage(), equalTo("At line 1, column 1:  Expected 'n' to be followed by [[u, l, l]], but reached end of input."));
         }
     }
 
