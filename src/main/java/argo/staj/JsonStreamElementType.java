@@ -513,7 +513,7 @@ public enum JsonStreamElementType {
     }
 
     private static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, int charactersRead, char[] readBuffer, final ThingWithPosition thingWithPosition) {
-        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input." : ("got [" + stringify(readBuffer, charactersRead) + "].")), thingWithPosition);
+        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input." : "got [" + stringify(readBuffer, charactersRead) + "]."), thingWithPosition);
     }
 
 }
