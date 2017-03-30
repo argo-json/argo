@@ -57,4 +57,11 @@ public class PositionTrackingPushbackReaderTest {
         assertThat(buffer, equalTo(new char[]{'B', 'a', 'r', 0}));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
     }
+
+    @Test
+    public void countsAreCorrectAfterReadingIntoABufferThatIsTooLarge() throws Exception {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
+        positionTrackingPushbackReader.read(new char[10]);
+        assertThat(positionTrackingPushbackReader.getColumn(), equalTo(4));
+    }
 }

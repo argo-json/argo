@@ -208,7 +208,6 @@ public enum JsonStreamElementType {
                 final char[] remainingTrueTokenCharacters = new char[3];
                 final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
                 if (trueTokenCharactersRead != 3 || remainingTrueTokenCharacters[0] != 'r' || remainingTrueTokenCharacters[1] != 'u' || remainingTrueTokenCharacters[2] != 'e') {
-                    pushbackReader.uncount(remainingTrueTokenCharacters);
                     throw readBufferInvalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]]", trueTokenCharactersRead, remainingTrueTokenCharacters, pushbackReader);
                 } else {
                     return trueValue();
@@ -217,7 +216,6 @@ public enum JsonStreamElementType {
                 final char[] remainingFalseTokenCharacters = new char[4];
                 final int falseTokenCharactersRead = pushbackReader.read(remainingFalseTokenCharacters);
                 if (falseTokenCharactersRead != 4 || remainingFalseTokenCharacters[0] != 'a' || remainingFalseTokenCharacters[1] != 'l' || remainingFalseTokenCharacters[2] != 's' || remainingFalseTokenCharacters[3] != 'e') {
-                    pushbackReader.uncount(remainingFalseTokenCharacters);
                     throw readBufferInvalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]]", falseTokenCharactersRead, remainingFalseTokenCharacters, pushbackReader);
                 } else {
                     return falseValue();
@@ -226,7 +224,6 @@ public enum JsonStreamElementType {
                 final char[] remainingNullTokenCharacters = new char[3];
                 final int nullTokenCharactersRead = pushbackReader.read(remainingNullTokenCharacters);
                 if (nullTokenCharactersRead != 3 || remainingNullTokenCharacters[0] != 'u' || remainingNullTokenCharacters[1] != 'l' || remainingNullTokenCharacters[2] != 'l') {
-                    pushbackReader.uncount(remainingNullTokenCharacters);
                     throw readBufferInvalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]]", nullTokenCharactersRead, remainingNullTokenCharacters, pushbackReader);
                 } else {
                     return nullValue();
