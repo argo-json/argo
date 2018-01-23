@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Mark Slater
+ * Copyright 2018 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -193,6 +193,34 @@ public final class PrettyJsonFormatterTest {
                         .printLine("{")
                         .printLine("\t\"a\": \"A String\",")
                         .printLine("\t\"b\": \"A String\"")
+                        .print("}")
+                        .build()
+        ));
+    }
+
+    @Test
+    public void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinArray() throws Exception {
+        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(array(object(field("b", string("A String")), field("a", string("A String"))))), equalTo(
+                aJsonStringResultBuilder()
+                        .printLine("[")
+                        .printLine("\t{")
+                        .printLine("\t\t\"a\": \"A String\",")
+                        .printLine("\t\t\"b\": \"A String\"")
+                        .printLine("\t}")
+                        .print("]")
+                        .build()
+        ));
+    }
+
+    @Test
+    public void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinObject() throws Exception {
+        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(object(field("Foo", object(field("b", string("A String")), field("a", string("A String")))))), equalTo(
+                aJsonStringResultBuilder()
+                        .printLine("{")
+                        .printLine("\t\"Foo\": {")
+                        .printLine("\t\t\"a\": \"A String\",")
+                        .printLine("\t\t\"b\": \"A String\"")
+                        .printLine("\t}")
                         .print("}")
                         .build()
         ));

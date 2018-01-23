@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Mark Slater
+ * Copyright 2018 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,28 +10,30 @@
 
 package argo.format;
 
-import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import static argo.format.JsonEscapedString.escapeString;
+import static argo.format.JsonNodeWritingWrapper.FIELD_ORDER_NORMALISING_JSON_NODE_WRITING_WRAPPER;
+import static argo.format.JsonNodeWritingWrapper.STRAIGHT_THROUGH_JSON_NODE_WRITING_WRAPPER;
 
 /**
  * JsonFormat that formats JSON as compactly as possible.  Instances of this class can safely be shared between threads.
  */
 public final class CompactJsonFormatter implements JsonFormatter {
 
-    private final FieldSorter fieldSorter;
+    private static final JsonWriter COMPACT_JSON_WRITER = new CompactJsonWriter();
+
+    private final JsonNodeWritingWrapper jsonNodeWritingWrapper;
 
     public CompactJsonFormatter() {
-        this(FieldSorter.DO_NOTHING_FIELD_SORTER);
+        this(STRAIGHT_THROUGH_JSON_NODE_WRITING_WRAPPER);
     }
 
-    private CompactJsonFormatter(final FieldSorter fieldSorter) {
-        this.fieldSorter = fieldSorter;
+    private CompactJsonFormatter(final JsonNodeWritingWrapper jsonNodeWritingWrapper) {
+        this.jsonNodeWritingWrapper = jsonNodeWritingWrapper;
     }
 
     /**
@@ -49,12 +51,9 @@ public final class CompactJsonFormatter implements JsonFormatter {
      * @return a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in alphabetic order.
      */
     public static CompactJsonFormatter fieldOrderNormalisingCompactJsonFormatter() {
-        return new CompactJsonFormatter(FieldSorter.ALPHABETIC_FIELD_SORTER);
+        return new CompactJsonFormatter(FIELD_ORDER_NORMALISING_JSON_NODE_WRITING_WRAPPER);
     }
 
-    /**
-     * Constructs a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in the order they were defined.
-     */
     public String format(final JsonNode jsonNode) {
         final StringWriter stringWriter = new StringWriter();
         try {
@@ -66,59 +65,7 @@ public final class CompactJsonFormatter implements JsonFormatter {
     }
 
     public void format(final JsonNode jsonNode, final Writer writer) throws IOException {
-        formatJsonNode(jsonNode, writer);
+        jsonNodeWritingWrapper.write(writer, jsonNode, COMPACT_JSON_WRITER);
     }
 
-    private void formatJsonNode(final JsonNode jsonNode, final Writer writer) throws IOException {
-        boolean first = true;
-        switch (jsonNode.getType()) {
-            case ARRAY:
-                writer.append('[');
-                for (final JsonNode node : jsonNode.getElements()) {
-                    if (!first) {
-                        writer.append(',');
-                    }
-                    first = false;
-                    formatJsonNode(node, writer);
-                }
-                writer.append(']');
-                break;
-            case OBJECT:
-                writer.append('{');
-                for (final JsonField field : fieldSorter.sort(jsonNode.getFieldList())) {
-                    if (!first) {
-                        writer.append(',');
-                    }
-                    first = false;
-                    writeEscapedString(field.getNameText(), writer);
-                    writer.append(':');
-                    formatJsonNode(field.getValue(), writer);
-                }
-                writer.append('}');
-                break;
-            case STRING:
-                writeEscapedString(jsonNode.getText(), writer);
-                break;
-            case NUMBER:
-                writer.append(jsonNode.getText());
-                break;
-            case FALSE:
-                writer.append("false");
-                break;
-            case TRUE:
-                writer.append("true");
-                break;
-            case NULL:
-                writer.append("null");
-                break;
-            default:
-                throw new RuntimeException("Coding failure in Argo:  Attempt to format a JsonNode of unknown type [" + jsonNode.getType() + "];");
-        }
-    }
-
-    private static void writeEscapedString(String text, Writer writer) throws IOException {
-        writer.append('"')
-                .append(escapeString(text))
-                .append('"');
-    }
 }

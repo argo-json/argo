@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Mark Slater
+ * Copyright 2018 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,33 +10,33 @@
 
 package argo.format;
 
-import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Iterator;
 
-import static argo.format.JsonEscapedString.escapeString;
+import static argo.format.JsonNodeWritingWrapper.FIELD_ORDER_NORMALISING_JSON_NODE_WRITING_WRAPPER;
+import static argo.format.JsonNodeWritingWrapper.STRAIGHT_THROUGH_JSON_NODE_WRITING_WRAPPER;
 
 /**
  * JsonFormat that formats JSON in a human-readable form.  Instances of this class can safely be shared between threads.
  */
 public final class PrettyJsonFormatter implements JsonFormatter {
 
-    private final FieldSorter fieldSorter;
+    private static final JsonWriter PRETTY_JSON_WRITER = new PrettyJsonWriter();
+
+    private final JsonNodeWritingWrapper jsonNodeWritingWrapper;
 
     /**
      * Constructs a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in the order they were defined.
      */
     public PrettyJsonFormatter() {
-        this(FieldSorter.DO_NOTHING_FIELD_SORTER);
+        this(STRAIGHT_THROUGH_JSON_NODE_WRITING_WRAPPER);
     }
 
-    private PrettyJsonFormatter(final FieldSorter fieldSorter) {
-        this.fieldSorter = fieldSorter;
+    private PrettyJsonFormatter(final JsonNodeWritingWrapper jsonNodeWritingWrapper) {
+        this.jsonNodeWritingWrapper = jsonNodeWritingWrapper;
     }
 
     /**
@@ -54,7 +54,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
      * @return a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in alphabetic order.
      */
     public static PrettyJsonFormatter fieldOrderNormalisingPrettyJsonFormatter() {
-        return new PrettyJsonFormatter(FieldSorter.ALPHABETIC_FIELD_SORTER);
+        return new PrettyJsonFormatter(FIELD_ORDER_NORMALISING_JSON_NODE_WRITING_WRAPPER);
     }
 
     public String format(final JsonNode jsonNode) {
@@ -68,79 +68,7 @@ public final class PrettyJsonFormatter implements JsonFormatter {
     }
 
     public void format(final JsonNode jsonNode, final Writer writer) throws IOException {
-        formatJsonNode(jsonNode, new PrintWriter(writer), 0);
-    }
-
-    private void formatJsonNode(final JsonNode jsonNode, final PrintWriter writer, final int indent) {
-        switch (jsonNode.getType()) {
-            case ARRAY:
-                writer.append('[');
-                final Iterator<JsonNode> elements = jsonNode.getElements().iterator();
-                while (elements.hasNext()) {
-                    final JsonNode node = elements.next();
-                    writer.println();
-                    addTabs(writer, indent + 1);
-                    formatJsonNode(node, writer, indent + 1);
-                    if (elements.hasNext()) {
-                        writer.append(",");
-                    }
-                }
-                if (!jsonNode.getElements().isEmpty()) {
-                    writer.println();
-                    addTabs(writer, indent);
-                }
-                writer.append(']');
-                break;
-            case OBJECT:
-                writer.append('{');
-                final Iterator<JsonField> jsonStringNodes = fieldSorter.sort(jsonNode.getFieldList()).iterator();
-                while (jsonStringNodes.hasNext()) {
-                    final JsonField field = jsonStringNodes.next();
-                    writer.println();
-                    addTabs(writer, indent + 1);
-                    writeEscapedString(field.getNameText(), writer);
-                    writer.append(": ");
-                    formatJsonNode(field.getValue(), writer, indent + 1);
-                    if (jsonStringNodes.hasNext()) {
-                        writer.append(",");
-                    }
-                }
-                if (!jsonNode.getFieldList().isEmpty()) {
-                    writer.println();
-                    addTabs(writer, indent);
-                }
-                writer.append('}');
-                break;
-            case STRING:
-                writeEscapedString(jsonNode.getText(), writer);
-                break;
-            case NUMBER:
-                writer.append(jsonNode.getText());
-                break;
-            case FALSE:
-                writer.append("false");
-                break;
-            case TRUE:
-                writer.append("true");
-                break;
-            case NULL:
-                writer.append("null");
-                break;
-            default:
-                throw new RuntimeException("Coding failure in Argo:  Attempt to format a JsonNode of unknown type [" + jsonNode.getType() + "];");
-        }
-    }
-
-    private static void writeEscapedString(String text, PrintWriter writer) {
-        writer.append('"')
-                .append(escapeString(text))
-                .append('"');
-    }
-
-    private static void addTabs(final PrintWriter writer, final int tabs) {
-        for (int i = 0; i < tabs; i++) {
-            writer.write('\t');
-        }
+        jsonNodeWritingWrapper.write(writer, jsonNode, PRETTY_JSON_WRITER);
     }
 
 }
