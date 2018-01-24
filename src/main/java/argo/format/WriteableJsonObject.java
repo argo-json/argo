@@ -12,6 +12,16 @@ package argo.format;
 
 import java.io.IOException;
 
+/**
+ * A {@code WriteableJsonObject} is called back with an {@code ObjectWriter} with which to write itself.
+ */
 public interface WriteableJsonObject {
+
+    /**
+     * Callback to request that this {@code WriteableJsonObject} writes its fields using the given {@code ObjectWriter}.
+     *
+     * @param objectWriter the {@code ObjectWriter} to output fields to.
+     * @throws IOException if there was a problem writing to the {@code ObjectWriter}.
+     */
     void writeTo(ObjectWriter objectWriter) throws IOException;
 }

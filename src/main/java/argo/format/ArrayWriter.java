@@ -14,10 +14,31 @@ import argo.jdom.JsonNode;
 
 import java.io.IOException;
 
+/**
+ * An {@code ArrayWriter} provides operations for outputting the elements of a JSON array.
+ */
 public interface ArrayWriter {
+
+    /**
+     * Writes the given {@code WriteableJsonObject} as the next element of the array.
+     *
+     * @param element the {@code WriteableJsonObject} to write.
+     * @throws IOException if there was a problem writing the {@code WriteableJsonObject}
+     */
     void writeElement(WriteableJsonObject element) throws IOException;
 
+    /**
+     * Writes the given {@code WriteableJsonArray} as the next element of the array.
+     *
+     * @param element the {@code WriteableJsonArray} to write.
+     * @throws IOException if there was a problem writing the {@code WriteableJsonArray}
+     */
     void writeElement(WriteableJsonArray element) throws IOException;
 
+    /**
+     * Writes the given {@code JsonNode} as the next element of the array.
+     * @param element the {@code JsonNode} to write.
+     * @throws IOException if there was a problem writing the {@code JsonNode}
+     */
     void writeElement(JsonNode element) throws IOException;
 }

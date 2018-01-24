@@ -16,18 +16,70 @@ import argo.jdom.JsonStringNode;
 
 import java.io.IOException;
 
+/**
+ * An {@code ObjectWriter} provides operations for outputting the fields of a JSON object.
+ */
 public interface ObjectWriter {
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
     void writeField(String name, WriteableJsonObject value) throws IOException;
 
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
     void writeField(String name, WriteableJsonArray value) throws IOException;
 
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
     void writeField(String name, JsonNode value) throws IOException;
 
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
     void writeField(JsonStringNode name, WriteableJsonObject value) throws IOException;
 
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
     void writeField(JsonStringNode name, WriteableJsonArray value) throws IOException;
 
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
     void writeField(JsonStringNode name, JsonNode value) throws IOException;
 
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param jsonField the field to write.
+     * @throws IOException if there was a problem writing the field.
+     */
     void writeField(JsonField jsonField) throws IOException;
 }

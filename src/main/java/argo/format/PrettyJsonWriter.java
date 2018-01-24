@@ -23,6 +23,9 @@ import static argo.format.JsonEscapedString.escapeString;
 import static argo.jdom.JsonNodeFactories.field;
 import static argo.jdom.JsonNodeFactories.string;
 
+/**
+ * JsonWriter that writes JSON in a human-readable form.  Instances of this class can safely be shared between threads.
+ */
 public final class PrettyJsonWriter implements JsonWriter {
 
     private final String lineSeparator;

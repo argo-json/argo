@@ -21,6 +21,9 @@ import static argo.format.JsonEscapedString.escapeString;
 import static argo.jdom.JsonNodeFactories.field;
 import static argo.jdom.JsonNodeFactories.string;
 
+/**
+ * JsonWriter that writes JSON as compactly as possible.  Instances of this class can safely be shared between threads.
+ */
 public final class CompactJsonWriter implements JsonWriter {
 
     public void write(final Writer writer, final WriteableJsonArray writeableJsonArray) throws IOException {

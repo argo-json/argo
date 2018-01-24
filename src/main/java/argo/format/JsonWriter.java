@@ -15,10 +15,35 @@ import argo.jdom.JsonNode;
 import java.io.IOException;
 import java.io.Writer;
 
+/**
+ * A {@code JsonWriter} provides operations to stream valid JSON text to a {@code java.io.Writer}.
+ */
 public interface JsonWriter {
+
+    /**
+     * Streams the specified {@code WriteableJsonArray} formatted to the specified {@code Writer}.
+     *
+     * @param writer             the {@code Writer} to output to.
+     * @param writeableJsonArray the {@code WriteableJsonArray} to output.
+     * @throws IOException if there was a problem writing to the {@code Writer}.
+     */
     void write(Writer writer, WriteableJsonArray writeableJsonArray) throws IOException;
 
+    /**
+     * Streams the specified {@code WriteableJsonObject} formatted to the specified {@code Writer}.
+     *
+     * @param writer              the {@code Writer} to output to.
+     * @param writeableJsonObject the {@code WriteableJsonObject} to output.
+     * @throws IOException if there was a problem writing to the {@code Writer}.
+     */
     void write(Writer writer, WriteableJsonObject writeableJsonObject) throws IOException;
 
+    /**
+     * Streams the specified {@code JsonNode} formatted to the specified {@code Writer}.
+     *
+     * @param writer the {@code Writer} to output to.
+     * @param jsonNode the {@code JsonNode} to output.
+     * @throws IOException if there was a problem writing to the {@code Writer}.
+     */
     void write(Writer writer, JsonNode jsonNode) throws IOException;
 }
