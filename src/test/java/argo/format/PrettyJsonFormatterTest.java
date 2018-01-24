@@ -227,6 +227,38 @@ public final class PrettyJsonFormatterTest {
     }
 
     @Test
+    public void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinArrayWithinObject() throws Exception {
+        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(object(field("Foo", array(object(field("b", string("A String")), field("a", string("A String"))))))), equalTo(
+                aJsonStringResultBuilder()
+                        .printLine("{")
+                        .printLine("\t\"Foo\": [")
+                        .printLine("\t\t{")
+                        .printLine("\t\t\t\"a\": \"A String\",")
+                        .printLine("\t\t\t\"b\": \"A String\"")
+                        .printLine("\t\t}")
+                        .printLine("\t]")
+                        .print("}")
+                        .build()
+        ));
+    }
+
+    @Test
+    public void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinObjectWithinArray() throws Exception {
+        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(array(object(field("Foo", object(field("b", string("A String")), field("a", string("A String"))))))), equalTo(
+                aJsonStringResultBuilder()
+                        .printLine("[")
+                        .printLine("\t{")
+                        .printLine("\t\t\"Foo\": {")
+                        .printLine("\t\t\t\"a\": \"A String\",")
+                        .printLine("\t\t\t\"b\": \"A String\"")
+                        .printLine("\t\t}")
+                        .printLine("\t}")
+                        .print("]")
+                        .build()
+        ));
+    }
+
+    @Test
     public void formatsEcmaSurrogatePairExamples() throws Exception {
         assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
                 (JsonNode) string("\ud834\udd1e")))), equalTo(
