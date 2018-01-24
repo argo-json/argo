@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Mark Slater
+ * Copyright 2018 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,9 +10,7 @@
 
 package documentation;
 
-import argo.format.CompactJsonFormatter;
-import argo.format.JsonFormatter;
-import argo.format.PrettyJsonFormatter;
+import argo.format.*;
 import argo.jdom.*;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
@@ -68,7 +66,7 @@ final class DocumentationPage {
                         listItemTag(xhtmlText("Numbers - an unlimited precision number.")),
                         listItemTag(xhtmlText("Constants - true, false, and null."))
                 ),
-                h3Tag(xhtmlText("Producing JSON")),
+                h3Tag(xhtmlText("Producing JSON from an Object")),
                 paragraphTag(
                         xhtmlText("There are two steps to producing JSON using Argo: First, an instance of "), JSON_NODE,
                         xhtmlText(" representing the JSON is built, and then an instance of "),
@@ -127,6 +125,28 @@ final class DocumentationPage {
                         "String jsonText = JSON_FORMATTER.format(json);"),
                 paragraphTag(xhtmlText("Both classes also accept a "), simpleNameOf(java.io.Writer.class),
                         xhtmlText(" as an argument to the "), methodName("format"), xhtmlText(" method, to allow the output to be streamed.")),
+
+                h3Tag(xhtmlText("Producing a stream of JSON")),
+                paragraphTag(
+                        xhtmlText("Argo can be used to produce dynamically generated JSON of arbitrary length by implementing the "),
+                        simpleNameOf(WriteableJsonArray.class), xhtmlText(" and "), simpleNameOf(WriteableJsonObject.class),
+                        xhtmlText(" interfaces.  For example:")
+                ),
+                codeBlock("final StringWriter stringWriter = new StringWriter();\n" +
+                        "new CompactJsonWriter().write(stringWriter, new WriteableJsonArray() {\n" +
+                        "    @Override\n" +
+                        "    public void writeTo(ArrayWriter arrayWriter) throws IOException {\n" +
+                        "        for (int i = 0; i < 10000; i++) {\n" +
+                        "            arrayWriter.writeElement(string(\"I'm Spartacus!\"));\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "});\n" +
+                        "String jsonText = stringWriter.toString();"),
+                paragraphTag(
+                        xhtmlText("Note that the number of iterations of the "), methodName("for"),
+                        xhtmlText(" loop in this example is only limited by the capacity of the "), simpleNameOf(java.io.Writer.class),
+                        xhtmlText(" to accept characters.")
+                ),
                 h3Tag(xhtmlText("Parsing JSON into an Object")),
                 paragraphTag(
                         xhtmlText("All the examples in this section are based on the following JSON, which is assumed to be available in a "),

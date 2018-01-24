@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Mark Slater
+ * Copyright 2018 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -8,20 +8,17 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-import argo.format.JsonFormatter;
-import argo.format.PrettyJsonFormatter;
+import argo.format.*;
 import argo.jdom.*;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
 import argo.staj.JsonStreamElement;
 import argo.staj.JsonStreamElementType;
 import argo.staj.StajParser;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.AbstractList;
 import java.util.HashSet;
@@ -90,6 +87,21 @@ public final class MainDocumentationExamples {
                 );
         JsonNode json = builder.build();
         assertThat(json, equalTo(SAMPLE_JSON));
+    }
+
+    @Test
+    public void producesInfiniteSequenceOfJson() throws Exception {
+        final StringWriter stringWriter = new StringWriter();
+        new CompactJsonWriter().write(stringWriter, new WriteableJsonArray() {
+            @Override
+            public void writeTo(ArrayWriter arrayWriter) throws IOException {
+                for (int i = 0; i < 10000; i++) {
+                    arrayWriter.writeElement(string("I'm Spartacus!"));
+                }
+            }
+        });
+        String jsonText = stringWriter.toString();
+        assertThat(jsonText, Matchers.startsWith("[\"I'm Spartacus!"));
     }
 
     @Test
