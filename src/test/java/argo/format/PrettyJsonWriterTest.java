@@ -11,6 +11,7 @@
 package argo.format;
 
 import org.apache.commons.io.output.StringBuilderWriter;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import java.io.StringWriter;
@@ -184,5 +185,11 @@ public class PrettyJsonWriterTest {
                 .build()));
     }
 
+    @Test
+    public void canWriteWriteableJsonString() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonString) writer -> writer.write("\"Foo\""));
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("\\\"Foo\\\""));
+    }
 
 }

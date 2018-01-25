@@ -39,6 +39,15 @@ public interface JsonWriter {
     void write(Writer writer, WriteableJsonObject writeableJsonObject) throws IOException;
 
     /**
+     * Streams the specified {@code WriteableJsonString} formatted to the specified {@code Writer}.
+     *
+     * @param writer              the {@code Writer} to output to.
+     * @param writeableJsonString the {@code WriteableJsonString} to output.
+     * @throws IOException if there was a problem writing to the {@code Writer}.
+     */
+    void write(Writer writer, WriteableJsonString writeableJsonString) throws IOException;
+
+    /**
      * Streams the specified {@code JsonNode} formatted to the specified {@code Writer}.
      *
      * @param writer the {@code Writer} to output to.

@@ -54,6 +54,10 @@ public final class PrettyJsonWriter implements JsonWriter {
         write(writer, writeableJsonObject, 0);
     }
 
+    public void write(Writer writer, WriteableJsonString writeableJsonString) throws IOException {
+        writeableJsonString.writeTo(new JsonStringEscapingWriter(writer));
+    }
+
     private void write(final Writer writer, final WriteableJsonObject writeableJsonObject, final int indent) throws IOException {
         writer.write('{');
         final PrettyObjectWriter prettyObjectWriter = new PrettyObjectWriter(writer, indent);

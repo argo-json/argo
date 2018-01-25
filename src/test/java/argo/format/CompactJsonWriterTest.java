@@ -152,4 +152,10 @@ public class CompactJsonWriterTest {
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":[],\"Bar\":[]}"));
     }
 
+    @Test
+    public void canWriteWriteableJsonString() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonString) writer -> writer.write("\"Foo\""));
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("\\\"Foo\\\""));
+    }
 }
