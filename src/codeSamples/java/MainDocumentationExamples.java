@@ -60,6 +60,7 @@ public final class MainDocumentationExamples {
             = aStringNode();
     private static final SajParser SAJ_PARSER
             = new SajParser();
+    private static final JsonWriter JSON_WRITER = new PrettyJsonWriter();
 
     @Test
     public void producesJsonFromFactory() throws Exception {
@@ -92,7 +93,7 @@ public final class MainDocumentationExamples {
     @Test
     public void producesInfiniteSequenceOfJson() throws Exception {
         final StringWriter stringWriter = new StringWriter();
-        new CompactJsonWriter().write(stringWriter, new WriteableJsonArray() {
+        JSON_WRITER.write(stringWriter, new WriteableJsonArray() {
             @Override
             public void writeTo(ArrayWriter arrayWriter) throws IOException {
                 for (int i = 0; i < 10000; i++) {
@@ -101,7 +102,7 @@ public final class MainDocumentationExamples {
             }
         });
         String jsonText = stringWriter.toString();
-        assertThat(jsonText, Matchers.startsWith("[\"I'm Spartacus!"));
+        assertThat(jsonText, Matchers.startsWith("[\n\t\"I'm Spartacus!"));
     }
 
     @Test

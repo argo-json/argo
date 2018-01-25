@@ -132,8 +132,12 @@ final class DocumentationPage {
                         simpleNameOf(WriteableJsonArray.class), xhtmlText(" and "), simpleNameOf(WriteableJsonObject.class),
                         xhtmlText(" interfaces.  For example:")
                 ),
-                codeBlock("final StringWriter stringWriter = new StringWriter();\n" +
-                        "new CompactJsonWriter().write(stringWriter, new WriteableJsonArray() {\n" +
+                codeBlock("private static final JsonWriter JSON_WRITER = new PrettyJsonWriter();" +
+                        "\n" +
+                        "...\n" +
+                        "\n" +
+                        "final StringWriter stringWriter = new StringWriter();\n" +
+                        "JSON_WRITER.write(stringWriter, new WriteableJsonArray() {\n" +
                         "    @Override\n" +
                         "    public void writeTo(ArrayWriter arrayWriter) throws IOException {\n" +
                         "        for (int i = 0; i < 10000; i++) {\n" +
