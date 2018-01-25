@@ -47,6 +47,14 @@ public final class CompactJsonWriter implements JsonWriter {
                 write(writer, element);
             }
 
+            public void writeElement(WriteableJsonString element) throws IOException {
+                if (!isFirst) {
+                    writer.write(',');
+                }
+                isFirst = false;
+                element.writeTo(new JsonStringEscapingWriter(writer));
+            }
+
             public void writeElement(final JsonNode element) throws IOException {
                 if (!isFirst) {
                     writer.write(',');
