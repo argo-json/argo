@@ -19,7 +19,7 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 
-import static argo.format.JsonEscapedString.escapeString;
+import static argo.format.JsonEscapedString.escapeStringTo;
 import static argo.jdom.JsonNodeFactories.field;
 import static argo.jdom.JsonNodeFactories.string;
 
@@ -133,9 +133,9 @@ public final class PrettyJsonWriter implements JsonWriter {
     }
 
     private static void writeEscapedString(final String text, final Writer writer) throws IOException {
-        writer.append('"')
-                .append(escapeString(text))
-                .append('"');
+        writer.write('"');
+        escapeStringTo(writer, text);
+        writer.write('"');
     }
 
     private static void addTabs(final Writer writer, final int tabs) throws IOException {

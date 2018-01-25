@@ -17,7 +17,7 @@ import argo.jdom.JsonStringNode;
 import java.io.IOException;
 import java.io.Writer;
 
-import static argo.format.JsonEscapedString.escapeString;
+import static argo.format.JsonEscapedString.escapeStringTo;
 import static argo.jdom.JsonNodeFactories.field;
 import static argo.jdom.JsonNodeFactories.string;
 
@@ -160,9 +160,9 @@ public final class CompactJsonWriter implements JsonWriter {
     }
 
     private static void writeEscapedString(final String text, final Writer writer) throws IOException {
-        writer.append('"')
-                .append(escapeString(text))
-                .append('"');
+        writer.write('"');
+        escapeStringTo(writer, text);
+        writer.write('"');
     }
 
 }
