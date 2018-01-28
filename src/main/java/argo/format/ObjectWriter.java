@@ -96,6 +96,42 @@ public interface ObjectWriter {
     /**
      * Writes the given name and value as the next field of the object.
      *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
+    void writeField(WriteableJsonString name, WriteableJsonObject value) throws IOException;
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
+    void writeField(WriteableJsonString name, WriteableJsonArray value) throws IOException;
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
+    void writeField(WriteableJsonString name, WriteableJsonString value) throws IOException;
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
+    void writeField(WriteableJsonString name, JsonNode value) throws IOException;
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
      * @param jsonField the field to write.
      * @throws IOException if there was a problem writing the field.
      */

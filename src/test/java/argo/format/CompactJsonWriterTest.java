@@ -177,6 +177,52 @@ public class CompactJsonWriterTest {
     }
 
     @Test
+    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonObjects() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+            objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonObject) objectWriter1 -> {
+            });
+            objectWriter.writeField(writer -> writer.write("Bar"), (WriteableJsonObject) objectWriter1 -> {
+            });
+        });
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":{},\"Bar\":{}}"));
+    }
+
+    @Test
+    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonArrays() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+            objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonArray) writeableJsonArray -> {
+            });
+            objectWriter.writeField(writer -> writer.write("Bar"), (WriteableJsonArray) writeableJsonArray -> {
+            });
+        });
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":[],\"Bar\":[]}"));
+    }
+
+    @Test
+    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonStrings() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+            objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonString) writer -> {
+            });
+            objectWriter.writeField(writer -> writer.write("Bar"), (WriteableJsonString) writer -> {
+            });
+        });
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":\"\",\"Bar\":\"\"}"));
+    }
+
+    @Test
+    public void canWriteObjectOfWriteableJsonStringKeyedJsonNodes() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+            objectWriter.writeField(writer -> writer.write("Foo"), trueNode());
+            objectWriter.writeField(writer -> writer.write("Bar"), falseNode());
+        });
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":true,\"Bar\":false}"));
+    }
+
+    @Test
     public void canWriteWriteableJsonString() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonString) writer -> writer.write("\"Foo\""));

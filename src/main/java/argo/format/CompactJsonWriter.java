@@ -121,6 +121,46 @@ public final class CompactJsonWriter implements JsonWriter {
                 writeField(field(name, value));
             }
 
+            public void writeField(final WriteableJsonString name, final WriteableJsonObject value) throws IOException {
+                if (!isFirst) {
+                    writer.write(',');
+                }
+                isFirst = false;
+                write(writer, name);
+                writer.write(':');
+                write(writer, value);
+            }
+
+            public void writeField(final WriteableJsonString name, final WriteableJsonArray value) throws IOException {
+                if (!isFirst) {
+                    writer.write(',');
+                }
+                isFirst = false;
+                write(writer, name);
+                writer.write(':');
+                write(writer, value);
+            }
+
+            public void writeField(final WriteableJsonString name, final WriteableJsonString value) throws IOException {
+                if (!isFirst) {
+                    writer.write(',');
+                }
+                isFirst = false;
+                write(writer, name);
+                writer.write(':');
+                write(writer, value);
+            }
+
+            public void writeField(final WriteableJsonString name, final JsonNode value) throws IOException {
+                if (!isFirst) {
+                    writer.write(',');
+                }
+                isFirst = false;
+                write(writer, name);
+                writer.write(':');
+                write(writer, value);
+            }
+
             public void writeField(final JsonField jsonField) throws IOException {
                 if (!isFirst) {
                     writer.write(',');

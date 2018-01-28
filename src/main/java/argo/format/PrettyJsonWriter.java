@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static argo.format.JsonEscapedString.escapeStringTo;
-import static argo.jdom.JsonNodeFactories.field;
 import static argo.jdom.JsonNodeFactories.string;
 
 /**
@@ -180,7 +179,7 @@ public final class PrettyJsonWriter implements JsonWriter {
             write(writer, element, indent + 1);
         }
 
-        public void writeElement(WriteableJsonString element) throws IOException {
+        public void writeElement(final WriteableJsonString element) throws IOException {
             if (!isFirst) {
                 writer.write(',');
             }
@@ -238,7 +237,7 @@ public final class PrettyJsonWriter implements JsonWriter {
             isFirst = false;
             writer.write(lineSeparator);
             addTabs(writer, indent + 1);
-            write(writer, name, indent + 1);
+            write(writer, name);
             writer.write(": ");
             write(writer, value, indent + 1);
         }
@@ -250,25 +249,81 @@ public final class PrettyJsonWriter implements JsonWriter {
             isFirst = false;
             writer.write(lineSeparator);
             addTabs(writer, indent + 1);
-            write(writer, name, indent + 1);
+            write(writer, name);
             writer.write(": ");
             write(writer, value, indent + 1);
         }
 
-        public void writeField(JsonStringNode name, WriteableJsonString value) throws IOException {
+        public void writeField(final JsonStringNode name, final WriteableJsonString value) throws IOException {
             if (!isFirst) {
                 writer.write(',');
             }
             isFirst = false;
             writer.write(lineSeparator);
             addTabs(writer, indent + 1);
-            write(writer, name, indent + 1);
+            write(writer, name);
             writer.write(": ");
             write(writer, value);
         }
 
         public void writeField(final JsonStringNode name, final JsonNode value) throws IOException {
-            writeField(field(name, value));
+            if (!isFirst) {
+                writer.write(',');
+            }
+            isFirst = false;
+            writer.write(lineSeparator);
+            addTabs(writer, indent + 1);
+            write(writer, name);
+            writer.write(": ");
+            write(writer, value);
+        }
+
+        public void writeField(final WriteableJsonString name, final WriteableJsonObject value) throws IOException {
+            if (!isFirst) {
+                writer.write(',');
+            }
+            isFirst = false;
+            writer.write(lineSeparator);
+            addTabs(writer, indent + 1);
+            write(writer, name);
+            writer.write(": ");
+            write(writer, value);
+        }
+
+        public void writeField(final WriteableJsonString name, final WriteableJsonArray value) throws IOException {
+            if (!isFirst) {
+                writer.write(',');
+            }
+            isFirst = false;
+            writer.write(lineSeparator);
+            addTabs(writer, indent + 1);
+            write(writer, name);
+            writer.write(": ");
+            write(writer, value);
+        }
+
+        public void writeField(final WriteableJsonString name, final WriteableJsonString value) throws IOException {
+            if (!isFirst) {
+                writer.write(',');
+            }
+            isFirst = false;
+            writer.write(lineSeparator);
+            addTabs(writer, indent + 1);
+            write(writer, name);
+            writer.write(": ");
+            write(writer, value);
+        }
+
+        public void writeField(final WriteableJsonString name, final JsonNode value) throws IOException {
+            if (!isFirst) {
+                writer.write(',');
+            }
+            isFirst = false;
+            writer.write(lineSeparator);
+            addTabs(writer, indent + 1);
+            write(writer, name);
+            writer.write(": ");
+            write(writer, value);
         }
 
         public void writeField(final JsonField jsonField) throws IOException {
