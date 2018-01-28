@@ -55,7 +55,9 @@ public final class PrettyJsonWriter implements JsonWriter {
     }
 
     public void write(Writer writer, WriteableJsonString writeableJsonString) throws IOException {
+        writer.write('"');
         writeableJsonString.writeTo(new JsonStringEscapingWriter(writer));
+        writer.write('"');
     }
 
     private void write(final Writer writer, final WriteableJsonObject writeableJsonObject, final int indent) throws IOException {
@@ -185,7 +187,7 @@ public final class PrettyJsonWriter implements JsonWriter {
             isFirst = false;
             writer.write(lineSeparator);
             addTabs(writer, indent + 1);
-            element.writeTo(new JsonStringEscapingWriter(writer));
+            write(writer, element);
         }
 
         public void writeElement(final JsonNode element) throws IOException {
@@ -225,6 +227,10 @@ public final class PrettyJsonWriter implements JsonWriter {
             writeField(string(name), value);
         }
 
+        public void writeField(final String name, final WriteableJsonString value) throws IOException {
+            writeField(string(name), value);
+        }
+
         public void writeField(final JsonStringNode name, final WriteableJsonObject value) throws IOException {
             if (!isFirst) {
                 writer.write(',');
@@ -249,6 +255,18 @@ public final class PrettyJsonWriter implements JsonWriter {
             write(writer, value, indent + 1);
         }
 
+        public void writeField(JsonStringNode name, WriteableJsonString value) throws IOException {
+            if (!isFirst) {
+                writer.write(',');
+            }
+            isFirst = false;
+            writer.write(lineSeparator);
+            addTabs(writer, indent + 1);
+            write(writer, name, indent + 1);
+            writer.write(": ");
+            write(writer, value);
+        }
+
         public void writeField(final JsonStringNode name, final JsonNode value) throws IOException {
             writeField(field(name, value));
         }
@@ -263,7 +281,6 @@ public final class PrettyJsonWriter implements JsonWriter {
             write(writer, jsonField.getName(), indent + 1);
             writer.write(": ");
             write(writer, jsonField.getValue(), indent + 1);
-
         }
 
         boolean wroteFields() {

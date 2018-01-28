@@ -55,6 +55,15 @@ public interface ObjectWriter {
      * @param value the value of the field.
      * @throws IOException if there was a problem writing the field.
      */
+    void writeField(String name, WriteableJsonString value) throws IOException;
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
     void writeField(JsonStringNode name, WriteableJsonObject value) throws IOException;
 
     /**
@@ -65,6 +74,15 @@ public interface ObjectWriter {
      * @throws IOException if there was a problem writing the field.
      */
     void writeField(JsonStringNode name, WriteableJsonArray value) throws IOException;
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     */
+    void writeField(JsonStringNode name, WriteableJsonString value) throws IOException;
 
     /**
      * Writes the given name and value as the next field of the object.

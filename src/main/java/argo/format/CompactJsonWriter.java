@@ -52,7 +52,7 @@ public final class CompactJsonWriter implements JsonWriter {
                     writer.write(',');
                 }
                 isFirst = false;
-                element.writeTo(new JsonStringEscapingWriter(writer));
+                write(writer, element);
             }
 
             public void writeElement(final JsonNode element) throws IOException {
@@ -83,6 +83,10 @@ public final class CompactJsonWriter implements JsonWriter {
                 writeField(string(name), value);
             }
 
+            public void writeField(final String name, final WriteableJsonString value) throws IOException {
+                writeField(string(name), value);
+            }
+
             public void writeField(final JsonStringNode name, final WriteableJsonObject value) throws IOException {
                 if (!isFirst) {
                     writer.write(',');
@@ -94,6 +98,16 @@ public final class CompactJsonWriter implements JsonWriter {
             }
 
             public void writeField(final JsonStringNode name, final WriteableJsonArray value) throws IOException {
+                if (!isFirst) {
+                    writer.write(',');
+                }
+                isFirst = false;
+                write(writer, name);
+                writer.write(':');
+                write(writer, value);
+            }
+
+            public void writeField(final JsonStringNode name, final WriteableJsonString value) throws IOException {
                 if (!isFirst) {
                     writer.write(',');
                 }
@@ -121,7 +135,9 @@ public final class CompactJsonWriter implements JsonWriter {
     }
 
     public void write(final Writer writer, final WriteableJsonString writeableJsonString) throws IOException {
+        writer.write('"');
         writeableJsonString.writeTo(new JsonStringEscapingWriter(writer));
+        writer.write('"');
     }
 
     public void write(final Writer writer, final JsonNode jsonNode) throws IOException {
