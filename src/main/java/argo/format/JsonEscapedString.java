@@ -27,7 +27,7 @@ final class JsonEscapedString {
         if (offset < 0 || offset > cbuf.length || length < 0 || offset + length > cbuf.length || offset + length < 0) {
             throw new IndexOutOfBoundsException();
         } else if (length != 0) {
-            for (int i = offset; i < length; i++) {
+            for (int i = offset; i < offset + length; i++) {
                 switch (cbuf[i]) {
                     case '\u0000':
                         writer.append("\\u0000");
