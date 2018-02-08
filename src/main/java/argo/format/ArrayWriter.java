@@ -44,6 +44,15 @@ public interface ArrayWriter {
     void writeElement(WriteableJsonString element) throws IOException;
 
     /**
+     * Writes the given {@code WriteableJsonNumber} as the next element of the array.
+     *
+     * @param element the {@code WriteableJsonNumber} to write.
+     * @throws IOException              if there was a problem writing the {@code WriteableJsonNumber}
+     * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} didn't constitute a complete JSON number.
+     */
+    void writeElement(WriteableJsonNumber element) throws IOException, IllegalArgumentException;
+
+    /**
      * Writes the given {@code JsonNode} as the next element of the array.
      * @param element the {@code JsonNode} to write.
      * @throws IOException if there was a problem writing the {@code JsonNode}

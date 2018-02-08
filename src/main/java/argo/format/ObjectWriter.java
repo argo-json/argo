@@ -46,7 +46,17 @@ public interface ObjectWriter {
      * @param value the value of the field.
      * @throws IOException if there was a problem writing the field.
      */
-    void writeField(String name, JsonNode value) throws IOException;
+    void writeField(String name, WriteableJsonString value) throws IOException;
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException if there was a problem writing the field.
+     * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} didn't constitute a complete JSON number.
+     */
+    void writeField(String name, WriteableJsonNumber value) throws IOException, IllegalArgumentException;
 
     /**
      * Writes the given name and value as the next field of the object.
@@ -55,7 +65,7 @@ public interface ObjectWriter {
      * @param value the value of the field.
      * @throws IOException if there was a problem writing the field.
      */
-    void writeField(String name, WriteableJsonString value) throws IOException;
+    void writeField(String name, JsonNode value) throws IOException;
 
     /**
      * Writes the given name and value as the next field of the object.
@@ -83,6 +93,16 @@ public interface ObjectWriter {
      * @throws IOException if there was a problem writing the field.
      */
     void writeField(JsonStringNode name, WriteableJsonString value) throws IOException;
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException              if there was a problem writing the field.
+     * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} didn't constitute a complete JSON number.
+     */
+    void writeField(JsonStringNode name, WriteableJsonNumber value) throws IOException, IllegalArgumentException;
 
     /**
      * Writes the given name and value as the next field of the object.
@@ -119,6 +139,16 @@ public interface ObjectWriter {
      * @throws IOException if there was a problem writing the field.
      */
     void writeField(WriteableJsonString name, WriteableJsonString value) throws IOException;
+
+    /**
+     * Writes the given name and value as the next field of the object.
+     *
+     * @param name  the name of the field.
+     * @param value the value of the field.
+     * @throws IOException              if there was a problem writing the field.
+     * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} didn't constitute a complete JSON number.
+     */
+    void writeField(WriteableJsonString name, WriteableJsonNumber value) throws IOException, IllegalArgumentException;
 
     /**
      * Writes the given name and value as the next field of the object.

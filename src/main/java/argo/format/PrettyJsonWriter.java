@@ -53,10 +53,18 @@ public final class PrettyJsonWriter implements JsonWriter {
         write(writer, writeableJsonObject, 0);
     }
 
-    public void write(Writer writer, WriteableJsonString writeableJsonString) throws IOException {
+    public void write(final Writer writer, final WriteableJsonString writeableJsonString) throws IOException {
         writer.write('"');
         writeableJsonString.writeTo(new JsonStringEscapingWriter(writer));
         writer.write('"');
+    }
+
+    public void write(final Writer writer, final WriteableJsonNumber writeableJsonNumber) throws IOException, IllegalArgumentException {
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer);
+        writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
+        if (!jsonNumberValidatingWriter.isEndState()) {
+            throw new IllegalArgumentException("Attempt to write an incomplete JSON number.");
+        }
     }
 
     private void write(final Writer writer, final WriteableJsonObject writeableJsonObject, final int indent) throws IOException {
@@ -133,7 +141,7 @@ public final class PrettyJsonWriter implements JsonWriter {
                 writer.write("null");
                 break;
             default:
-                throw new RuntimeException("Coding failure in Argo:  Attempt to format a JsonNode of unknown type [" + jsonNode.getType() + "];");
+                throw new RuntimeException("Coding failure in Argo:  Attempt to format a JsonNode of unknown type [" + jsonNode.getType() + "].");
         }
     }
 
@@ -160,43 +168,37 @@ public final class PrettyJsonWriter implements JsonWriter {
         }
 
         public void writeElement(final WriteableJsonObject element) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
+            writePreamble();
             write(writer, element, indent + 1);
         }
 
         public void writeElement(final WriteableJsonArray element) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
+            writePreamble();
             write(writer, element, indent + 1);
         }
 
         public void writeElement(final WriteableJsonString element) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
+            writePreamble();
+            write(writer, element);
+        }
+
+        public void writeElement(final WriteableJsonNumber element) throws IOException, IllegalArgumentException {
+            writePreamble();
             write(writer, element);
         }
 
         public void writeElement(final JsonNode element) throws IOException {
+            writePreamble();
+            write(writer, element, indent + 1);
+        }
+
+        private void writePreamble() throws IOException {
             if (!isFirst) {
                 writer.write(',');
             }
             isFirst = false;
             writer.write(lineSeparator);
             addTabs(writer, indent + 1);
-            write(writer, element, indent + 1);
         }
 
         boolean wroteFields() {
@@ -222,120 +224,91 @@ public final class PrettyJsonWriter implements JsonWriter {
             writeField(string(name), value);
         }
 
-        public void writeField(final String name, final JsonNode value) throws IOException {
-            writeField(string(name), value);
-        }
-
         public void writeField(final String name, final WriteableJsonString value) throws IOException {
             writeField(string(name), value);
         }
 
+        public void writeField(final String name, final WriteableJsonNumber value) throws IOException, IllegalArgumentException {
+            writeField(string(name), value);
+        }
+
+        public void writeField(final String name, final JsonNode value) throws IOException {
+            writeField(string(name), value);
+        }
+
         public void writeField(final JsonStringNode name, final WriteableJsonObject value) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
-            write(writer, name);
-            writer.write(": ");
+            writeName(name);
             write(writer, value, indent + 1);
         }
 
         public void writeField(final JsonStringNode name, final WriteableJsonArray value) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
-            write(writer, name);
-            writer.write(": ");
+            writeName(name);
             write(writer, value, indent + 1);
         }
 
         public void writeField(final JsonStringNode name, final WriteableJsonString value) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
-            write(writer, name);
-            writer.write(": ");
+            writeName(name);
+            write(writer, value);
+        }
+
+        public void writeField(final JsonStringNode name, final WriteableJsonNumber value) throws IOException, IllegalArgumentException {
+            writeName(name);
             write(writer, value);
         }
 
         public void writeField(final JsonStringNode name, final JsonNode value) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
-            write(writer, name);
-            writer.write(": ");
+            writeName(name);
             write(writer, value);
         }
 
-        public void writeField(final WriteableJsonString name, final WriteableJsonObject value) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
+        private void writeName(final JsonStringNode name) throws IOException {
+            writePreamble();
             write(writer, name);
             writer.write(": ");
+        }
+
+        public void writeField(final WriteableJsonString name, final WriteableJsonObject value) throws IOException {
+            writeName(name);
             write(writer, value);
         }
 
         public void writeField(final WriteableJsonString name, final WriteableJsonArray value) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
-            write(writer, name);
-            writer.write(": ");
+            writeName(name);
             write(writer, value);
         }
 
         public void writeField(final WriteableJsonString name, final WriteableJsonString value) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
-            write(writer, name);
-            writer.write(": ");
+            writeName(name);
+            write(writer, value);
+        }
+
+        public void writeField(final WriteableJsonString name, final WriteableJsonNumber value) throws IOException, IllegalArgumentException {
+            writeName(name);
             write(writer, value);
         }
 
         public void writeField(final WriteableJsonString name, final JsonNode value) throws IOException {
-            if (!isFirst) {
-                writer.write(',');
-            }
-            isFirst = false;
-            writer.write(lineSeparator);
-            addTabs(writer, indent + 1);
-            write(writer, name);
-            writer.write(": ");
+            writeName(name);
             write(writer, value);
         }
 
+        private void writeName(final WriteableJsonString name) throws IOException {
+            writePreamble();
+            write(writer, name);
+            writer.write(": ");
+        }
+
         public void writeField(final JsonField jsonField) throws IOException {
+            writeField(jsonField.getName(), jsonField.getValue());
+        }
+
+        private void writePreamble() throws IOException {
             if (!isFirst) {
                 writer.write(',');
             }
             isFirst = false;
             writer.write(lineSeparator);
             addTabs(writer, indent + 1);
-            write(writer, jsonField.getName(), indent + 1);
-            writer.write(": ");
-            write(writer, jsonField.getValue(), indent + 1);
         }
 
         boolean wroteFields() {

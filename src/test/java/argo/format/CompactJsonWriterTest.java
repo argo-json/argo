@@ -236,4 +236,56 @@ public class CompactJsonWriterTest {
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("[\"\\\"Foo\\\"\"]"));
     }
 
+    @Test
+    public void canWriteWriteableJsonNumber() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonNumber) writer -> writer.write("1234.56e+10"));
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("1234.56e+10"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsNonIntegerNumberWithNothingBeforeTheDecimalPoint() throws Exception {
+        new CompactJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write(".1"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsNumberWithDecimalPointButNothingAfter() throws Exception {
+        new CompactJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1."));
+    }
+
+    @Test
+    public void canWriteAnArrayOfWriteableJsonNumber() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonNumber) writer -> writer.write("-123.456E+789")));
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("[-123.456E+789]"));
+    }
+
+    @Test
+    public void canWriteObjectOfStringKeyedWriteableJsonNumberFields() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
+                "Foo", (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
+        ));
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":1234}"));
+    }
+
+    @Test
+    public void canWriteObjectOfJsonStringKeyedWriteableJsonNumberFields() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
+                string("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
+        ));
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":1234}"));
+    }
+
+
+    @Test
+    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonNumberFields() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
+                writer -> writer.write("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
+        ));
+        MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":1234}"));
+    }
+
 }

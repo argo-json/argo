@@ -48,6 +48,16 @@ public interface JsonWriter {
     void write(Writer writer, WriteableJsonString writeableJsonString) throws IOException;
 
     /**
+     * Streams the specified {@code WriteableJsonNumber} formatted to the specified {@code Writer}.
+     *
+     * @param writer              the {@code Writer} to output to.
+     * @param writeableJsonNumber the {@code WriteableJsonNumber} to output.
+     * @throws IOException              if there was a problem writing to the {@code Writer}.
+     * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} didn't constitute a complete JSON number.
+     */
+    void write(Writer writer, WriteableJsonNumber writeableJsonNumber) throws IOException, IllegalArgumentException;
+
+    /**
      * Streams the specified {@code JsonNode} formatted to the specified {@code Writer}.
      *
      * @param writer the {@code Writer} to output to.

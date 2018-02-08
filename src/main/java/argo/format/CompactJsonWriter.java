@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import static argo.format.JsonEscapedString.escapeStringTo;
-import static argo.jdom.JsonNodeFactories.field;
 import static argo.jdom.JsonNodeFactories.string;
 
 /**
@@ -32,35 +31,35 @@ public final class CompactJsonWriter implements JsonWriter {
             private boolean isFirst = true;
 
             public void writeElement(final WriteableJsonObject element) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
+                writeCommaIfRequired();
                 write(writer, element);
             }
 
             public void writeElement(final WriteableJsonArray element) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
+                writeCommaIfRequired();
                 write(writer, element);
             }
 
-            public void writeElement(WriteableJsonString element) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
+            public void writeElement(final WriteableJsonString element) throws IOException {
+                writeCommaIfRequired();
+                write(writer, element);
+            }
+
+            public void writeElement(final WriteableJsonNumber element) throws IOException, IllegalArgumentException {
+                writeCommaIfRequired();
                 write(writer, element);
             }
 
             public void writeElement(final JsonNode element) throws IOException {
+                writeCommaIfRequired();
+                write(writer, element);
+            }
+
+            private void writeCommaIfRequired() throws IOException {
                 if (!isFirst) {
                     writer.write(',');
                 }
                 isFirst = false;
-                write(writer, element);
             }
         });
         writer.write(']');
@@ -79,96 +78,89 @@ public final class CompactJsonWriter implements JsonWriter {
                 writeField(string(name), value);
             }
 
-            public void writeField(final String name, final JsonNode value) throws IOException {
-                writeField(string(name), value);
-            }
-
             public void writeField(final String name, final WriteableJsonString value) throws IOException {
                 writeField(string(name), value);
             }
 
+            public void writeField(final String name, final WriteableJsonNumber value) throws IOException, IllegalArgumentException {
+                writeField(string(name), value);
+            }
+
+            public void writeField(final String name, final JsonNode value) throws IOException {
+                writeField(string(name), value);
+            }
+
             public void writeField(final JsonStringNode name, final WriteableJsonObject value) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
-                write(writer, name);
-                writer.write(':');
+                writeName(name);
                 write(writer, value);
             }
 
             public void writeField(final JsonStringNode name, final WriteableJsonArray value) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
-                write(writer, name);
-                writer.write(':');
+                writeName(name);
                 write(writer, value);
             }
 
             public void writeField(final JsonStringNode name, final WriteableJsonString value) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
-                write(writer, name);
-                writer.write(':');
+                writeName(name);
+                write(writer, value);
+            }
+
+            public void writeField(final JsonStringNode name, final WriteableJsonNumber value) throws IOException, IllegalArgumentException {
+                writeName(name);
                 write(writer, value);
             }
 
             public void writeField(final JsonStringNode name, final JsonNode value) throws IOException {
-                writeField(field(name, value));
+                writeName(name);
+                write(writer, value);
+            }
+
+            private void writeName(final JsonStringNode name) throws IOException {
+                writeCommaIfRequired();
+                write(writer, name);
+                writer.write(':');
             }
 
             public void writeField(final WriteableJsonString name, final WriteableJsonObject value) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
-                write(writer, name);
-                writer.write(':');
+                writeName(name);
                 write(writer, value);
             }
 
             public void writeField(final WriteableJsonString name, final WriteableJsonArray value) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
-                write(writer, name);
-                writer.write(':');
+                writeName(name);
                 write(writer, value);
             }
 
             public void writeField(final WriteableJsonString name, final WriteableJsonString value) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
-                write(writer, name);
-                writer.write(':');
+                writeName(name);
+                write(writer, value);
+            }
+
+            public void writeField(final WriteableJsonString name, final WriteableJsonNumber value) throws IOException, IllegalArgumentException {
+                writeName(name);
                 write(writer, value);
             }
 
             public void writeField(final WriteableJsonString name, final JsonNode value) throws IOException {
-                if (!isFirst) {
-                    writer.write(',');
-                }
-                isFirst = false;
-                write(writer, name);
-                writer.write(':');
+                writeName(name);
                 write(writer, value);
             }
 
+            private void writeName(final WriteableJsonString name) throws IOException {
+                writeCommaIfRequired();
+                write(writer, name);
+                writer.write(':');
+            }
+
             public void writeField(final JsonField jsonField) throws IOException {
+                writeField(jsonField.getName(), jsonField.getValue());
+            }
+
+            private void writeCommaIfRequired() throws IOException {
                 if (!isFirst) {
                     writer.write(',');
                 }
                 isFirst = false;
-                write(writer, jsonField.getName());
-                writer.write(':');
-                write(writer, jsonField.getValue());
             }
         });
         writer.write('}');
@@ -178,6 +170,14 @@ public final class CompactJsonWriter implements JsonWriter {
         writer.write('"');
         writeableJsonString.writeTo(new JsonStringEscapingWriter(writer));
         writer.write('"');
+    }
+
+    public void write(final Writer writer, final WriteableJsonNumber writeableJsonNumber) throws IOException, IllegalArgumentException {
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer);
+        writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
+        if (!jsonNumberValidatingWriter.isEndState()) {
+            throw new IllegalArgumentException("Attempt to write an incomplete JSON number.");
+        }
     }
 
     public void write(final Writer writer, final JsonNode jsonNode) throws IOException {
