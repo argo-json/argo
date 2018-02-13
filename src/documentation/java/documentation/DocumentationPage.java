@@ -151,6 +151,31 @@ final class DocumentationPage {
                         xhtmlText(" loop in this example is only limited by the capacity of the "), simpleNameOf(java.io.Writer.class),
                         xhtmlText(" to accept characters.")
                 ),
+                paragraphTag(
+                        xhtmlText("JSON strings and numbers of arbitrary length can be produced by implementing the "),
+                        simpleNameOf(WriteableJsonString.class), xhtmlText(" and "), simpleNameOf(WriteableJsonNumber.class),
+                        xhtmlText(" interfaces.  For example:")
+                ),
+                codeBlock("private static final JsonWriter JSON_WRITER = new PrettyJsonWriter();" +
+                        "\n" +
+                        "...\n" +
+                        "\n" +
+                        "final StringWriter stringWriter = new StringWriter();\n" +
+                        "JSON_WRITER.write(stringWriter, new WriteableJsonString() {\n" +
+                        "    @Override\n" +
+                        "    public void writeTo(Writer stringWriter) throws IOException {\n" +
+                        "        stringWriter.write(\"On\");\n" +
+                        "        for (int i = 0; i < 10000; i++) {\n" +
+                        "            stringWriter.write(\" and on\");\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "});\n" +
+                        "String jsonText = stringWriter.toString();\n"),
+                paragraphTag(
+                        xhtmlText("Once again, the number of iterations of the "), methodName("for"),
+                        xhtmlText(" loop in this example is only limited by the capacity of the "), simpleNameOf(java.io.Writer.class),
+                        xhtmlText(" to accept characters.")
+                ),
                 h3Tag(xhtmlText("Parsing JSON into an Object")),
                 paragraphTag(
                         xhtmlText("All the examples in this section are based on the following JSON, which is assumed to be available in a "),

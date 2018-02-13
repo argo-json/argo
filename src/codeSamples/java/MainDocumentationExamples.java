@@ -106,6 +106,22 @@ public final class MainDocumentationExamples {
     }
 
     @Test
+    public void producesInfiniteStringOfJson() throws Exception {
+        final StringWriter stringWriter = new StringWriter();
+        JSON_WRITER.write(stringWriter, new WriteableJsonString() {
+            @Override
+            public void writeTo(Writer stringWriter) throws IOException {
+                stringWriter.write("On");
+                for (int i = 0; i < 10000; i++) {
+                    stringWriter.write(" and on");
+                }
+            }
+        });
+        String jsonText = stringWriter.toString();
+        assertThat(jsonText, Matchers.startsWith("\"On and on and on"));
+    }
+
+    @Test
     public void formatsJson() throws Exception {
         final JsonNode json = SAMPLE_JSON;
         String jsonText = JSON_FORMATTER.format(json);
