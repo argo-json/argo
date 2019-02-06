@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Mark Slater
+ * Copyright 2019 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,12 +12,17 @@ package argo.jdom;
 
 import argo.saj.JsonListener;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.field;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
+
+    private final JsonStringNodeFactory jsonStringNodeFactory = new JsonStringNodeFactory();
+    private final JsonNumberNodeFactory jsonNumberNodeFactory = new JsonNumberNodeFactory();
 
     private final Stack<NodeContainer> stack = new Stack<NodeContainer>();
     private JsonNodeBuilder<? extends JsonNode> root;
@@ -53,7 +58,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final String name) {
-        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(name);
+        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(name, jsonStringNodeFactory);
         stack.peek().addField(fieldNodeContainer);
         stack.push(fieldNodeContainer);
     }
@@ -63,7 +68,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void numberValue(final String value) {
-        addValue(aNumberBuilder(value));
+        addValue(jsonNumberNodeFactory.jsonNumberNode(value));
     }
 
     public void trueValue() {
@@ -71,7 +76,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void stringValue(final String value) {
-        addValue(aStringBuilder(value));
+        addValue(jsonStringNodeFactory.jsonStringNode(value));
     }
 
     public void falseValue() {
@@ -132,10 +137,12 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
     private static final class FieldNodeContainer implements NodeContainer, JsonFieldBuilder {
         private final String name;
+        private final JsonStringNodeFactory jsonStringNodeFactory;
         private JsonNodeBuilder valueBuilder;
 
-        FieldNodeContainer(String name) {
+        FieldNodeContainer(final String name, final JsonStringNodeFactory jsonStringNodeFactory) {
             this.name = name;
+            this.jsonStringNodeFactory = jsonStringNodeFactory;
         }
 
         public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
@@ -154,7 +161,37 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             if (valueBuilder == null) {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to create a field without a value.");
             } else {
-                return field(name, valueBuilder.build());
+                return field(jsonStringNodeFactory.jsonStringNode(name), valueBuilder.build());
+            }
+        }
+    }
+
+    private static final class JsonStringNodeFactory {
+        private final Map<String, JsonStringNode> existingJsonStringNodes = new HashMap<String, JsonStringNode>();
+
+        JsonStringNode jsonStringNode(final String value) {
+            final JsonStringNode cachedStringNode = existingJsonStringNodes.get(value);
+            if (cachedStringNode == null) {
+                final JsonStringNode newJsonStringNode = JsonNodeFactories.string(value);
+                existingJsonStringNodes.put(value, newJsonStringNode);
+                return newJsonStringNode;
+            } else {
+                return cachedStringNode;
+            }
+        }
+    }
+
+    private static final class JsonNumberNodeFactory {
+        private final Map<String, JsonNodeBuilder<JsonNode>> existingJsonNumberNodes = new HashMap<String, JsonNodeBuilder<JsonNode>>();
+
+        JsonNodeBuilder<JsonNode> jsonNumberNode(final String value) {
+            final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);
+            if (cachedNumberNode == null) {
+                final JsonNodeBuilder<JsonNode> newJsonNumberNode = aNumberBuilder(value);
+                existingJsonNumberNodes.put(value, newJsonNumberNode);
+                return newJsonNumberNode;
+            } else {
+                return cachedNumberNode;
             }
         }
     }

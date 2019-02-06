@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Mark Slater
+ * Copyright 2019 Mark Slater
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,6 +18,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 public final class JdomParserTest {
@@ -120,4 +121,25 @@ public final class JdomParserTest {
         public void close() throws IOException {
         }
     }
+
+    @Test
+    public void equalKeysInTheSameDocumentReferToTheSameObject() throws Exception {
+        final JsonNode jsonNode = new JdomParser().parse("[{\"value\": 0.6}, {\"value\": 0.6}]");
+        assertThat(jsonNode.getNode(0).getFieldList().get(0).getName(), sameInstance(jsonNode.getNode(1).getFieldList().get(0).getName()));
+    }
+
+
+    @Test
+    public void equalStringsInTheSameDocumentReferToTheSameObject() throws Exception {
+        final JsonNode jsonNode = new JdomParser().parse("[\"foo\", \"foo\"]");
+        assertThat(jsonNode.getNode(0), sameInstance(jsonNode.getNode(1)));
+    }
+
+    @Test
+    public void equalNumbersInTheSameDocumentReferToTheSameObject() throws Exception {
+        final JsonNode jsonNode = new JdomParser().parse("[123, 123]");
+        assertThat(jsonNode.getNode(0), sameInstance(jsonNode.getNode(1)));
+    }
+
+
 }
