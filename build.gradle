@@ -28,7 +28,7 @@ plugins {
 
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'java'
-apply plugin: 'pmd'
+//apply plugin: 'pmd'
 apply plugin: 'findbugs'
 apply plugin: 'signing'
 apply plugin: 'maven'
@@ -38,8 +38,8 @@ repositories {
     mavenCentral()
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
+wrapper {
+    gradleVersion = '5.1.1'
 }
 
 sourceSets {
@@ -106,13 +106,13 @@ task compileTinyJava(type: JavaCompile) {
 
 task codeSamplesTest(type: Test) {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
-    testClassesDir = sourceSets.codeSamples.output.classesDir
+    testClassesDirs = sourceSets.codeSamples.output.classesDirs
     classpath = sourceSets.codeSamples.runtimeClasspath
 }
 
 task performanceTest(type: Test) {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
-    testClassesDir = sourceSets.performanceTest.output.classesDir
+    testClassesDirs = sourceSets.performanceTest.output.classesDirs
     classpath = sourceSets.performanceTest.runtimeClasspath
 }
 
@@ -149,23 +149,29 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-task documentationDirectory << {
-    mkdir("${project.buildDir}/documentation")
+task documentationDirectory {
+    doLast {
+        mkdir("${project.buildDir}/documentation")
+    }
 }
 
-task ico(dependsOn: documentationDirectory) << {
-    ant.taskdef(name: 'svg2ico',
-            classname: 'net.sourceforge.svg2ico.Svg2IcoTask',
-            classpath: configurations.svg2ico.asPath)
-    ant.svg2ico(src: 'resources/favicon.svg',
-            dest: "${project.buildDir}/documentation/favicon.ico",
-            width: '32',
-            height: '32'
-    )
+task ico(dependsOn: documentationDirectory) {
+    doLast{
+        ant.taskdef(name: 'svg2ico',
+                classname: 'net.sourceforge.svg2ico.Svg2IcoTask',
+                classpath: configurations.svg2ico.asPath)
+        ant.svg2ico(src: 'resources/favicon.svg',
+                dest: "${project.buildDir}/documentation/favicon.ico",
+                width: '32',
+                height: '32'
+        )
+    }
 }
 
-task iconsDirectory << {
-    mkdir("${project.buildDir}/icons")
+task iconsDirectory {
+    doLast {
+        mkdir("${project.buildDir}/icons")
+    }
 }
 
 task png(type: JavaExec, dependsOn: iconsDirectory) {
@@ -203,20 +209,22 @@ remotes {
     }
 }
 
-task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJar, tinyJar]) << {
-    ssh.run {
-        session(remotes.sourceforgeShell) {
-            execute 'create'
-            execute "mkdir -p /home/frs/project/argo/argo/${version}"
-        }
-        session(remotes.sourceforgeWeb) {
-            put from: "${project.buildDir}/distributions/documentation-${version}.tgz", into: '/home/project-web/argo/'
-            put from: "${project.buildDir}/libs/argo-${version}-javadoc.jar", into: '/home/project-web/argo/'
-            put from: "${project.buildDir}/libs/argo-${version}-combined.jar", into: "/home/frs/project/argo/argo/${version}/argo-${version}.jar"
-            put from: "${project.buildDir}/libs/argo-${version}-tiny.jar", into: "/home/frs/project/argo/argo/${version}/argo-small-${version}.jar"
-        }
-        session(remotes.sourceforgeShell) {
-            execute "mkdir -p /home/project-web/argo/${version}/javadoc && tar -xvf /home/project-web/argo/documentation-${version}.tgz -C /home/project-web/argo/${version} && unzip -d /home/project-web/argo/${version}/javadoc /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/documentation-${version}.tgz && rm /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${version} /home/project-web/argo/htdocs"
+task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJar, tinyJar]) {
+    doLast {
+        ssh.run {
+            session(remotes.sourceforgeShell) {
+                execute 'create'
+                execute "mkdir -p /home/frs/project/argo/argo/${version}"
+            }
+            session(remotes.sourceforgeWeb) {
+                put from: "${project.buildDir}/distributions/documentation-${version}.tgz", into: '/home/project-web/argo/'
+                put from: "${project.buildDir}/libs/argo-${version}-javadoc.jar", into: '/home/project-web/argo/'
+                put from: "${project.buildDir}/libs/argo-${version}-combined.jar", into: "/home/frs/project/argo/argo/${version}/argo-${version}.jar"
+                put from: "${project.buildDir}/libs/argo-${version}-tiny.jar", into: "/home/frs/project/argo/argo/${version}/argo-small-${version}.jar"
+            }
+            session(remotes.sourceforgeShell) {
+                execute "mkdir -p /home/project-web/argo/${version}/javadoc && tar -xvf /home/project-web/argo/documentation-${version}.tgz -C /home/project-web/argo/${version} && unzip -d /home/project-web/argo/${version}/javadoc /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/documentation-${version}.tgz && rm /home/project-web/argo/argo-${version}-javadoc.jar && rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${version} /home/project-web/argo/htdocs"
+            }
         }
     }
 }
@@ -300,8 +308,10 @@ task buildAndDeployCleanVersion(type: GradleBuild, dependsOn: cleanExport) {
     tasks = ['clean', 'performRelease']
 }
 
-task aMomentOfReflection() << {
-    sleep(30 * 1000)
+task aMomentOfReflection() {
+    doLast{
+        sleep(30 * 1000)
+    }
 }
 
 build.mustRunAfter clean
@@ -311,13 +321,17 @@ aMomentOfReflection.mustRunAfter closeRepository
 promoteRepository.mustRunAfter aMomentOfReflection
 updateSourceforgeDefaultDownload.mustRunAfter copyToSourceforge
 
-task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, png, closeRepository, aMomentOfReflection, promoteRepository, updateSourceforgeDefaultDownload]) << {
-    println 'Release complete :)'
+task performRelease(dependsOn: [clean, build, uploadArchives, copyToSourceforge, png, closeRepository, aMomentOfReflection, promoteRepository, updateSourceforgeDefaultDownload]) {
+    doLast {
+        println 'Release complete :)'
+    }
 }
 
-task incrementVersionNumber(dependsOn: buildAndDeployCleanVersion) << {
-    ant.propertyfile(file: file('gradle.properties')) {
-        entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
+task incrementVersionNumber(dependsOn: buildAndDeployCleanVersion) {
+    doLast {
+        ant.propertyfile(file: file('gradle.properties')) {
+            entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
+        }
     }
 }
 
@@ -328,4 +342,6 @@ task commitVersionNumber(type: SvnCommit, dependsOn: incrementVersionNumber) {
     password = "$sourceforgePassword"
 }
 
-task deploy(dependsOn: commitVersionNumber) << {}
+task deploy(dependsOn: commitVersionNumber) {
+    doLast {}
+}
