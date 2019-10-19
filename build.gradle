@@ -28,6 +28,7 @@ plugins {
 
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'java'
+apply plugin: 'idea'
 //apply plugin: 'pmd'
 apply plugin: 'findbugs'
 apply plugin: 'signing'
@@ -85,6 +86,12 @@ group = 'net.sourceforge.argo'
 archivesBaseName = 'argo'
 version = "${majorVersion}.${minorVersion}"
 description = 'Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.'
+
+idea {
+    module {
+        jdkName = 1.8
+    }
+}
 
 compileJava {
     sourceCompatibility = 1.5
