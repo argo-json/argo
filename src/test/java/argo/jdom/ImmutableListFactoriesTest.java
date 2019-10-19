@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -29,8 +30,19 @@ public final class ImmutableListFactoriesTest {
     }
 
     @Test
+    public void handlesEmptyIterator() throws Exception {
+        assertThat(ImmutableListFactories.immutableListOf(emptyIterator()), is(emptyList()));
+    }
+
+    @Test
     public void handlesEmptyList() throws Exception {
         assertThat(ImmutableListFactories.immutableListOf(emptyList()), is(emptyList()));
+    }
+
+    @Test
+    public void returnedListIsEqualToSourceIterator() throws Exception {
+        final List<Object> sourceList = aList();
+        assertThat(ImmutableListFactories.immutableListOf(sourceList.iterator()), equalTo(sourceList));
     }
 
     @Test

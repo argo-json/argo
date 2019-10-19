@@ -12,6 +12,7 @@ package argo.jdom;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
@@ -22,16 +23,18 @@ final class ImmutableListFactories {
     }
 
     static <T> List<T> immutableListOf(final Iterable<? extends T> elements) {
-        final List<T> copy;
         if (elements instanceof Collection) {
-            copy = new ArrayList<T>((Collection<? extends T>) elements);
+            return unmodifiableList(new ArrayList<T>((Collection<? extends T>) elements));
         } else {
-            copy = new ArrayList<T>();
-            for (final T element : elements) {
-                copy.add(element);
-            }
+            return immutableListOf(elements.iterator());
+        }
+    }
+
+    static <T> List<T> immutableListOf(Iterator<? extends T> elements) {
+        final List<T> copy = new ArrayList<T>();
+        while (elements.hasNext()) {
+            copy.add(elements.next());
         }
         return unmodifiableList(copy);
-
     }
 }
