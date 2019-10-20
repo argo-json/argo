@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 Mark Slater
+ *  Copyright  2019 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.jdom;
@@ -66,11 +66,24 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
+    public void createsJsonObjectNodeWithFieldIterator() throws Exception {
+        assertThat(object(asList(
+                field("Gina", string("Dreams of running away"))
+                , field("Tommy", string("Used to work on the dock"))
+                ).iterator()),
+                equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Gina"), string("Dreams of running away"));
+                    put(string("Tommy"), string("Used to work on the dock"));
+                }}))
+        );
+    }
+
+    @Test
     public void createsJsonObjectNodeWithFieldIterable() throws Exception {
         assertThat(object(asList(
                 field("Gina", string("Dreams of running away"))
                 , field("Tommy", string("Used to work on the dock"))
-        )),
+                )),
                 equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
                     put(string("Gina"), string("Dreams of running away"));
                     put(string("Tommy"), string("Used to work on the dock"));

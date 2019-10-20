@@ -162,6 +162,14 @@ public final class JsonNodeFactories {
      * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
+    public static JsonNode object(final Iterator<JsonField> fields) {
+        return JsonObject.jsonObject(fields);
+    }
+
+    /**
+     * @param fields {@code JsonField}s that the object will contain
+     * @return a JSON object containing the given fields
+     */
     public static JsonNode object(final Iterable<JsonField> fields) {
         return JsonObject.jsonObject(fields);
     }
