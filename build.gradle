@@ -15,25 +15,20 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
-    }
 }
 
 plugins {
+    id 'java'
+    id 'signing'
+    id 'maven'
+    id 'idea'
+    id 'com.github.spotbugs' version '2.0.0'
     id 'org.hidetake.ssh' version '2.1.0'
     id 'at.bxm.svntools' version '1.6.1'
     id 'org.tenne.rest' version '0.4.2'
+    id 'io.codearte.nexus-staging' version '0.20.0'
+    id 'com.gitlab.svg2ico' version '0.8'
 }
-
-apply plugin: 'io.codearte.nexus-staging'
-apply plugin: 'java'
-apply plugin: 'idea'
-//apply plugin: 'pmd'
-apply plugin: 'findbugs'
-apply plugin: 'signing'
-apply plugin: 'maven'
-
 
 repositories {
     mavenCentral()
@@ -76,7 +71,6 @@ dependencies {
     performanceTestCompile group: 'net.sf.json-lib', name: 'json-lib', version: '2.2.2', classifier: 'jdk15'
     documentationCompile group: 'net.sourceforge.writexml', name: 'writexml', version: '1.1'
     documentationCompile group: 'net.sourceforge.xazzle', name: 'xazzle', version: '0.39'
-    svg2ico group: 'net.sourceforge.svg2ico', name: 'svg2ico', version: '1.5'
     batik group: 'org.apache.xmlgraphics', name: 'batik-rasterizer', version: '1.8'
     batik group: 'org.apache.xmlgraphics', name: 'xmlgraphics-commons', version: '2.0'
     batik group: 'org.apache.xmlgraphics', name: 'batik-codec', version: '1.8'
@@ -128,22 +122,22 @@ task myJavadoc(type: Javadoc) {
 }
 
 task javadocJar(type: Jar) {
-    classifier = 'javadoc'
+    archiveClassifier.set 'javadoc'
     from myJavadoc
 }
 
 task tinyJar(type: Jar, dependsOn: compileTinyJava) {
-    classifier = 'tiny'
+    archiveClassifier.set 'tiny'
     from file("${project.buildDir}/tiny-classes/main")
 }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier.set 'sources'
     from sourceSets.main.allSource
 }
 
 task combinedJar(type: Jar) {
-    classifier = 'combined'
+    archiveClassifier.set 'combined'
     from sourceSets.main.allSource
     from sourceSets.main.output
 }
@@ -158,16 +152,12 @@ task documentationDirectory {
     }
 }
 
-task ico(dependsOn: documentationDirectory) {
-    doLast{
-        ant.taskdef(name: 'svg2ico',
-                classname: 'net.sourceforge.svg2ico.Svg2IcoTask',
-                classpath: configurations.svg2ico.asPath)
-        ant.svg2ico(src: 'resources/favicon.svg',
-                dest: "${project.buildDir}/documentation/favicon.ico",
-                width: '32',
-                height: '32'
-        )
+task ico(type: Svg2IcoTask, dependsOn: documentationDirectory) {
+    destination = file("${project.buildDir}/documentation/favicon.ico")
+    input {
+        source = file('resources/favicon.svg')
+        width = 32
+        height = 32
     }
 }
 
