@@ -1,32 +1,23 @@
 /*
- * Copyright 2015 Mark Slater
+ *  Copyright  2019 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.staj;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static argo.jdom.JsonStringNodeTestBuilder.aValidJsonString;
+import static argo.staj.JsonStreamElement.startDocument;
 import static argo.staj.JsonStreamElement.*;
 import static argo.staj.JsonStreamElementMatchers.aNonTextJsonStreamElementWithType;
 import static argo.staj.JsonStreamElementMatchers.aTextJsonStreamElementWithType;
-import static argo.staj.JsonStreamElementType.END_ARRAY;
-import static argo.staj.JsonStreamElementType.END_DOCUMENT;
-import static argo.staj.JsonStreamElementType.END_FIELD;
-import static argo.staj.JsonStreamElementType.END_OBJECT;
-import static argo.staj.JsonStreamElementType.FALSE;
-import static argo.staj.JsonStreamElementType.NULL;
 import static argo.staj.JsonStreamElementType.*;
-import static argo.staj.JsonStreamElementType.START_ARRAY;
-import static argo.staj.JsonStreamElementType.START_DOCUMENT;
-import static argo.staj.JsonStreamElementType.START_OBJECT;
-import static argo.staj.JsonStreamElementType.TRUE;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class JsonStreamElementTest {

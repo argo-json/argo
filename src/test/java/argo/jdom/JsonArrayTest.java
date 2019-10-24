@@ -10,7 +10,7 @@
 
 package argo.jdom;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,9 +18,9 @@ import java.util.List;
 import static argo.jdom.JsonNodeFactories.number;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
+import static org.junit.jupiter.api.Assertions.*;
 public final class JsonArrayTest {
 
     @Test

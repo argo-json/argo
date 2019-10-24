@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 Mark Slater
+ *  Copyright  2019 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.staj;
@@ -14,7 +14,7 @@ import argo.format.PrettyJsonBuilder;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonStringNode;
 import argo.jdom.JsonStringNodeTestBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -25,13 +25,14 @@ import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 import static argo.staj.ElementTrackingStajParserMatcher.generatesElements;
-import static argo.staj.JsonStreamElement.*;
 import static argo.staj.JsonStreamElement.number;
 import static argo.staj.JsonStreamElement.string;
+import static argo.staj.JsonStreamElement.*;
 import static argo.staj.RoundTrippingStajParserMatcher.parsesTo;
 import static argo.staj.StajParserBuilder.stajParser;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class StajParserTest {
 
@@ -175,16 +176,16 @@ public final class StajParserTest {
         assertThat(stajParser(array()).next(), equalTo(startDocument()));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void callingNextWhenHasNextReturnsFalseThrowsAnException() throws Exception {
         final StajParser stajParser = stajParser(array());
         while (stajParser.hasNext()) {
             stajParser.next();
         }
-        stajParser.next();
+        assertThrows(NoSuchElementException.class, () -> stajParser.next());
     }
 
-    @Test(expected = JsonStreamException.class)
+    @Test
     public void handlesIoExceptionDuringParsing() throws Exception {
         final StajParser stajParser = new StajParser(new Reader() {
             public int read(char[] chars, int offset, int length) throws IOException {
@@ -195,10 +196,10 @@ public final class StajParserTest {
             }
         });
         stajParser.next();
-        stajParser.next();
+        assertThrows(JsonStreamException.class, () -> stajParser.next());
     }
 
-    @Test(expected = MyTestRuntimeException.class)
+    @Test
     public void handlesRuntimeExceptionDuringParsing() throws Exception {
         final StajParser stajParser = new StajParser(new Reader() {
             public int read(char[] chars, int offset, int length) throws IOException {
@@ -209,7 +210,7 @@ public final class StajParserTest {
             }
         });
         stajParser.next();
-        stajParser.next();
+        assertThrows(MyTestRuntimeException.class, () -> stajParser.next());
     }
 
     private static final class MyTestRuntimeException extends RuntimeException {
