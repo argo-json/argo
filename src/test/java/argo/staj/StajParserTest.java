@@ -182,7 +182,7 @@ public final class StajParserTest {
         while (stajParser.hasNext()) {
             stajParser.next();
         }
-        assertThrows(NoSuchElementException.class, () -> stajParser.next());
+        assertThrows(NoSuchElementException.class, stajParser::next);
     }
 
     @Test
@@ -196,7 +196,7 @@ public final class StajParserTest {
             }
         });
         stajParser.next();
-        assertThrows(JsonStreamException.class, () -> stajParser.next());
+        assertThrows(JsonStreamException.class, stajParser::next);
     }
 
     @Test
@@ -210,7 +210,7 @@ public final class StajParserTest {
             }
         });
         stajParser.next();
-        assertThrows(MyTestRuntimeException.class, () -> stajParser.next());
+        assertThrows(MyTestRuntimeException.class, stajParser::next);
     }
 
     private static final class MyTestRuntimeException extends RuntimeException {
