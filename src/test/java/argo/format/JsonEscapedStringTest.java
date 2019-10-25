@@ -18,20 +18,20 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public final class JsonEscapedStringTest {
+final class JsonEscapedStringTest {
 
     @Test
-    public void formatsReverseSolidusAsEscapedReverseSolidus() throws Exception {
+    void formatsReverseSolidusAsEscapedReverseSolidus() throws Exception {
         assertThat(escapeString("\\"), equalTo("\\\\"));
     }
 
     @Test
-    public void formatsDoubleQuoteAsEscapedDoubleQuote() throws Exception {
+    void formatsDoubleQuoteAsEscapedDoubleQuote() throws Exception {
         assertThat(escapeString("\""), equalTo("\\\""));
     }
 
     @Test
-    public void formatsControlCharactersAsEscapedUnicodeCharacters() throws Exception {
+    void formatsControlCharactersAsEscapedUnicodeCharacters() throws Exception {
         assertThat(escapeString("\u0000"), equalTo("\\u0000"));
         assertThat(escapeString("\u0001"), equalTo("\\u0001"));
         assertThat(escapeString("\u0002"), equalTo("\\u0002"));

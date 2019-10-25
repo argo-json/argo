@@ -14,85 +14,85 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class JsonNumberNodeTest {
+final class JsonNumberNodeTest {
 
     @Test
-    public void handlesZero() {
+    void handlesZero() {
         JsonNumberNode.jsonNumberNode("0");
     }
 
     @Test
-    public void handlesMinusZero() {
+    void handlesMinusZero() {
         JsonNumberNode.jsonNumberNode("-0");
     }
 
     @Test
-    public void handlesSingleDigitInteger() {
+    void handlesSingleDigitInteger() {
         JsonNumberNode.jsonNumberNode("2");
     }
 
     @Test
-    public void handlesMultiDigitInteger() {
+    void handlesMultiDigitInteger() {
         JsonNumberNode.jsonNumberNode("101");
     }
 
     @Test
-    public void handlesMultiDigitNegativeInteger() {
+    void handlesMultiDigitNegativeInteger() {
         JsonNumberNode.jsonNumberNode("-101");
     }
 
     @Test
-    public void rejectsLeadingZeros() {
+    void rejectsLeadingZeros() {
         assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode("01"));
     }
 
     @Test
-    public void handlesNonInteger() {
+    void handlesNonInteger() {
         JsonNumberNode.jsonNumberNode("0.1");
     }
 
     @Test
-    public void handlesNonIntegerWithSeveralDecimalPlaces() {
+    void handlesNonIntegerWithSeveralDecimalPlaces() {
         JsonNumberNode.jsonNumberNode("-1.112");
     }
 
     @Test
-    public void handlesIntegerWithExponent() {
+    void handlesIntegerWithExponent() {
         JsonNumberNode.jsonNumberNode("-1e10");
     }
 
     @Test
-    public void handlesIntegerWithNegativeExponent() {
+    void handlesIntegerWithNegativeExponent() {
         JsonNumberNode.jsonNumberNode("-1E-10");
     }
 
     @Test
-    public void handlesIntegerWithPositiveExponent() {
+    void handlesIntegerWithPositiveExponent() {
         JsonNumberNode.jsonNumberNode("12e+10");
     }
 
     @Test
-    public void handlesNonIntegerWithPositiveExponent() {
+    void handlesNonIntegerWithPositiveExponent() {
         JsonNumberNode.jsonNumberNode("-12.55e+10");
     }
 
     @Test
-    public void handlesFacetiousZeroWithExponent() {
+    void handlesFacetiousZeroWithExponent() {
         JsonNumberNode.jsonNumberNode("-0E+99");
     }
 
     @Test
-    public void handlesZeroExponent() {
+    void handlesZeroExponent() {
         JsonNumberNode.jsonNumberNode("12.231E0");
     }
 
     @Test
-    public void rejectsNonIntegerWithNothingBeforeTheDecimalPoint() {
+    void rejectsNonIntegerWithNothingBeforeTheDecimalPoint() {
         assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode(".1"));
     }
 
     @Test
-    public void rejectsNumberWithDecimalPointButNothingAfter() {
+    void rejectsNumberWithDecimalPointButNothingAfter() {
         assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode("1."));
     }
 

@@ -25,9 +25,9 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class CompactJsonFormatterTest {
+final class CompactJsonFormatterTest {
     @Test
-    public void formatsAJsonObject() {
+    void formatsAJsonObject() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(newArrayList(
                 field(string("Foo"), string("Bar")),
                 field(string("Hello"), string("World"))
@@ -35,14 +35,14 @@ public final class CompactJsonFormatterTest {
     }
 
     @Test
-    public void formatsAJsonNumber() {
+    void formatsAJsonNumber() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
             put(string("S"), number("7"));
         }})), equalTo("{\"S\":7}"));
     }
 
     @Test
-    public void formatsAJsonArray() {
+    void formatsAJsonArray() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
                 number("12")
                 , string("tie")
@@ -50,7 +50,7 @@ public final class CompactJsonFormatterTest {
     }
 
     @Test
-    public void formatsTheJsonConstants() {
+    void formatsTheJsonConstants() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
                 nullNode()
                 , trueNode()
@@ -60,7 +60,7 @@ public final class CompactJsonFormatterTest {
 
 
     @Test
-    public void formatsAString() {
+    void formatsAString() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(string("foo")), equalTo(
                 aJsonStringResultBuilder()
                         .print("\"foo\"")
@@ -70,7 +70,7 @@ public final class CompactJsonFormatterTest {
     }
 
     @Test
-    public void formatsANumber() {
+    void formatsANumber() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(number("123.456E789")), equalTo(
                 aJsonStringResultBuilder()
                         .print("123.456E789")
@@ -80,7 +80,7 @@ public final class CompactJsonFormatterTest {
     }
 
     @Test
-    public void formatsANull() {
+    void formatsANull() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(nullNode()), equalTo(
                 aJsonStringResultBuilder()
                         .print("null")
@@ -90,7 +90,7 @@ public final class CompactJsonFormatterTest {
     }
 
     @Test
-    public void formatsATrue() {
+    void formatsATrue() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(trueNode()), equalTo(
                 aJsonStringResultBuilder()
                         .print("true")
@@ -100,7 +100,7 @@ public final class CompactJsonFormatterTest {
     }
 
     @Test
-    public void formatsAFalse() {
+    void formatsAFalse() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(falseNode()), equalTo(
                 aJsonStringResultBuilder()
                         .print("false")
@@ -110,24 +110,24 @@ public final class CompactJsonFormatterTest {
     }
 
     @Test
-    public void formatsAJsonStringWithEscapedCharacters() {
+    void formatsAJsonStringWithEscapedCharacters() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
                 (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo("[\"\\\" \\\\ \\b \\f \\n \\r \\t\"]"));
     }
 
     @Test
-    public void formatsAStringWithinAString() {
+    void formatsAStringWithinAString() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
                 (JsonNode) string("\"\\\"A String\\\" within a String\"")))), equalTo("[\"\\\"\\\\\\\"A String\\\\\\\" within a String\\\"\"]"));
     }
 
     @Test
-    public void orderPreservingFormatterPreservesFieldOrder() {
+    void orderPreservingFormatterPreservesFieldOrder() {
         assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo("{\"b\":\"A String\",\"a\":\"A String\"}"));
     }
 
     @Test
-    public void orderNormalisingFormatterNormalisesFieldOrder() {
+    void orderNormalisingFormatterNormalisesFieldOrder() {
         assertThat(fieldOrderNormalisingCompactJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo("{\"a\":\"A String\",\"b\":\"A String\"}"));
     }
 }

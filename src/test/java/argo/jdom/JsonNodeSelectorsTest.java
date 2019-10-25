@@ -25,7 +25,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
-public final class JsonNodeSelectorsTest {
+
+final class JsonNodeSelectorsTest {
 
     private static final JsonNode SAMPLE_JSON = object(
             field("name", string("Rossi")),
@@ -41,7 +42,7 @@ public final class JsonNodeSelectorsTest {
     );
 
     @Test
-    public void matchesABooleanNode() {
+    void matchesABooleanNode() {
         final JsonNodeSelector<JsonNode, Boolean> jsonNodeSelector = JsonNodeSelectors.aBooleanNode();
         assertTrue(jsonNodeSelector.matches(trueNode()));
         assertTrue(jsonNodeSelector.matches(falseNode()));
@@ -50,14 +51,14 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesANullBooleanNode() {
+    void matchesANullBooleanNode() {
         final JsonNodeSelector<JsonNode, Boolean> jsonNodeSelector = JsonNodeSelectors.aNullableBooleanNode("retirement age");
         assertTrue(jsonNodeSelector.matches(SAMPLE_JSON));
         assertThat(jsonNodeSelector.getValue(SAMPLE_JSON), is(nullValue()));
     }
 
     @Test
-    public void matchesAStringNode() {
+    void matchesAStringNode() {
         final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelectors.aStringNode();
         final JsonStringNode node = string("hello");
         assertTrue(jsonNodeSelector.matches(node));
@@ -65,14 +66,14 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesANullStringNode() {
+    void matchesANullStringNode() {
         final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelectors.aNullableStringNode("retirement age");
         assertTrue(jsonNodeSelector.matches(SAMPLE_JSON));
         assertThat(jsonNodeSelector.getValue(SAMPLE_JSON), is(nullValue()));
     }
 
     @Test
-    public void matchesANumberNode() {
+    void matchesANumberNode() {
         final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelectors.aNumberNode();
         final JsonNode node = number("12.1");
         assertTrue(jsonNodeSelector.matches(node));
@@ -80,14 +81,14 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesANullNumberNode() {
+    void matchesANullNumberNode() {
         final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelectors.aNullableNumberNode("retirement age");
         assertTrue(jsonNodeSelector.matches(SAMPLE_JSON));
         assertThat(jsonNodeSelector.getValue(SAMPLE_JSON), is(nullValue()));
     }
 
     @Test
-    public void matchesANullNode() {
+    void matchesANullNode() {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.aNullNode();
         final JsonNode node = nullNode();
         assertTrue(jsonNodeSelector.matches(node));
@@ -95,7 +96,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesAnObjectNode() {
+    void matchesAnObjectNode() {
         final JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> jsonNodeSelector = JsonNodeSelectors.anObjectNode();
         final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Barry"), string("Lemons"));
@@ -106,7 +107,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesANullableObjectNode() {
+    void matchesANullableObjectNode() {
         final JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> jsonNodeSelector = JsonNodeSelectors.aNullableObjectNode();
         final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Barry"), string("Lemons"));
@@ -119,7 +120,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesAFieldOfAnObjectNode() {
+    void matchesAFieldOfAnObjectNode() {
         final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.aField("Wobbly");
         final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Wobbly"), string("Bob"));
@@ -129,7 +130,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesAnObjectWithField() {
+    void matchesAnObjectWithField() {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.anObjectNodeWithField("Wobbly");
         final JsonNode node = object(new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Wobbly"), string("Bob"));
@@ -139,7 +140,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void rejectsAFieldOfAnObjectNodeThatDoesNotExist() {
+    void rejectsAFieldOfAnObjectNodeThatDoesNotExist() {
         final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.aField("Golden");
         final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Wobbly"), string("Bob"));
@@ -148,7 +149,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void doesNotGetAFieldOfAnObjectNodeThatDoesNotExist() {
+    void doesNotGetAFieldOfAnObjectNodeThatDoesNotExist() {
         final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.aField("Golden");
         final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Wobbly"), string("Bob"));
@@ -157,7 +158,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesAnArrayNode() {
+    void matchesAnArrayNode() {
         final JsonNodeSelector<JsonNode, List<JsonNode>> jsonNodeSelector = JsonNodeSelectors.anArrayNode();
         final List<JsonNode> someJsonNodes = singletonList(number("12"));
         final JsonNode node = array(someJsonNodes);
@@ -166,7 +167,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesANullableArrayNode() {
+    void matchesANullableArrayNode() {
         final JsonNodeSelector<JsonNode, List<JsonNode>> jsonNodeSelector = JsonNodeSelectors.aNullableArrayNode();
         final List<JsonNode> someJsonNodes = singletonList(number("12"));
         final JsonNode node = array(someJsonNodes);
@@ -177,7 +178,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesAnElementOfAnArrayNode() {
+    void matchesAnElementOfAnArrayNode() {
         final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.anElement(0);
         final List<JsonNode> node = singletonList(string("hello"));
         assertTrue(jsonNodeSelector.matches(node));
@@ -185,7 +186,7 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void matchesAnArrayWithElement() {
+    void matchesAnArrayWithElement() {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.anArrayNodeWithElement(0);
         final JsonNode node = array(singletonList((JsonNode) string("hello")));
         assertTrue(jsonNodeSelector.matches(node));
@@ -193,33 +194,33 @@ public final class JsonNodeSelectorsTest {
     }
 
     @Test
-    public void rejectsAnElementOfAnArrayNodeGreaterThanArraySize() {
+    void rejectsAnElementOfAnArrayNodeGreaterThanArraySize() {
         final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.anElement(0);
         assertFalse(jsonNodeSelector.matches(new LinkedList<>()));
     }
 
     @Test
-    public void doesNotGetValueOfAnElementOfAnArrayNodeGreaterThanArraySize() {
+    void doesNotGetValueOfAnElementOfAnArrayNodeGreaterThanArraySize() {
         final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.anElement(0);
         assertThrows(IllegalArgumentException.class, () -> jsonNodeSelector.getValue(new LinkedList<>()));
     }
 
     @Test
-    public void shorthandChainedStringSelectorGetsAValue() {
+    void shorthandChainedStringSelectorGetsAValue() {
         final JsonNodeSelector<JsonNode, String> selector = JsonNodeSelectors.aStringNode("name");
         assertTrue(selector.matches(SAMPLE_JSON));
         assertThat(selector.getValue(SAMPLE_JSON), equalTo("Rossi"));
     }
 
     @Test
-    public void shorthandChainedNumberSelectorGetsAValue() {
+    void shorthandChainedNumberSelectorGetsAValue() {
         final JsonNodeSelector<JsonNode, String> selector = JsonNodeSelectors.aNumberNode("championships", 3);
         assertTrue(selector.matches(SAMPLE_JSON));
         assertThat(selector.getValue(SAMPLE_JSON), equalTo("2005"));
     }
 
     @Test
-    public void javadocExampleWorks() throws Exception {
+    void javadocExampleWorks() throws Exception {
         final String json = "{\"Fee\":{\"fi\":\"fo\"}}";
         final JsonNode jsonNode = new JdomParser().parse(new StringReader(json));
         final String result = JsonNodeSelectors.anObjectNodeWithField("Fee")

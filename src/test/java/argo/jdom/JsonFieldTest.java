@@ -21,9 +21,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JsonFieldTest {
+class JsonFieldTest {
     @Test
-    public void rejectsNullStringNameInConstructor() {
+    void rejectsNullStringNameInConstructor() {
         final String name = null;
         try {
             new JsonField(name, aJsonNode());
@@ -34,7 +34,7 @@ public class JsonFieldTest {
     }
 
     @Test
-    public void rejectsNullJsonStringNameInConstructor() {
+    void rejectsNullJsonStringNameInConstructor() {
         final JsonStringNode name = null;
         try {
             new JsonField(name, aJsonNode());
@@ -45,7 +45,7 @@ public class JsonFieldTest {
     }
 
     @Test
-    public void rejectsNullValueInConstructor() {
+    void rejectsNullValueInConstructor() {
         try {
             new JsonField(aStringNode(), null);
             fail("Expected JsonField constructed with a null value to throw a NullPointerException");
@@ -55,14 +55,14 @@ public class JsonFieldTest {
     }
 
     @Test
-    public void toStringIsCorrect() {
+    void toStringIsCorrect() {
         final JsonStringNode name = aStringNode();
         final JsonNode value = aJsonNode();
         assertThat(new JsonField(name, value).toString(), equalTo("JsonField{name=" + name + ", value=" + value + "}"));
     }
 
     @Test
-    public void twoJsonFieldsWithTheEqualNamesAndValuesAreEqual() {
+    void twoJsonFieldsWithTheEqualNamesAndValuesAreEqual() {
         final JsonStringNode name = aStringNode();
         final JsonNode value = aJsonNode();
         final JsonField aJsonField = new JsonField(name, value);
@@ -72,14 +72,14 @@ public class JsonFieldTest {
     }
 
     @Test
-    public void twoJsonFieldsWithTheEqualNamesAndDifferentValuesAreNotEqual() {
+    void twoJsonFieldsWithTheEqualNamesAndDifferentValuesAreNotEqual() {
         final JsonStringNode name = aStringNode();
         final JsonNode value = aJsonNode();
         assertThat(new JsonField(name, value), not(equalTo(new JsonField(name, aJsonNodeDifferentTo(value)))));
     }
 
     @Test
-    public void twoJsonFieldsWithTheDifferentNamesAndEqualValuesAreNotEqual() {
+    void twoJsonFieldsWithTheDifferentNamesAndEqualValuesAreNotEqual() {
         final JsonNode value = aJsonNode();
         final JsonStringNode name = aStringNode();
         assertThat(new JsonField(name, value), not(equalTo(new JsonField(aStringNodeDifferentTo(name), value))));

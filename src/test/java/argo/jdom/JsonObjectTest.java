@@ -21,10 +21,11 @@ import static java.util.Collections.singletonMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-public final class JsonObjectTest {
+
+final class JsonObjectTest {
 
     @Test
-    public void testImmutability() {
+    void testImmutability() {
         final JsonStringNode baseJsonKey = string("Test");
         final JsonNode baseJsonNode = number("0");
         final Map<JsonStringNode, JsonNode> baseElements = new HashMap<>();
@@ -47,7 +48,7 @@ public final class JsonObjectTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         assertEquals(object(new HashMap<>()), object(new HashMap<>()));
         assertEquals(object(singletonMap(string("Test"), number("0"))), object(singletonMap(string("Test"), number("0"))));
         assertEquals(object(field(string("Test"), number("0"))), object(singletonMap(string("Test"), number("0"))));
@@ -62,7 +63,7 @@ public final class JsonObjectTest {
     }
 
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         assertEquals(object(new HashMap<>()), object(new HashMap<>()));
         assertEquals(object(singletonMap(string("Test"), number("0"))).hashCode(), object(singletonMap(string("Test"), number("0"))).hashCode());
         assertEquals(object(field(string("Test"), number("0"))).hashCode(), object(singletonMap(string("Test"), number("0"))).hashCode());
@@ -75,7 +76,7 @@ public final class JsonObjectTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(object(singletonMap(string("Test"), number("0"))).toString(), is(not(nullValue())));
     }
 }

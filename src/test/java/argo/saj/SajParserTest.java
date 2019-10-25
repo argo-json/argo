@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public final class SajParserTest {
+final class SajParserTest {
     private static final JsonListener BLACK_HOLE_LISTENER = new JsonListener() {
         public void startDocument() {
         }
@@ -66,22 +66,22 @@ public final class SajParserTest {
     private final Mockery context = new Mockery();
 
     @Test
-    public void tokenizesValidString() throws Exception {
+    void tokenizesValidString() throws Exception {
         assertJsonValueFragmentResultsInStringValue("\"hello world\"", "hello world");
     }
 
     @Test
-    public void tokenizesValidStringWithEscapedChars() throws Exception {
+    void tokenizesValidStringWithEscapedChars() throws Exception {
         assertJsonValueFragmentResultsInStringValue("\"\\\"hello world\\\"\"", "\"hello world\"");
     }
 
     @Test
-    public void tokenizesValidStringWithEscapedUnicodeChars() throws Exception {
+    void tokenizesValidStringWithEscapedUnicodeChars() throws Exception {
         assertJsonValueFragmentResultsInStringValue("\"hello world \\uF001\"", "hello world \uF001");
     }
 
     @Test
-    public void rejectsStringWithInvalidEscapedUnicodeChars() {
+    void rejectsStringWithInvalidEscapedUnicodeChars() {
         final String inputString = "[\"hello world \\uF0\"]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -92,7 +92,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsInvalidString() {
+    void rejectsInvalidString() {
         final String inputString = "[hello world\"]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -103,7 +103,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesValidNumber() throws Exception {
+    void tokenizesValidNumber() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -123,7 +123,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesValidNumberWithLowerCaseExponent() throws Exception {
+    void tokenizesValidNumberWithLowerCaseExponent() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -143,7 +143,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesSimpleJsonStringObject() throws Exception {
+    void tokenizesSimpleJsonStringObject() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -167,7 +167,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesSimpleJsonStringObjectFromJsonString() throws Exception {
+    void tokenizesSimpleJsonStringObjectFromJsonString() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -191,7 +191,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesSimpleJsonStringObjectWithWhitespace() throws Exception {
+    void tokenizesSimpleJsonStringObjectWithWhitespace() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -215,7 +215,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesMultiElementArrayWithWhitespace() throws Exception {
+    void tokenizesMultiElementArrayWithWhitespace() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -237,7 +237,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesJsonStringObjectPair() throws Exception {
+    void tokenizesJsonStringObjectPair() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -267,7 +267,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesSimpleJsonNumberValue() throws Exception {
+    void tokenizesSimpleJsonNumberValue() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -291,7 +291,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesSimpleJsonNull() throws Exception {
+    void tokenizesSimpleJsonNull() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -315,7 +315,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesSimpleJsonTrue() throws Exception {
+    void tokenizesSimpleJsonTrue() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -339,7 +339,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesSimpleJsonFalse() throws Exception {
+    void tokenizesSimpleJsonFalse() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -363,7 +363,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesJsonNumberValuePair() throws Exception {
+    void tokenizesJsonNumberValuePair() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -393,7 +393,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesJsonMixedPair() throws Exception {
+    void tokenizesJsonMixedPair() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -423,7 +423,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesEmptyObject() throws Exception {
+    void tokenizesEmptyObject() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -442,7 +442,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesNestedObject() throws Exception {
+    void tokenizesNestedObject() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -475,7 +475,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesEmptyArray() throws Exception {
+    void tokenizesEmptyArray() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -494,7 +494,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesSingleElementArray() throws Exception {
+    void tokenizesSingleElementArray() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -515,7 +515,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesMultiElementArray() throws Exception {
+    void tokenizesMultiElementArray() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -538,7 +538,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesNestedArray() throws Exception {
+    void tokenizesNestedArray() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -563,7 +563,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesObjectWithArrayValue() throws Exception {
+    void tokenizesObjectWithArrayValue() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -591,7 +591,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesArrayWithObjectElement() throws Exception {
+    void tokenizesArrayWithObjectElement() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -619,7 +619,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsEmptyDocument() {
+    void rejectsEmptyDocument() {
         final String inputString = "";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -631,7 +631,7 @@ public final class SajParserTest {
 
 
     @Test
-    public void rejectsLeadingNonWhitespaceCharacters() {
+    void rejectsLeadingNonWhitespaceCharacters() {
         final String inputString = "whoops[]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -642,7 +642,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsTrailingNonWhitespaceCharacters() {
+    void rejectsTrailingNonWhitespaceCharacters() {
         final String inputString = "[]whoops";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -653,7 +653,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsMismatchedDoubleQuotes() {
+    void rejectsMismatchedDoubleQuotes() {
         final String inputString = "{\"}";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -664,7 +664,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsLeadingNonWhitespaceCharactersWithNewLines() {
+    void rejectsLeadingNonWhitespaceCharactersWithNewLines() {
         final String inputString = "\n whoops[\n]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -675,7 +675,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsTrailingNonWhitespaceCharactersWithNewLines() {
+    void rejectsTrailingNonWhitespaceCharactersWithNewLines() {
         final String inputString = "[\n]\n whoops";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -686,7 +686,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesObjectLeadingWhitespaceCharacters() throws Exception {
+    void tokenizesObjectLeadingWhitespaceCharacters() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -705,7 +705,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void tokenizesObjectTrailingWhitespaceCharacters() throws Exception {
+    void tokenizesObjectTrailingWhitespaceCharacters() throws Exception {
         final JsonListener jsonListener = context.mock(JsonListener.class);
         final Sequence expectedSequence = context.sequence("expectedSequence");
         context.checking(new Expectations() {{
@@ -743,7 +743,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringTrueValueWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamDuringTrueValueWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[tru";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -754,7 +754,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringFalseValueWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamDuringFalseValueWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[fal";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -765,7 +765,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringNullValueWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamDuringNullValueWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[nul";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -776,7 +776,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringHexCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamDuringHexCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[\"\\uab";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -787,7 +787,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamDuringNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -798,7 +798,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringExponentWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamDuringExponentWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1E";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -809,7 +809,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringFractionalPartOfNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamDuringFractionalPartOfNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1.";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -820,7 +820,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringNegativeNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamDuringNegativeNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[-";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -831,7 +831,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringEscapedCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamDuringEscapedCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[\"\\";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -842,7 +842,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamStartingArrayOrObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamStartingArrayOrObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -853,7 +853,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamEndingArrayWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamEndingArrayWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -864,7 +864,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamEndingPopulatedArrayWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamEndingPopulatedArrayWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -875,7 +875,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamEndingObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamEndingObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -886,7 +886,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamFollwingFieldNameWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamFollwingFieldNameWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\"";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -897,7 +897,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamFollwingFieldNameAndSeparatorWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamFollwingFieldNameAndSeparatorWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\":";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -908,7 +908,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamEndingPopulatedObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamEndingPopulatedObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\":1";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -919,7 +919,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsNumberWithTwoDecimalPoints() {
+    void rejectsNumberWithTwoDecimalPoints() {
         final String inputString = "[1.1.1]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -930,7 +930,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void handlesIncompleteEscapedUnicodeCorrectly() {
+    void handlesIncompleteEscapedUnicodeCorrectly() {
         final String inputString = "\"\\u";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -941,7 +941,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void handlesIncompleteTrueCorrectly() {
+    void handlesIncompleteTrueCorrectly() {
         final String inputString = "t";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -952,7 +952,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void handlesIncompleteFalseCorrectly() {
+    void handlesIncompleteFalseCorrectly() {
         final String inputString = "f";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -963,7 +963,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void handlesIncompleteNullCorrectly() {
+    void handlesIncompleteNullCorrectly() {
         final String inputString = "n";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);

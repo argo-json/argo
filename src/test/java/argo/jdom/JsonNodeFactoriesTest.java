@@ -26,10 +26,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 
-public final class JsonNodeFactoriesTest {
+final class JsonNodeFactoriesTest {
 
     @Test
-    public void createsJsonArrayNodeWithJavaArrayOfElements() {
+    void createsJsonArrayNodeWithJavaArrayOfElements() {
         assertThat(
                 array(string("Way there"), number(new BigDecimal("0.5")))
                 , equalTo(
@@ -41,7 +41,7 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void createsALazyJsonArrayNode() {
+    void createsALazyJsonArrayNode() {
         List<JsonNode> elements = new ArrayList<>();
         JsonNode jsonNode = lazyArray(elements);
         elements.add(string("late element"));
@@ -55,7 +55,7 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void createsJsonObjectNodeWithFieldArray() {
+    void createsJsonObjectNodeWithFieldArray() {
         assertThat(
                 object(field("Gina", string("Dreams of running away")), field(string("Tommy"), string("Used to work on the dock")))
                 , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
@@ -66,7 +66,7 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void createsJsonObjectNodeWithFieldIterator() {
+    void createsJsonObjectNodeWithFieldIterator() {
         assertThat(object(asList(
                 field("Gina", string("Dreams of running away"))
                 , field("Tommy", string("Used to work on the dock"))
@@ -79,7 +79,7 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void createsJsonObjectNodeWithFieldIterable() {
+    void createsJsonObjectNodeWithFieldIterable() {
         assertThat(object(asList(
                 field("Gina", string("Dreams of running away"))
                 , field("Tommy", string("Used to work on the dock"))
@@ -92,7 +92,7 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void createsALazyJsonObjectNode() {
+    void createsALazyJsonObjectNode() {
         List<JsonField> fields = new ArrayList<>();
         JsonNode jsonNode = lazyObject(fields);
         fields.add(field("late", string("field")));
@@ -104,7 +104,7 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void createsJsonNumberNodeUsingABigInteger() {
+    void createsJsonNumberNodeUsingABigInteger() {
         assertThat(
                 object(field("Number of shots to give it", number(BigInteger.ONE)))
                 , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
@@ -114,7 +114,7 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void createsJsonNumberNodeUsingALong() {
+    void createsJsonNumberNodeUsingALong() {
         assertThat(
                 object(field("Number of shots to give it", number(1)))
                 , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
@@ -124,7 +124,7 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void createsAJsonTrueFromAJavaBoolean() {
+    void createsAJsonTrueFromAJavaBoolean() {
         assertThat(
                 booleanNode(true)
                 , equalTo(trueNode())
@@ -132,7 +132,7 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void createsAJsonFalseFromAJavaBoolean() {
+    void createsAJsonFalseFromAJavaBoolean() {
         assertThat(
                 booleanNode(false)
                 , equalTo(falseNode())
@@ -140,18 +140,18 @@ public final class JsonNodeFactoriesTest {
     }
 
     @Test
-    public void usesAConstantForEmptyObjects() {
+    void usesAConstantForEmptyObjects() {
         assertThat(object(), sameInstance(object()));
     }
 
 
     @Test
-    public void usesAConstantForEmptyObjectsConstructedFromAMap() {
+    void usesAConstantForEmptyObjectsConstructedFromAMap() {
         assertThat(object(emptyMap()), sameInstance(object(emptyMap())));
     }
 
     @Test
-    public void usesAConstantForEmptyArrays() {
+    void usesAConstantForEmptyArrays() {
         assertThat(array(), sameInstance(array()));
     }
 }

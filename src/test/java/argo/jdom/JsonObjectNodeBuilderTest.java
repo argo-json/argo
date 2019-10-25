@@ -22,9 +22,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public final class JsonObjectNodeBuilderTest {
+final class JsonObjectNodeBuilderTest {
     @Test
-    public void standardObjectBuilderPermitsDuplicatedFieldNames() {
+    void standardObjectBuilderPermitsDuplicatedFieldNames() {
         final JsonStringNode fieldName = aStringNode();
         final JsonNodeBuilder firstValue = aJsonNodeBuilder();
         final JsonNodeBuilder secondValue = aJsonNodeBuilder();
@@ -41,7 +41,7 @@ public final class JsonObjectNodeBuilderTest {
     }
 
     @Test
-    public void uniqueFieldNameObjectBuilderThrowsIllegalArgumentExceptionOnDuplicateNames() {
+    void uniqueFieldNameObjectBuilderThrowsIllegalArgumentExceptionOnDuplicateNames() {
         final JsonStringNode fieldName = aStringNode();
         try {
             aUniqueFieldNameObjectBuilder()
@@ -54,7 +54,7 @@ public final class JsonObjectNodeBuilderTest {
     }
 
     @Test
-    public void uniqueFieldNameObjectBuilderPreservesFieldOrder() {
+    void uniqueFieldNameObjectBuilderPreservesFieldOrder() {
         final JsonStringNode firstFieldName = aStringNode();
         final JsonNodeBuilder firstValue = aJsonNodeBuilder();
         final JsonStringNode secondFieldName = aStringNode();

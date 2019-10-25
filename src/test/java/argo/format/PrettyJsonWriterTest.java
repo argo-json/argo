@@ -22,16 +22,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PrettyJsonWriterTest {
+class PrettyJsonWriterTest {
     @Test
-    public void canWriteEmptyArray() throws Exception {
+    void canWriteEmptyArray() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, array());
         assertThat(stringBuilderWriter.toString(), equalTo("[]"));
     }
 
     @Test
-    public void canWritesEmptyWriteableJsonArray() throws Exception {
+    void canWritesEmptyWriteableJsonArray() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> {
         });
@@ -39,7 +39,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWritesArrayOfArrays() throws Exception {
+    void canWritesArrayOfArrays() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonArray) arrayWriter1 -> {
         }));
@@ -51,7 +51,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWritesArrayOfAllElements() throws Exception {
+    void canWritesArrayOfAllElements() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> {
             arrayWriter.writeElement(array());
@@ -76,7 +76,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteAnArrayOfObjects() throws Exception {
+    void canWriteAnArrayOfObjects() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonObject) objectWriter -> {
 
@@ -89,14 +89,14 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteEmptyObject() throws Exception {
+    void canWriteEmptyObject() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new PrettyJsonWriter().write(stringWriter, object());
         assertThat(stringWriter.toString(), equalTo("{}"));
     }
 
     @Test
-    public void canWriteEmptyWriteableJsonObject() throws Exception {
+    void canWriteEmptyWriteableJsonObject() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new PrettyJsonWriter().write(stringWriter, (WriteableJsonObject) objectWriter -> {
         });
@@ -104,7 +104,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedObjects() throws Exception {
+    void canWriteObjectOfStringKeyedObjects() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonObject) objectWriter1 -> {
@@ -121,7 +121,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfJsonStringKeyedObjects() throws Exception {
+    void canWriteObjectOfJsonStringKeyedObjects() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(string("Foo"), (WriteableJsonObject) objectWriter1 -> {
@@ -138,7 +138,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfJsonFieldObjects() throws Exception {
+    void canWriteObjectOfJsonFieldObjects() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(string("Foo"), (WriteableJsonObject) objectWriter1 -> {
@@ -155,7 +155,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedStrings() throws Exception {
+    void canWriteObjectOfStringKeyedStrings() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", string("Bar"));
@@ -170,7 +170,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedWriteableJsonArrays() throws Exception {
+    void canWriteObjectOfStringKeyedWriteableJsonArrays() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonArray) arrayWriter1 -> {
@@ -187,7 +187,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedWriteableJsonStrings() throws Exception {
+    void canWriteObjectOfStringKeyedWriteableJsonStrings() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonString) writer -> {
@@ -204,7 +204,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfJsonStringKeyedWriteableJsonStrings() throws Exception {
+    void canWriteObjectOfJsonStringKeyedWriteableJsonStrings() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(string("Foo"), (WriteableJsonString) writer -> {
@@ -221,14 +221,14 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteWriteableJsonString() throws Exception {
+    void canWriteWriteableJsonString() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonString) writer -> writer.write("\"Foo\""));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("\"\\\"Foo\\\"\""));
     }
 
     @Test
-    public void canWriteAnArrayOfWriteableJsonString() throws Exception {
+    void canWriteAnArrayOfWriteableJsonString() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonString) writer -> writer.write("\"Foo\"")));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()
@@ -239,7 +239,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonObjects() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonObjects() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonObject) objectWriter1 -> {
@@ -256,7 +256,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonArrays() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonArrays() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonArray) writeableJsonArray -> {
@@ -273,7 +273,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonStrings() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonStrings() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonString) writer -> {
@@ -290,7 +290,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedJsonNodes() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedJsonNodes() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), trueNode());
@@ -305,24 +305,24 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteWriteableJsonNumber() throws Exception {
+    void canWriteWriteableJsonNumber() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonNumber) writer -> writer.write("1234.56e+10"));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("1234.56e+10"));
     }
 
     @Test
-    public void rejectsNonIntegerNumberWithNothingBeforeTheDecimalPoint() {
+    void rejectsNonIntegerNumberWithNothingBeforeTheDecimalPoint() {
         assertThrows(IllegalArgumentException.class, () -> new PrettyJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write(".1")));
     }
 
     @Test
-    public void rejectsNumberWithDecimalPointButNothingAfter() {
+    void rejectsNumberWithDecimalPointButNothingAfter() {
         assertThrows(IllegalArgumentException.class, () -> new PrettyJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1.")));
     }
 
     @Test
-    public void canWriteAnArrayOfWriteableJsonNumber() throws Exception {
+    void canWriteAnArrayOfWriteableJsonNumber() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonNumber) writer -> writer.write("-123.456E+789")));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()
@@ -333,7 +333,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedWriteableJsonNumberFields() throws Exception {
+    void canWriteObjectOfStringKeyedWriteableJsonNumberFields() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 "Foo", (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
@@ -346,7 +346,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfJsonStringKeyedWriteableJsonNumberFields() throws Exception {
+    void canWriteObjectOfJsonStringKeyedWriteableJsonNumberFields() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 string("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
@@ -359,7 +359,7 @@ public class PrettyJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonNumberFields() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonNumberFields() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 writer -> writer.write("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")

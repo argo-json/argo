@@ -21,16 +21,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CompactJsonWriterTest {
+class CompactJsonWriterTest {
     @Test
-    public void canWriteEmptyArray() throws Exception {
+    void canWriteEmptyArray() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, array());
         assertThat(stringWriter.toString(), equalTo("[]"));
     }
 
     @Test
-    public void canWriteEmptyWriteableJsonArray() throws Exception {
+    void canWriteEmptyWriteableJsonArray() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonArray) arrayWriter -> {
         });
@@ -38,7 +38,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteArrayOfArrays() throws Exception {
+    void canWriteArrayOfArrays() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonArray) arrayWriter1 -> {
 
@@ -47,7 +47,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteAnArrayOfObjects() throws Exception {
+    void canWriteAnArrayOfObjects() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonObject) objectWriter -> {
 
@@ -56,7 +56,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteAnArrayOfConstants() throws Exception {
+    void canWriteAnArrayOfConstants() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonArray) arrayWriter -> {
             arrayWriter.writeElement(trueNode());
@@ -67,28 +67,28 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteAnArrayOfString() throws Exception {
+    void canWriteAnArrayOfString() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement(string("foo")));
         assertThat(stringWriter.toString(), equalTo("[\"foo\"]"));
     }
 
     @Test
-    public void canWriteAnArrayOfNumber() throws Exception {
+    void canWriteAnArrayOfNumber() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement(number("123.456E789")));
         assertThat(stringWriter.toString(), equalTo("[123.456E789]"));
     }
 
     @Test
-    public void canWriteEmptyObject() throws Exception {
+    void canWriteEmptyObject() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, object());
         assertThat(stringWriter.toString(), equalTo("{}"));
     }
 
     @Test
-    public void canWriteEmptyWriteableJsonObject() throws Exception {
+    void canWriteEmptyWriteableJsonObject() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonObject) objectWriter -> {
         });
@@ -96,7 +96,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedObjects() throws Exception {
+    void canWriteObjectOfStringKeyedObjects() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonObject) objectWriter1 -> {
@@ -108,7 +108,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfJsonStringKeyedObjects() throws Exception {
+    void canWriteObjectOfJsonStringKeyedObjects() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(string("Foo"), (WriteableJsonObject) objectWriter1 -> {
@@ -120,7 +120,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfJsonFieldObjects() throws Exception {
+    void canWriteObjectOfJsonFieldObjects() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(string("Foo"), (WriteableJsonObject) objectWriter1 -> {
@@ -132,7 +132,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedStrings() throws Exception {
+    void canWriteObjectOfStringKeyedStrings() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", string("Bar"));
@@ -142,7 +142,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedWriteableJsonArrays() throws Exception {
+    void canWriteObjectOfStringKeyedWriteableJsonArrays() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonArray) arrayWriter1 -> {
@@ -154,7 +154,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedWriteableJsonStrings() throws Exception {
+    void canWriteObjectOfStringKeyedWriteableJsonStrings() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonString) writer -> {
@@ -166,7 +166,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfJsonStringKeyedWriteableJsonStrings() throws Exception {
+    void canWriteObjectOfJsonStringKeyedWriteableJsonStrings() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(string("Foo"), (WriteableJsonString) writer -> {
@@ -178,7 +178,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonObjects() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonObjects() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonObject) objectWriter1 -> {
@@ -190,7 +190,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonArrays() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonArrays() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonArray) writeableJsonArray -> {
@@ -202,7 +202,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonStrings() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonStrings() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonString) writer -> {
@@ -214,7 +214,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedJsonNodes() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedJsonNodes() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), trueNode());
@@ -224,45 +224,45 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteWriteableJsonString() throws Exception {
+    void canWriteWriteableJsonString() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonString) writer -> writer.write("\"Foo\""));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("\"\\\"Foo\\\"\""));
     }
 
     @Test
-    public void canWriteAnArrayOfWriteableJsonString() throws Exception {
+    void canWriteAnArrayOfWriteableJsonString() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonString) writer -> writer.write("\"Foo\"")));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("[\"\\\"Foo\\\"\"]"));
     }
 
     @Test
-    public void canWriteWriteableJsonNumber() throws Exception {
+    void canWriteWriteableJsonNumber() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonNumber) writer -> writer.write("1234.56e+10"));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("1234.56e+10"));
     }
 
     @Test
-    public void rejectsNonIntegerNumberWithNothingBeforeTheDecimalPoint() {
+    void rejectsNonIntegerNumberWithNothingBeforeTheDecimalPoint() {
         assertThrows(IllegalArgumentException.class, () -> new CompactJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write(".1")));
     }
 
     @Test
-    public void rejectsNumberWithDecimalPointButNothingAfter() {
+    void rejectsNumberWithDecimalPointButNothingAfter() {
         assertThrows(IllegalArgumentException.class, () -> new CompactJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1.")));
     }
 
     @Test
-    public void canWriteAnArrayOfWriteableJsonNumber() throws Exception {
+    void canWriteAnArrayOfWriteableJsonNumber() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonNumber) writer -> writer.write("-123.456E+789")));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("[-123.456E+789]"));
     }
 
     @Test
-    public void canWriteObjectOfStringKeyedWriteableJsonNumberFields() throws Exception {
+    void canWriteObjectOfStringKeyedWriteableJsonNumberFields() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 "Foo", (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
@@ -271,7 +271,7 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void canWriteObjectOfJsonStringKeyedWriteableJsonNumberFields() throws Exception {
+    void canWriteObjectOfJsonStringKeyedWriteableJsonNumberFields() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 string("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
@@ -281,7 +281,7 @@ public class CompactJsonWriterTest {
 
 
     @Test
-    public void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonNumberFields() throws Exception {
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonNumberFields() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new CompactJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 writer -> writer.write("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")

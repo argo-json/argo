@@ -16,10 +16,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class JsonStringTest {
+final class JsonStringTest {
 
     @Test
-    public void testConstructorRejectsNullValue() {
+    void testConstructorRejectsNullValue() {
         try {
             JsonNodeFactories.string(null);
             fail("Constructing a JsonTextNode with a null argument should throw a NullPointerException.");
@@ -30,18 +30,18 @@ public final class JsonStringTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         assertEquals(JsonNodeFactories.string("co"), JsonNodeFactories.string("co"));
         assertFalse(JsonNodeFactories.string("ho").equals(JsonNodeFactories.string("bo")));
     }
 
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         assertEquals(JsonNodeFactories.string("po").hashCode(), JsonNodeFactories.string("po").hashCode());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         JsonNodeFactories.string("lo");
     }
 }

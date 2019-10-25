@@ -15,10 +15,11 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-public final class JsonNumberTest {
+
+final class JsonNumberTest {
 
     @Test
-    public void testConstructorRejectsNullValue() {
+    void testConstructorRejectsNullValue() {
         try {
             JsonNodeFactories.number((String) null);
             fail("Constructing a JsonNumber with a null argument should throw a NullPointerException.");
@@ -29,18 +30,18 @@ public final class JsonNumberTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         assertEquals(JsonNodeFactories.number("0"), JsonNodeFactories.number("0"));
         assertFalse(JsonNodeFactories.number("0").equals(JsonNodeFactories.number("1")));
     }
 
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         assertEquals(JsonNodeFactories.number("0").hashCode(), JsonNodeFactories.number("0").hashCode());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(JsonNodeFactories.number("0").toString(), is(not(nullValue())));
     }
 }

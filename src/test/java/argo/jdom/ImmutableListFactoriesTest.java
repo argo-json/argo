@@ -21,7 +21,7 @@ import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public final class ImmutableListFactoriesTest {
+final class ImmutableListFactoriesTest {
 
     private static final RandomSizeListSupplier<Object> RANDOM_SIZE_OBJECT_LIST_FACTORY = new RandomSizeListSupplier<>(Object::new);
 
@@ -30,29 +30,29 @@ public final class ImmutableListFactoriesTest {
     }
 
     @Test
-    public void handlesEmptyIterator() {
+    void handlesEmptyIterator() {
         assertThat(ImmutableListFactories.immutableListOf(emptyIterator()), is(emptyList()));
     }
 
     @Test
-    public void handlesEmptyList() {
+    void handlesEmptyList() {
         assertThat(ImmutableListFactories.immutableListOf(emptyList()), is(emptyList()));
     }
 
     @Test
-    public void returnedListIsEqualToSourceIterator() {
+    void returnedListIsEqualToSourceIterator() {
         final List<Object> sourceList = aList();
         assertThat(ImmutableListFactories.immutableListOf(sourceList.iterator()), equalTo(sourceList));
     }
 
     @Test
-    public void returnedListIsEqualToSourceList() {
+    void returnedListIsEqualToSourceList() {
         final List<Object> sourceList = aList();
         assertThat(ImmutableListFactories.immutableListOf(sourceList), equalTo(sourceList));
     }
 
     @Test
-    public void returnedListIsImmutable() {
+    void returnedListIsImmutable() {
         final List<Object> originalSourceList = aList();
         final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
         final List<Object> immutableList = ImmutableListFactories.immutableListOf(mutableSourceList);

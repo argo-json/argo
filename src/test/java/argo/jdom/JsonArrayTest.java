@@ -21,10 +21,11 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-public final class JsonArrayTest {
+
+final class JsonArrayTest {
 
     @Test
-    public void testImmutability() {
+    void testImmutability() {
         final JsonNode baseJsonNode = number("0");
         final List<JsonNode> baseElements = new LinkedList<>(singletonList(baseJsonNode));
         final JsonNode jsonArray = JsonNodeFactories.array(baseElements);
@@ -43,7 +44,7 @@ public final class JsonArrayTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         assertEquals(JsonNodeFactories.array(new LinkedList<>()), JsonNodeFactories.array(new LinkedList<>()));
         assertEquals(JsonNodeFactories.array(singletonList(number("0"))), JsonNodeFactories.array(singletonList(number("0"))));
         assertEquals(JsonNodeFactories.array(singletonList(number("0")).iterator()), JsonNodeFactories.array(singletonList(number("0"))));
@@ -52,14 +53,14 @@ public final class JsonArrayTest {
     }
 
     @Test
-    public void testHashCode() {
+    void testHashCode() {
         assertEquals(JsonNodeFactories.array(new LinkedList<>()).hashCode(), JsonNodeFactories.array(new LinkedList<>()).hashCode());
         assertEquals(JsonNodeFactories.array(emptyIterator()).hashCode(), JsonNodeFactories.array(new LinkedList<>()).hashCode());
         assertEquals(JsonNodeFactories.array(singletonList(number("0"))).hashCode(), JsonNodeFactories.array(singletonList(number("0"))).hashCode());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertThat(JsonNodeFactories.array(singletonList(number("0"))).toString(), is(not(nullValue())));
     }
 }

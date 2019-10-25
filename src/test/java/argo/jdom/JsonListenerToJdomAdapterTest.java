@@ -19,10 +19,10 @@ import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class JsonListenerToJdomAdapterTest {
+final class JsonListenerToJdomAdapterTest {
 
     @Test
-    public void simpleStringObjectHappyCase() {
+    void simpleStringObjectHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startObject();
@@ -38,7 +38,7 @@ public final class JsonListenerToJdomAdapterTest {
     }
 
     @Test
-    public void simpleNumberObjectHappyCase() {
+    void simpleNumberObjectHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startObject();
@@ -54,7 +54,7 @@ public final class JsonListenerToJdomAdapterTest {
     }
 
     @Test
-    public void simpleStringArrayHappyCase() {
+    void simpleStringArrayHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startArray();
@@ -67,7 +67,7 @@ public final class JsonListenerToJdomAdapterTest {
     }
 
     @Test
-    public void simpleNumberArrayHappyCase() {
+    void simpleNumberArrayHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startArray();
@@ -80,7 +80,7 @@ public final class JsonListenerToJdomAdapterTest {
     }
 
     @Test
-    public void objectArrayHappyCase() {
+    void objectArrayHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startArray();
