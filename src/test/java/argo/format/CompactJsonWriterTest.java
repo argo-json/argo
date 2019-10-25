@@ -245,12 +245,12 @@ public class CompactJsonWriterTest {
     }
 
     @Test
-    public void rejectsNonIntegerNumberWithNothingBeforeTheDecimalPoint() throws Exception {
+    public void rejectsNonIntegerNumberWithNothingBeforeTheDecimalPoint() {
         assertThrows(IllegalArgumentException.class, () -> new CompactJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write(".1")));
     }
 
     @Test
-    public void rejectsNumberWithDecimalPointButNothingAfter() throws Exception {
+    public void rejectsNumberWithDecimalPointButNothingAfter() {
         assertThrows(IllegalArgumentException.class, () -> new CompactJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1.")));
     }
 

@@ -37,49 +37,49 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class StajParserTest {
 
     @Test
-    public void arrayOnlyDocumentHasCorrectElements() throws Exception {
+    public void arrayOnlyDocumentHasCorrectElements() {
         assertThat(stajParser(array()), generatesElements(startDocument(), startArray(), endArray(), endDocument()));
     }
 
     @Test
-    public void objectOnlyDocumentHasCorrectElements() throws Exception {
+    public void objectOnlyDocumentHasCorrectElements() {
         assertThat(stajParser(object()), generatesElements(startDocument(), startObject(), endObject(), endDocument()));
     }
 
     @Test
-    public void stringOnlyDocumentHasCorrectElements() throws Exception {
+    public void stringOnlyDocumentHasCorrectElements() {
         final JsonNode stringNode = aStringNode();
         assertThat(stajParser(stringNode), generatesElements(startDocument(), string(stringNode.getText()), endDocument()));
     }
 
     @Test
-    public void numberOnlyDocumentHasCorrectElements() throws Exception {
+    public void numberOnlyDocumentHasCorrectElements() {
         final JsonNode numberNode = aNumberNode();
         assertThat(stajParser(numberNode), generatesElements(startDocument(), number(numberNode.getText()), endDocument()));
     }
 
     @Test
-    public void nullOnlyDocumentHasCorrectElements() throws Exception {
+    public void nullOnlyDocumentHasCorrectElements() {
         assertThat(stajParser(nullNode()), generatesElements(startDocument(), nullValue(), endDocument()));
     }
 
     @Test
-    public void trueOnlyDocumentHasCorrectElements() throws Exception {
+    public void trueOnlyDocumentHasCorrectElements() {
         assertThat(stajParser(trueNode()), generatesElements(startDocument(), trueValue(), endDocument()));
     }
 
     @Test
-    public void falseOnlyDocumentHasCorrectElements() throws Exception {
+    public void falseOnlyDocumentHasCorrectElements() {
         assertThat(stajParser(falseNode()), generatesElements(startDocument(), falseValue(), endDocument()));
     }
 
     @Test
-    public void arrayWithChildHasCorrectElements() throws Exception {
+    public void arrayWithChildHasCorrectElements() {
         assertThat(stajParser(array(array())), generatesElements(startDocument(), startArray(), startArray(), endArray(), endArray(), endDocument()));
     }
 
     @Test
-    public void arrayWithChildrenHasCorrectElements() throws Exception {
+    public void arrayWithChildrenHasCorrectElements() {
         assertThat(stajParser(array(array(), array())), generatesElements(
                 startDocument(),
                 startArray(),
@@ -93,7 +93,7 @@ public final class StajParserTest {
     }
 
     @Test
-    public void objectWithFieldHasCorrectElements() throws Exception {
+    public void objectWithFieldHasCorrectElements() {
         final JsonStringNode aFieldName = JsonStringNodeTestBuilder.aStringNode();
         assertThat(stajParser(object(field(aFieldName, array()))), generatesElements(
                 startDocument(),
@@ -108,7 +108,7 @@ public final class StajParserTest {
     }
 
     @Test
-    public void objectWithFieldsHasCorrectElements() throws Exception {
+    public void objectWithFieldsHasCorrectElements() {
         final JsonStringNode aFieldName = aStringNode();
         final JsonStringNode anotherFieldName = aStringNode();
         assertThat(stajParser(object(field(aFieldName, array()), field(anotherFieldName, object()))), generatesElements(
@@ -128,56 +128,56 @@ public final class StajParserTest {
     }
 
     @Test
-    public void arrayWithNullHasCorrectElements() throws Exception {
+    public void arrayWithNullHasCorrectElements() {
         assertThat(stajParser(array(nullNode())), generatesElements(startDocument(), startArray(), nullValue(), endArray(), endDocument()));
     }
 
     @Test
-    public void arrayWithNullsHasCorrectElements() throws Exception {
+    public void arrayWithNullsHasCorrectElements() {
         assertThat(stajParser(array(nullNode(), nullNode())), generatesElements(startDocument(), startArray(), nullValue(), nullValue(), endArray(), endDocument()));
     }
 
     @Test
-    public void arrayWithTrueHasCorrectElements() throws Exception {
+    public void arrayWithTrueHasCorrectElements() {
         assertThat(stajParser(array(trueNode())), generatesElements(startDocument(), startArray(), trueValue(), endArray(), endDocument()));
     }
 
     @Test
-    public void arrayWithFalseHasCorrectElements() throws Exception {
+    public void arrayWithFalseHasCorrectElements() {
         assertThat(stajParser(array(falseNode())), generatesElements(startDocument(), startArray(), falseValue(), endArray(), endDocument()));
     }
 
     @Test
-    public void arrayWithATextNodeHasCorrectElements() throws Exception {
+    public void arrayWithATextNodeHasCorrectElements() {
         final JsonNode aStringNode = aStringNode();
         assertThat(stajParser(array(aStringNode)), generatesElements(startDocument(), startArray(), string(aStringNode.getText()), endArray(), endDocument()));
     }
 
     @Test
-    public void arrayWithANumberNodeHasCorrectElements() throws Exception {
+    public void arrayWithANumberNodeHasCorrectElements() {
         final JsonNode aNumberNode = aNumberNode();
         assertThat(stajParser(array(aNumberNode)), generatesElements(startDocument(), startArray(), number(aNumberNode.getText()), endArray(), endDocument()));
     }
 
     @Test
-    public void aRandomJsonNodeHasCorrectElements() throws Exception {
+    public void aRandomJsonNodeHasCorrectElements() {
         final JsonNode aJsonNode = aJsonNode();
         assertThat(stajParser(aJsonNode), parsesTo(aJsonNode));
     }
 
     @Test
-    public void aRandomJsonNodeFromStringHasCorrectElements() throws Exception {
+    public void aRandomJsonNodeFromStringHasCorrectElements() {
         final JsonNode jsonNode = aJsonNode();
         assertThat(new StajParser(PrettyJsonBuilder.json(jsonNode)), parsesTo(jsonNode));
     }
 
     @Test
-    public void nextWorksWithoutCallingHasNext() throws Exception {
+    public void nextWorksWithoutCallingHasNext() {
         assertThat(stajParser(array()).next(), equalTo(startDocument()));
     }
 
     @Test
-    public void callingNextWhenHasNextReturnsFalseThrowsAnException() throws Exception {
+    public void callingNextWhenHasNextReturnsFalseThrowsAnException() {
         final StajParser stajParser = stajParser(array());
         while (stajParser.hasNext()) {
             stajParser.next();
@@ -186,13 +186,13 @@ public final class StajParserTest {
     }
 
     @Test
-    public void handlesIoExceptionDuringParsing() throws Exception {
+    public void handlesIoExceptionDuringParsing() {
         final StajParser stajParser = new StajParser(new Reader() {
             public int read(char[] chars, int offset, int length) throws IOException {
                 throw new IOException("An IOException");
             }
 
-            public void close() throws IOException {
+            public void close() {
             }
         });
         stajParser.next();
@@ -200,13 +200,13 @@ public final class StajParserTest {
     }
 
     @Test
-    public void handlesRuntimeExceptionDuringParsing() throws Exception {
+    public void handlesRuntimeExceptionDuringParsing() {
         final StajParser stajParser = new StajParser(new Reader() {
-            public int read(char[] chars, int offset, int length) throws IOException {
+            public int read(char[] chars, int offset, int length) {
                 throw new MyTestRuntimeException();
             }
 
-            public void close() throws IOException {
+            public void close() {
             }
         });
         stajParser.next();

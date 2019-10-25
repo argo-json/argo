@@ -22,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public final class JsonListenerToJdomAdapterTest {
 
     @Test
-    public void simpleStringObjectHappyCase() throws Exception {
+    public void simpleStringObjectHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startObject();
@@ -38,7 +38,7 @@ public final class JsonListenerToJdomAdapterTest {
     }
 
     @Test
-    public void simpleNumberObjectHappyCase() throws Exception {
+    public void simpleNumberObjectHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startObject();
@@ -54,7 +54,7 @@ public final class JsonListenerToJdomAdapterTest {
     }
 
     @Test
-    public void simpleStringArrayHappyCase() throws Exception {
+    public void simpleStringArrayHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startArray();
@@ -67,7 +67,7 @@ public final class JsonListenerToJdomAdapterTest {
     }
 
     @Test
-    public void simpleNumberArrayHappyCase() throws Exception {
+    public void simpleNumberArrayHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startArray();
@@ -80,7 +80,7 @@ public final class JsonListenerToJdomAdapterTest {
     }
 
     @Test
-    public void objectArrayHappyCase() throws Exception {
+    public void objectArrayHappyCase() {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startArray();

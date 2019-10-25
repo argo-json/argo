@@ -20,19 +20,19 @@ import static org.hamcrest.Matchers.equalTo;
 public class PositionTrackingPushbackReaderTest {
 
     @Test
-    public void readingACharacterFromAnEmptyReaderReturnsMinusOne() throws Exception {
+    public void readingACharacterFromAnEmptyReaderReturnsMinusOne() {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
     }
 
     @Test
-    public void readingAFixedNumberOfCharactersFromAnEmptyReaderReturnsZero() throws Exception {
+    public void readingAFixedNumberOfCharactersFromAnEmptyReaderReturnsZero() {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
         assertThat(positionTrackingPushbackReader.read(new char[1]), equalTo(-1));
     }
 
     @Test
-    public void pushingBackMinusOneCausesNextCharacterToBeMinusOne() throws Exception {
+    public void pushingBackMinusOneCausesNextCharacterToBeMinusOne() {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unreadLastCharacter();
@@ -40,7 +40,7 @@ public class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    public void afterACharacterHasBeenPushedBackItCanBeRead() throws Exception {
+    public void afterACharacterHasBeenPushedBackItCanBeRead() {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"));
         positionTrackingPushbackReader.read();
         positionTrackingPushbackReader.unreadLastCharacter();
@@ -48,7 +48,7 @@ public class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    public void afterACharacterHasBeenPushedBackItCanBeReadIntoABuffer() throws Exception {
+    public void afterACharacterHasBeenPushedBackItCanBeReadIntoABuffer() {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         positionTrackingPushbackReader.read();
         positionTrackingPushbackReader.unreadLastCharacter();
@@ -58,7 +58,7 @@ public class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    public void afterACharacterHasBeenPushedBackItCanBeReadIntoABufferThatIsTooLarge() throws Exception {
+    public void afterACharacterHasBeenPushedBackItCanBeReadIntoABufferThatIsTooLarge() {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         positionTrackingPushbackReader.read();
         positionTrackingPushbackReader.unreadLastCharacter();
@@ -69,7 +69,7 @@ public class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    public void countsAreCorrectAfterReadingIntoABufferThatIsTooLarge() throws Exception {
+    public void countsAreCorrectAfterReadingIntoABufferThatIsTooLarge() {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         positionTrackingPushbackReader.read(new char[10]);
         assertThat(positionTrackingPushbackReader.getColumn(), equalTo(4));

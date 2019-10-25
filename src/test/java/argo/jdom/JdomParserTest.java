@@ -63,12 +63,12 @@ public final class JdomParserTest {
     }
 
     @Test
-    public void parsesMismatchedDoubleQuotesInAnArray() throws Exception {
+    public void parsesMismatchedDoubleQuotesInAnArray() {
         assertThrows(InvalidSyntaxException.class, () -> new JdomParser().parse("{\"}"));
     }
 
     @Test
-    public void parsesMismatchedDoubleQuotesInAnObject() throws Exception {
+    public void parsesMismatchedDoubleQuotesInAnObject() {
         assertThrows(InvalidSyntaxException.class, () -> new JdomParser().parse("{\"a\":\"b}"));
     }
 
@@ -119,7 +119,7 @@ public final class JdomParserTest {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
         }
     }
 

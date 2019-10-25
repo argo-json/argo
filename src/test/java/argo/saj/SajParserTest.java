@@ -81,7 +81,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsStringWithInvalidEscapedUnicodeChars() throws Exception {
+    public void rejectsStringWithInvalidEscapedUnicodeChars() {
         final String inputString = "[\"hello world \\uF0\"]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -92,7 +92,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsInvalidString() throws Exception {
+    public void rejectsInvalidString() {
         final String inputString = "[hello world\"]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -619,7 +619,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsEmptyDocument() throws Exception {
+    public void rejectsEmptyDocument() {
         final String inputString = "";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -631,7 +631,7 @@ public final class SajParserTest {
 
 
     @Test
-    public void rejectsLeadingNonWhitespaceCharacters() throws Exception {
+    public void rejectsLeadingNonWhitespaceCharacters() {
         final String inputString = "whoops[]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -642,7 +642,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsTrailingNonWhitespaceCharacters() throws Exception {
+    public void rejectsTrailingNonWhitespaceCharacters() {
         final String inputString = "[]whoops";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -653,7 +653,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsMismatchedDoubleQuotes() throws Exception {
+    public void rejectsMismatchedDoubleQuotes() {
         final String inputString = "{\"}";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -664,7 +664,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsLeadingNonWhitespaceCharactersWithNewLines() throws Exception {
+    public void rejectsLeadingNonWhitespaceCharactersWithNewLines() {
         final String inputString = "\n whoops[\n]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -675,7 +675,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsTrailingNonWhitespaceCharactersWithNewLines() throws Exception {
+    public void rejectsTrailingNonWhitespaceCharactersWithNewLines() {
         final String inputString = "[\n]\n whoops";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -743,7 +743,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringTrueValueWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamDuringTrueValueWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[tru";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -754,7 +754,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringFalseValueWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamDuringFalseValueWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[fal";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -765,7 +765,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringNullValueWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamDuringNullValueWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[nul";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -776,7 +776,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringHexCharacterWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamDuringHexCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[\"\\uab";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -787,7 +787,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringNumberWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamDuringNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -798,7 +798,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringExponentWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamDuringExponentWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1E";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -809,7 +809,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringFractionalPartOfNumberWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamDuringFractionalPartOfNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1.";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -820,7 +820,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringNegativeNumberWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamDuringNegativeNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[-";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -831,7 +831,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamDuringEscapedCharacterWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamDuringEscapedCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[\"\\";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -842,7 +842,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamStartingArrayOrObjectWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamStartingArrayOrObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -853,7 +853,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamEndingArrayWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamEndingArrayWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -864,7 +864,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamEndingPopulatedArrayWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamEndingPopulatedArrayWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -875,7 +875,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamEndingObjectWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamEndingObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -886,7 +886,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamFollwingFieldNameWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamFollwingFieldNameWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\"";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -897,7 +897,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamFollwingFieldNameAndSeparatorWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamFollwingFieldNameAndSeparatorWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\":";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -908,7 +908,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsPrematureEndOfStreamEndingPopulatedObjectWithoutNonPrintingCharactersInTheExceptionMessage() throws Exception {
+    public void rejectsPrematureEndOfStreamEndingPopulatedObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\":1";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -919,7 +919,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void rejectsNumberWithTwoDecimalPoints() throws Exception {
+    public void rejectsNumberWithTwoDecimalPoints() {
         final String inputString = "[1.1.1]";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -930,7 +930,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void handlesIncompleteEscapedUnicodeCorrectly() throws Exception {
+    public void handlesIncompleteEscapedUnicodeCorrectly() {
         final String inputString = "\"\\u";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -941,7 +941,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void handlesIncompleteTrueCorrectly() throws Exception {
+    public void handlesIncompleteTrueCorrectly() {
         final String inputString = "t";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -952,7 +952,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void handlesIncompleteFalseCorrectly() throws Exception {
+    public void handlesIncompleteFalseCorrectly() {
         final String inputString = "f";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -963,7 +963,7 @@ public final class SajParserTest {
     }
 
     @Test
-    public void handlesIncompleteNullCorrectly() throws Exception {
+    public void handlesIncompleteNullCorrectly() {
         final String inputString = "n";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);

@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class JsonNumberUtilsTest {
 
     @Test
-    public void canParseJsonNumberStringToBigDecimal() throws Exception {
+    public void canParseJsonNumberStringToBigDecimal() {
         assertThat(asBigDecimal(null), is(nullValue()));
         assertThat(asBigDecimal("-0"), equalTo(BigDecimal.ZERO));
         assertThat(asBigDecimal("+0"), equalTo(BigDecimal.ZERO));
@@ -46,7 +46,7 @@ public final class JsonNumberUtilsTest {
     }
 
     @Test
-    public void canParseJsonNumberStringToBigInteger() throws Exception {
+    public void canParseJsonNumberStringToBigInteger() {
         assertThat(asBigInteger(null), is(nullValue()));
         assertThat(asBigInteger("-0"), equalTo(BigInteger.ZERO));
         assertThat(asBigInteger("+0"), equalTo(BigInteger.ZERO));
@@ -66,7 +66,7 @@ public final class JsonNumberUtilsTest {
     }
 
     @Test
-    public void canParseJsonNumberStringToDouble() throws Exception {
+    public void canParseJsonNumberStringToDouble() {
         assertThat(asDouble(null), is(nullValue()));
         assertThat(asDouble("-0"), equalTo(0.0));
         assertThat(asDouble("+0"), equalTo(0.0));
@@ -87,7 +87,7 @@ public final class JsonNumberUtilsTest {
     }
 
     @Test
-    public void canParseJsonNumberStringToInteger() throws Exception {
+    public void canParseJsonNumberStringToInteger() {
         assertThat(asInteger(null), is(nullValue()));
         assertThat(asInteger("-0"), equalTo(0));
         assertThat(asInteger("+0"), equalTo(0));
@@ -107,12 +107,12 @@ public final class JsonNumberUtilsTest {
     }
 
     @Test
-    public void parseJsonNumberStringToBigIntegerRejectsNonIntegerNumbers() throws Exception {
+    public void parseJsonNumberStringToBigIntegerRejectsNonIntegerNumbers() {
         assertThrows(NumberFormatException.class, () -> asBigInteger("10.2"));
     }
 
     @Test
-    public void parseJsonNumberStringToIntegerRejectsDecimalNumbers() throws Exception {
+    public void parseJsonNumberStringToIntegerRejectsDecimalNumbers() {
         assertThrows(NumberFormatException.class, () -> asInteger("10.2"));
     }
 }

@@ -44,7 +44,7 @@ public final class JsonNodeTest {
     );
 
     @Test
-    public void matchesABooleanNode() throws Exception {
+    public void matchesABooleanNode() {
         assertThat(trueNode().isBooleanValue(), equalTo(true));
         assertThat(nullNode().isBooleanValue(), equalTo(false));
         assertThat(SAMPLE_JSON.isBooleanValue("some", "missing", "path"), equalTo(false));
@@ -52,7 +52,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesANullBooleanNode() throws Exception {
+    public void matchesANullBooleanNode() {
         assertThat(trueNode().isNullableBooleanValue(), equalTo(true));
         assertThat(nullNode().isNullableBooleanValue(), equalTo(true));
         assertThat(number("12").isNullableBooleanValue(), equalTo(false));
@@ -60,7 +60,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesAStringNode() throws Exception {
+    public void matchesAStringNode() {
         final JsonStringNode node = string("hello");
         assertThat(node.isStringValue(), equalTo(true));
         assertThat(trueNode().isStringValue(), equalTo(false));
@@ -69,7 +69,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesANullStringNode() throws Exception {
+    public void matchesANullStringNode() {
         assertThat(SAMPLE_JSON.isNullableStringValue("name"), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableStringValue("retirement age"), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableStringValue("championships"), equalTo(false));
@@ -79,7 +79,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesANumberNode() throws Exception {
+    public void matchesANumberNode() {
         final JsonNode node = number("12.1");
         assertThat(node.isNumberValue(), equalTo(true));
         assertThat(nullNode().isNumberValue(), equalTo(false));
@@ -88,7 +88,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesANullNumberNode() throws Exception {
+    public void matchesANullNumberNode() {
         assertThat(SAMPLE_JSON.isNullableNumberNode("championships", 2), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableNumberNode("retirement age"), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableNumberNode("name"), equalTo(false));
@@ -98,7 +98,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesANullNode() throws Exception {
+    public void matchesANullNode() {
         assertThat(SAMPLE_JSON.isNullNode("retirement age"), equalTo(true));
         assertThat(SAMPLE_JSON.isNullNode("name"), equalTo(false));
         assertThat(SAMPLE_JSON.isNullNode("some", "missing", "path"), equalTo(false));
@@ -106,7 +106,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesAnObjectNode() throws Exception {
+    public void matchesAnObjectNode() {
         final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Barry"), string("Lemons"));
         }};
@@ -118,7 +118,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesANullableObjectNode() throws Exception {
+    public void matchesANullableObjectNode() {
         final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
             put(string("Barry"), string("Lemons"));
         }};
@@ -132,7 +132,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesAnArrayNode() throws Exception {
+    public void matchesAnArrayNode() {
         final List<JsonNode> someJsonNodes = asList(number("30"));
         final JsonNode node = array(someJsonNodes);
         assertThat(node.isArrayNode(), equalTo(true));
@@ -142,7 +142,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void matchesANullableArrayNode() throws Exception {
+    public void matchesANullableArrayNode() {
         final List<JsonNode> someJsonNodes = asList(number("30"));
         final JsonNode node = array(someJsonNodes);
         assertThat(node.isNullableArrayNode(), equalTo(true));
@@ -154,7 +154,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getArrayNodeFromObjectHandledNicely() throws Exception {
+    public void getArrayNodeFromObjectHandledNicely() {
         try {
             SAMPLE_JSON.getStringValue("championships", 2, 12);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
@@ -164,7 +164,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getFromWrongTypeOfPathElementsHandledNicely() throws Exception {
+    public void getFromWrongTypeOfPathElementsHandledNicely() {
         try {
             SAMPLE_JSON.getStringValue("championships", "bob", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
@@ -174,7 +174,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getFromMissingFieldNameElementsHandledNicely() throws Exception {
+    public void getFromMissingFieldNameElementsHandledNicely() {
         try {
             SAMPLE_JSON.getStringValue("wrong field name", 2);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
@@ -184,7 +184,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getFromMissingIndexElementsHandledNicely() throws Exception {
+    public void getFromMissingIndexElementsHandledNicely() {
         try {
             SAMPLE_JSON.getStringValue("championships", 22);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
@@ -196,7 +196,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getArrayNodeFromObjectForSingleElementPathHandledNicely() throws Exception {
+    public void getArrayNodeFromObjectForSingleElementPathHandledNicely() {
         try {
             SAMPLE_JSON.getStringValue(12);
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
@@ -206,7 +206,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getFromWrongTypeOfPathElementsForSingleElementPathHandledNicely() throws Exception {
+    public void getFromWrongTypeOfPathElementsForSingleElementPathHandledNicely() {
         final JsonNode aNode = SAMPLE_JSON.getNode("championships");
         try {
             aNode.getStringValue("bob");
@@ -217,7 +217,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getFromMissingFieldNameElementsForSingleElementPathHandledNicely() throws Exception {
+    public void getFromMissingFieldNameElementsForSingleElementPathHandledNicely() {
         try {
             SAMPLE_JSON.getStringValue("wrong field name");
             fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
@@ -227,7 +227,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getFromMissingIndexElementsForSingleElementPathHandledNicely() throws Exception {
+    public void getFromMissingIndexElementsForSingleElementPathHandledNicely() {
         final JsonNode aNode = SAMPLE_JSON.getNode("championships");
         try {
             aNode.getStringValue(22);
@@ -240,7 +240,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void hasTextReturnsCorrectValueForAllNodeTypes() throws Exception {
+    public void hasTextReturnsCorrectValueForAllNodeTypes() {
         assertThat(nullNode().hasText(), equalTo(false));
         assertThat(array().hasText(), equalTo(false));
         assertThat(falseNode().hasText(), equalTo(false));
@@ -251,7 +251,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void hasFieldsReturnsCorrectValueForAllNodeTypes() throws Exception {
+    public void hasFieldsReturnsCorrectValueForAllNodeTypes() {
         assertThat(nullNode().hasFields(), equalTo(false));
         assertThat(array().hasFields(), equalTo(false));
         assertThat(falseNode().hasFields(), equalTo(false));
@@ -262,7 +262,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void hasElementsReturnsCorrectValueForAllNodeTypes() throws Exception {
+    public void hasElementsReturnsCorrectValueForAllNodeTypes() {
         assertThat(nullNode().hasElements(), equalTo(false));
         assertThat(array().hasElements(), equalTo(true));
         assertThat(falseNode().hasElements(), equalTo(false));
@@ -273,7 +273,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void isNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
+    public void isNodeReturnsCorrectValueForAllNodeTypes() {
         assertThat(nullNode().isNode(), equalTo(true));
         assertThat(array().isNode(), equalTo(true));
         assertThat(falseNode().isNode(), equalTo(true));
@@ -292,7 +292,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getNodeReturnsCorrectValueForAllNodeTypes() throws Exception {
+    public void getNodeReturnsCorrectValueForAllNodeTypes() {
         assertThat(nullNode().getNode(), equalTo(nullNode()));
         assertThat(array().getNode(), equalTo(array()));
         assertThat(falseNode().getNode(), equalTo(falseNode()));
@@ -309,7 +309,7 @@ public final class JsonNodeTest {
     }
 
     @Test
-    public void getFieldListReturnsAllFieldsEvenWhenKeysAreDuplicated() throws Exception {
+    public void getFieldListReturnsAllFieldsEvenWhenKeysAreDuplicated() {
         final String aKeyString = aValidJsonString();
         final JsonField aField = field(aKeyString, aJsonNode());
         final JsonField anotherField = field(aKeyString, aJsonNode());

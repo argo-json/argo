@@ -22,70 +22,70 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class JsonStreamElementTest {
     @Test
-    public void startDocumentHasCorrectAttributes() throws Exception {
+    public void startDocumentHasCorrectAttributes() {
         assertThat(startDocument(), aNonTextJsonStreamElementWithType(START_DOCUMENT));
     }
 
     @Test
-    public void endDocumentHasCorrectAttributes() throws Exception {
+    public void endDocumentHasCorrectAttributes() {
         assertThat(endDocument(), aNonTextJsonStreamElementWithType(END_DOCUMENT));
     }
 
     @Test
-    public void startArrayHasCorrectAttributes() throws Exception {
+    public void startArrayHasCorrectAttributes() {
         assertThat(startArray(), aNonTextJsonStreamElementWithType(START_ARRAY));
     }
 
     @Test
-    public void endArrayHasCorrectAttributes() throws Exception {
+    public void endArrayHasCorrectAttributes() {
         assertThat(endArray(), aNonTextJsonStreamElementWithType(END_ARRAY));
     }
 
     @Test
-    public void startObjectHasCorrectAttributes() throws Exception {
+    public void startObjectHasCorrectAttributes() {
         assertThat(startObject(), aNonTextJsonStreamElementWithType(START_OBJECT));
     }
 
     @Test
-    public void endObjectHasCorrectAttributes() throws Exception {
+    public void endObjectHasCorrectAttributes() {
         assertThat(endObject(), aNonTextJsonStreamElementWithType(END_OBJECT));
     }
 
     @Test
-    public void startFieldHasCorrectAttributes() throws Exception {
+    public void startFieldHasCorrectAttributes() {
         final String text = aValidJsonString();
         assertThat(startField(text), aTextJsonStreamElementWithType(START_FIELD, text));
     }
 
     @Test
-    public void endFieldHasCorrectAttributes() throws Exception {
+    public void endFieldHasCorrectAttributes() {
         assertThat(endField(), aNonTextJsonStreamElementWithType(END_FIELD));
     }
 
     @Test
-    public void stringHasCorrectAttributes() throws Exception {
+    public void stringHasCorrectAttributes() {
         final String text = aValidJsonString();
         assertThat(string(text), aTextJsonStreamElementWithType(STRING, text));
     }
 
     @Test
-    public void numberHasCorrectAttributes() throws Exception {
+    public void numberHasCorrectAttributes() {
         final String text = aValidJsonString();
         assertThat(number(text), aTextJsonStreamElementWithType(NUMBER, text));
     }
 
     @Test
-    public void trueHasCorrectAttributes() throws Exception {
+    public void trueHasCorrectAttributes() {
         assertThat(trueValue(), aNonTextJsonStreamElementWithType(TRUE));
     }
 
     @Test
-    public void falseHasCorrectAttributes() throws Exception {
+    public void falseHasCorrectAttributes() {
         assertThat(falseValue(), aNonTextJsonStreamElementWithType(FALSE));
     }
 
     @Test
-    public void nullHasCorrectAttributes() throws Exception {
+    public void nullHasCorrectAttributes() {
         assertThat(nullValue(), aNonTextJsonStreamElementWithType(NULL));
     }
 

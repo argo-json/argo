@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public final class JsonNodeSelectorTest {
 
     @Test
-    public void chainingUsingWithChildMatches() throws Exception {
+    public void chainingUsingWithChildMatches() {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.anObjectNode()
                 .with(JsonNodeSelectors.aField("Hello"));
         final JsonNode node = object(new HashMap<JsonStringNode, JsonNode>() {{
@@ -33,7 +33,7 @@ public final class JsonNodeSelectorTest {
     }
 
     @Test
-    public void toStringProducesSomethingIntelligible() throws Exception {
+    public void toStringProducesSomethingIntelligible() {
         final JsonNodeSelector<JsonNode, String> jsonNodeSelector = JsonNodeSelectors.anObjectNodeWithField("Hello")
                 .with(JsonNodeSelectors.anArrayNodeWithElement(2))
                 .with(JsonNodeSelectors.aNumberNode());

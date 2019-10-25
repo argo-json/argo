@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public final class JsonObjectNodeBuilderTest {
     @Test
-    public void standardObjectBuilderPermitsDuplicatedFieldNames() throws Exception {
+    public void standardObjectBuilderPermitsDuplicatedFieldNames() {
         final JsonStringNode fieldName = aStringNode();
         final JsonNodeBuilder firstValue = aJsonNodeBuilder();
         final JsonNodeBuilder secondValue = aJsonNodeBuilder();
@@ -41,7 +41,7 @@ public final class JsonObjectNodeBuilderTest {
     }
 
     @Test
-    public void uniqueFieldNameObjectBuilderThrowsIllegalArgumentExceptionOnDuplicateNames() throws Exception {
+    public void uniqueFieldNameObjectBuilderThrowsIllegalArgumentExceptionOnDuplicateNames() {
         final JsonStringNode fieldName = aStringNode();
         try {
             aUniqueFieldNameObjectBuilder()
@@ -54,7 +54,7 @@ public final class JsonObjectNodeBuilderTest {
     }
 
     @Test
-    public void uniqueFieldNameObjectBuilderPreservesFieldOrder() throws Exception {
+    public void uniqueFieldNameObjectBuilderPreservesFieldOrder() {
         final JsonStringNode firstFieldName = aStringNode();
         final JsonNodeBuilder firstValue = aJsonNodeBuilder();
         final JsonStringNode secondFieldName = aStringNode();

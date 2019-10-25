@@ -24,42 +24,42 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class JsonNodeBuildersTest {
 
     @Test
-    public void nullBuilderBuildsNull() throws Exception {
+    public void nullBuilderBuildsNull() {
         assertThat(aNullBuilder().build(), equalTo(JsonNodeFactories.nullNode()));
     }
 
     @Test
-    public void trueBuilderBuildsTrue() throws Exception {
+    public void trueBuilderBuildsTrue() {
         assertThat(aTrueBuilder().build(), equalTo(JsonNodeFactories.trueNode()));
     }
 
     @Test
-    public void falseBuilderBuildsFalse() throws Exception {
+    public void falseBuilderBuildsFalse() {
         assertThat(aFalseBuilder().build(), equalTo(JsonNodeFactories.falseNode()));
     }
 
     @Test
-    public void numberBuilderBuildsANumber() throws Exception {
+    public void numberBuilderBuildsANumber() {
         assertThat(aNumberBuilder("10.1").build(), equalTo(JsonNodeFactories.number("10.1")));
     }
 
     @Test
-    public void numberBuilderFailsEarlyOnAnInvalidNumber() throws Exception {
+    public void numberBuilderFailsEarlyOnAnInvalidNumber() {
         assertThrows(IllegalArgumentException.class, () -> aNumberBuilder("-010.1e12").build());
     }
 
     @Test
-    public void stringBuilderBuildsAString() throws Exception {
+    public void stringBuilderBuildsAString() {
         assertThat(aStringBuilder("Hello").build(), equalTo(JsonNodeFactories.string("Hello")));
     }
 
     @Test
-    public void arrayBuilderBuildsAnArrayWithNoElements() throws Exception {
+    public void arrayBuilderBuildsAnArrayWithNoElements() {
         assertThat(anArrayBuilder().build(), equalTo(JsonNodeFactories.array(new LinkedList<>())));
     }
 
     @Test
-    public void arrayBuilderBuildsAnArrayWithElements() throws Exception {
+    public void arrayBuilderBuildsAnArrayWithElements() {
         assertThat(
                 anArrayBuilder()
                         .withElement(aStringBuilder("Bob"))
@@ -72,12 +72,12 @@ public final class JsonNodeBuildersTest {
     }
 
     @Test
-    public void objectBuilderBuildsAnObjectWithNoFields() throws Exception {
+    public void objectBuilderBuildsAnObjectWithNoFields() {
         assertThat(anObjectBuilder().build(), equalTo(JsonNodeFactories.object(new HashMap<>())));
     }
 
     @Test
-    public void objectBuilderBuildsAnObjectWithFields() throws Exception {
+    public void objectBuilderBuildsAnObjectWithFields() {
         assertThat(
                 anObjectBuilder()
                         .withField("Hunky", aStringBuilder("dory"))

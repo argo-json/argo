@@ -30,29 +30,29 @@ public final class ImmutableListFactoriesTest {
     }
 
     @Test
-    public void handlesEmptyIterator() throws Exception {
+    public void handlesEmptyIterator() {
         assertThat(ImmutableListFactories.immutableListOf(emptyIterator()), is(emptyList()));
     }
 
     @Test
-    public void handlesEmptyList() throws Exception {
+    public void handlesEmptyList() {
         assertThat(ImmutableListFactories.immutableListOf(emptyList()), is(emptyList()));
     }
 
     @Test
-    public void returnedListIsEqualToSourceIterator() throws Exception {
+    public void returnedListIsEqualToSourceIterator() {
         final List<Object> sourceList = aList();
         assertThat(ImmutableListFactories.immutableListOf(sourceList.iterator()), equalTo(sourceList));
     }
 
     @Test
-    public void returnedListIsEqualToSourceList() throws Exception {
+    public void returnedListIsEqualToSourceList() {
         final List<Object> sourceList = aList();
         assertThat(ImmutableListFactories.immutableListOf(sourceList), equalTo(sourceList));
     }
 
     @Test
-    public void returnedListIsImmutable() throws Exception {
+    public void returnedListIsImmutable() {
         final List<Object> originalSourceList = aList();
         final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
         final List<Object> immutableList = ImmutableListFactories.immutableListOf(mutableSourceList);
