@@ -82,7 +82,6 @@ final class JdomParserTest {
         assertThat(new JdomParser().parse("[\"" + ((char) -1) + "\"]").getStringValue(0), equalTo(String.valueOf((char) -1)));
     }
 
-    @Test
     /**
      * This test exposes a bug in PositionTrackingPushbackReader where PTPR doesn't call Reader.read(cbuf, ...) in the intended manner.
      *    (When read's return value != supplied buffer's length, caller should keep calling!)
@@ -93,6 +92,7 @@ final class JdomParserTest {
      *
      * @author Henrik Sjöstrand
      */
+    @Test
     void whenReaderReturnsSome_thenReadMore() throws Exception {
         final JsonNode jsonNode = new JdomParser().parse(new ChoppingReader(new StringReader("{\"nullField\":null}")));
         final String result = JsonNodeSelectors.aNullableStringNode("nullField").getValue(jsonNode);
