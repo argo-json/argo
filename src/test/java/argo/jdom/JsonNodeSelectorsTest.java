@@ -126,7 +126,7 @@ final class JsonNodeSelectorsTest {
             put(string("Wobbly"), string("Bob"));
         }};
         assertTrue(jsonNodeSelector.matches(node));
-        assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode) string("Bob")));
+        assertThat(jsonNodeSelector.getValue(node), equalTo(string("Bob")));
     }
 
     @Test
@@ -136,7 +136,7 @@ final class JsonNodeSelectorsTest {
             put(string("Wobbly"), string("Bob"));
         }});
         assertTrue(jsonNodeSelector.matches(node));
-        assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode) string("Bob")));
+        assertThat(jsonNodeSelector.getValue(node), equalTo(string("Bob")));
     }
 
     @Test
@@ -182,7 +182,7 @@ final class JsonNodeSelectorsTest {
         final JsonNodeSelector<List<JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.anElement(0);
         final List<JsonNode> node = singletonList(string("hello"));
         assertTrue(jsonNodeSelector.matches(node));
-        assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode) string("hello")));
+        assertThat(jsonNodeSelector.getValue(node), equalTo(string("hello")));
     }
 
     @Test
@@ -190,7 +190,7 @@ final class JsonNodeSelectorsTest {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.anArrayNodeWithElement(0);
         final JsonNode node = array(singletonList((JsonNode) string("hello")));
         assertTrue(jsonNodeSelector.matches(node));
-        assertThat(jsonNodeSelector.getValue(node), equalTo((JsonNode) string("hello")));
+        assertThat(jsonNodeSelector.getValue(node), equalTo(string("hello")));
     }
 
     @Test

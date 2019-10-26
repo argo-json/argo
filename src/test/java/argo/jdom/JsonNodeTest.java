@@ -298,11 +298,11 @@ final class JsonNodeTest {
         assertThat(falseNode().getNode(), equalTo(falseNode()));
         assertThat(number("22.2").getNode(), equalTo(number("22.2")));
         assertThat(object().getNode(), equalTo(object()));
-        assertThat(string("Goggle").getNode(), equalTo((JsonNode) string("Goggle")));
+        assertThat(string("Goggle").getNode(), equalTo(string("Goggle")));
         assertThat(trueNode().getNode(), equalTo(trueNode()));
 
         assertThat(SAMPLE_JSON.getNode(), equalTo(SAMPLE_JSON));
-        assertThat(SAMPLE_JSON.getNode("name"), equalTo((JsonNode) string("Rossi")));
+        assertThat(SAMPLE_JSON.getNode("name"), equalTo(string("Rossi")));
         assertThat(SAMPLE_JSON.getNode("championships"), equalTo(array(number("2002"), number("2003"), number("2004"), number("2005"), number("2008"), number("2009"))));
         assertThat(SAMPLE_JSON.getNode("retirement age"), equalTo(nullNode()));
         assertThat(SAMPLE_JSON.getNode("championships", 2), equalTo(number("2004")));
