@@ -24,9 +24,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 class JsonFieldTest {
     @Test
     void rejectsNullStringNameInConstructor() {
-        final String name = null;
         try {
-            new JsonField(name, aJsonNode());
+            new JsonField((String) null, aJsonNode());
             fail("Expected JsonField constructed with a null name to throw a NullPointerException");
         } catch (final NullPointerException e) {
             assertThat(e.getMessage(), equalTo("Attempt to construct a JsonField with a null name."));
@@ -35,9 +34,8 @@ class JsonFieldTest {
 
     @Test
     void rejectsNullJsonStringNameInConstructor() {
-        final JsonStringNode name = null;
         try {
-            new JsonField(name, aJsonNode());
+            new JsonField((JsonStringNode) null, aJsonNode());
             fail("Expected JsonField constructed with a null name to throw a NullPointerException");
         } catch (final NullPointerException e) {
             assertThat(e.getMessage(), equalTo("Attempt to construct a JsonField with a null name."));
