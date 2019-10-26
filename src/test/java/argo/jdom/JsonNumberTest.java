@@ -32,7 +32,7 @@ final class JsonNumberTest {
     @Test
     void testEquals() {
         assertEquals(JsonNodeFactories.number("0"), JsonNodeFactories.number("0"));
-        assertFalse(JsonNodeFactories.number("0").equals(JsonNodeFactories.number("1")));
+        assertNotEquals(JsonNodeFactories.number("0"), JsonNodeFactories.number("1"));
     }
 
     @Test

@@ -32,7 +32,7 @@ final class JsonStringTest {
     @Test
     void testEquals() {
         assertEquals(JsonNodeFactories.string("co"), JsonNodeFactories.string("co"));
-        assertFalse(JsonNodeFactories.string("ho").equals(JsonNodeFactories.string("bo")));
+        assertNotEquals(JsonNodeFactories.string("ho"), JsonNodeFactories.string("bo"));
     }
 
     @Test

@@ -58,8 +58,8 @@ final class JsonObjectTest {
         assertEquals(object(singletonList(field(string("Test"), number("0")))), object(singletonList(field(string("Test"), number("0")))));
         assertEquals(object(singletonList(field(string("Test"), number("0"))).iterator()), object(singletonList(field(string("Test"), number("0")))));
         assertEquals(object(singletonList(field(string("Test"), number("0"))).iterator()), object(singletonList(field(string("Test"), number("0"))).iterator()));
-        assertFalse(object(singletonMap(string("Test"), number("0"))).equals(object(singletonMap(string("Test"), number("1")))));
-        assertFalse(object(singletonMap(string("Test"), number("0"))).equals(object(singletonMap(string("Another test"), number("0")))));
+        assertNotEquals(object(singletonMap(string("Test"), number("0"))), object(singletonMap(string("Test"), number("1"))));
+        assertNotEquals(object(singletonMap(string("Test"), number("0"))), object(singletonMap(string("Another test"), number("0"))));
     }
 
     @Test
