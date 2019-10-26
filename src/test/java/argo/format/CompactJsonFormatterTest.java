@@ -22,6 +22,7 @@ import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
 import static argo.jdom.JsonNodeFactories.*;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -111,13 +112,13 @@ final class CompactJsonFormatterTest {
 
     @Test
     void formatsAJsonStringWithEscapedCharacters() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(singletonList(
                 (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo("[\"\\\" \\\\ \\b \\f \\n \\r \\t\"]"));
     }
 
     @Test
     void formatsAStringWithinAString() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(singletonList(
                 (JsonNode) string("\"\\\"A String\\\" within a String\"")))), equalTo("[\"\\\"\\\\\\\"A String\\\\\\\" within a String\\\"\"]"));
     }
 

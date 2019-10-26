@@ -20,7 +20,7 @@ import java.util.Map;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aValidJsonString;
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -133,7 +133,7 @@ final class JsonNodeTest {
 
     @Test
     void matchesAnArrayNode() {
-        final List<JsonNode> someJsonNodes = asList(number("30"));
+        final List<JsonNode> someJsonNodes = singletonList(number("30"));
         final JsonNode node = array(someJsonNodes);
         assertThat(node.isArrayNode(), equalTo(true));
         assertThat(nullNode().isArrayNode(), equalTo(false));
@@ -143,7 +143,7 @@ final class JsonNodeTest {
 
     @Test
     void matchesANullableArrayNode() {
-        final List<JsonNode> someJsonNodes = asList(number("30"));
+        final List<JsonNode> someJsonNodes = singletonList(number("30"));
         final JsonNode node = array(someJsonNodes);
         assertThat(node.isNullableArrayNode(), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableArrayNode("retirement age"), equalTo(true));
