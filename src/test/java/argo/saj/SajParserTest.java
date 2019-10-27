@@ -886,7 +886,7 @@ final class SajParserTest {
     }
 
     @Test
-    void rejectsPrematureEndOfStreamFollwingFieldNameWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamFollowingFieldNameWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\"";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
@@ -897,7 +897,7 @@ final class SajParserTest {
     }
 
     @Test
-    void rejectsPrematureEndOfStreamFollwingFieldNameAndSeparatorWithoutNonPrintingCharactersInTheExceptionMessage() {
+    void rejectsPrematureEndOfStreamFollowingFieldNameAndSeparatorWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\":";
         try {
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);

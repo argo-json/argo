@@ -83,7 +83,7 @@ final class JdomParserTest {
     }
 
     /**
-     * This test exposes a bug in PositionTrackingPushbackReader where PTPR doesn't call Reader.read(cbuf, ...) in the intended manner.
+     * This test exposes a bug in PositionTrackingPushbackReader where it doesn't call Reader.read(chars, ...) in the intended manner.
      *    (When read's return value != supplied buffer's length, caller should keep calling!)
      * Reader.read(...) may return 'some input', but not enough to fill the supplied buffer.
      * In that case the consumer is expected to call again to fill the supplied buffer.
@@ -114,8 +114,8 @@ final class JdomParserTest {
         }
 
         @Override
-        public int read(char[] cbuf, int off, int len) throws IOException {
-            return reader.read(cbuf, off, (len == 0) ? 0 : 1);
+        public int read(char[] chars, int off, int len) throws IOException {
+            return reader.read(chars, off, (len == 0) ? 0 : 1);
         }
 
         @Override
