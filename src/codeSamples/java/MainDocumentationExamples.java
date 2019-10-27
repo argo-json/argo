@@ -203,7 +203,7 @@ final class MainDocumentationExamples {
             public void nullValue() {
             }
         });
-        assertThat(fieldNames, equalTo((Set<String>) new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));
+        assertThat(fieldNames, equalTo(new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));
     }
 
     @Test
@@ -217,6 +217,6 @@ final class MainDocumentationExamples {
                 fieldNames.add(next.text());
             }
         }
-        assertThat(fieldNames, equalTo((Set<String>) new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));
+        assertThat(fieldNames, equalTo(new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));
     }
 }
