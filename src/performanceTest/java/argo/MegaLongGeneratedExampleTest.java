@@ -20,9 +20,9 @@ import java.util.ArrayList;
 
 import static argo.jdom.JsonNodeFactories.field;
 
-public final class MegaLongGeneratedExampleTest {
+final class MegaLongGeneratedExampleTest {
     @Test
-    public void generatedExamplePerformance() throws Exception {
+    void generatedExamplePerformance() {
         final JsonNode generatedExample = JsonNodeFactories.object(new ArrayList<JsonField>(300000) {{
             for (int i = 0; i < 300000; i++) {
                 add(field(JsonStringNodeTestBuilder.aStringNode(), JsonNodeFactories.object(

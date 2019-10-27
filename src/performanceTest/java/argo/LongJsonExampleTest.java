@@ -26,7 +26,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.io.FileUtils.readFileToString;
 
 
-public final class LongJsonExampleTest {
+final class LongJsonExampleTest {
 
     private static final JsonListener BLACK_HOLE_JSON_LISTENER = new JsonListener() {
         public void startDocument() {
@@ -72,7 +72,7 @@ public final class LongJsonExampleTest {
     private final Reader[] jsonReaders = new Reader[10000];
 
     @BeforeEach
-    public void getJson() throws Exception {
+    void getJson() throws Exception {
         final File longJsonExample = new File(this.getClass().getResource("LongJsonExample.json").getFile());
         final String json = readFileToString(longJsonExample, UTF_8);
         for (int i = 0; i < jsonReaders.length; i++) {
@@ -81,14 +81,14 @@ public final class LongJsonExampleTest {
     }
 
     @Test
-    public void testJsonLib() throws Exception {
+    void testJsonLib() {
         for (final Reader reader : jsonReaders) {
             JSONObject.toBean(JSONObject.fromObject(reader));
         }
     }
 
     @Test
-    public void testArgoSaj() throws Exception {
+    void testArgoSaj() throws Exception {
         final SajParser sajParser = new SajParser();
         for (final Reader reader : jsonReaders) {
             sajParser.parse(reader, BLACK_HOLE_JSON_LISTENER);
@@ -96,7 +96,7 @@ public final class LongJsonExampleTest {
     }
 
     @Test
-    public void testArgoStaj() throws Exception {
+    void testArgoStaj() {
         for (final Reader reader : jsonReaders) {
             final StajParser stajParser = new StajParser(reader);
             while (stajParser.hasNext()) {
@@ -106,7 +106,7 @@ public final class LongJsonExampleTest {
     }
 
     @Test
-    public void testArgoJdom() throws Exception {
+    void testArgoJdom() throws Exception {
         final JdomParser jdomParser = new JdomParser();
         for (final Reader reader : jsonReaders) {
             jdomParser.parse(reader);
