@@ -36,7 +36,7 @@ import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public final class MainDocumentationExamples {
+final class MainDocumentationExamples {
 
     private static final JsonFormatter JSON_FORMATTER = new PrettyJsonFormatter();
 
@@ -63,7 +63,7 @@ public final class MainDocumentationExamples {
     private static final JsonWriter JSON_WRITER = new PrettyJsonWriter();
 
     @Test
-    public void producesJsonFromFactory() throws Exception {
+    void producesJsonFromFactory() {
         JsonNode json = object(
                 field("name", string("Black Lace")),
                 field("sales", number("110921")),
@@ -77,7 +77,7 @@ public final class MainDocumentationExamples {
     }
 
     @Test
-    public void producesJsonFromBuilder() throws Exception {
+    void producesJsonFromBuilder() {
         JsonObjectNodeBuilder builder = anObjectBuilder()
                 .withField("name", aStringBuilder("Black Lace"))
                 .withField("sales", aNumberBuilder("110921"))
@@ -91,7 +91,7 @@ public final class MainDocumentationExamples {
     }
 
     @Test
-    public void producesInfiniteSequenceOfJson() throws Exception {
+    void producesInfiniteSequenceOfJson() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         JSON_WRITER.write(stringWriter, new WriteableJsonArray() {
             @Override
@@ -106,7 +106,7 @@ public final class MainDocumentationExamples {
     }
 
     @Test
-    public void producesInfiniteStringOfJson() throws Exception {
+    void producesInfiniteStringOfJson() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         JSON_WRITER.write(stringWriter, new WriteableJsonString() {
             @Override
@@ -122,14 +122,14 @@ public final class MainDocumentationExamples {
     }
 
     @Test
-    public void formatsJson() throws Exception {
+    void formatsJson() throws Exception {
         final JsonNode json = SAMPLE_JSON;
         String jsonText = JSON_FORMATTER.format(json);
         assertThat(JDOM_PARSER.parse(jsonText), equalTo(SAMPLE_JSON));
     }
 
     @Test
-    public void parsesJsonAndGetsElementsWithCallToJsonNode() throws Exception {
+    void parsesJsonAndGetsElementsWithCallToJsonNode() throws Exception {
         final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
         final JsonNode json = JDOM_PARSER.parse(jsonText);
         String secondSingle = json.getStringValue("singles", 1);
@@ -139,7 +139,7 @@ public final class MainDocumentationExamples {
     }
 
     @Test
-    public void parsesJsonAndGetsElementsWithJsonNodeSelector() throws Exception {
+    void parsesJsonAndGetsElementsWithJsonNodeSelector() throws Exception {
         final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
         final JsonNode json = JDOM_PARSER.parse(jsonText);
         String secondSingle = SECOND_SINGLE.getValue(json);
@@ -159,7 +159,7 @@ public final class MainDocumentationExamples {
     }
 
     @Test
-    public void parsesUsingSaj() throws Exception {
+    void parsesUsingSaj() throws Exception {
         final Reader jsonReader = new InputStreamReader(new FileInputStream(new File(this.getClass().getResource("SimpleExample.json").getFile())), UTF_8);
         final Set<String> fieldNames = new HashSet<>();
         SAJ_PARSER.parse(jsonReader, new JsonListener() {
@@ -207,7 +207,7 @@ public final class MainDocumentationExamples {
     }
 
     @Test
-    public void parsesUsingStaj() throws Exception {
+    void parsesUsingStaj() throws Exception {
         final Reader jsonReader = new InputStreamReader(new FileInputStream(new File(this.getClass().getResource("SimpleExample.json").getFile())), UTF_8);
         Set<String> fieldNames = new HashSet<>();
         final StajParser stajParser = new StajParser(jsonReader);

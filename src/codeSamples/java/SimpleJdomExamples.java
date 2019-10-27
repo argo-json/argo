@@ -18,10 +18,10 @@ import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class SimpleJdomExamples {
+final class SimpleJdomExamples {
 
     @Test
-    public void parseSimpleExample() throws Exception {
+    void parseSimpleExample() throws Exception {
         final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
         String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
         assertThat(secondSingle, equalTo("Agadoo"));
