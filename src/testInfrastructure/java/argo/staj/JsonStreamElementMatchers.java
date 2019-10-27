@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 Mark Slater
+ *  Copyright  2019 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.staj;
@@ -27,7 +27,7 @@ public class JsonStreamElementMatchers {
         return allOf(jsonStreamElementWithType(equalTo(jsonStreamElementType)), jsonStreamElementWithoutText());
     }
 
-    public static Matcher<JsonStreamElement> jsonStreamElementWithType(final Matcher<JsonStreamElementType> jsonStreamElementTypeMatcher) {
+    private static Matcher<JsonStreamElement> jsonStreamElementWithType(final Matcher<JsonStreamElementType> jsonStreamElementTypeMatcher) {
         return new TypeSafeDiagnosingMatcher<JsonStreamElement>() {
             @Override
             protected boolean matchesSafely(final JsonStreamElement jsonStreamElement, final Description description) {
@@ -45,15 +45,15 @@ public class JsonStreamElementMatchers {
         };
     }
 
-    public static Matcher<JsonStreamElement> jsonStreamElementWithoutText() {
+    private static Matcher<JsonStreamElement> jsonStreamElementWithoutText() {
         return allOf(jsonStreamElementHasText(equalTo(false)), jsonStreamElementTextThrows(any(IllegalStateException.class)));
     }
 
-    public static Matcher<JsonStreamElement> jsonStreamElementWithText(final Matcher<String> textMatcher) {
+    private static Matcher<JsonStreamElement> jsonStreamElementWithText(final Matcher<String> textMatcher) {
         return allOf(jsonStreamElementHasText(equalTo(true)), jsonStreamElementText(textMatcher));
     }
 
-    public static Matcher<JsonStreamElement> jsonStreamElementText(final Matcher<String> textMatcher) {
+    private static Matcher<JsonStreamElement> jsonStreamElementText(final Matcher<String> textMatcher) {
         return new TypeSafeDiagnosingMatcher<JsonStreamElement>() {
             @Override
             protected boolean matchesSafely(final JsonStreamElement item, final Description mismatchDescription) {
@@ -71,7 +71,7 @@ public class JsonStreamElementMatchers {
         };
     }
 
-    public static TypeSafeDiagnosingMatcher<JsonStreamElement> jsonStreamElementTextThrows(final Matcher<? extends Throwable> exceptionMatcher) {
+    private static TypeSafeDiagnosingMatcher<JsonStreamElement> jsonStreamElementTextThrows(final Matcher<? extends Throwable> exceptionMatcher) {
         return new TypeSafeDiagnosingMatcher<JsonStreamElement>() {
             @Override
             protected boolean matchesSafely(final JsonStreamElement item, final Description mismatchDescription) {
@@ -94,7 +94,7 @@ public class JsonStreamElementMatchers {
         };
     }
 
-    public static Matcher<JsonStreamElement> jsonStreamElementHasText(final Matcher<Boolean> booleanMatcher) {
+    private static Matcher<JsonStreamElement> jsonStreamElementHasText(final Matcher<Boolean> booleanMatcher) {
         return new TypeSafeDiagnosingMatcher<JsonStreamElement>() {
             @Override
             protected boolean matchesSafely(final JsonStreamElement jsonStreamElement, final Description description) {
