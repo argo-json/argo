@@ -28,6 +28,7 @@ plugins {
     id 'org.tenne.rest' version '0.4.2'
     id 'io.codearte.nexus-staging' version '0.20.0'
     id 'com.gitlab.svg2ico' version '0.8'
+    id 'org.unbroken-dome.test-sets' version '2.2.1'
 }
 
 repositories {
@@ -35,43 +36,54 @@ repositories {
 }
 
 sourceSets {
-    testInfrastructure
-    performanceTest
-    codeSamples
     documentation
 }
 
+testSets {
+    libraries { testInfrastructure }
+    unitTest {
+        imports libraries.testInfrastructure
+    }
+    performanceTest {
+        imports libraries.testInfrastructure
+    }
+    codeSamples {
+        imports libraries.testInfrastructure
+    }
+}
+
+check.dependsOn performanceTest
+check.dependsOn codeSamples
+
 configurations {
-    testCompile {
-        extendsFrom testInfrastructureCompile
-    }
-    codeSamplesCompile {
-        extendsFrom testInfrastructureCompile
-    }
-    performanceTestCompile {
-        extendsFrom testInfrastructureCompile
-    }
     svg2ico
     batik
 }
 
 dependencies {
-    testInfrastructureCompile sourceSets.main.output
-    codeSamplesCompile sourceSets.main.output
-    testInfrastructureCompile group: 'commons-io', name: 'commons-io', version: '2.5'
     testInfrastructureCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-    testInfrastructureCompile group: 'com.google.guava', name: 'guava', version: '19.0'
     testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.13'
     testInfrastructureCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
-    testInfrastructureCompile group: 'org.jmock', name: 'jmock-junit5', version: '2.12.0'
-    testInfrastructureCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.5.2'
+
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.5.2'
+    testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
+    testCompile group: 'org.jmock', name: 'jmock-junit5', version: '2.12.0'
+    testCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.13'
+    testCompile group: 'commons-io', name: 'commons-io', version: '2.5'
+    testCompile group: 'com.google.guava', name: 'guava', version: '19.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.2'
-    testCompile sourceSets.testInfrastructure.output
-    documentationCompile sourceSets.main.output
-    performanceTestCompile sourceSets.testInfrastructure.output
+
+    codeSamplesCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.5.2'
+    codeSamplesCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
+    codeSamplesCompile group: 'commons-io', name: 'commons-io', version: '2.5'
+
+    performanceTestCompile group: 'commons-io', name: 'commons-io', version: '2.5'
     performanceTestCompile group: 'net.sf.json-lib', name: 'json-lib', version: '2.2.2', classifier: 'jdk15'
+
+    documentationCompile sourceSets.main.output
     documentationCompile group: 'net.sourceforge.writexml', name: 'writexml', version: '1.1'
     documentationCompile group: 'net.sourceforge.xazzle', name: 'xazzle', version: '0.39'
+
     batik group: 'org.apache.xmlgraphics', name: 'batik-rasterizer', version: '1.8'
     batik group: 'org.apache.xmlgraphics', name: 'xmlgraphics-commons', version: '2.0'
     batik group: 'org.apache.xmlgraphics', name: 'batik-codec', version: '1.8'
@@ -106,21 +118,6 @@ task compileTinyJava(type: JavaCompile) {
     destinationDir = file("${project.buildDir}/tiny-classes/main")
     options.compilerArgs = ['-g:none']
 }
-
-task codeSamplesTest(type: Test) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    testClassesDirs = sourceSets.codeSamples.output.classesDirs
-    classpath = sourceSets.codeSamples.runtimeClasspath
-}
-
-task performanceTest(type: Test) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    testClassesDirs = sourceSets.performanceTest.output.classesDirs
-    classpath = sourceSets.performanceTest.runtimeClasspath
-}
-
-check.dependsOn codeSamplesTest
-check.dependsOn performanceTest
 
 task myJavadoc(type: Javadoc) {
     source = sourceSets.main.allJava
