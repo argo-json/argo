@@ -56,7 +56,6 @@ check.dependsOn performanceTest
 check.dependsOn codeSamples
 
 configurations {
-    svg2ico
     batik
 }
 
