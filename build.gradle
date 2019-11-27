@@ -41,15 +41,9 @@ sourceSets {
 
 testSets {
     libraries { testInfrastructure }
-    unitTest {
-        imports libraries.testInfrastructure
-    }
-    performanceTest {
-        imports libraries.testInfrastructure
-    }
-    codeSamples {
-        imports libraries.testInfrastructure
-    }
+    unitTest {imports libraries.testInfrastructure }
+    performanceTest {imports libraries.testInfrastructure }
+    codeSamples {imports libraries.testInfrastructure }
 }
 
 check.dependsOn performanceTest
