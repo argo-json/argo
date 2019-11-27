@@ -51,7 +51,7 @@ check.dependsOn codeSamples
 
 dependencies {
     testInfrastructureCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
-    testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.13'
+    testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.18'
     testInfrastructureCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
 
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.5.2'
