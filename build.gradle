@@ -27,7 +27,7 @@ plugins {
     id 'at.bxm.svntools' version '1.6.1'
     id 'org.tenne.rest' version '0.4.2'
     id 'io.codearte.nexus-staging' version '0.20.0'
-    id 'com.gitlab.svg2ico' version '0.8'
+    id 'com.gitlab.svg2ico' version '0.10'
     id 'org.unbroken-dome.test-sets' version '2.2.1'
 }
 
@@ -55,10 +55,6 @@ testSets {
 check.dependsOn performanceTest
 check.dependsOn codeSamples
 
-configurations {
-    batik
-}
-
 dependencies {
     testInfrastructureCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
     testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.13'
@@ -82,10 +78,6 @@ dependencies {
     documentationCompile sourceSets.main.output
     documentationCompile group: 'net.sourceforge.writexml', name: 'writexml', version: '1.1'
     documentationCompile group: 'net.sourceforge.xazzle', name: 'xazzle', version: '0.39'
-
-    batik group: 'org.apache.xmlgraphics', name: 'batik-rasterizer', version: '1.8'
-    batik group: 'org.apache.xmlgraphics', name: 'xmlgraphics-commons', version: '2.0'
-    batik group: 'org.apache.xmlgraphics', name: 'batik-codec', version: '1.8'
 }
 
 group = 'net.sourceforge.argo'
@@ -169,10 +161,11 @@ task iconsDirectory {
     }
 }
 
-task png(type: JavaExec, dependsOn: iconsDirectory) {
-    main = 'org.apache.batik.apps.rasterizer.Main'
-    classpath = configurations.batik
-    args '-d', "${project.buildDir}/icons/", '-scriptSecurityOff', '-m', 'image/png', '-w', '48', '-h', '48', 'resources/favicon.svg'
+task png(type: Svg2PngTask, dependsOn: iconsDirectory) {
+    source = file('resources/favicon.svg')
+    destination = file("${project.buildDir}/icons/favicon.png")
+    width = 128
+    height = 128
 }
 
 
