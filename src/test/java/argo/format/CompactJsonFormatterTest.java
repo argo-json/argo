@@ -20,7 +20,6 @@ import static argo.format.CompactJsonFormatter.fieldOrderNormalisingCompactJsonF
 import static argo.format.CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter;
 import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
 import static argo.jdom.JsonNodeFactories.*;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -29,7 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 final class CompactJsonFormatterTest {
     @Test
     void formatsAJsonObject() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(newArrayList(
+        assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(asList(
                 field(string("Foo"), string("Bar")),
                 field(string("Hello"), string("World"))
         ))), equalTo("{\"Foo\":\"Bar\",\"Hello\":\"World\"}"));

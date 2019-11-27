@@ -23,7 +23,6 @@ import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
 import static argo.format.PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter;
 import static argo.format.PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter;
 import static argo.jdom.JsonNodeFactories.*;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -35,9 +34,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 final class PrettyJsonFormatterTest {
     @Test
     void formatsAJsonObject() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(newArrayList(
-            field(string("Hello"), string("World")),
-            field(string("Foo"), string("Bar"))
+        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(asList(
+                field(string("Hello"), string("World")),
+                field(string("Foo"), string("Bar"))
         ))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("{")
