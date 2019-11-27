@@ -13,7 +13,7 @@ package argo.jdom;
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 
 public final class JsonNodeBuilderTestBuilder {
-    public static JsonNodeBuilder aJsonNodeBuilder() {
+    public static JsonNodeBuilder<JsonNode> aJsonNodeBuilder() {
         final JsonNode jsonNode = aJsonNode();
         return () -> jsonNode;
     }

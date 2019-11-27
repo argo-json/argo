@@ -26,8 +26,8 @@ final class JsonObjectNodeBuilderTest {
     @Test
     void standardObjectBuilderPermitsDuplicatedFieldNames() {
         final JsonStringNode fieldName = aStringNode();
-        final JsonNodeBuilder firstValue = aJsonNodeBuilder();
-        final JsonNodeBuilder secondValue = aJsonNodeBuilder();
+        final JsonNodeBuilder<JsonNode> firstValue = aJsonNodeBuilder();
+        final JsonNodeBuilder<JsonNode> secondValue = aJsonNodeBuilder();
         assertThat(
                 anObjectBuilder()
                         .withField(fieldName, firstValue)
@@ -56,11 +56,11 @@ final class JsonObjectNodeBuilderTest {
     @Test
     void uniqueFieldNameObjectBuilderPreservesFieldOrder() {
         final JsonStringNode firstFieldName = aStringNode();
-        final JsonNodeBuilder firstValue = aJsonNodeBuilder();
+        final JsonNodeBuilder<JsonNode> firstValue = aJsonNodeBuilder();
         final JsonStringNode secondFieldName = aStringNode();
-        final JsonNodeBuilder secondValue = aJsonNodeBuilder();
+        final JsonNodeBuilder<JsonNode> secondValue = aJsonNodeBuilder();
         final JsonStringNode thirdFieldName = aStringNode();
-        final JsonNodeBuilder thirdValue = aJsonNodeBuilder();
+        final JsonNodeBuilder<JsonNode> thirdValue = aJsonNodeBuilder();
         assertThat(
                 aUniqueFieldNameObjectBuilder()
                         .withField(firstFieldName, firstValue)
