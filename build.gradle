@@ -62,10 +62,6 @@ dependencies {
     testCompile group: 'com.google.guava', name: 'guava', version: '19.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.2'
 
-    codeSamplesCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.5.2'
-    codeSamplesCompile group: 'commons-io', name: 'commons-io', version: '2.5'
-
-    performanceTestCompile group: 'commons-io', name: 'commons-io', version: '2.5'
     performanceTestCompile group: 'net.sf.json-lib', name: 'json-lib', version: '2.2.2', classifier: 'jdk15'
 
     documentationCompile sourceSets.main.output
