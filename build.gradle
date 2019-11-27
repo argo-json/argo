@@ -52,10 +52,10 @@ check.dependsOn codeSamples
 dependencies {
     testInfrastructureCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.18'
-    testInfrastructureCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
+    testInfrastructureCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.5.2'
-    testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
+    testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
     testCompile group: 'org.jmock', name: 'jmock-junit5', version: '2.12.0'
     testCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.13'
     testCompile group: 'commons-io', name: 'commons-io', version: '2.5'
@@ -63,7 +63,6 @@ dependencies {
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.2'
 
     codeSamplesCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.5.2'
-    codeSamplesCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.1'
     codeSamplesCompile group: 'commons-io', name: 'commons-io', version: '2.5'
 
     performanceTestCompile group: 'commons-io', name: 'commons-io', version: '2.5'
