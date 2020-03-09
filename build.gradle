@@ -55,12 +55,12 @@ dependencies {
     testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.18'
     testInfrastructureCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.5.2'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.6.0'
     testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
     testCompile group: 'org.jmock', name: 'jmock-junit5', version: '2.12.0'
     testCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.18'
     testCompile group: 'commons-io', name: 'commons-io', version: '2.6'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.5.2'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.6.0'
 
     performanceTestCompile group: 'net.sf.json-lib', name: 'json-lib', version: '2.4', classifier: 'jdk15'
 
