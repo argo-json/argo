@@ -28,7 +28,7 @@ plugins {
     id 'org.tenne.rest' version '0.4.2'
     id 'io.codearte.nexus-staging' version '0.21.1'
     id 'de.marcphilipp.nexus-publish' version '0.4.0'
-    id 'com.gitlab.svg2ico' version '0.10'
+    id 'com.gitlab.svg2ico' version '0.11'
     id 'org.unbroken-dome.test-sets' version '2.2.1'
 }
 
@@ -135,7 +135,7 @@ task documentationDirectory {
     }
 }
 
-task ico(type: Svg2IcoTask, dependsOn: documentationDirectory) {
+task ico(type: Svg2IcoTask) {
     destination = file("${project.buildDir}/documentation/favicon.ico")
     input {
         source = file('resources/favicon.svg')
@@ -144,13 +144,7 @@ task ico(type: Svg2IcoTask, dependsOn: documentationDirectory) {
     }
 }
 
-task iconsDirectory {
-    doLast {
-        mkdir("${project.buildDir}/icons")
-    }
-}
-
-task png(type: Svg2PngTask, dependsOn: iconsDirectory) {
+task png(type: Svg2PngTask) {
     source = file('resources/favicon.svg')
     destination = file("${project.buildDir}/icons/favicon.png")
     width = 128
