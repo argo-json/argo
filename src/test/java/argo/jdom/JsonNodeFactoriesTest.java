@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import static argo.jdom.JsonNodeFactories.*;
@@ -52,6 +53,85 @@ final class JsonNodeFactoriesTest {
                                 (JsonNode) string("late element")
                         ))
                 ));
+    }
+
+    @Test
+    void createsNullableJsonArrayNodeWithJavaIterableOfElements() {
+        assertThat(
+                nullableArray(asList(string("Way there"), number(new BigDecimal("0.5"))))
+                , equalTo(
+                        array(asList(
+                                string("Way there")
+                                , number("0.5")
+                        ))
+                ));
+    }
+
+    @Test
+    void createsNullableJsonArrayNodeWithJavaIteratorOfElements() {
+        assertThat(
+                nullableArray(asList(string("Way there"), number(new BigDecimal("0.5"))).iterator())
+                , equalTo(
+                        array(asList(
+                                string("Way there")
+                                , number("0.5")
+                        ))
+                ));
+    }
+
+    @Test
+    void createsNullableJsonArrayNodeWithJavaArrayOfElements() {
+        assertThat(
+                nullableArray(string("Way there"), number(new BigDecimal("0.5")))
+                , equalTo(
+                        array(asList(
+                                string("Way there")
+                                , number("0.5")
+                        ))
+                ));
+    }
+
+    @Test
+    void createsANullableLazyJsonArrayNode() {
+        List<JsonNode> elements = new ArrayList<>();
+        JsonNode jsonNode = nullableLazyArray(elements);
+        elements.add(string("late element"));
+        assertThat(
+                jsonNode
+                , equalTo(
+                        array(singletonList(
+                                (JsonNode) string("late element")
+                        ))
+                ));
+    }
+
+    @Test
+    void createsNullNodeWithNullJavaIterableOfElements() {
+        assertThat(
+                nullableArray((Iterable<? extends JsonNode>) null)
+                , equalTo(nullNode()));
+    }
+
+    @Test
+    void createsNullNodeWithNullJavaIteratorOfElements() {
+        assertThat(
+                nullableArray((Iterator<? extends JsonNode>) null)
+                , equalTo(nullNode()));
+    }
+
+    @Test
+    void createsNullNodeWithNullJavaArrayOfElements() {
+        assertThat(
+                nullableArray((JsonNode[]) null)
+                , equalTo(nullNode()));
+    }
+
+    @Test
+    void createsANullNodeWithLazyJsonArrayNull() {
+        JsonNode jsonNode = nullableLazyArray(null);
+        assertThat(
+                jsonNode
+                , equalTo(nullNode()));
     }
 
     @Test

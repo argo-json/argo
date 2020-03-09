@@ -179,6 +179,43 @@ public final class JsonNodeFactories {
     }
 
     /**
+     * @param elements {@code JsonNode}s that will populate the array
+     * @return a JSON array of the given {@code JsonNode}s or a JSON null if the Iterator is null
+     */
+    public static JsonNode nullableArray(final Iterator<? extends JsonNode> elements) {
+        return elements == null ? nullNode() : array(elements);
+    }
+
+    /**
+     * @param elements {@code JsonNode}s that will populate the array
+     * @return a JSON array of the given {@code JsonNode}s or a JSON null if the Iterable is null
+     */
+    public static JsonNode nullableArray(final Iterable<? extends JsonNode> elements) {
+        return elements == null ? nullNode() : array(elements);
+    }
+
+    /**
+     * @param elements {@code JsonNode}s that will populate the array
+     * @return a JSON array of the given {@code JsonNode}s or a JSON null if the Java array is null
+     */
+    public static JsonNode nullableArray(final JsonNode... elements) {
+        return elements == null ? nullNode() : array(elements);
+    }
+
+    /**
+     * Generates an array where the members are only evaluated on request.  This means that arrays generated
+     * by this method might not be immutable, depending on the implementation of {@code List} used in the
+     * argument.  If you supply a list of elements, and then add an item to the list, that item will also be
+     * part of the array.
+     *
+     * @param elements {@code JsonNode}s that will populate the array
+     * @return a JSON array of the given {@code JsonNode}s or a JSON null if the List is null
+     */
+    public static JsonNode nullableLazyArray(final List<? extends JsonNode> elements) {
+        return elements == null ? nullNode() : lazyArray(elements);
+    }
+
+    /**
      * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields
      */
