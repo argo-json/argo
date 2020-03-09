@@ -55,6 +55,14 @@ public final class JsonNodeFactories {
     }
 
     /**
+     * @param value the Java String to represent as a JSON string
+     * @return a JSON string representation of the given String
+     */
+    public static JsonNode nullableString(final String value) {
+        return value == null ? nullNode() : JsonStringNode.jsonStringNode(value);
+    }
+
+    /**
      * @param value a Java String to represent as a JSON number
      * @return a JSON number representation of the given String
      */

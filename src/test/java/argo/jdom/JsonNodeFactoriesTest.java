@@ -244,6 +244,22 @@ final class JsonNodeFactoriesTest {
     }
 
     @Test
+    void nullableStringNodeCreatesAJsonStringFromAJavaString() {
+        assertThat(
+                nullableString("Push pineapple")
+                , equalTo(string("Push pineapple"))
+        );
+    }
+
+    @Test
+    void nullableStringNodeCreatesAJsonNullFromAJavaNull() {
+        assertThat(
+                nullableString(null)
+                , equalTo(nullNode())
+        );
+    }
+
+    @Test
     void usesAConstantForEmptyObjects() {
         assertThat(object(), sameInstance(object()));
     }
