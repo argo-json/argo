@@ -303,6 +303,51 @@ public final class JsonNodeFactories {
         };
     }
 
+    /**
+     * @param fields {@code JsonField}s that the object will contain
+     * @return a JSON object containing the given fields or a JSON null if the Map is null
+     */
+    public static JsonNode nullableObject(final Map<JsonStringNode, ? extends JsonNode> fields) {
+        return fields == null ? nullNode() : object(fields);
+    }
+
+    /**
+     * @param fields {@code JsonField}s that the object will contain
+     * @return a JSON object containing the given fields or a JSON null if the array is null
+     */
+    public static JsonNode nullableObject(final JsonField... fields) {
+        return fields == null ? nullNode() : object(fields);
+    }
+
+    /**
+     * @param fields {@code JsonField}s that the object will contain
+     * @return a JSON object containing the given fields or a JSON null if the Iterator is null
+     */
+    public static JsonNode nullableObject(final Iterator<JsonField> fields) {
+        return fields == null ? nullNode() : object(fields);
+    }
+
+    /**
+     * @param fields {@code JsonField}s that the object will contain
+     * @return a JSON object containing the given fields or a JSON null if the Iterable is null
+     */
+    public static JsonNode nullableObject(final Iterable<JsonField> fields) {
+        return fields == null ? nullNode() : object(fields);
+    }
+
+    /**
+     * Generates an object where the members are only evaluated on request.  This means that objects generated
+     * by this method might not be immutable, depending on the implementation of {@code List} used in the
+     * argument.  If you supply a list of fields, and then add an item to the list, that item will also be
+     * part of the object.
+     *
+     * @param fields {@code JsonField}s that the object will contain
+     * @return a JSON object containing the given fields or a JSON null if the List is null
+     */
+    public static JsonNode nullableLazyObject(final List<JsonField> fields) {
+        return fields == null ? nullNode() : lazyObject(fields);
+    }
+
     private static final class JsonFieldEntry implements Map.Entry<JsonStringNode, JsonNode> {
         private final JsonStringNode key;
         private final JsonNode value;

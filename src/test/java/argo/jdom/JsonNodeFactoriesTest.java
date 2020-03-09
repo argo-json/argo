@@ -14,10 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static java.util.Arrays.asList;
@@ -180,6 +177,111 @@ final class JsonNodeFactoriesTest {
                 jsonNode
                 , equalTo(
                         object(field("late", string("field")))
+                ));
+    }
+
+    @Test
+    void createsNullableJsonObjectNodeWithMap() {
+        Map<JsonStringNode, JsonNode> fields = new HashMap<>();
+        fields.put(string("Gina"), string("Dreams of running away"));
+        fields.put(string("Tommy"), string("Used to work on the dock"));
+        assertThat(
+                nullableObject(fields)
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Gina"), string("Dreams of running away"));
+                    put(string("Tommy"), string("Used to work on the dock"));
+                }}))
+        );
+    }
+
+    @Test
+    void createsNullableJsonObjectNodeWithFieldArray() {
+        assertThat(
+                nullableObject(field("Gina", string("Dreams of running away")), field(string("Tommy"), string("Used to work on the dock")))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Gina"), string("Dreams of running away"));
+                    put(string("Tommy"), string("Used to work on the dock"));
+                }}))
+        );
+    }
+
+    @Test
+    void createsNullableJsonObjectNodeWithFieldIterator() {
+        assertThat(nullableObject(asList(
+                field("Gina", string("Dreams of running away"))
+                , field("Tommy", string("Used to work on the dock"))
+                ).iterator()),
+                equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Gina"), string("Dreams of running away"));
+                    put(string("Tommy"), string("Used to work on the dock"));
+                }}))
+        );
+    }
+
+    @Test
+    void createsNullableJsonObjectNodeWithFieldIterable() {
+        assertThat(nullableObject(asList(
+                field("Gina", string("Dreams of running away"))
+                , field("Tommy", string("Used to work on the dock"))
+                )),
+                equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Gina"), string("Dreams of running away"));
+                    put(string("Tommy"), string("Used to work on the dock"));
+                }}))
+        );
+    }
+
+    @Test
+    void createsANullableLazyJsonObjectNode() {
+        List<JsonField> fields = new ArrayList<>();
+        JsonNode jsonNode = nullableLazyObject(fields);
+        fields.add(field("late", string("field")));
+        assertThat(
+                jsonNode
+                , equalTo(
+                        object(field("late", string("field")))
+                ));
+    }
+
+    @Test
+    void nullableJsonObjectNodeWithMapCreatesNullNode() {
+        assertThat(
+                nullableObject((Map<JsonStringNode, ? extends JsonNode>) null)
+                , equalTo(nullNode())
+        );
+    }
+
+    @Test
+    void nullableJsonObjectNodeWithFieldArrayCreatesNullNode() {
+        assertThat(
+                nullableObject((JsonField[]) null)
+                , equalTo(nullNode())
+        );
+    }
+
+    @Test
+    void nullableJsonObjectNodeWithFieldIteratorCreatesNullNode() {
+        assertThat(
+                nullableObject((Iterator<JsonField>) null)
+                , equalTo(nullNode())
+        );
+    }
+
+    @Test
+    void nullableJsonObjectNodeWithFieldIterableCreatesNullNode() {
+        assertThat(
+                nullableObject((Iterable<JsonField>) null)
+                , equalTo(nullNode())
+        );
+    }
+
+    @Test
+    void aNullableLazyJsonObjectNodeCreatesNullNode() {
+        JsonNode jsonNode = nullableLazyObject(null);
+        assertThat(
+                jsonNode
+                , equalTo(
+                        nullNode()
                 ));
     }
 
