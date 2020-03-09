@@ -211,7 +211,6 @@ task updateSourceforgeDefaultDownload(type: org._10ne.gradle.rest.RestTask) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'argo'
             artifact(sourcesJar)
             artifact(javadocJar)
             from components.java
