@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -272,5 +272,13 @@ public final class JsonNodeFactories {
      */
     public static JsonNode booleanNode(final boolean value) {
         return value ? trueNode() : falseNode();
+    }
+
+    /**
+     * @param value the Java Boolean to represent as a JSON Boolean
+     * @return a JSON Boolean representation of the given Boolean or a JSON null if the Java Boolean is null
+     */
+    public static JsonNode nullableBooleanNode(final Boolean value) {
+        return value == null ? nullNode() : booleanNode(value);
     }
 }
