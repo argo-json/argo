@@ -22,7 +22,7 @@ plugins {
     id 'signing'
     id 'maven-publish'
     id 'idea'
-    id 'com.github.spotbugs' version '3.0.0'
+    id 'com.github.spotbugs' version '4.0.0'
     id 'org.hidetake.ssh' version '2.10.1'
     id 'at.bxm.svntools' version '2.2.1'
     id 'org.tenne.rest' version '0.4.2'
