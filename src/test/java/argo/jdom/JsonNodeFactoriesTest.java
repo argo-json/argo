@@ -33,11 +33,11 @@ final class JsonNodeFactoriesTest {
         assertThat(
                 array(string("Way there"), number(new BigDecimal("0.5")))
                 , equalTo(
-                array(asList(
-                        string("Way there")
-                        , number("0.5")
-                ))
-        ));
+                        array(asList(
+                                string("Way there")
+                                , number("0.5")
+                        ))
+                ));
     }
 
     @Test
@@ -49,9 +49,9 @@ final class JsonNodeFactoriesTest {
                 jsonNode
                 , equalTo(
                         array(singletonList(
-                        (JsonNode) string("late element")
-                ))
-        ));
+                                (JsonNode) string("late element")
+                        ))
+                ));
     }
 
     @Test
@@ -59,9 +59,9 @@ final class JsonNodeFactoriesTest {
         assertThat(
                 object(field("Gina", string("Dreams of running away")), field(string("Tommy"), string("Used to work on the dock")))
                 , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Gina"), string("Dreams of running away"));
-            put(string("Tommy"), string("Used to work on the dock"));
-        }}))
+                    put(string("Gina"), string("Dreams of running away"));
+                    put(string("Tommy"), string("Used to work on the dock"));
+                }}))
         );
     }
 
@@ -99,8 +99,8 @@ final class JsonNodeFactoriesTest {
         assertThat(
                 jsonNode
                 , equalTo(
-                object(field("late", string("field")))
-        ));
+                        object(field("late", string("field")))
+                ));
     }
 
     @Test
@@ -108,8 +108,8 @@ final class JsonNodeFactoriesTest {
         assertThat(
                 object(field("Number of shots to give it", number(BigInteger.ONE)))
                 , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Number of shots to give it"), number("1"));
-        }}))
+                    put(string("Number of shots to give it"), number("1"));
+                }}))
         );
     }
 
@@ -118,8 +118,88 @@ final class JsonNodeFactoriesTest {
         assertThat(
                 object(field("Number of shots to give it", number(1)))
                 , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Number of shots to give it"), number("1"));
-        }}))
+                    put(string("Number of shots to give it"), number("1"));
+                }}))
+        );
+    }
+
+    @Test
+    void nullableNumberCreatesJsonNumberNodeUsingABigInteger() {
+        assertThat(
+                object(field("Number of shots to give it", nullableNumber(BigInteger.ONE)))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Number of shots to give it"), number("1"));
+                }}))
+        );
+    }
+
+    @Test
+    void nullableNumberCreatesJsonNumberNodeUsingABigDecimal() {
+        assertThat(
+                object(field("Number of shots to give it", nullableNumber(BigDecimal.ONE)))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Number of shots to give it"), number("1"));
+                }}))
+        );
+    }
+
+    @Test
+    void nullableNumberCreatesJsonNumberNodeUsingALong() {
+        assertThat(
+                object(field("Number of shots to give it", nullableNumber(1L)))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Number of shots to give it"), number("1"));
+                }}))
+        );
+    }
+
+    @Test
+    void nullableNumberCreatesJsonNumberNodeUsingAString() {
+        assertThat(
+                object(field("Number of shots to give it", nullableNumber("1")))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Number of shots to give it"), number("1"));
+                }}))
+        );
+    }
+
+    @Test
+    void nullableNumberCreatesJsonNullNodeUsingANullBigInteger() {
+        assertThat(
+                object(field("Number of shots to give it", nullableNumber((BigInteger) null)))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Number of shots to give it"), nullNode());
+                }}))
+        );
+    }
+
+    @Test
+    void nullableNumberCreatesJsonNullNodeUsingANullBigDecimal() {
+        assertThat(
+                object(field("Number of shots to give it", nullableNumber((BigDecimal) null)))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Number of shots to give it"), nullNode());
+                }}))
+        );
+    }
+
+    @Test
+    void nullableNumberCreatesJsonNullNodeUsingANullLong() {
+        assertThat(
+                object(field("Number of shots to give it", nullableNumber((Long) null)))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Number of shots to give it"), nullNode());
+                }}))
+        );
+    }
+
+    @Test
+    void nullableNumberCreatesJsonNullNodeUsingANullString() {
+        assertThat(
+                object(field("Number of shots to give it", nullableNumber((String) null)))
+                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
+                    put(string("Number of shots to give it"), nullNode());
+                }}))
         );
     }
 

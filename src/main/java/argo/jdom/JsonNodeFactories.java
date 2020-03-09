@@ -87,6 +87,38 @@ public final class JsonNodeFactories {
     }
 
     /**
+     * @param value a Java String to represent as a JSON number
+     * @return a JSON number representation of the given String or a JSON null if the Java String is null
+     */
+    public static JsonNode nullableNumber(final String value) {
+        return value == null ? nullNode() : JsonNumberNode.jsonNumberNode(value);
+    }
+
+    /**
+     * @param value a Java BigDecimal to represent as a JSON number
+     * @return a JSON number representation of the given BigDecimal or a JSON null if the Java BigDecimal is null
+     */
+    public static JsonNode nullableNumber(final BigDecimal value) {
+        return value == null ? nullNode() : JsonNumberNode.jsonNumberNode(value.toString());
+    }
+
+    /**
+     * @param value a Java BigInteger to represent as a JSON number
+     * @return a JSON number representation of the given BigInteger or a JSON null if the Java BigInteger is null
+     */
+    public static JsonNode nullableNumber(final BigInteger value) {
+        return value == null ? nullNode() : JsonNumberNode.jsonNumberNode(value.toString());
+    }
+
+    /**
+     * @param value a Java Long to represent as a JSON number
+     * @return a JSON number representation of the given BigInteger or a JSON null if the Java Long is null
+     */
+    public static JsonNode nullableNumber(final Long value) {
+        return value == null ? nullNode() : JsonNumberNode.jsonNumberNode(Long.toString(value));
+    }
+
+    /**
      * @param elements {@code JsonNode}s that will populate the array
      * @return a JSON array of the given {@code JsonNode}s
      */
