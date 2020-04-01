@@ -29,7 +29,7 @@ plugins {
     id 'io.codearte.nexus-staging' version '0.21.2'
     id 'de.marcphilipp.nexus-publish' version '0.4.0'
     id 'com.gitlab.svg2ico' version '0.11'
-    id 'org.unbroken-dome.test-sets' version '2.2.1'
+    id 'org.unbroken-dome.test-sets' version '3.0.0'
 }
 
 repositories {
@@ -42,9 +42,9 @@ sourceSets {
 
 testSets {
     libraries { testInfrastructure }
-    unitTest {imports libraries.testInfrastructure }
-    performanceTest {imports libraries.testInfrastructure }
-    codeSamples {imports libraries.testInfrastructure }
+    unitTest { imports libraries.testInfrastructure }
+    performanceTest { imports libraries.testInfrastructure }
+    codeSamples { imports libraries.testInfrastructure }
 }
 
 check.dependsOn performanceTest
@@ -55,7 +55,7 @@ dependencies {
     testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.18'
     testInfrastructureCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version :'5.6.0'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.6.0'
     testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
     testCompile group: 'org.jmock', name: 'jmock-junit5', version: '2.12.0'
     testCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.18'
@@ -152,7 +152,7 @@ task png(type: Svg2PngTask) {
 }
 
 
-task buildDocumentation(type:JavaExec, dependsOn: documentationDirectory) {
+task buildDocumentation(type: JavaExec, dependsOn: documentationDirectory) {
     main = 'documentation.DocumentationGenerator'
     args("${project.buildDir}/documentation")
     classpath = sourceSets.documentation.runtimeClasspath
@@ -293,7 +293,7 @@ task commitVersionNumber(type: SvnCommit, dependsOn: incrementVersionNumber) {
     password = "$sourceforgePassword"
 }
 
-task deploy(dependsOn: commitVersionNumber) { }
+task deploy(dependsOn: commitVersionNumber) {}
 
 build.mustRunAfter clean
 publishToSonatype.mustRunAfter build
