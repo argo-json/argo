@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -41,11 +41,11 @@ final class JsonObject extends AbstractJsonObject {
     @Override
     public Map<JsonStringNode, JsonNode> getFields() {
         if (fieldMap == null) {
-            fieldMap = unmodifiableMap(new LinkedHashMap<JsonStringNode, JsonNode>(fields.size() * 4 / 3 + 1) {{
-                for (final JsonField field : fields) {
-                    put(field.getName(), field.getValue());
-                }
-            }});
+            final Map<JsonStringNode, JsonNode> modifiableFieldMap = new LinkedHashMap<JsonStringNode, JsonNode>(fields.size() * 4 / 3 + 1);
+            for (final JsonField field : fields) {
+                modifiableFieldMap.put(field.getName(), field.getValue());
+            }
+            fieldMap = unmodifiableMap(modifiableFieldMap);
         }
         return fieldMap;
     }

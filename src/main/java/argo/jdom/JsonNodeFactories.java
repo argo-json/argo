@@ -220,11 +220,11 @@ public final class JsonNodeFactories {
      * @return a JSON object containing the given fields
      */
     public static JsonNode object(final Map<JsonStringNode, ? extends JsonNode> fields) {
-        return JsonObject.jsonObject(new ArrayList<JsonField>(fields.size()) {{
-            for (final Map.Entry<JsonStringNode, ? extends JsonNode> entry : fields.entrySet()) {
-                add(field(entry.getKey(), entry.getValue()));
-            }
-        }});
+        List<JsonField> result = new ArrayList<JsonField>(fields.size());
+        for (final Map.Entry<JsonStringNode, ? extends JsonNode> entry : fields.entrySet()) {
+            result.add(field(entry.getKey(), entry.getValue()));
+        }
+        return JsonObject.jsonObject(result);
     }
 
     /**
