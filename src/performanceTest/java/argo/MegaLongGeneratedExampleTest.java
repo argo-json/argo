@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -17,19 +17,20 @@ import argo.jdom.JsonStringNodeTestBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static argo.jdom.JsonNodeFactories.field;
 
 final class MegaLongGeneratedExampleTest {
     @Test
     void generatedExamplePerformance() {
-        final JsonNode generatedExample = JsonNodeFactories.object(new ArrayList<JsonField>(300000) {{
-            for (int i = 0; i < 300000; i++) {
-                add(field(JsonStringNodeTestBuilder.aStringNode(), JsonNodeFactories.object(
-                        field(JsonStringNodeTestBuilder.aStringNode(), JsonStringNodeTestBuilder.aStringNode())
-                )));
-            }
-        }});
+        final List<JsonField> fields = new ArrayList<>(300000);
+        for (int i = 0; i < 300000; i++) {
+            fields.add(field(JsonStringNodeTestBuilder.aStringNode(), JsonNodeFactories.object(
+                    field(JsonStringNodeTestBuilder.aStringNode(), JsonStringNodeTestBuilder.aStringNode())
+            )));
+        }
+        final JsonNode generatedExample = JsonNodeFactories.object(fields);
 
         generatedExample.getFields();
         generatedExample.getFieldList();
