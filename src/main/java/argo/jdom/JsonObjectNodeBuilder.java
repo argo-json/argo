@@ -101,7 +101,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
      * @param value a builder for the value of the field.
      * @return the modified object builder.
      */
-    public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder value) {
+    public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder<?> value) {
         return withFieldBuilder(anUnmodifiableStringNamedJsonFieldBuilder(name, value));
     }
 
@@ -112,7 +112,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
      * @param value a builder for the value of the field.
      * @return the modified object builder.
      */
-    public JsonObjectNodeBuilder withField(final JsonStringNode name, final JsonNodeBuilder value) {
+    public JsonObjectNodeBuilder withField(final JsonStringNode name, final JsonNodeBuilder<?> value) {
         return withFieldBuilder(anUnmodifiableJsonStringNamedJsonFieldBuilder(name, value));
     }
 

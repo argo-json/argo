@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.jdom;
@@ -16,7 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import static argo.jdom.JsonNodeBuilders.*;
+import static argo.jdom.JsonNodeBuilders.aFalseBuilder;
+import static argo.jdom.JsonNodeBuilders.aNullBuilder;
+import static argo.jdom.JsonNodeBuilders.aNumberBuilder;
+import static argo.jdom.JsonNodeBuilders.aTrueBuilder;
+import static argo.jdom.JsonNodeBuilders.anArrayBuilder;
+import static argo.jdom.JsonNodeBuilders.anObjectBuilder;
 import static argo.jdom.JsonNodeFactories.field;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
@@ -97,7 +102,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
     private interface NodeContainer {
 
-        void addNode(JsonNodeBuilder jsonNodeBuilder);
+        void addNode(JsonNodeBuilder<?> jsonNodeBuilder);
 
         void addField(JsonFieldBuilder jsonFieldBuilder);
 
@@ -106,7 +111,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     private static final class ArrayNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
         private final JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
 
-        public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
+        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
             arrayBuilder.withElement(jsonNodeBuilder);
         }
 
@@ -122,7 +127,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     private static final class ObjectNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
         private final JsonObjectNodeBuilder objectNodeBuilder = anObjectBuilder();
 
-        public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
+        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object.");
         }
 
@@ -138,14 +143,14 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     private static final class FieldNodeContainer implements NodeContainer, JsonFieldBuilder {
         private final String name;
         private final JsonStringNodeFactory jsonStringNodeFactory;
-        private JsonNodeBuilder valueBuilder;
+        private JsonNodeBuilder<?> valueBuilder;
 
         FieldNodeContainer(final String name, final JsonStringNodeFactory jsonStringNodeFactory) {
             this.name = name;
             this.jsonStringNodeFactory = jsonStringNodeFactory;
         }
 
-        public void addNode(final JsonNodeBuilder jsonNodeBuilder) {
+        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
             valueBuilder = jsonNodeBuilder;
         }
 
