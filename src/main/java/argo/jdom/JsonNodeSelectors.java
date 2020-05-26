@@ -193,7 +193,7 @@ public final class JsonNodeSelectors {
     public static JsonNodeSelector<JsonNode, JsonNode> aNullNode(final Object... pathElements) {
         return chainOn(pathElements, new JsonNodeSelector<JsonNode, JsonNode>(new LeafFunctor<JsonNode, JsonNode>() {
             public boolean matchesNode(final JsonNode jsonNode) {
-                return argo.jdom.JsonNodeType.NULL == jsonNode.getType();
+                return NULL == jsonNode.getType();
             }
 
             public String shortForm() {

@@ -26,6 +26,8 @@ public abstract class JsonStreamElement {
     private static final JsonStreamElement FALSE = nonTextJsonStreamElement(JsonStreamElementType.FALSE);
     private static final JsonStreamElement NULL = nonTextJsonStreamElement(JsonStreamElementType.NULL);
 
+    private final JsonStreamElementType jsonStreamElementType;
+
     private static JsonStreamElement nonTextJsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
         return new JsonStreamElement(jsonStreamElementType) {
             @Override
@@ -115,8 +117,6 @@ public abstract class JsonStreamElement {
     static JsonStreamElement nullValue() {
         return NULL;
     }
-
-    private final JsonStreamElementType jsonStreamElementType;
 
     private JsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
         this.jsonStreamElementType = jsonStreamElementType;

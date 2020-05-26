@@ -111,13 +111,6 @@ public enum JsonStreamElementType {
         }
     };
 
-    abstract JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack);
-
-    static JsonStreamElement startDocument(final Stack<JsonStreamElementType> stack) throws InvalidSyntaxRuntimeException {
-        stack.push(START_DOCUMENT);
-        return JsonStreamElement.startDocument();
-    }
-
     private static final char DOUBLE_QUOTE = '"';
     private static final char BACK_SLASH = '\\';
     private static final char BACKSPACE = '\b';
@@ -125,6 +118,13 @@ public enum JsonStreamElementType {
     private static final char NEWLINE = '\n';
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
+
+    abstract JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack);
+
+    static JsonStreamElement startDocument(final Stack<JsonStreamElementType> stack) throws InvalidSyntaxRuntimeException {
+        stack.push(START_DOCUMENT);
+        return JsonStreamElement.startDocument();
+    }
 
     private static JsonStreamElement parseFieldOrObjectEnd(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
@@ -277,12 +277,12 @@ public enum JsonStreamElementType {
     }
 
     private static String stringToken(final PositionTrackingPushbackReader in) {
-        final StringBuilder result = new StringBuilder();
         final int firstChar = in.read();
         if (DOUBLE_QUOTE != firstChar) {
             throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected [" + DOUBLE_QUOTE + "]", firstChar, in);
         }
         final ThingWithPosition openDoubleQuotesPosition = in.snapshotOfPosition();
+        final StringBuilder result = new StringBuilder();
         boolean stringClosed = false;
         while (!stringClosed) {
             final int nextChar = in.read();

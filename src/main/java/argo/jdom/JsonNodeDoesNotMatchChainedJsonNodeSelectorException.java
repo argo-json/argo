@@ -15,6 +15,9 @@ import java.util.List;
 
 final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNodeDoesNotMatchJsonNodeSelectorException {
 
+    final Functor<?, ?> failedNode;
+    final List<JsonNodeSelector<?, ?>> failPath;
+
     static JsonNodeDoesNotMatchJsonNodeSelectorException createJsonNodeDoesNotMatchJsonNodeSelectorException(final Functor<?, ?> failedNode) {
         return new JsonNodeDoesNotMatchChainedJsonNodeSelectorException(failedNode, new LinkedList<JsonNodeSelector<?, ?>>());
     }
@@ -32,9 +35,6 @@ final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNod
         unchainedFailPath.add(parentJsonNodeSelector);
         return new JsonNodeDoesNotMatchChainedJsonNodeSelectorException(e.failedNode, unchainedFailPath);
     }
-
-    final Functor<?, ?> failedNode;
-    final List<JsonNodeSelector<?, ?>> failPath;
 
     private JsonNodeDoesNotMatchChainedJsonNodeSelectorException(final Functor<?, ?> failedNode, final List<JsonNodeSelector<?, ?>> failPath) {
         super("Failed to match any JSON node at [" + getShortFormFailPath(failPath) + "]");
