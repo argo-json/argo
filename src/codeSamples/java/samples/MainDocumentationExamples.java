@@ -8,6 +8,8 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+package samples;
+
 import argo.format.*;
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
@@ -104,7 +106,7 @@ final class MainDocumentationExamples {
     void producesInfiniteSequenceOfJson() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         JSON_WRITER.write(stringWriter, (WriteableJsonArray) arrayWriter -> {
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 10_000; i++) {
                 arrayWriter.writeElement(string("I'm Spartacus!"));
             }
         });
@@ -117,7 +119,7 @@ final class MainDocumentationExamples {
         final StringWriter stringWriter = new StringWriter();
         JSON_WRITER.write(stringWriter, (WriteableJsonString) writer -> {
             writer.write("On");
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 10_000; i++) {
                 writer.write(" and on");
             }
         });
