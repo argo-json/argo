@@ -165,7 +165,7 @@ public final class JsonNodeFactories {
             public List<JsonNode> getElements() {
                 return new AbstractList<JsonNode>() {
                     @Override
-                    public JsonNode get(int i) {
+                    public JsonNode get(final int i) {
                         return elements.get(i);
                     }
 
@@ -220,7 +220,7 @@ public final class JsonNodeFactories {
      * @return a JSON object containing the given fields
      */
     public static JsonNode object(final Map<JsonStringNode, ? extends JsonNode> fields) {
-        List<JsonField> result = new ArrayList<JsonField>(fields.size());
+        final List<JsonField> result = new ArrayList<JsonField>(fields.size());
         for (final Map.Entry<JsonStringNode, ? extends JsonNode> entry : fields.entrySet()) {
             result.add(field(entry.getKey(), entry.getValue()));
         }
@@ -277,7 +277,7 @@ public final class JsonNodeFactories {
                                     }
 
                                     public Entry<JsonStringNode, JsonNode> next() {
-                                        JsonField jsonField = fieldIterator.next();
+                                        final JsonField jsonField = fieldIterator.next();
                                         return new JsonFieldEntry(jsonField.getName(), jsonField.getValue());
                                     }
 
@@ -352,7 +352,7 @@ public final class JsonNodeFactories {
         private final JsonStringNode key;
         private final JsonNode value;
 
-        private JsonFieldEntry(JsonStringNode key, JsonNode value) {
+        private JsonFieldEntry(final JsonStringNode key, final JsonNode value) {
             this.key = key;
             this.value = value;
         }
@@ -365,7 +365,7 @@ public final class JsonNodeFactories {
             return value;
         }
 
-        public JsonNode setValue(JsonNode value) {
+        public JsonNode setValue(final JsonNode value) {
             throw new UnsupportedOperationException("Not supported");
         }
     }

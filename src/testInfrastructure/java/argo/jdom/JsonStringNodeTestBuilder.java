@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.jdom;
@@ -13,10 +13,13 @@ package argo.jdom;
 import net.sourceforge.ickles.RandomSupplierSwitcher;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static argo.jdom.JsonNodeFactories.string;
+import static java.util.Arrays.asList;
 
 public final class JsonStringNodeTestBuilder {
 
@@ -57,11 +60,12 @@ public final class JsonStringNodeTestBuilder {
         return string(aValidJsonString());
     }
 
-    public static JsonStringNode aStringNodeDifferentTo(JsonStringNode jsonStringNode) {
+    public static JsonStringNode aStringNodeDifferentTo(JsonStringNode... jsonStringNode) {
+        final Set<JsonStringNode> exclusions = new HashSet<>(asList(jsonStringNode));
         JsonStringNode result;
         do {
             result = string(aValidJsonString());
-        } while (result == jsonStringNode);
+        } while (exclusions.contains(result));
         return result;
     }
 

@@ -30,11 +30,11 @@ final class JsonObject extends AbstractJsonObject {
         return jsonObject(immutableListOf(fields));
     }
 
-    private static JsonObject jsonObject(List<JsonField> fieldList) {
+    private static JsonObject jsonObject(final List<JsonField> fieldList) {
         return fieldList.isEmpty() ? EMPTY_OBJECT : new JsonObject(fieldList);
     }
 
-    private JsonObject(List<JsonField> fields) {
+    private JsonObject(final List<JsonField> fields) {
         this.fields = fields;
     }
 

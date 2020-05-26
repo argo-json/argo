@@ -1,11 +1,11 @@
 /*
- * Copyright 2012 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.jdom;
@@ -314,7 +314,7 @@ public final class JsonNodeSelectors {
 
     public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final JsonStringNode fieldName) {
         return new JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode>(new LeafFunctor<Map<JsonStringNode, JsonNode>, JsonNode>() {
-            public boolean matchesNode(Map<JsonStringNode, JsonNode> jsonNode) {
+            public boolean matchesNode(final Map<JsonStringNode, JsonNode> jsonNode) {
                 return jsonNode.containsKey(fieldName);
             }
 
@@ -322,7 +322,7 @@ public final class JsonNodeSelectors {
                 return "\"" + fieldName.getText() + "\"";
             }
 
-            public JsonNode typeSafeApplyTo(Map<JsonStringNode, JsonNode> jsonNode) {
+            public JsonNode typeSafeApplyTo(final Map<JsonStringNode, JsonNode> jsonNode) {
                 return jsonNode.get(fieldName);
             }
 
@@ -366,7 +366,7 @@ public final class JsonNodeSelectors {
         return anArrayNode().with(anElement(index));
     }
 
-    private static <T> JsonNodeSelector<JsonNode, T> chainOn(final Object[] pathElements, JsonNodeSelector<JsonNode, T> parentSelector) {
+    private static <T> JsonNodeSelector<JsonNode, T> chainOn(final Object[] pathElements, final JsonNodeSelector<JsonNode, T> parentSelector) {
         JsonNodeSelector<JsonNode, T> result = parentSelector;
         for (int i = pathElements.length - 1; i >= 0; i--) {
             if (pathElements[i] instanceof Integer) {

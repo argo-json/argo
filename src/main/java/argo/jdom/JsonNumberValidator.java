@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.jdom;
@@ -24,7 +24,7 @@ public final class JsonNumberValidator {
 
     private enum ParserState {
         BEFORE_START(false) {
-            ParserState handle(int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException {
                 switch (character) {
                     case '-':
                         return NEGATIVE;
@@ -45,7 +45,7 @@ public final class JsonNumberValidator {
                 }
             }
         }, NEGATIVE(false) {
-            ParserState handle(int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException {
                 switch (character) {
                     case '0':
                         return ZERO;
@@ -64,7 +64,7 @@ public final class JsonNumberValidator {
                 }
             }
         }, ZERO(true) {
-            ParserState handle(int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException {
                 switch (character) {
                     case '.':
                         return DECIMAL_POINT;
@@ -76,7 +76,7 @@ public final class JsonNumberValidator {
                 }
             }
         }, INTEGER_PART(true) {
-            ParserState handle(int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException {
                 switch (character) {
                     case '0':
                     case '1':
@@ -99,7 +99,7 @@ public final class JsonNumberValidator {
                 }
             }
         }, DECIMAL_POINT(false) {
-            ParserState handle(int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException {
                 switch (character) {
                     case '0':
                     case '1':
@@ -117,7 +117,7 @@ public final class JsonNumberValidator {
                 }
             }
         }, FRACTIONAL_PART(true) {
-            ParserState handle(int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException {
                 switch (character) {
                     case '0':
                     case '1':
@@ -138,7 +138,7 @@ public final class JsonNumberValidator {
                 }
             }
         }, EXPONENT_MARKER(false) {
-            ParserState handle(int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException {
                 switch (character) {
                     case '+':
                     case '-':
@@ -159,7 +159,7 @@ public final class JsonNumberValidator {
                 }
             }
         }, EXPONENT_SIGN(false) {
-            ParserState handle(int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException {
                 switch (character) {
                     case '0':
                     case '1':
@@ -177,7 +177,7 @@ public final class JsonNumberValidator {
                 }
             }
         }, EXPONENT(true) {
-            ParserState handle(int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException {
                 switch (character) {
                     case '0':
                     case '1':

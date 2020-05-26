@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,12 +18,12 @@ import static argo.format.JsonEscapedString.escapeStringTo;
 final class JsonStringEscapingWriter extends Writer {
     private final Writer writer;
 
-    JsonStringEscapingWriter(Writer writer) {
+    JsonStringEscapingWriter(final Writer writer) {
         this.writer = writer;
     }
 
     @Override
-    public void write(char[] cbuf, int off, int len) throws IOException {
+    public void write(final char[] cbuf, final int off, final int len) throws IOException {
         escapeStringTo(writer, cbuf, off, len);
     }
 

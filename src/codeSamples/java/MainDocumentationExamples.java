@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -9,7 +9,10 @@
  */
 
 import argo.format.*;
-import argo.jdom.*;
+import argo.jdom.JdomParser;
+import argo.jdom.JsonNode;
+import argo.jdom.JsonNodeSelector;
+import argo.jdom.JsonObjectNodeBuilder;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
 import argo.staj.JsonStreamElement;
@@ -26,8 +29,15 @@ import java.util.List;
 import java.util.Set;
 
 import static argo.format.JsonNumberUtils.asBigDecimal;
-import static argo.jdom.JsonNodeBuilders.*;
-import static argo.jdom.JsonNodeFactories.*;
+import static argo.jdom.JsonNodeBuilders.aNumberBuilder;
+import static argo.jdom.JsonNodeBuilders.aStringBuilder;
+import static argo.jdom.JsonNodeBuilders.anArrayBuilder;
+import static argo.jdom.JsonNodeBuilders.anObjectBuilder;
+import static argo.jdom.JsonNodeFactories.array;
+import static argo.jdom.JsonNodeFactories.field;
+import static argo.jdom.JsonNodeFactories.number;
+import static argo.jdom.JsonNodeFactories.object;
+import static argo.jdom.JsonNodeFactories.string;
 import static argo.jdom.JsonNodeSelectors.aStringNode;
 import static argo.jdom.JsonNodeSelectors.anArrayNode;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -52,7 +62,7 @@ final class MainDocumentationExamples {
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
     private static final JsonNodeSelector<JsonNode, String> SECOND_SINGLE
-            = JsonNodeSelectors.aStringNode("singles", 1);
+            = aStringNode("singles", 1);
 
     private static final JsonNodeSelector<JsonNode, List<JsonNode>> SINGLES
             = anArrayNode("singles");
@@ -93,12 +103,9 @@ final class MainDocumentationExamples {
     @Test
     void producesInfiniteSequenceOfJson() throws Exception {
         final StringWriter stringWriter = new StringWriter();
-        JSON_WRITER.write(stringWriter, new WriteableJsonArray() {
-            @Override
-            public void writeTo(ArrayWriter arrayWriter) throws IOException {
-                for (int i = 0; i < 10000; i++) {
-                    arrayWriter.writeElement(string("I'm Spartacus!"));
-                }
+        JSON_WRITER.write(stringWriter, (WriteableJsonArray) arrayWriter -> {
+            for (int i = 0; i < 10000; i++) {
+                arrayWriter.writeElement(string("I'm Spartacus!"));
             }
         });
         String jsonText = stringWriter.toString();
@@ -108,13 +115,10 @@ final class MainDocumentationExamples {
     @Test
     void producesInfiniteStringOfJson() throws Exception {
         final StringWriter stringWriter = new StringWriter();
-        JSON_WRITER.write(stringWriter, new WriteableJsonString() {
-            @Override
-            public void writeTo(Writer stringWriter) throws IOException {
-                stringWriter.write("On");
-                for (int i = 0; i < 10000; i++) {
-                    stringWriter.write(" and on");
-                }
+        JSON_WRITER.write(stringWriter, (WriteableJsonString) writer -> {
+            writer.write("On");
+            for (int i = 0; i < 10000; i++) {
+                writer.write(" and on");
             }
         });
         String jsonText = stringWriter.toString();
@@ -123,8 +127,7 @@ final class MainDocumentationExamples {
 
     @Test
     void formatsJson() throws Exception {
-        final JsonNode json = SAMPLE_JSON;
-        String jsonText = JSON_FORMATTER.format(json);
+        String jsonText = JSON_FORMATTER.format(SAMPLE_JSON);
         assertThat(JDOM_PARSER.parse(jsonText), equalTo(SAMPLE_JSON));
     }
 

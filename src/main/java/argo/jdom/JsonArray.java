@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -34,7 +34,7 @@ final class JsonArray extends AbstractJsonArray {
         return elementList.isEmpty() ? EMPTY_ARRAY : new JsonArray(elementList);
     }
 
-    private JsonArray(List<JsonNode> elements) {
+    private JsonArray(final List<JsonNode> elements) {
         this.elements = elements;
     }
 

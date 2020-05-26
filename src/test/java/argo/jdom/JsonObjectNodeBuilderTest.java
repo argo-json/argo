@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,6 +18,7 @@ import static argo.jdom.JsonNodeBuilders.anObjectBuilder;
 import static argo.jdom.JsonNodeFactories.field;
 import static argo.jdom.JsonNodeFactories.object;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
+import static argo.jdom.JsonStringNodeTestBuilder.aStringNodeDifferentTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -57,9 +58,9 @@ final class JsonObjectNodeBuilderTest {
     void uniqueFieldNameObjectBuilderPreservesFieldOrder() {
         final JsonStringNode firstFieldName = aStringNode();
         final JsonNodeBuilder<JsonNode> firstValue = aJsonNodeBuilder();
-        final JsonStringNode secondFieldName = aStringNode();
+        final JsonStringNode secondFieldName = aStringNodeDifferentTo(firstFieldName);
         final JsonNodeBuilder<JsonNode> secondValue = aJsonNodeBuilder();
-        final JsonStringNode thirdFieldName = aStringNode();
+        final JsonStringNode thirdFieldName = aStringNodeDifferentTo(firstFieldName, secondFieldName);
         final JsonNodeBuilder<JsonNode> thirdValue = aJsonNodeBuilder();
         assertThat(
                 aUniqueFieldNameObjectBuilder()
