@@ -93,8 +93,12 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
 
     @Override
     public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+        if (this == that) {
+            return true;
+        }
+        if (that == null || getClass() != that.getClass()) {
+            return false;
+        }
 
         final JsonNumberNode thatJsonNumberNode = (JsonNumberNode) that;
         return this.value.equals(thatJsonNumberNode.value);

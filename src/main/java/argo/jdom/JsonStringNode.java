@@ -68,8 +68,12 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
 
     @Override
     public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+        if (this == that) {
+            return true;
+        }
+        if (that == null || getClass() != that.getClass()) {
+            return false;
+        }
 
         final JsonStringNode thatJsonTextNode = (JsonStringNode) that;
         return this.value.equals(thatJsonTextNode.value);
