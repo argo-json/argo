@@ -121,7 +121,7 @@ public enum JsonStreamElementType {
 
     abstract JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack);
 
-    static JsonStreamElement startDocument(final Stack<JsonStreamElementType> stack) throws InvalidSyntaxRuntimeException {
+    static JsonStreamElement startDocument(final Stack<JsonStreamElementType> stack) {
         stack.push(START_DOCUMENT);
         return JsonStreamElement.startDocument();
     }
