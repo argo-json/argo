@@ -10,7 +10,7 @@
 
 package argo.jdom;
 
-public final class JsonNumberValidator {
+public final class JsonNumberValidator { // TODO this is 'internal'
     private ParserState parserState = ParserState.BEFORE_START;
 
     public void appendCharacter(final int nextCharacter) throws ParsingFailedException {
