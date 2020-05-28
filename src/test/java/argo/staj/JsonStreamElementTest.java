@@ -13,7 +13,6 @@ package argo.staj;
 import org.junit.jupiter.api.Test;
 
 import static argo.jdom.JsonStringNodeTestBuilder.aValidJsonString;
-import static argo.staj.JsonStreamElement.startDocument;
 import static argo.staj.JsonStreamElement.*;
 import static argo.staj.JsonStreamElementMatchers.aNonTextJsonStreamElementWithType;
 import static argo.staj.JsonStreamElementMatchers.aTextJsonStreamElementWithType;
