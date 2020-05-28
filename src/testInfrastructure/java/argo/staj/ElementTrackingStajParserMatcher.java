@@ -38,14 +38,14 @@ public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMa
         boolean matches = true;
         for (JsonStreamElement jsonStreamElement : expected) {
             final boolean hasNextItem = item.hasNext();
-            if (!hasNextItem) {
-                matches = false;
-            } else {
+            if (hasNextItem) {
                 final JsonStreamElement next = item.next();
                 if (!EqualsBuilder.reflectionEquals(next, jsonStreamElement)) {
                     matches = false;
                 }
                 actual.add(next);
+            } else {
+                matches = false;
             }
         }
         while (item.hasNext()) {
