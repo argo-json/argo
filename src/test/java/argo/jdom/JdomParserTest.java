@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -93,7 +93,7 @@ final class JdomParserTest {
      * @author Henrik Sjöstrand
      */
     @Test
-    void whenReaderReturnsSome_thenReadMore() throws Exception {
+    void whenReaderReturnsSomeThenReadMore() throws Exception {
         final JsonNode jsonNode = new JdomParser().parse(new ChoppingReader(new StringReader("{\"nullField\":null}")));
         final String result = JsonNodeSelectors.aNullableStringNode("nullField").getValue(jsonNode);
         assertThat(result, equalTo(null));

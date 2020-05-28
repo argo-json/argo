@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,7 +15,10 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static argo.format.JsonNumberUtils.*;
+import static argo.format.JsonNumberUtils.asBigDecimal;
+import static argo.format.JsonNumberUtils.asBigInteger;
+import static argo.format.JsonNumberUtils.asDouble;
+import static argo.format.JsonNumberUtils.asInteger;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -103,7 +106,7 @@ final class JsonNumberUtilsTest {
         assertThat(asInteger("0.0E10"), equalTo(0));
         assertThat(asInteger("10"), equalTo(10));
         assertThat(asInteger("-10"), equalTo(-10));
-        assertThat(asInteger("10E5"), equalTo(1000000));
+        assertThat(asInteger("10E5"), equalTo(1_000_000));
     }
 
     @Test
