@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -69,10 +69,10 @@ final class LongJsonExampleTest {
         }
     };
 
-    private final Reader[] jsonReaders = new Reader[10000];
+    private final Reader[] jsonReaders = new Reader[10_000];
 
     @BeforeEach
-    void getJson() throws Exception {
+    void readJson() throws Exception {
         final File longJsonExample = new File(this.getClass().getResource("LongJsonExample.json").getFile());
         final String json = readFileToString(longJsonExample, UTF_8);
         for (int i = 0; i < jsonReaders.length; i++) {

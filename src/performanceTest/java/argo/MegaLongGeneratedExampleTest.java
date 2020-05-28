@@ -24,8 +24,8 @@ import static argo.jdom.JsonNodeFactories.field;
 final class MegaLongGeneratedExampleTest {
     @Test
     void generatedExamplePerformance() {
-        final List<JsonField> fields = new ArrayList<>(300000);
-        for (int i = 0; i < 300000; i++) {
+        final List<JsonField> fields = new ArrayList<>(300_000);
+        for (int i = 0; i < 300_000; i++) {
             fields.add(field(JsonStringNodeTestBuilder.aStringNode(), JsonNodeFactories.object(
                     field(JsonStringNodeTestBuilder.aStringNode(), JsonStringNodeTestBuilder.aStringNode())
             )));
