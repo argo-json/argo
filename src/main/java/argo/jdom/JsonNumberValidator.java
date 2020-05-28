@@ -17,7 +17,6 @@ public final class JsonNumberValidator { // TODO this is 'internal'
         parserState = parserState.handle(nextCharacter);
     }
 
-
     public boolean isEndState() {
         return parserState.isEndState;
     }
