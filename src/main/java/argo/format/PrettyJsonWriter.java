@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.format;
@@ -59,7 +59,7 @@ public final class PrettyJsonWriter implements JsonWriter {
         writer.write('"');
     }
 
-    public void write(final Writer writer, final WriteableJsonNumber writeableJsonNumber) throws IOException, IllegalArgumentException {
+    public void write(final Writer writer, final WriteableJsonNumber writeableJsonNumber) throws IOException {
         final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer);
         writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
         if (!jsonNumberValidatingWriter.isEndState()) {
@@ -182,7 +182,7 @@ public final class PrettyJsonWriter implements JsonWriter {
             write(writer, element);
         }
 
-        public void writeElement(final WriteableJsonNumber element) throws IOException, IllegalArgumentException {
+        public void writeElement(final WriteableJsonNumber element) throws IOException {
             writePreamble();
             write(writer, element);
         }
@@ -228,7 +228,7 @@ public final class PrettyJsonWriter implements JsonWriter {
             writeField(string(name), value);
         }
 
-        public void writeField(final String name, final WriteableJsonNumber value) throws IOException, IllegalArgumentException {
+        public void writeField(final String name, final WriteableJsonNumber value) throws IOException {
             writeField(string(name), value);
         }
 
@@ -251,7 +251,7 @@ public final class PrettyJsonWriter implements JsonWriter {
             write(writer, value);
         }
 
-        public void writeField(final JsonStringNode name, final WriteableJsonNumber value) throws IOException, IllegalArgumentException {
+        public void writeField(final JsonStringNode name, final WriteableJsonNumber value) throws IOException {
             writeName(name);
             write(writer, value);
         }
@@ -282,7 +282,7 @@ public final class PrettyJsonWriter implements JsonWriter {
             write(writer, value);
         }
 
-        public void writeField(final WriteableJsonString name, final WriteableJsonNumber value) throws IOException, IllegalArgumentException {
+        public void writeField(final WriteableJsonString name, final WriteableJsonNumber value) throws IOException {
             writeName(name);
             write(writer, value);
         }
