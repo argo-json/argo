@@ -139,7 +139,7 @@ final class ArgoPage {
         return codeTag(xhtmlText(snippet));
     }
 
-    static BlockElement<?> codeBlock(String someCode) {
+    static BlockElement codeBlock(String someCode) {
         return divTag(
                 xhtmlText(someCode)
         ).withClass(className("code"));

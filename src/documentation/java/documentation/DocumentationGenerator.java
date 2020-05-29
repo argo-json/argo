@@ -23,10 +23,13 @@ import static documentation.IndexPage.indexPage;
 import static documentation.SupportPage.supportPage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class DocumentationGenerator {
+public final class DocumentationGenerator {
     private static final CompactXmlFormatter XML_FORMATTER = new CompactXmlFormatter();
 
-    public static void main(String[] args) throws Exception {
+    private DocumentationGenerator() {
+    }
+
+    public static void main(String[] args) throws IOException, XmlWriteException {
         final File destination = new File(args[0]);
         final String version = versionString();
 
