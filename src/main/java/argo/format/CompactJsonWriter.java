@@ -183,7 +183,7 @@ public final class CompactJsonWriter implements JsonWriter {
     public void write(final Writer writer, final JsonNode jsonNode) throws IOException {
         boolean first = true;
         switch (jsonNode.getType()) {
-            case ARRAY:
+            case ARRAY: // TODO can all this jibber jabber go on the enum, which would save the default/RTE case?
                 writer.write('[');
                 for (final JsonNode node : jsonNode.getElements()) {
                     if (!first) {
