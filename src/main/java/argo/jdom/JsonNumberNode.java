@@ -10,9 +10,6 @@
 
 package argo.jdom;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
@@ -29,19 +26,14 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
         if (value == null) {
             throw new NullPointerException("Attempt to construct a JsonNumber with a null value.");
         }
-        final Reader reader = new StringReader(value);
         final JsonNumberValidator jsonNumberValidator = new JsonNumberValidator();
         try {
-            int nextCharacter = reader.read();
-            while (nextCharacter != -1) {
-                jsonNumberValidator.appendCharacter(nextCharacter);
-                nextCharacter = reader.read();
+            for (int i = 0; i < value.length(); i++) {
+                jsonNumberValidator.appendCharacter(value.charAt(i));
             }
             if (!jsonNumberValidator.isEndState()) {
                 throw new JsonNumberValidator.ParsingFailedException();
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Coding failure in Argo:  StringWriter threw an IOException", e);
         } catch (JsonNumberValidator.ParsingFailedException e) {
             throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification.");
         }

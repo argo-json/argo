@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -87,6 +87,11 @@ final class JsonNumberNodeTest {
     }
 
     @Test
+    void rejectsEmptyString() {
+        assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode(""));
+    }
+
+    @Test
     void rejectsNonIntegerWithNothingBeforeTheDecimalPoint() {
         assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode(".1"));
     }
@@ -96,4 +101,13 @@ final class JsonNumberNodeTest {
         assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode("1."));
     }
 
+    @Test
+    void rejectsNonNumericCharacters() {
+        assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode("a"));
+    }
+
+    @Test
+    void rejectsMultilingualPlaneCharacters() {
+        assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode("€"));
+    }
 }
