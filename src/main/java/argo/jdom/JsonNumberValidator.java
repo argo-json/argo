@@ -13,6 +13,12 @@ package argo.jdom;
 public final class JsonNumberValidator { // TODO this is 'internal'
     private ParserState parserState = ParserState.BEFORE_START;
 
+    public void appendCharacters(final char[] cbuf, final int offset, final int length) throws ParsingFailedException {
+        for (int i = offset; i < (offset + length) && i < cbuf.length; i++) {
+            appendCharacter(cbuf[i]);
+        }
+    }
+
     public void appendCharacter(final int nextCharacter) throws ParsingFailedException {
         parserState = parserState.handle(nextCharacter);
     }

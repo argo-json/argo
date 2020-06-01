@@ -25,19 +25,12 @@ final class JsonNumberValidatingWriter extends Writer {
     }
 
     public void write(final char[] cbuf, final int offset, final int length) throws IOException {
-        if (offset < 0 || offset > cbuf.length || length < 0 || offset + length > cbuf.length || offset + length < 0) {
-            throw new IndexOutOfBoundsException();
-        } else {
-            try {
-                for (int i = offset; i < (offset + length) && i < cbuf.length; i++) {
-                    final char c = cbuf[i];
-                    jsonNumberValidator.appendCharacter(c);
-                    writer.write(c);
-                }
-            } catch (JsonNumberValidator.ParsingFailedException e) {
-                throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification.");
-            }
+        try {
+            jsonNumberValidator.appendCharacters(cbuf, offset, length);
+        } catch (JsonNumberValidator.ParsingFailedException e) {
+            throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification.");
         }
+        writer.write(cbuf, offset, length);
     }
 
     public void flush() {
