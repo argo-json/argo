@@ -19,7 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.Reader;
 import java.io.StringReader;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -69,7 +68,7 @@ final class LongJsonExampleTest {
         }
     };
 
-    private final Reader[] jsonReaders = new Reader[10_000];
+    private final StringReader[] jsonReaders = new StringReader[10_000];
 
     @BeforeEach
     void readJson() throws Exception {
@@ -82,7 +81,7 @@ final class LongJsonExampleTest {
 
     @Test
     void testJsonLib() {
-        for (final Reader reader : jsonReaders) {
+        for (final StringReader reader : jsonReaders) {
             JSONObject.toBean(JSONObject.fromObject(reader));
         }
     }
@@ -90,14 +89,14 @@ final class LongJsonExampleTest {
     @Test
     void testArgoSaj() throws Exception {
         final SajParser sajParser = new SajParser();
-        for (final Reader reader : jsonReaders) {
+        for (final StringReader reader : jsonReaders) {
             sajParser.parse(reader, BLACK_HOLE_JSON_LISTENER);
         }
     }
 
     @Test
     void testArgoStaj() {
-        for (final Reader reader : jsonReaders) {
+        for (final StringReader reader : jsonReaders) {
             final StajParser stajParser = new StajParser(reader);
             while (stajParser.hasNext()) {
                 stajParser.next();
@@ -108,7 +107,7 @@ final class LongJsonExampleTest {
     @Test
     void testArgoJdom() throws Exception {
         final JdomParser jdomParser = new JdomParser();
-        for (final Reader reader : jsonReaders) {
+        for (final StringReader reader : jsonReaders) {
             jdomParser.parse(reader);
         }
     }
