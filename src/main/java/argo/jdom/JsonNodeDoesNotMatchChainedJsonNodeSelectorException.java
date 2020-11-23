@@ -47,7 +47,7 @@ final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNod
         for (int i = failPath.size() - 1; i >= 0; i--) {
             result.append(failPath.get(i).shortForm());
             if (i != 0) {
-                result.append(".");
+                result.append('.');
             }
         }
         return result.toString();

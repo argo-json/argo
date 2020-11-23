@@ -38,11 +38,11 @@ final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMat
         boolean firstElement = true;
         for (final Object pathElement : pathElements) {
             if (!firstElement) {
-                result.append(".");
+                result.append('.');
             }
             firstElement = false;
             if (pathElement instanceof String) {
-                result.append("\"").append(pathElement).append("\"");
+                result.append('"').append(pathElement).append('"');
             } else {
                 result.append(pathElement);
             }

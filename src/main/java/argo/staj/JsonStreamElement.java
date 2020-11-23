@@ -42,7 +42,7 @@ public abstract class JsonStreamElement {
 
             @Override
             public String toString() {
-                return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType + "";
+                return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType;
             }
         };
     }

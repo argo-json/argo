@@ -262,7 +262,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             }
             result.append(chars[i]);
         }
-        result.append("]");
+        result.append(']');
         return result.toString();
     }
 
