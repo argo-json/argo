@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -19,37 +19,25 @@ import static argo.jdom.JsonStringNodeTestBuilder.aStringNodeDifferentTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JsonFieldTest {
     @Test
     void rejectsNullStringNameInConstructor() {
-        try {
-            new JsonField((String) null, aJsonNode());
-            fail("Expected JsonField constructed with a null name to throw a NullPointerException");
-        } catch (final NullPointerException e) {
-            assertThat(e.getMessage(), equalTo("Attempt to construct a JsonField with a null name."));
-        }
+        final NullPointerException nullPointerException = assertThrows(NullPointerException.class, () -> new JsonField((String) null, aJsonNode()));
+        assertThat(nullPointerException.getMessage(), equalTo("Attempt to construct a JsonField with a null name."));
     }
 
     @Test
     void rejectsNullJsonStringNameInConstructor() {
-        try {
-            new JsonField((JsonStringNode) null, aJsonNode());
-            fail("Expected JsonField constructed with a null name to throw a NullPointerException");
-        } catch (final NullPointerException e) {
-            assertThat(e.getMessage(), equalTo("Attempt to construct a JsonField with a null name."));
-        }
+        final NullPointerException nullPointerException = assertThrows(NullPointerException.class, () -> new JsonField((JsonStringNode) null, aJsonNode()));
+        assertThat(nullPointerException.getMessage(), equalTo("Attempt to construct a JsonField with a null name."));
     }
 
     @Test
     void rejectsNullValueInConstructor() {
-        try {
-            new JsonField(aStringNode(), null);
-            fail("Expected JsonField constructed with a null value to throw a NullPointerException");
-        } catch (final NullPointerException e) {
-            assertThat(e.getMessage(), equalTo("Attempt to construct a JsonField with a null value."));
-        }
+        final NullPointerException nullPointerException = assertThrows(NullPointerException.class, () -> new JsonField(aStringNode(), null));
+        assertThat(nullPointerException.getMessage(), equalTo("Attempt to construct a JsonField with a null value."));
     }
 
     @Test

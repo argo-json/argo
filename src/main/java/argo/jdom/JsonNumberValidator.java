@@ -29,7 +29,7 @@ public final class JsonNumberValidator { // TODO this is 'internal'
 
     private enum ParserState {
         BEFORE_START(false) {
-            ParserState handle(final int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException { // NOPMD TODO this should be turned off in the rules
                 switch (character) {
                     case '-':
                         return NEGATIVE;
@@ -50,7 +50,7 @@ public final class JsonNumberValidator { // TODO this is 'internal'
                 }
             }
         }, NEGATIVE(false) {
-            ParserState handle(final int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException { // NOPMD TODO this should be turned off in the rules
                 switch (character) {
                     case '0':
                         return ZERO;
@@ -81,7 +81,7 @@ public final class JsonNumberValidator { // TODO this is 'internal'
                 }
             }
         }, INTEGER_PART(true) {
-            ParserState handle(final int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException { // NOPMD TODO this should be turned off in the rules
                 switch (character) {
                     case '0':
                     case '1':
@@ -104,7 +104,7 @@ public final class JsonNumberValidator { // TODO this is 'internal'
                 }
             }
         }, DECIMAL_POINT(false) {
-            ParserState handle(final int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException { // NOPMD TODO this should be turned off in the rules
                 switch (character) {
                     case '0':
                     case '1':
@@ -122,7 +122,7 @@ public final class JsonNumberValidator { // TODO this is 'internal'
                 }
             }
         }, FRACTIONAL_PART(true) {
-            ParserState handle(final int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException { // NOPMD TODO this should be turned off in the rules
                 switch (character) {
                     case '0':
                     case '1':
@@ -143,7 +143,7 @@ public final class JsonNumberValidator { // TODO this is 'internal'
                 }
             }
         }, EXPONENT_MARKER(false) {
-            ParserState handle(final int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException { // NOPMD TODO this should be turned off in the rules
                 switch (character) {
                     case '+':
                     case '-':
@@ -164,7 +164,7 @@ public final class JsonNumberValidator { // TODO this is 'internal'
                 }
             }
         }, EXPONENT_SIGN(false) {
-            ParserState handle(final int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException { // NOPMD TODO this should be turned off in the rules
                 switch (character) {
                     case '0':
                     case '1':
@@ -182,7 +182,7 @@ public final class JsonNumberValidator { // TODO this is 'internal'
                 }
             }
         }, EXPONENT(true) {
-            ParserState handle(final int character) throws ParsingFailedException {
+            ParserState handle(final int character) throws ParsingFailedException { // NOPMD TODO this should be turned off in the rules
                 switch (character) {
                     case '0':
                     case '1':

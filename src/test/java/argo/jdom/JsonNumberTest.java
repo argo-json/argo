@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -13,20 +13,20 @@ package argo.jdom;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JsonNumberTest {
 
     @Test
     void testConstructorRejectsNullValue() {
-        try {
-            JsonNodeFactories.number((String) null);
-            fail("Constructing a JsonNumber with a null argument should throw a NullPointerException.");
-        } catch (final NullPointerException e) {
-            assertThat(e.getMessage(), equalTo("Attempt to construct a JsonNumber with a null value."));
-            // expect to end up here
-        }
+        final NullPointerException nullPointerException = assertThrows(NullPointerException.class, () -> JsonNodeFactories.number((String) null));
+        assertThat(nullPointerException.getMessage(), equalTo("Attempt to construct a JsonNumber with a null value."));
     }
 
     @Test

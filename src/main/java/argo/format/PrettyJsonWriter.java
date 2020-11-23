@@ -83,7 +83,7 @@ public final class PrettyJsonWriter implements JsonWriter {
         write(writer, jsonNode, 0);
     }
 
-    private void write(final Writer writer, final JsonNode jsonNode, final int indent) throws IOException {
+    private void write(final Writer writer, final JsonNode jsonNode, final int indent) throws IOException { // NOPMD TODO make this a consumer?
         switch (jsonNode.getType()) {
             case ARRAY:
                 writer.write('[');

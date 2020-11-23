@@ -49,7 +49,7 @@ public final class SajParser {
         parse(jsonListener, new StajParser(in));
     }
 
-    void parse(final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException {
+    void parse(final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException { // NOPMD TODO this should be turned off in the rules
         try {
             while (stajParser.hasNext()) {
                 final JsonStreamElement jsonStreamElement = stajParser.next();

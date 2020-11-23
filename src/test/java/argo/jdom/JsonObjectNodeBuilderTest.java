@@ -21,7 +21,7 @@ import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNodeDifferentTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JsonObjectNodeBuilderTest {
     @Test
@@ -44,14 +44,10 @@ final class JsonObjectNodeBuilderTest {
     @Test
     void uniqueFieldNameObjectBuilderThrowsIllegalArgumentExceptionOnDuplicateNames() {
         final JsonStringNode fieldName = aStringNode();
-        try {
-            aUniqueFieldNameObjectBuilder()
-                    .withField(fieldName, aJsonNodeBuilder())
-                    .withField(fieldName, aJsonNodeBuilder());
-            fail("Should have thrown IllegalArgumentException");
-        } catch (Exception e) {
-            assertThat(e.getMessage(), equalTo("Attempt to add a field with pre-existing key [" + fieldName + "]"));
-        }
+        final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> aUniqueFieldNameObjectBuilder()
+                .withField(fieldName, aJsonNodeBuilder())
+                .withField(fieldName, aJsonNodeBuilder()));
+        assertThat(illegalArgumentException.getMessage(), equalTo("Attempt to add a field with pre-existing key [" + fieldName + "]"));
     }
 
     @Test

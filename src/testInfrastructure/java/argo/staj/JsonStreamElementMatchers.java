@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -79,7 +79,7 @@ public class JsonStreamElementMatchers {
                     item.text();
                     mismatchDescription.appendText("no exception was thrown");
                     return false;
-                } catch (final Exception e) {
+                } catch (final IllegalStateException e) {
                     final boolean matches = exceptionMatcher.matches(e);
                     if (!matches) {
                         exceptionMatcher.describeMismatch(e, mismatchDescription);
@@ -110,5 +110,8 @@ public class JsonStreamElementMatchers {
                 description.appendText("A JsonStreamElement for which hasText() returns ").appendDescriptionOf(booleanMatcher);
             }
         };
+    }
+
+    private JsonStreamElementMatchers() {
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,12 +15,20 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static argo.jdom.JsonNodeFactories.*;
+import static argo.jdom.JsonNodeFactories.field;
+import static argo.jdom.JsonNodeFactories.number;
+import static argo.jdom.JsonNodeFactories.object;
+import static argo.jdom.JsonNodeFactories.string;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class JsonObjectTest {
 
@@ -38,13 +46,8 @@ final class JsonObjectTest {
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
         assertEquals(baseJsonNode, jsonObject.getFields().get(baseJsonKey));
-        try {
-            jsonObject.getFields().put(string("Another key"), number("1"));
-            fail("modifying the fields retrieved from a JsonObject should result in an UnsupportedOperationException");
-        } catch (Exception e) {
-            assertThat(e.getMessage(), is(nullValue()));
-            // expect to end up here
-        }
+        final UnsupportedOperationException unsupportedOperationException = assertThrows(UnsupportedOperationException.class, () -> jsonObject.getFields().put(string("Another key"), number("1")));
+        assertThat(unsupportedOperationException.getMessage(), is(nullValue()));
     }
 
     @Test

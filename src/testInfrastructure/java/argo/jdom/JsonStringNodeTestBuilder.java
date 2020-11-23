@@ -76,4 +76,7 @@ public final class JsonStringNodeTestBuilder {
         }
         return result.toString();
     }
+
+    private JsonStringNodeTestBuilder() {
+    }
 }

@@ -21,7 +21,7 @@ import static argo.staj.JsonStreamElement.*;
 /**
  * Types of element a {@code StajParser} can produce.
  */
-public enum JsonStreamElementType {
+public enum JsonStreamElementType { // NOPMD TODO this should be turned off in the rules
     START_ARRAY {
         @Override
         JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
@@ -136,7 +136,7 @@ public enum JsonStreamElementType {
         return endObject();
     }
 
-    private static JsonStreamElement parseFromEndOfNode(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+    private static JsonStreamElement parseFromEndOfNode(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) { // NOPMD TODO this should be turned off in the rules
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         final JsonStreamElementType peek = stack.peek();
         if (peek.equals(START_OBJECT)) {
@@ -200,7 +200,7 @@ public enum JsonStreamElementType {
         return nextChar;
     }
 
-    private static JsonStreamElement aJsonValue(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+    private static JsonStreamElement aJsonValue(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) { // NOPMD TODO this should be turned off in the rules
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
@@ -304,7 +304,7 @@ public enum JsonStreamElementType {
         return result.length() == 0 ? "" : result.toString();
     }
 
-    private static char escapedStringChar(final PositionTrackingPushbackReader in) {
+    private static char escapedStringChar(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
         final char result;
         final int firstChar = in.read();
         switch (firstChar) {
@@ -393,7 +393,7 @@ public enum JsonStreamElementType {
         return result;
     }
 
-    private static char nonZeroDigitToken(final PositionTrackingPushbackReader in) {
+    private static char nonZeroDigitToken(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
         final char result;
         final int nextChar = in.read();
         switch (nextChar) {
@@ -414,7 +414,7 @@ public enum JsonStreamElementType {
         return result;
     }
 
-    private static char digitToken(final PositionTrackingPushbackReader in) {
+    private static char digitToken(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
         final char result;
         final int nextChar = in.read();
         switch (nextChar) {
@@ -436,7 +436,7 @@ public enum JsonStreamElementType {
         return result;
     }
 
-    private static StringBuilder digitString(final PositionTrackingPushbackReader in) {
+    private static StringBuilder digitString(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
         final StringBuilder result = new StringBuilder();
         boolean gotANonDigit = false;
         while (!gotANonDigit) {

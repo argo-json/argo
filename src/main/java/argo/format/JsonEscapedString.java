@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Mark Slater
+ *  Copyright  2020 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.format;
@@ -23,7 +23,7 @@ final class JsonEscapedString {
         escapeStringTo(writer, chars, 0, chars.length);
     }
 
-    static void escapeStringTo(final Writer writer, final char[] cbuf, final int offset, final int length) throws IOException {
+    static void escapeStringTo(final Writer writer, final char[] cbuf, final int offset, final int length) throws IOException { // NOPMD TODO this should be turned off in the rules
         if (offset < 0 || offset > cbuf.length || length < 0 || offset + length > cbuf.length || offset + length < 0) {
             throw new IndexOutOfBoundsException();
         } else if (length != 0) {

@@ -70,7 +70,7 @@ final class PositionTrackingPushbackReader implements ThingWithPosition {
     /**
      * @throws JsonStreamException if delegate.read() throws an IOException
      */
-    int read(final char[] buffer) {
+    int read(final char[] buffer) {  // NOPMD TODO this should be turned off in the rules
         if (buffer.length == 0) {
             return 0;
         } else {
