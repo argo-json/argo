@@ -73,7 +73,7 @@ public final class JsonNodeTestBuilder {
         JsonNode result;
         do {
             result = aJsonNode();
-        } while (result == jsonNode);
+        } while (result.equals(jsonNode));
         return result;
     }
 
