@@ -51,6 +51,12 @@ testSets {
 check.dependsOn performanceTest
 check.dependsOn codeSamples
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
 dependencies {
     testInfrastructureCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
     testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.18'
