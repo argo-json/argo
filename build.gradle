@@ -22,6 +22,7 @@ plugins {
     id 'signing'
     id 'maven-publish'
     id 'idea'
+    id 'pmd'
     id 'com.github.spotbugs' version '4.2.1'
     id 'org.hidetake.ssh' version '2.10.1'
     id 'at.bxm.svntools' version '2.2.1'
@@ -123,6 +124,16 @@ task combinedJar(type: Jar) {
     archiveClassifier.set 'combined'
     from sourceSets.main.allSource
     from sourceSets.main.output
+}
+
+pmd {
+    ruleSetFiles = files('tools/pmd-ruleset.xml')
+    ruleSets = []
+}
+
+pmdMain {
+    ruleSetFiles = files('tools/pmd-ruleset.xml', 'tools/pmd-main-extra-ruleset.xml')
+    ruleSets = []
 }
 
 artifacts {

@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+
+<!--
+  ~  Copyright  2020 Mark Slater
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~
+  ~  	http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<ruleset name="Custom Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        My custom rules
+    </description>
+
+    <rule ref="category/java/bestpractices.xml">
+        <exclude
+                name="DoubleBraceInitialization"/> <!-- Unfortunately this is used in idiomatic JMock; switched back on for main -->
+        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+        <exclude name="JUnitTestContainsTooManyAsserts"/>
+        <exclude name="JUnitTestsShouldIncludeAssert"/>
+        <exclude
+                name="MissingOverride"/> <!-- Unfortunately, this rule triggers on methods that implement an interface, which can't be annotated until Java 6 -->
+        <exclude
+                name="PreserveStackTrace"/> <!-- This is good advice... unless you catch an exception which doesn't add meaningful stacktrace -->
+        <exclude name="UseVarargs"/> <!-- Too much false positive -->
+    </rule>
+
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="CallSuperInConstructor"/>
+        <exclude name="ClassNamingConventions"/> <!-- configured later -->
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="DefaultPackage"/>
+        <exclude name="LinguisticNaming"/> <!-- configured later -->
+        <exclude
+                name="LocalVariableCouldBeFinal"/> <!-- Don't want this on for code samples; switched back on for main -->
+        <exclude name="LongVariable"/> <!-- configured later -->
+        <exclude
+                name="MethodArgumentCouldBeFinal"/> <!-- Don't want this on for code samples; switched back on for main -->
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="ShortVariable"/>
+        <exclude name="TooManyStaticImports"/>
+        <exclude name="UnnecessaryFullyQualifiedName"/> <!-- doesn't understand name clashes -->
+        <exclude name="UseDiamondOperator"/> <!-- not in Java 5, son -->
+    </rule>
+    <rule ref="category/java/codestyle.xml/LongVariable">
+        <properties>
+            <property name="minimum" value="60"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/LinguisticNaming">
+        <properties>
+            <property name="ignoredAnnotations" value="java.lang.Override|org.junit.jupiter.api.Test"/>
+            <property name="checkBooleanMethod" value="true"/>
+            <property name="checkGetters" value="true"/>
+            <property name="checkSetters"
+                      value="false"/> <!-- This is great in principal... except that the JDK violates it, so to use the JDK you also might have to violate it -->
+            <property name="checkPrefixedTransformMethods" value="true"/>
+            <property name="checkTransformMethods" value="false"/>
+            <property name="booleanMethodPrefixes" value="is|has|can|have|will|should"/>
+            <property name="transformMethodNames" value="to|as"/>
+            <property name="checkFields" value="true"/>
+            <property name="checkVariables" value="true"/>
+            <property name="booleanFieldPrefixes" value="is|has|can|have|will|should"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]*"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/design.xml">
+        <exclude name="AvoidThrowingNullPointerException"/>
+        <exclude
+                name="AvoidThrowingRawExceptionTypes"/> <!-- All well and good... except sometimes throwing RuntimeException is OK -->
+        <exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
+        <exclude name="CouplingBetweenObjects"/> <!-- configured later -->
+        <!--        <exclude name="CyclomaticComplexity"/> &lt;!&ndash; configured later &ndash;&gt;-->
+        <exclude name="ExcessiveImports"/>
+        <exclude name="ExcessiveMethodLength"/>
+        <exclude name="ExcessivePublicCount"/>
+        <exclude name="GodClass"/>
+        <exclude name="SignatureDeclareThrowsException"/> <!-- configured later -->
+        <exclude name="LawOfDemeter"/>
+        <exclude name="LoosePackageCoupling"/>
+        <exclude name="NcssCount"/> <!-- configured later -->
+        <exclude name="TooManyMethods"/>
+    </rule>
+    <rule ref="category/java/design.xml/CouplingBetweenObjects">
+        <properties>
+            <property name="threshold" value="30"/>
+        </properties>
+    </rule>
+    <!--    <rule ref="category/java/design.xml/CyclomaticComplexity">-->
+    <!--        <properties>-->
+    <!--            <property name="methodReportLevel" value="11"/>-->
+    <!--        </properties>-->
+    <!--    </rule>-->
+    <rule ref="category/java/design.xml/NcssCount">
+        <properties>
+            <property name="methodReportLevel"
+                      value="120"/> <!-- This is a bad metric for e.g. mapping with a case statement -->
+            <property name="classReportLevel" value="1500"/>
+            <property name="ncssOptions" value=""/>
+        </properties>
+    </rule>
+    <rule ref="category/java/design.xml/SignatureDeclareThrowsException">
+        <properties>
+            <property name="IgnoreJUnitCompletely" value="true"/>
+        </properties>
+    </rule>
+
+
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="NullAssignment"/>
+        <exclude name="AvoidDuplicateLiterals"/>
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
+        <exclude name="AvoidLiteralsInIfCondition"/>
+        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="CloseResource"/> <!-- configured later -->
+        <exclude name="DataflowAnomalyAnalysis"/>
+        <exclude name="MissingBreakInSwitch"/> <!-- Just doesn't work -->
+        <exclude name="MissingSerialVersionUID"/>
+    </rule>
+    <rule ref="category/java/errorprone.xml/CloseResource">
+        <properties>
+            <property name="closeTargets" value=""/>
+            <property name="types"
+                      value="java.lang.AutoCloseable,java.sql.Connection,java.sql.Statement,java.sql.ResultSet"/>
+            <property name="closeAsDefaultTarget" value="true"/>
+            <property name="allowedResourceTypes"
+                      value="java.io.ByteArrayOutputStream|java.io.ByteArrayInputStream|java.io.StringReader|java.io.StringWriter|java.io.CharArrayWriter|java.util.stream.Stream|org.apache.commons.io.output.StringBuilderWriter"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="UseConcurrentHashMap"/>
+    </rule>
+
+    <rule ref="category/java/performance.xml">
+        <exclude name="AvoidFileStream"/> <!-- requires java >= 7 -->
+        <exclude name="RedundantFieldInitializer"/>
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+    </rule>
+
+    <rule ref="category/java/security.xml"/>
+</ruleset>
