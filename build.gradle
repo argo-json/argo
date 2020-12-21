@@ -134,6 +134,12 @@ task combinedJar(type: Jar) {
     from sourceSets.main.output
 }
 
+jar {
+    manifest {
+        attributes("Automatic-Module-Name": "net.sourceforge.argo")
+    }
+}
+
 pmd {
     toolVersion = '6.29.0'
     ruleSetFiles = files('tools/pmd-ruleset.xml')
