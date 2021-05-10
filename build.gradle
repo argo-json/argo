@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright  2021 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -38,6 +38,7 @@ repositories {
 }
 
 sourceSets {
+    moduleInfo
     documentation
 }
 
@@ -58,6 +59,8 @@ java {
 }
 
 dependencies {
+    moduleInfoImplementation sourceSets.main.output
+
     testInfrastructureCompile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
     testInfrastructureCompile group: 'net.sourceforge.ickles', name: 'ickles', version: '0.18'
     testInfrastructureCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
@@ -88,6 +91,9 @@ idea {
         jdkName = 1.8
         languageLevel = '1.5'
     }
+    module {
+        jdkName = 11
+    }
 }
 
 tasks.withType(Test) {
@@ -106,6 +112,23 @@ task compileTinyJava(type: JavaCompile) {
     classpath = sourceSets.main.compileClasspath
     destinationDir = file("${project.buildDir}/tiny-classes/main")
     options.compilerArgs = ['-g:none']
+}
+
+compileModuleInfoJava {
+    sourceCompatibility = 9
+    targetCompatibility = 9
+    javaCompiler.set javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(9)
+    }
+    doFirst {
+        classpath += sourceSets.main.compileClasspath
+
+        options.compilerArgs = [
+                '--module-path', classpath.asPath,
+//                '--add-modules', 'ALL-SYSTEM',
+                '-d', sourceSets.main.output.classesDirs.asPath
+        ]
+    }
 }
 
 task myJavadoc(type: Javadoc) {
@@ -135,9 +158,8 @@ task combinedJar(type: Jar) {
 }
 
 jar {
-    manifest {
-        attributes("Automatic-Module-Name": "net.sourceforge.argo")
-    }
+    from sourceSets.main.output
+    from sourceSets.moduleInfo.output
 }
 
 pmd {
