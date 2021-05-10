@@ -108,6 +108,9 @@ compileJava {
 task compileTinyJava(type: JavaCompile) {
     sourceCompatibility = 1.5
     targetCompatibility = 1.5
+    javaCompiler.set javaToolchains.compilerFor {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
     source sourceSets.main.allSource
     classpath = sourceSets.main.compileClasspath
     destinationDir = file("${project.buildDir}/tiny-classes/main")
