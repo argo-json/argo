@@ -14,6 +14,11 @@ import net.sourceforge.xazzle.xhtml.HtmlTag;
 
 import static documentation.ArgoPage.anArgoPage;
 import static documentation.ArgoPage.codeBlock;
+import static net.sourceforge.urin.Authority.authority;
+import static net.sourceforge.urin.Host.registeredName;
+import static net.sourceforge.urin.Path.path;
+import static net.sourceforge.urin.Scheme.scheme;
+import static net.sourceforge.urin.scheme.http.Https.https;
 import static net.sourceforge.xazzle.xhtml.Href.href;
 import static net.sourceforge.xazzle.xhtml.Tags.*;
 
@@ -24,9 +29,9 @@ final class DownloadsPage {
 
     @SuppressWarnings({"StaticMethodOnlyUsedInOneClass"})
     static HtmlTag downloadsPage(final String version) {
-        String standardJarUrl = "https://sourceforge.net/projects/argo/files/argo/" + version + "/argo-" + version + ".jar/download";
-        String smallJarUrl = "https://sourceforge.net/projects/argo/files/argo/" + version + "/argo-small-" + version + ".jar/download";
-        String subversionUrl = "https://svn.code.sf.net/p/argo/code/tags/" + version;
+        String standardJarUrl = https(registeredName("sourceforge.net"), path("projects", "argo", "files", "argo", version, "argo-" + version + ".jar", "download")).asString();
+        String smallJarUrl = https(registeredName("sourceforge.net"), path("projects", "argo", "files", "argo", version, "argo-small-" + version + ".jar", "download")).asString();
+        String gitUri = scheme("git").urin(authority(registeredName("git.code.sf.net")), path("p", "argo", "git")).asString();
         return anArgoPage(
                 h2Tag(xhtmlText("Downloads")),
                 paragraphTag(
@@ -48,14 +53,14 @@ final class DownloadsPage {
                                 "</dependency>")
                         ),
                         listItemTag(
-                                xhtmlText("or as the full source code including tests etc. using Subversion from "), codeTag(anchorTag(xhtmlText(subversionUrl)).withHref(href(subversionUrl))), xhtmlText(".")
+                                xhtmlText("or as the full source code including tests etc. using Git from "), codeTag(anchorTag(xhtmlText(gitUri)).withHref(href(gitUri))), xhtmlText(".")
                         )
                 ),
                 paragraphTag(
                         xhtmlText("Previous versions are "), anchorTag(xhtmlText("also available")).withHref(href("http://sourceforge.net/projects/argo/files/argo/")), xhtmlText(".")
                 ),
                 paragraphTag(
-                        xhtmlText("It has no runtime dependencies, and all dependencies used in tests are in Subversion.")
+                        xhtmlText("It has no runtime dependencies, and all dependencies used in tests are retrieved by Gradle.")
                 )
         );
     }
