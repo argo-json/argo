@@ -19,7 +19,7 @@ plugins {
     id 'maven-publish'
     id 'idea'
     id 'pmd'
-    id 'com.github.spotbugs' version '4.6.0'
+    id 'com.github.spotbugs' version '5.0.14'
     id 'org.hidetake.ssh' version '2.10.1'
     id 'org.tenne.rest' version '0.4.2'
     id 'io.codearte.nexus-staging' version '0.22.0'
