@@ -109,7 +109,7 @@ task compileTinyJava(type: JavaCompile) {
     }
     source sourceSets.main.allSource
     classpath = sourceSets.main.compileClasspath
-    destinationDir = file("${project.buildDir}/tiny-classes/main")
+    destinationDirectory = file("${project.buildDir}/tiny-classes/main")
     options.compilerArgs = ['-g:none']
 }
 
@@ -200,7 +200,7 @@ task png(type: Svg2PngTask) {
 
 
 task buildDocumentation(type: JavaExec, dependsOn: documentationDirectory) {
-    main = 'documentation.DocumentationGenerator'
+    mainClass = 'documentation.DocumentationGenerator'
     args("${project.buildDir}/documentation")
     classpath = sourceSets.documentation.runtimeClasspath
 }
