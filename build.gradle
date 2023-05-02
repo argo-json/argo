@@ -24,7 +24,7 @@ plugins {
     id 'org.tenne.rest' version '0.4.2'
     id 'io.codearte.nexus-staging' version '0.22.0'
     id 'de.marcphilipp.nexus-publish' version '0.4.0'
-    id 'com.gitlab.svg2ico' version '0.11'
+    id 'com.gitlab.svg2ico' version '0.14'
     id 'org.unbroken-dome.test-sets' version '4.0.0'
 }
 
