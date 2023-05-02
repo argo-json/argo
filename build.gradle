@@ -56,7 +56,7 @@ java {
 dependencies {
     moduleInfoImplementation sourceSets.main.output
 
-    testInfrastructureImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    testInfrastructureImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
     testInfrastructureImplementation group: 'net.sourceforge.ickles', name: 'ickles', version: '0.18'
     testInfrastructureImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
