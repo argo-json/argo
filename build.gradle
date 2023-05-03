@@ -24,12 +24,13 @@ plugins {
     id 'maven-publish'
     id 'idea'
     id 'pmd'
+    id 'java-test-fixtures'
+    id 'jvm-test-suite'
     id 'com.github.spotbugs' version '5.0.14'
     id 'org.hidetake.ssh' version '2.11.2'
     id 'io.codearte.nexus-staging' version '0.30.0'
     id 'de.marcphilipp.nexus-publish' version '0.4.0'
     id 'com.gitlab.svg2ico' version '0.14'
-    id 'org.unbroken-dome.test-sets' version '4.0.0'
 }
 
 repositories {
@@ -41,15 +42,46 @@ sourceSets {
     documentation
 }
 
-testSets {
-    libraries { testInfrastructure }
-    unitTest { imports libraries.testInfrastructure }
-    performanceTest { imports libraries.testInfrastructure }
-    codeSamples { imports libraries.testInfrastructure }
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+            dependencies {
+                implementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+                implementation 'org.hamcrest:hamcrest:2.2'
+                implementation 'org.jmock:jmock-junit5:2.12.0'
+                implementation 'net.sourceforge.ickles:ickles:0.21'
+                implementation 'commons-io:commons-io:2.11.0'
+                runtimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+            }
+        }
+
+        performanceTest(JvmTestSuite) {
+            useJUnitJupiter()
+            dependencies {
+                implementation project()
+                implementation testFixtures(project())
+                implementation 'commons-io:commons-io:2.11.0'
+                implementation 'net.sf.json-lib:json-lib:2.4:jdk15'
+            }
+        }
+
+        codeSamples(JvmTestSuite) {
+            useJUnitJupiter()
+            dependencies {
+                implementation project()
+                implementation testFixtures(project())
+                implementation 'commons-io:commons-io:2.11.0'
+                implementation 'org.hamcrest:hamcrest:2.2'
+            }
+        }
+    }
 }
 
-check.dependsOn performanceTest
-check.dependsOn codeSamples
+tasks.named('check') {
+    dependsOn(testing.suites.performanceTest)
+    dependsOn(testing.suites.codeSamples)
+}
 
 java {
     toolchain {
@@ -60,18 +92,9 @@ java {
 dependencies {
     moduleInfoImplementation sourceSets.main.output
 
-    testInfrastructureImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-    testInfrastructureImplementation group: 'net.sourceforge.ickles', name: 'ickles', version: '0.21'
-    testInfrastructureImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
-
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.3'
-    testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
-    testImplementation group: 'org.jmock', name: 'jmock-junit5', version: '2.12.0'
-    testImplementation group: 'net.sourceforge.ickles', name: 'ickles', version: '0.21'
-    testImplementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.9.3'
-
-    performanceTestImplementation group: 'net.sf.json-lib', name: 'json-lib', version: '2.4', classifier: 'jdk15'
+    testFixturesImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    testFixturesImplementation group: 'net.sourceforge.ickles', name: 'ickles', version: '0.21'
+    testFixturesImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
     documentationImplementation sourceSets.main.output
     documentationImplementation group: 'net.sourceforge.urin', name: 'urin', version: '4.1'

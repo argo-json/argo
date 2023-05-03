@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,14 +10,16 @@
 
 package argo.jdom;
 
-import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
+import argo.saj.InvalidSyntaxException;
+import argo.saj.StajBasedSajParser;
+import argo.staj.StajParser;
 
-public final class JsonNodeBuilderTestBuilder {
-    public static JsonNodeBuilder<JsonNode> aJsonNodeBuilder() {
-        final JsonNode jsonNode = aJsonNode();
-        return () -> jsonNode;
+public final class StajBasedJdomParser {
+
+    private static final JdomParser JDOM_PARSER = new JdomParser();
+
+    public JsonNode parse(final StajParser stajParser) throws InvalidSyntaxException {
+        return JDOM_PARSER.parse(jsonListener -> new StajBasedSajParser().parse(stajParser, jsonListener));
     }
 
-    private JsonNodeBuilderTestBuilder() {
-    }
 }
