@@ -126,7 +126,7 @@ compileJava {
     targetCompatibility = 1.5
 }
 
-task compileTinyJava(type: JavaCompile) {
+tasks.register('compileTinyJava', JavaCompile) {
     sourceCompatibility = 1.5
     targetCompatibility = 1.5
     javaCompiler.set javaToolchains.compilerFor {
@@ -134,7 +134,7 @@ task compileTinyJava(type: JavaCompile) {
     }
     source sourceSets.main.allSource
     classpath = sourceSets.main.compileClasspath
-    destinationDirectory = file("${project.buildDir}/tiny-classes/main")
+    destinationDirectory.set(file("${project.buildDir}/tiny-classes/main"))
     options.compilerArgs = ['-g:none']
 }
 
@@ -155,27 +155,28 @@ compileModuleInfoJava {
     }
 }
 
-task myJavadoc(type: Javadoc) {
+tasks.register('myJavadoc', Javadoc) {
     source = sourceSets.main.allJava
     title = "Argo version ${version}"
 }
 
-task javadocJar(type: Jar) {
+tasks.register('javadocJar', Jar) {
     archiveClassifier.set 'javadoc'
     from myJavadoc
 }
 
-task tinyJar(type: Jar, dependsOn: compileTinyJava) {
+tasks.register('tinyJar', Jar) {
+    dependsOn compileTinyJava
     archiveClassifier.set 'tiny'
     from file("${project.buildDir}/tiny-classes/main")
 }
 
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
     archiveClassifier.set 'sources'
     from sourceSets.main.allSource
 }
 
-task combinedJar(type: Jar) {
+tasks.register('combinedJar', Jar) {
     archiveClassifier.set 'combined'
     from sourceSets.main.allSource
     from sourceSets.main.output
@@ -201,7 +202,7 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-task ico(type: Svg2IcoTask) {
+tasks.register('ico', Svg2IcoTask) {
     destination = new File(documentationDirectory, "favicon.ico")
     input {
         source = file('resources/favicon.svg')
@@ -210,7 +211,7 @@ task ico(type: Svg2IcoTask) {
     }
 }
 
-task png(type: Svg2PngTask) {
+tasks.register('png', Svg2PngTask) {
     source = file('resources/favicon.svg')
     destination = file("${project.buildDir}/icons/favicon.png")
     width = 128
@@ -218,14 +219,15 @@ task png(type: Svg2PngTask) {
 }
 
 
-task buildDocumentation(type: JavaExec) {
+tasks.register('buildDocumentation', JavaExec) {
     outputs.dir(documentationDirectory)
     mainClass = 'documentation.DocumentationGenerator'
     args(documentationDirectory.toString())
     classpath = sourceSets.documentation.runtimeClasspath
 }
 
-task documentationJar(type: Tar, dependsOn: [buildDocumentation, ico]) {
+tasks.register('documentationJar', Tar) {
+    dependsOn buildDocumentation, ico
     from documentationDirectory
     from 'docs'
     archiveBaseName.set('documentation')
@@ -247,7 +249,8 @@ remotes {
     }
 }
 
-task copyToSourceforge(dependsOn: [jar, documentationJar, javadocJar, combinedJar, tinyJar]) {
+tasks.register('copyToSourceforge') {
+    dependsOn jar, documentationJar, javadocJar, combinedJar, tinyJar
     doLast {
         ssh.runInOrder {
             session(remotes.sourceforgeShell) {
@@ -329,16 +332,19 @@ nexusStaging {
     password = ossrhPassword
 }
 
-task performRelease(dependsOn: [clean, build, publishToSonatype, copyToSourceforge, png, closeRepository, releaseRepository, updateSourceforgeDefaultDownload]) {
+tasks.register('performRelease') {
+    dependsOn clean, build, publishToSonatype, copyToSourceforge, png, closeRepository, releaseRepository, updateSourceforgeDefaultDownload
     doLast {
         println 'Release complete :)'
     }
 }
 
-task buildAndDeployCleanVersion(dependsOn: [clean, performRelease]) {
+tasks.register('buildAndDeployCleanVersion') {
+    dependsOn clean, performRelease
 }
 
-task incrementVersionNumber(dependsOn: buildAndDeployCleanVersion) {
+tasks.register('incrementVersionNumber') {
+    dependsOn buildAndDeployCleanVersion
     doLast {
         ant.propertyfile(file: file('gradle.properties')) {
             entry(key: 'minorVersion', type: 'int', operation: '+', value: 1)
@@ -346,7 +352,9 @@ task incrementVersionNumber(dependsOn: buildAndDeployCleanVersion) {
     }
 }
 
-task deploy(dependsOn: incrementVersionNumber) {}
+tasks.register('deploy') {
+    dependsOn incrementVersionNumber
+}
 
 build.mustRunAfter clean
 publishToSonatype.mustRunAfter build
