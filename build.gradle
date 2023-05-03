@@ -37,7 +37,7 @@ repositories {
     mavenCentral()
 }
 
-final def documentationDirectory = new File(project.buildDir, "documentation")
+final def documentationDirectory = new File(project.buildDir, 'documentation')
 
 sourceSets {
     moduleInfo
@@ -203,7 +203,7 @@ artifacts {
 }
 
 tasks.register('ico', Svg2IcoTask) {
-    destination = new File(documentationDirectory, "favicon.ico")
+    destination = new File(documentationDirectory, 'favicon.ico')
     input {
         source = file('resources/favicon.svg')
         width = 32
