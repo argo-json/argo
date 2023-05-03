@@ -119,10 +119,6 @@ idea {
     }
 }
 
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
-}
-
 compileJava {
     sourceCompatibility = 1.5
     targetCompatibility = 1.5
