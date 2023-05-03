@@ -37,6 +37,8 @@ repositories {
     mavenCentral()
 }
 
+final def documentationDirectory = new File(project.buildDir, "documentation")
+
 sourceSets {
     moduleInfo
     documentation
@@ -199,14 +201,8 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-task documentationDirectory {
-    doLast {
-        mkdir("${project.buildDir}/documentation")
-    }
-}
-
-task ico(type: Svg2IcoTask, dependsOn: documentationDirectory) {
-    destination = file("${project.buildDir}/documentation/favicon.ico")
+task ico(type: Svg2IcoTask) {
+    destination = new File(documentationDirectory, "favicon.ico")
     input {
         source = file('resources/favicon.svg')
         width = 32
@@ -222,14 +218,15 @@ task png(type: Svg2PngTask) {
 }
 
 
-task buildDocumentation(type: JavaExec, dependsOn: documentationDirectory) {
+task buildDocumentation(type: JavaExec) {
+    outputs.dir(documentationDirectory)
     mainClass = 'documentation.DocumentationGenerator'
-    args("${project.buildDir}/documentation")
+    args(documentationDirectory.toString())
     classpath = sourceSets.documentation.runtimeClasspath
 }
 
 task documentationJar(type: Tar, dependsOn: [buildDocumentation, ico]) {
-    from "${project.buildDir}/documentation"
+    from documentationDirectory
     from 'docs'
     archiveBaseName.set('documentation')
     compression = Compression.GZIP
