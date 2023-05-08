@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -804,7 +804,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
-            assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected a digit 0 - 9 but reached end of input."));
+            assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected '+' or '-' or a digit 0 - 9 but reached end of input."));
         }
     }
 
@@ -826,7 +826,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
             new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
-            assertThat(e.getMessage(), equalTo("At line 1, column 3:  Expected a digit 1 - 9 but reached end of input."));
+            assertThat(e.getMessage(), equalTo("At line 1, column 3:  Expected a digit 0 - 9 but reached end of input."));
         }
     }
 

@@ -10,6 +10,8 @@
 
 package argo.staj;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
@@ -276,31 +278,8 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return startField(stringToken(pushbackReader));
     }
 
-    private static String stringToken(final PositionTrackingPushbackReader in) {
-        final int firstChar = in.read();
-        if (DOUBLE_QUOTE != firstChar) {
-            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected [" + DOUBLE_QUOTE + "]", firstChar, in);
-        }
-        final ThingWithPosition openDoubleQuotesPosition = in.snapshotOfPosition();
-        final StringBuilder result = new StringBuilder();
-        boolean stringClosed = false;
-        while (!stringClosed) {
-            final int nextChar = in.read();
-            switch (nextChar) {
-                case -1:
-                    throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
-                case DOUBLE_QUOTE:
-                    stringClosed = true;
-                    break;
-                case BACK_SLASH:
-                    final char escapedChar = escapedStringChar(in);
-                    result.append(escapedChar);
-                    break;
-                default:
-                    result.append((char) nextChar);
-            }
-        }
-        return result.length() == 0 ? "" : result.toString();
+    private static Reader stringToken(final PositionTrackingPushbackReader in) {
+        return new StringReader(in);
     }
 
     private static char escapedStringChar(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
@@ -356,162 +335,293 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return result;
     }
 
-    private static String numberToken(final PositionTrackingPushbackReader in) {
-        final StringBuilder result = new StringBuilder();
-        final int firstChar = in.read();
-        if ('-' == firstChar) {
-            result.append('-');
-        } else {
-            in.unreadLastCharacter();
-        }
-        result.append(nonNegativeNumberToken(in));
-        final String numberToken = result.toString();
-        if ("0".equals(numberToken)) {
-            return "0";
-        } else if ("1".equals(numberToken)) {
-            return "1";
-        } else {
-            return numberToken;
-        }
-    }
-
-    private static StringBuilder nonNegativeNumberToken(final PositionTrackingPushbackReader in) {
-        final StringBuilder result = new StringBuilder();
-        final int firstChar = in.read();
-        if ('0' == firstChar) {
-            result.append('0');
-            result.append(possibleFractionalComponent(in));
-            result.append(possibleExponent(in));
-        } else {
-            in.unreadLastCharacter();
-            result.append(nonZeroDigitToken(in));
-            result.append(digitString(in));
-            result.append(possibleFractionalComponent(in));
-            result.append(possibleExponent(in));
-        }
-        return result;
-    }
-
-    private static char nonZeroDigitToken(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
-        final char result;
-        final int nextChar = in.read();
-        switch (nextChar) {
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                result = (char) nextChar;
-                break;
-            default:
-                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 1 - 9", nextChar, in);
-        }
-        return result;
-    }
-
-    private static char digitToken(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
-        final char result;
-        final int nextChar = in.read();
-        switch (nextChar) {
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                result = (char) nextChar;
-                break;
-            default:
-                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 0 - 9", nextChar, in);
-        }
-        return result;
-    }
-
-    private static StringBuilder digitString(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
-        final StringBuilder result = new StringBuilder();
-        boolean gotANonDigit = false;
-        while (!gotANonDigit) {
-            final int nextChar = in.read();
-            switch (nextChar) {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                    result.append((char) nextChar);
-                    break;
-                default:
-                    gotANonDigit = true;
-                    in.unreadLastCharacter();
-            }
-        }
-        return result;
-    }
-
-    private static StringBuilder possibleFractionalComponent(final PositionTrackingPushbackReader pushbackReader) {
-        final StringBuilder result = new StringBuilder();
-        final int firstChar = pushbackReader.read();
-        if ('.' == firstChar) {
-            result.append('.');
-            result.append(digitToken(pushbackReader));
-            result.append(digitString(pushbackReader));
-        } else {
-            pushbackReader.unreadLastCharacter();
-        }
-        return result;
-    }
-
-    private static StringBuilder possibleExponent(final PositionTrackingPushbackReader pushbackReader) {
-        final StringBuilder result = new StringBuilder();
-        final int firstChar = pushbackReader.read();
-        switch (firstChar) {
-            case 'E':
-                result.append('E');
-                result.append(possibleSign(pushbackReader));
-                result.append(digitToken(pushbackReader));
-                result.append(digitString(pushbackReader));
-                break;
-            case 'e':
-                result.append('e');
-                result.append(possibleSign(pushbackReader));
-                result.append(digitToken(pushbackReader));
-                result.append(digitString(pushbackReader));
-                break;
-            default:
-                pushbackReader.unreadLastCharacter();
-                break;
-        }
-        return result;
-    }
-
-    private static StringBuilder possibleSign(final PositionTrackingPushbackReader pushbackReader) {
-        final StringBuilder result = new StringBuilder();
-        final int firstChar = pushbackReader.read();
-        if ('+' == firstChar) {
-            result.append('+');
-        } else if ('-' == firstChar) {
-            result.append('-');
-        } else {
-            pushbackReader.unreadLastCharacter();
-        }
-        return result;
+    private static Reader numberToken(final PositionTrackingPushbackReader in) {
+        return new NumberReader(in);
     }
 
     private static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final ThingWithPosition thingWithPosition) {
         return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input." : "got [" + stringify(readBuffer, charactersRead) + "]."), thingWithPosition);
     }
 
+    private static class NumberReader extends Reader {
+
+        private enum ParserState {
+            BEFORE_START {
+                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                    switch (character) {
+                        case '-':
+                            return NEGATIVE;
+                        case '0':
+                            return ZERO;
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            return INTEGER_PART;
+                        default:
+                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected '-' or a digit 0 - 9", character, position);
+                    }
+                }
+            }, NEGATIVE {
+                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                    switch (character) {
+                        case '0':
+                            return ZERO;
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            return INTEGER_PART;
+                        default:
+                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 0 - 9", character, position);
+                    }
+                }
+            }, ZERO {
+                ParserState handle(final int character, final ThingWithPosition position) {
+                    switch (character) {
+                        case '.':
+                            return DECIMAL_POINT;
+                        case 'e':
+                        case 'E':
+                            return EXPONENT_MARKER;
+                        default:
+                            return END;
+                    }
+                }
+            }, INTEGER_PART {
+                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                    switch (character) {
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            return INTEGER_PART;
+                        case '.':
+                            return DECIMAL_POINT;
+                        case 'e':
+                        case 'E':
+                            return EXPONENT_MARKER;
+                        default:
+                            return END;
+                    }
+                }
+            }, DECIMAL_POINT {
+                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                    switch (character) {
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            return FRACTIONAL_PART;
+                        default:
+                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 0 - 9", character, position);
+                    }
+                }
+            }, FRACTIONAL_PART {
+                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                    switch (character) {
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            return FRACTIONAL_PART;
+                        case 'e':
+                        case 'E':
+                            return EXPONENT_MARKER;
+                        default:
+                            return END;
+                    }
+                }
+            }, EXPONENT_MARKER {
+                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                    switch (character) {
+                        case '+':
+                        case '-':
+                            return EXPONENT_SIGN;
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            return EXPONENT;
+                        default:
+                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected '+' or '-' or a digit 0 - 9", character, position);
+                    }
+                }
+            }, EXPONENT_SIGN {
+                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                    switch (character) {
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            return EXPONENT;
+                        default:
+                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 0 - 9", character, position);
+                    }
+                }
+            }, EXPONENT {
+                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                    switch (character) {
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                            return EXPONENT;
+                        default:
+                            return END;
+                    }
+                }
+            }, END {
+                ParserState handle(final int character, final ThingWithPosition position) {
+                    throw new UnsupportedOperationException("TODO implement me"); // TODO implement me
+                }
+            };
+
+            abstract ParserState handle(int character, ThingWithPosition position);
+        }
+
+        private final PositionTrackingPushbackReader in;
+        private ParserState parserState = ParserState.BEFORE_START;
+
+        NumberReader(PositionTrackingPushbackReader in) {
+            this.in = in;
+        }
+
+        public int read(final char[] cbuf, final int offset, final int length) throws IOException {
+            synchronized (lock) {
+                if ((offset < 0) || (offset > cbuf.length) || (length < 0) ||
+                        ((offset + length) > cbuf.length) || ((offset + length) < 0)) {
+                    throw new IndexOutOfBoundsException();
+                }
+                if (parserState == ParserState.END)
+                    return -1;
+
+                if (length == 0)
+                    return 0;
+
+                int n = 0;
+                while (!(parserState == ParserState.END) && n < length) {
+                    final int nextChar = in.read();
+                    parserState = parserState.handle(nextChar, in);
+                    if (parserState == ParserState.END) {
+                        if (n == 0) {
+                            n = -1; // if we ended without writing anything, we need to return -1 immediately
+                        }
+                        in.unreadLastCharacter();
+                    } else {
+                        cbuf[n++] = (char) nextChar;
+                    }
+                }
+                return n;
+            }
+        }
+
+        public void close() throws IOException {
+            // TODO read fully
+        }
+    }
+
+    private static class StringReader extends Reader {
+
+        private final PositionTrackingPushbackReader in;
+        private final ThingWithPosition openDoubleQuotesPosition;
+        private boolean ended = false;
+
+        StringReader(PositionTrackingPushbackReader in) {
+            this.in = in;
+            // TODO should these things really happen in the constructor?  Perhaps they'd be better in read()
+            final int firstChar = in.read();
+            if (DOUBLE_QUOTE != firstChar) {
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected [" + DOUBLE_QUOTE + "]", firstChar, in);
+            }
+            openDoubleQuotesPosition = in.snapshotOfPosition();
+        }
+
+        public int read(final char[] cbuf, final int offset, final int length) throws IOException {
+            synchronized (lock) {
+                if ((offset < 0) || (offset > cbuf.length) || (length < 0) ||
+                        ((offset + length) > cbuf.length) || ((offset + length) < 0)) {
+                    throw new IndexOutOfBoundsException();
+                }
+                if (ended)
+                    return -1;
+
+                if (length == 0)
+                    return 0;
+
+                int n = 0;
+                while (!ended && n < length) {
+                    final int nextChar = in.read();
+                    if (-1 == nextChar) {
+                        throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
+                    }
+                    switch (nextChar) {
+                        case DOUBLE_QUOTE:
+                            ended = true;
+                            if (n == 0) {
+                                n = -1; // if we ended without writing anything, we need to return -1 immediately
+                            }
+                            break;
+                        case BACK_SLASH:
+                            final char escapedChar = escapedStringChar(in);
+                            cbuf[n++] = (escapedChar);
+                            break;
+                        default:
+                            cbuf[n++] = (char) nextChar;
+                    }
+                }
+                return n;
+            }
+        }
+
+        public void close() throws IOException {
+            // TODO read remainder
+        }
+    }
 }

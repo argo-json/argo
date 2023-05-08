@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -9,6 +9,9 @@
  */
 
 package argo.staj;
+
+import java.io.IOException;
+import java.io.Reader;
 
 /**
  * An element of a JSON document.
@@ -35,8 +38,7 @@ public abstract class JsonStreamElement {
                 return false;
             }
 
-            @Override
-            public String text() {
+            public Reader reader() {
                 throw new IllegalStateException(jsonStreamElementType().name() + " does not have text associated with it");
             }
 
@@ -47,11 +49,32 @@ public abstract class JsonStreamElement {
         };
     }
 
-    private static JsonStreamElement textJsonStreamElement(final JsonStreamElementType jsonStreamElementType, final String text) {
+    private static JsonStreamElement textJsonStreamElement(final JsonStreamElementType jsonStreamElementType, final Reader reader) {
+        // TODO this need to be lazily initialised
+        final StringBuilder stringBuilder = new StringBuilder();
+        try {
+            try {
+                int c;
+                while((c = reader.read()) != -1) {
+                    stringBuilder.append((char)c);
+                }
+            } finally {
+                reader.close();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        final String text = stringBuilder.toString();
+
         return new JsonStreamElement(jsonStreamElementType) {
             @Override
             public boolean hasText() {
                 return true;
+            }
+
+            @Override
+            public Reader reader() {
+                return new java.io.StringReader(text);
             }
 
             @Override
@@ -61,7 +84,7 @@ public abstract class JsonStreamElement {
 
             @Override
             public String toString() {
-                return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType + ", text: " + text;
+                return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType + ", text: " + text();
             }
         };
     }
@@ -90,20 +113,20 @@ public abstract class JsonStreamElement {
         return END_OBJECT;
     }
 
-    static JsonStreamElement startField(final String text) {
-        return textJsonStreamElement(JsonStreamElementType.START_FIELD, text);
+    static JsonStreamElement startField(final Reader reader) {
+        return textJsonStreamElement(JsonStreamElementType.START_FIELD, reader);
     }
 
     static JsonStreamElement endField() {
         return END_FIELD;
     }
 
-    static JsonStreamElement string(final String text) {
-        return textJsonStreamElement(JsonStreamElementType.STRING, text);
+    static JsonStreamElement string(final Reader reader) {
+        return textJsonStreamElement(JsonStreamElementType.STRING, reader);
     }
 
-    static JsonStreamElement number(final String text) {
-        return textJsonStreamElement(JsonStreamElementType.NUMBER, text);
+    static JsonStreamElement number(final Reader reader) {
+        return textJsonStreamElement(JsonStreamElementType.NUMBER, reader);
     }
 
     static JsonStreamElement trueValue() {
@@ -139,10 +162,36 @@ public abstract class JsonStreamElement {
     public abstract boolean hasText();
 
     /**
+     * Gets a Reader to stream the text associated with the element.
+     *
+     * @return a reader of the text associated with the element.
+     * @throws IllegalStateException if the element doesn't have any text associated with it.
+     */
+    public abstract Reader reader();
+
+    /**
      * Gets the text associated with the element.
      *
      * @return the text associated with the element.
      * @throws IllegalStateException if the element doesn't have any text associated with it.
      */
-    public abstract String text();
+    public String text() { // TODO needs to be final
+        // TODO this need to be lazily initialised, so it can be called more than once.
+        // TODO constants for "", "0", and "1"
+        final StringBuilder stringBuilder = new StringBuilder();
+        try {
+            final Reader reader = reader();
+            try {
+                int c;
+                while((c = reader.read()) != -1) {
+                    stringBuilder.append((char)c);
+                }
+            } finally {
+                reader.close();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return stringBuilder.toString();
+    }
 }

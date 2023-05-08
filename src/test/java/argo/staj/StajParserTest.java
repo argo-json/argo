@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.NoSuchElementException;
 
 import static argo.jdom.JsonNodeFactories.*;
@@ -49,13 +50,13 @@ final class StajParserTest {
     @Test
     void stringOnlyDocumentHasCorrectElements() {
         final JsonNode stringNode = aStringNode();
-        assertThat(stajParser(stringNode), generatesElements(startDocument(), string(stringNode.getText()), endDocument()));
+        assertThat(stajParser(stringNode), generatesElements(startDocument(), string(new StringReader(stringNode.getText())), endDocument()));
     }
 
     @Test
     void numberOnlyDocumentHasCorrectElements() {
         final JsonNode numberNode = aNumberNode();
-        assertThat(stajParser(numberNode), generatesElements(startDocument(), number(numberNode.getText()), endDocument()));
+        assertThat(stajParser(numberNode), generatesElements(startDocument(), number(new StringReader(numberNode.getText())), endDocument()));
     }
 
     @Test
@@ -98,7 +99,7 @@ final class StajParserTest {
         assertThat(stajParser(object(field(aFieldName, array()))), generatesElements(
                 startDocument(),
                 startObject(),
-                startField(aFieldName.getText()),
+                startField(new StringReader(aFieldName.getText())),
                 startArray(),
                 endArray(),
                 endField(),
@@ -114,11 +115,11 @@ final class StajParserTest {
         assertThat(stajParser(object(field(aFieldName, array()), field(anotherFieldName, object()))), generatesElements(
                 startDocument(),
                 startObject(),
-                startField(aFieldName.getText()),
+                startField(new StringReader(aFieldName.getText())),
                 startArray(),
                 endArray(),
                 endField(),
-                startField(anotherFieldName.getText()),
+                startField(new StringReader(anotherFieldName.getText())),
                 startObject(),
                 endObject(),
                 endField(),
@@ -150,13 +151,13 @@ final class StajParserTest {
     @Test
     void arrayWithATextNodeHasCorrectElements() {
         final JsonNode aStringNode = aStringNode();
-        assertThat(stajParser(array(aStringNode)), generatesElements(startDocument(), startArray(), string(aStringNode.getText()), endArray(), endDocument()));
+        assertThat(stajParser(array(aStringNode)), generatesElements(startDocument(), startArray(), string(new StringReader(aStringNode.getText())), endArray(), endDocument()));
     }
 
     @Test
     void arrayWithANumberNodeHasCorrectElements() {
         final JsonNode aNumberNode = aNumberNode();
-        assertThat(stajParser(array(aNumberNode)), generatesElements(startDocument(), startArray(), number(aNumberNode.getText()), endArray(), endDocument()));
+        assertThat(stajParser(array(aNumberNode)), generatesElements(startDocument(), startArray(), number(new StringReader(aNumberNode.getText())), endArray(), endDocument()));
     }
 
     @Test
