@@ -52,11 +52,12 @@ public abstract class JsonStreamElement {
     private static JsonStreamElement textJsonStreamElement(final JsonStreamElementType jsonStreamElementType, final Reader reader) {
         // TODO this need to be lazily initialised
         final StringBuilder stringBuilder = new StringBuilder();
+        final char[] buffer = new char[8096];
         try {
             try {
                 int c;
-                while((c = reader.read()) != -1) {
-                    stringBuilder.append((char)c);
+                while((c = reader.read(buffer)) != -1) {
+                    stringBuilder.append(buffer, 0, c);
                 }
             } finally {
                 reader.close();
@@ -179,12 +180,13 @@ public abstract class JsonStreamElement {
         // TODO this need to be lazily initialised, so it can be called more than once.
         // TODO constants for "", "0", and "1"
         final StringBuilder stringBuilder = new StringBuilder();
+        final char[] buffer = new char[8096];
         try {
             final Reader reader = reader();
             try {
                 int c;
-                while((c = reader.read()) != -1) {
-                    stringBuilder.append((char)c);
+                while((c = reader.read(buffer)) != -1) {
+                    stringBuilder.append(buffer, 0, c);
                 }
             } finally {
                 reader.close();
