@@ -10,7 +10,6 @@
 
 package argo.staj;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
@@ -18,29 +17,35 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static argo.staj.JsonStreamElementMatchers.aJsonStreamElementMatching;
 import static java.util.Arrays.asList;
 
 public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMatcher<StajParser> {
 
     private final Collection<JsonStreamElement> actual = new ArrayList<>();
     private final Collection<JsonStreamElement> expected;
+    private final Collection<Matcher<JsonStreamElement>> expectedMatchers;
 
     public static Matcher<StajParser> generatesElements(final JsonStreamElement... jsonStreamElements) {
         return new ElementTrackingStajParserMatcher(jsonStreamElements);
     }
 
     private ElementTrackingStajParserMatcher(final JsonStreamElement... expected) {
+        expectedMatchers = new ArrayList<>();
+        for (JsonStreamElement jsonStreamElement : expected) {
+            expectedMatchers.add(aJsonStreamElementMatching(jsonStreamElement));
+        }
         this.expected = asList(expected);
     }
 
     @Override
     protected boolean matchesSafely(final StajParser item, final Description mismatchDescription) {
         boolean matches = true;
-        for (JsonStreamElement jsonStreamElement : expected) {
+        for (Matcher<JsonStreamElement> jsonStreamElementMatcher : expectedMatchers) {
             final boolean hasNextItem = item.hasNext();
             if (hasNextItem) {
                 final JsonStreamElement next = item.next();
-                if (!EqualsBuilder.reflectionEquals(next, jsonStreamElement)) {
+                if (!jsonStreamElementMatcher.matches(next)) {
                     matches = false;
                 }
                 actual.add(next);

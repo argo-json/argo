@@ -10,21 +10,41 @@
 
 package argo.staj;
 
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
+
+import java.io.IOException;
+import java.io.Reader;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.Matchers.equalTo;
 
 public class JsonStreamElementMatchers {
-    public static Matcher<JsonStreamElement> aTextJsonStreamElementWithType(JsonStreamElementType jsonStreamElementType, String textValue) {
+    public static Matcher<JsonStreamElement> aTextJsonStreamElementWithType(final JsonStreamElementType jsonStreamElementType, final String textValue) {
         return allOf(jsonStreamElementWithType(equalTo(jsonStreamElementType)), jsonStreamElementWithText(equalTo(textValue)));
     }
 
-    public static Matcher<JsonStreamElement> aNonTextJsonStreamElementWithType(JsonStreamElementType jsonStreamElementType) {
+    public static Matcher<JsonStreamElement> aNonTextJsonStreamElementWithType(final JsonStreamElementType jsonStreamElementType) {
         return allOf(jsonStreamElementWithType(equalTo(jsonStreamElementType)), jsonStreamElementWithoutText());
+    }
+
+    public static Matcher<JsonStreamElement> aJsonStreamElementMatching(final JsonStreamElement expected) {
+        final Matcher<JsonStreamElement> result;
+        if (expected.hasText()) {
+            final String expectedString;
+            try (Reader expectedStringReader = expected.reader()) {
+                expectedString = IOUtils.toString(expectedStringReader);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to retrieve expected String", e);
+            }
+            result = aTextJsonStreamElementWithType(expected.jsonStreamElementType(), expectedString);
+        } else {
+            result = aNonTextJsonStreamElementWithType(expected.jsonStreamElementType());
+        }
+        return result;
     }
 
     private static Matcher<JsonStreamElement> jsonStreamElementWithType(final Matcher<JsonStreamElementType> jsonStreamElementTypeMatcher) {

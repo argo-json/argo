@@ -50,23 +50,6 @@ public abstract class JsonStreamElement {
     }
 
     private static JsonStreamElement textJsonStreamElement(final JsonStreamElementType jsonStreamElementType, final Reader reader) {
-        // TODO this need to be lazily initialised
-        final StringBuilder stringBuilder = new StringBuilder();
-        final char[] buffer = new char[8096];
-        try {
-            try {
-                int c;
-                while((c = reader.read(buffer)) != -1) {
-                    stringBuilder.append(buffer, 0, c);
-                }
-            } finally {
-                reader.close();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        final String text = stringBuilder.toString();
-
         return new JsonStreamElement(jsonStreamElementType) {
             @Override
             public boolean hasText() {
@@ -75,12 +58,7 @@ public abstract class JsonStreamElement {
 
             @Override
             public Reader reader() {
-                return new java.io.StringReader(text);
-            }
-
-            @Override
-            public String text() {
-                return text;
+                return reader;
             }
 
             @Override
@@ -170,30 +148,37 @@ public abstract class JsonStreamElement {
      */
     public abstract Reader reader();
 
+    private final Object lock = new Object();
+    private String text;
+
     /**
      * Gets the text associated with the element.
      *
      * @return the text associated with the element.
      * @throws IllegalStateException if the element doesn't have any text associated with it.
      */
-    public String text() { // TODO needs to be final
-        // TODO this need to be lazily initialised, so it can be called more than once.
+    public final String text() {
         // TODO constants for "", "0", and "1"
-        final StringBuilder stringBuilder = new StringBuilder();
-        final char[] buffer = new char[8096];
-        try {
-            final Reader reader = reader();
-            try {
-                int c;
-                while((c = reader.read(buffer)) != -1) {
-                    stringBuilder.append(buffer, 0, c);
+        synchronized (lock) {
+            if (text == null) {
+                final StringBuilder stringBuilder = new StringBuilder();
+                final char[] buffer = new char[8096];
+                try {
+                    final Reader reader = reader();
+                    try {
+                        int c;
+                        while((c = reader.read(buffer)) != -1) {
+                            stringBuilder.append(buffer, 0, c);
+                        }
+                    } finally {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } finally {
-                reader.close();
+                text = stringBuilder.toString();
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
-        return stringBuilder.toString();
+        return text;
     }
 }
