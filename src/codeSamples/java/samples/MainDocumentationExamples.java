@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.util.AbstractList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,7 @@ import static argo.jdom.JsonNodeFactories.string;
 import static argo.jdom.JsonNodeSelectors.aStringNode;
 import static argo.jdom.JsonNodeSelectors.anArrayNode;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.newInputStream;
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -217,7 +219,7 @@ final class MainDocumentationExamples {
 
     @Test
     void parsesUsingStaj() throws Exception {
-        final Reader jsonReader = new InputStreamReader(new FileInputStream(new File(this.getClass().getResource("SimpleExample.json").getFile())), UTF_8);
+        final Reader jsonReader = new InputStreamReader(newInputStream(new File(this.getClass().getResource("SimpleExample.json").getFile()).toPath()), UTF_8);
         try {
             Set<String> fieldNames = new HashSet<>();
             final StajParser stajParser = new StajParser(jsonReader);
