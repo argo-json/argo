@@ -41,11 +41,6 @@ public abstract class JsonStreamElement {
             public Reader reader() {
                 throw new IllegalStateException(jsonStreamElementType().name() + " does not have text associated with it");
             }
-
-            @Override
-            public String toString() {
-                return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType;
-            }
         };
     }
 
@@ -59,11 +54,6 @@ public abstract class JsonStreamElement {
             @Override
             public Reader reader() {
                 return reader;
-            }
-
-            @Override
-            public String toString() {
-                return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType + ", text: " + text();
             }
         };
     }
@@ -147,6 +137,11 @@ public abstract class JsonStreamElement {
      * @throws IllegalStateException if the element doesn't have any text associated with it.
      */
     public abstract Reader reader();
+
+    @Override
+    public final String toString() {
+        return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType;
+    }
 
     private final Object lock = new Object();
     private String text;
