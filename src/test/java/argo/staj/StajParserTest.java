@@ -12,6 +12,7 @@ package argo.staj;
 
 import argo.format.PrettyJsonBuilder;
 import argo.jdom.JsonNode;
+import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonStringNode;
 import argo.jdom.JsonStringNodeTestBuilder;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ import java.util.NoSuchElementException;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
-import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
+import static argo.jdom.JsonStringNodeTestBuilder.*;
 import static argo.staj.ElementTrackingStajParserMatcher.generatesElements;
 import static argo.staj.JsonStreamElement.number;
 import static argo.staj.JsonStreamElement.string;
@@ -175,6 +176,30 @@ final class StajParserTest {
     @Test
     void nextWorksWithoutCallingHasNext() {
         assertThat(stajParser(array()).next(), equalTo(startDocument()));
+    }
+
+    @Test
+    void toleratesFieldNameTextNotBeingRead() {
+        final StajParser stajParser = stajParser(object(field(aNonEmptyString(), nullNode())));
+        while (stajParser.hasNext()) {
+            stajParser.next();
+        }
+    }
+
+    @Test
+    void toleratesStringTextNotBeingRead() {
+        final StajParser stajParser = stajParser(array(JsonNodeFactories.string(aNonEmptyString())));
+        while (stajParser.hasNext()) {
+            stajParser.next();
+        }
+    }
+
+    @Test
+    void toleratesNumberTextNotBeingRead() {
+        final StajParser stajParser = stajParser(array(aNumberNode()));
+        while (stajParser.hasNext()) {
+            stajParser.next();
+        }
     }
 
     @Test

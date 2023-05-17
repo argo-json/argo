@@ -41,6 +41,9 @@ public abstract class JsonStreamElement {
             public Reader reader() {
                 throw new IllegalStateException(jsonStreamElementType().name() + " does not have text associated with it");
             }
+
+            @Override
+            void close() {}
         };
     }
 
@@ -54,6 +57,16 @@ public abstract class JsonStreamElement {
             @Override
             public Reader reader() {
                 return reader;
+            }
+
+            @Override
+            void close() {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    // TODO got to improve on this
+                    throw new RuntimeException(e);
+                }
             }
         };
     }
@@ -160,15 +173,13 @@ public abstract class JsonStreamElement {
                 final char[] buffer = new char[8096];
                 try {
                     final Reader reader = reader();
-                    try {
-                        int c;
-                        while((c = reader.read(buffer)) != -1) {
-                            stringBuilder.append(buffer, 0, c);
-                        }
-                    } finally {
-                        reader.close();
+                    int c;
+                    while((c = reader.read(buffer)) != -1) {
+                        stringBuilder.append(buffer, 0, c);
                     }
+                    reader.close(); // TODO this isn't in a finally because we want to preserve exceptions thrown earlier in the block... but is it a good idea?
                 } catch (IOException e) {
+                    // TODO got to improve on this
                     throw new RuntimeException(e);
                 }
                 text = stringBuilder.toString();
@@ -176,4 +187,6 @@ public abstract class JsonStreamElement {
         }
         return text;
     }
+
+    abstract void close();
 }

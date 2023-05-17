@@ -77,6 +77,10 @@ public final class JsonStringNodeTestBuilder {
         return result.toString();
     }
 
+    public static String aNonEmptyString() {
+        return RandomStringUtils.random(RANDOM.nextInt(20) + 1);
+    }
+
     private JsonStringNodeTestBuilder() {
     }
 }
