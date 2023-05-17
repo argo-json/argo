@@ -96,10 +96,10 @@ public class JsonStreamElementMatchers {
             @Override
             protected boolean matchesSafely(final JsonStreamElement item, final Description mismatchDescription) {
                 try {
-                    item.text();
+                    IOUtils.toString(item.reader());
                     mismatchDescription.appendText("no exception was thrown");
                     return false;
-                } catch (final IllegalStateException e) {
+                } catch (final Exception e) {
                     final boolean matches = exceptionMatcher.matches(e);
                     if (!matches) {
                         exceptionMatcher.describeMismatch(e, mismatchDescription);
