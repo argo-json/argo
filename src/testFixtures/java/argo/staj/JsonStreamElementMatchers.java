@@ -77,7 +77,12 @@ public class JsonStreamElementMatchers {
         return new TypeSafeDiagnosingMatcher<JsonStreamElement>() {
             @Override
             protected boolean matchesSafely(final JsonStreamElement item, final Description mismatchDescription) {
-                final String text = item.text();
+                final String text;
+                try {
+                    text = IOUtils.toString(item.reader());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 final boolean matches = textMatcher.matches(text);
                 if (!matches) {
                     textMatcher.describeMismatch(text, mismatchDescription);
@@ -99,7 +104,7 @@ public class JsonStreamElementMatchers {
                     IOUtils.toString(item.reader());
                     mismatchDescription.appendText("no exception was thrown");
                     return false;
-                } catch (final Exception e) {
+                } catch (final Exception e) { // NOPMD
                     final boolean matches = exceptionMatcher.matches(e);
                     if (!matches) {
                         exceptionMatcher.describeMismatch(e, mismatchDescription);
