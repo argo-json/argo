@@ -567,22 +567,20 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
     private static final class StringReader extends Reader {
 
         private final PositionTrackingPushbackReader in;
-        private final ThingWithPosition openDoubleQuotesPosition;
+        private ThingWithPosition openDoubleQuotesPosition;
         private boolean ended = false;
 
         StringReader(final PositionTrackingPushbackReader in) {
             this.in = in;
-            // TODO should these things really happen in the constructor?  Perhaps they'd be better in read()
-            final int firstChar = in.read();
-            if (DOUBLE_QUOTE != firstChar) {
-                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected [" + DOUBLE_QUOTE + "]", firstChar, in);
-            }
-            openDoubleQuotesPosition = in.snapshotOfPosition();
         }
 
         public int read(final char[] cbuf, final int offset, final int length) throws IOException {
             validateArguments(cbuf, offset, length);
             synchronized (lock) {
+                if (openDoubleQuotesPosition == null) {
+                    openDoubleQuotesPosition = readOpenDoubleQuotesPosition();
+                }
+
                 int n = 0;
                 while (!ended && n < length) {
                     final int nextChar = in.read();
@@ -602,6 +600,14 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 }
                 return n==0 && length != 0 ? -1 : n;
             }
+        }
+
+        private ThingWithPosition readOpenDoubleQuotesPosition() {
+            final int firstChar = in.read();
+            if (DOUBLE_QUOTE != firstChar) {
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected [" + DOUBLE_QUOTE + "]", firstChar, in);
+            }
+            return in.snapshotOfPosition();
         }
 
         private static void validateArguments(final char[] cbuf, final int offset, final int length) {

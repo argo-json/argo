@@ -83,7 +83,7 @@
                 name="AvoidThrowingRawExceptionTypes"/> <!-- All well and good... except sometimes throwing RuntimeException is OK -->
         <exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
         <exclude name="CouplingBetweenObjects"/> <!-- configured later -->
-        <!--        <exclude name="CyclomaticComplexity"/> &lt;!&ndash; configured later &ndash;&gt;-->
+        <exclude name="CyclomaticComplexity"/> <!-- configured later -->
         <exclude name="ExcessiveImports"/>
         <exclude name="ExcessiveMethodLength"/>
         <exclude name="ExcessivePublicCount"/>
@@ -99,11 +99,11 @@
             <property name="threshold" value="30"/>
         </properties>
     </rule>
-    <!--    <rule ref="category/java/design.xml/CyclomaticComplexity">-->
-    <!--        <properties>-->
-    <!--            <property name="methodReportLevel" value="11"/>-->
-    <!--        </properties>-->
-    <!--    </rule>-->
+        <rule ref="category/java/design.xml/CyclomaticComplexity">
+            <properties>
+                <property name="methodReportLevel" value="11"/>
+            </properties>
+        </rule>
     <rule ref="category/java/design.xml/NcssCount">
         <properties>
             <property name="methodReportLevel"
