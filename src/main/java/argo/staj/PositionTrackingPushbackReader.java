@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -17,7 +17,7 @@ import java.io.Reader;
  * @author Mark Slater
  * @author Henrik Sjöstrand
  */
-final class PositionTrackingPushbackReader implements ThingWithPosition {
+final class PositionTrackingPushbackReader implements ThingWithPosition { // TODO should delegate to java.io.PushbackReader?
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
@@ -221,6 +222,28 @@ final class StajParserTest {
             public void close() {
             }
         });
+        stajParser.next();
+        assertThrows(JsonStreamException.class, stajParser::next);
+    }
+
+    @Test
+    void handlesIoExceptionSkippingElement() {
+        final AtomicInteger callCount = new AtomicInteger(0);
+        final StajParser stajParser = new StajParser(new Reader() {
+            public int read(char[] chars, int offset, int length) throws IOException {
+                if (callCount.get() == 0) {
+                    chars[offset] = '[';
+                    callCount.incrementAndGet();
+                    return 1;
+                } else {
+                    throw new IOException("An IOException");
+                }
+            }
+
+            public void close() {
+            }
+        });
+        stajParser.next();
         stajParser.next();
         assertThrows(JsonStreamException.class, stajParser::next);
     }

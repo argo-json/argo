@@ -343,7 +343,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input." : "got [" + stringify(readBuffer, charactersRead) + "]."), thingWithPosition);
     }
 
-    private static class NumberReader extends Reader {
+    private static final class NumberReader extends Reader {
 
         private enum ParserState {
             BEFORE_START {
@@ -529,53 +529,48 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         private final PositionTrackingPushbackReader in;
         private ParserState parserState = ParserState.BEFORE_START;
 
-        NumberReader(PositionTrackingPushbackReader in) {
+        NumberReader(final PositionTrackingPushbackReader in) {
             this.in = in;
         }
 
         public int read(final char[] cbuf, final int offset, final int length) throws IOException {
+            validateArguments(cbuf, offset, length);
             synchronized (lock) {
-                if ((offset < 0) || (offset > cbuf.length) || (length < 0) ||
-                        ((offset + length) > cbuf.length) || ((offset + length) < 0)) {
-                    throw new IndexOutOfBoundsException();
-                }
-                if (parserState == ParserState.END)
-                    return -1;
-
-                if (length == 0)
-                    return 0;
-
                 int n = 0;
-                while (!(parserState == ParserState.END) && n < length) {
+                while (parserState != ParserState.END && n < length) {
                     final int nextChar = in.read();
                     parserState = parserState.handle(nextChar, in);
                     if (parserState == ParserState.END) {
-                        if (n == 0) {
-                            n = -1; // if we ended without writing anything, we need to return -1 immediately
-                        }
                         in.unreadLastCharacter();
                     } else {
                         cbuf[n++] = (char) nextChar;
                     }
                 }
-                return n;
+                return n==0 && length != 0 ? -1 : n;
+            }
+        }
+
+        private static void validateArguments(final char[] cbuf, final int offset, final int length) {
+            if (offset < 0 || offset > cbuf.length || length < 0 ||
+                    offset + length > cbuf.length || offset + length < 0) {
+                throw new IndexOutOfBoundsException();
             }
         }
 
         public void close() throws IOException {
-            while (this.skip(8192) > 0) {
+            while (this.skip(8192) > 0) { // NOPMD TODO this should be turned off in the rules
                 // do nothing
             }
         }
     }
 
-    private static class StringReader extends Reader {
+    private static final class StringReader extends Reader {
 
         private final PositionTrackingPushbackReader in;
         private final ThingWithPosition openDoubleQuotesPosition;
         private boolean ended = false;
 
-        StringReader(PositionTrackingPushbackReader in) {
+        StringReader(final PositionTrackingPushbackReader in) {
             this.in = in;
             // TODO should these things really happen in the constructor?  Perhaps they'd be better in read()
             final int firstChar = in.read();
@@ -586,17 +581,8 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
 
         public int read(final char[] cbuf, final int offset, final int length) throws IOException {
+            validateArguments(cbuf, offset, length);
             synchronized (lock) {
-                if ((offset < 0) || (offset > cbuf.length) || (length < 0) ||
-                        ((offset + length) > cbuf.length) || ((offset + length) < 0)) {
-                    throw new IndexOutOfBoundsException();
-                }
-                if (ended)
-                    return -1;
-
-                if (length == 0)
-                    return 0;
-
                 int n = 0;
                 while (!ended && n < length) {
                     final int nextChar = in.read();
@@ -606,24 +592,27 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     switch (nextChar) {
                         case DOUBLE_QUOTE:
                             ended = true;
-                            if (n == 0) {
-                                n = -1; // if we ended without writing anything, we need to return -1 immediately
-                            }
                             break;
                         case BACK_SLASH:
-                            final char escapedChar = escapedStringChar(in);
-                            cbuf[n++] = (escapedChar);
+                            cbuf[n++] = escapedStringChar(in);
                             break;
                         default:
                             cbuf[n++] = (char) nextChar;
                     }
                 }
-                return n;
+                return n==0 && length != 0 ? -1 : n;
+            }
+        }
+
+        private static void validateArguments(final char[] cbuf, final int offset, final int length) {
+            if (offset < 0 || offset > cbuf.length || length < 0 ||
+                    offset + length > cbuf.length || offset + length < 0) {
+                throw new IndexOutOfBoundsException();
             }
         }
 
         public void close() throws IOException {
-            while (this.skip(8192) > 0) {
+            while (this.skip(8192) > 0) { // NOPMD TODO this should be turned off in the rules
                 // do nothing
             }
         }

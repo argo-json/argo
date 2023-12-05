@@ -225,7 +225,7 @@ final class MainDocumentationExamples {
             while (stajParser.hasNext()) {
                 JsonStreamElement next = stajParser.next();
                 if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {
-                    fieldNames.add(next.text());
+                    fieldNames.add(JsonStreamElement.asString(next.reader()));
                 }
             }
             assertThat(fieldNames, equalTo(new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));

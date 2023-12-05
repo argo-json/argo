@@ -10,6 +10,7 @@
 
 package argo.staj;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Iterator;
@@ -82,7 +83,11 @@ public final class StajParser implements Iterator<JsonStreamElement> {
         if (current == null) {
             return JsonStreamElementType.startDocument(stack);
         } else {
-            current.close();
+            try {
+                current.close();
+            } catch (IOException e) {
+                throw new JsonStreamException("Failed to read from Reader", e);
+            }
             return current.jsonStreamElementType().parseNext(pushbackReader, stack);
         }
     }

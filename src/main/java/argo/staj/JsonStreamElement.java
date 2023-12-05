@@ -60,13 +60,8 @@ public abstract class JsonStreamElement {
             }
 
             @Override
-            void close() {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // TODO got to improve on this
-                    throw new RuntimeException(e);
-                }
+            void close() throws IOException {
+                reader.close();
             }
         };
     }
@@ -156,37 +151,22 @@ public abstract class JsonStreamElement {
         return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType;
     }
 
-    private final Object lock = new Object();
-    private String text;
-
-    /**
-     * Gets the text associated with the element.
-     *
-     * @return the text associated with the element.
-     * @throws IllegalStateException if the element doesn't have any text associated with it.
-     */
-    public final String text() {
+    public static String asString(final Reader reader) {
         // TODO constants for "", "0", and "1"
-        synchronized (lock) {
-            if (text == null) {
-                final StringBuilder stringBuilder = new StringBuilder();
-                final char[] buffer = new char[8096];
-                try {
-                    final Reader reader = reader();
-                    int c;
-                    while((c = reader.read(buffer)) != -1) {
-                        stringBuilder.append(buffer, 0, c);
-                    }
-                    reader.close(); // TODO this isn't in a finally because we want to preserve exceptions thrown earlier in the block... but is it a good idea?
-                } catch (IOException e) {
-                    // TODO got to improve on this
-                    throw new RuntimeException(e);
-                }
-                text = stringBuilder.toString();
+        final StringBuilder stringBuilder = new StringBuilder();
+        final char[] buffer = new char[8096];
+        try {
+            int c;
+            while((c = reader.read(buffer)) != -1) {
+                stringBuilder.append(buffer, 0, c);
             }
+            reader.close(); // TODO this isn't in a finally because we want to preserve exceptions thrown earlier in the block... but is it a good idea?
+        } catch (IOException e) {
+            // TODO got to improve on this
+            throw new RuntimeException(e);
         }
-        return text;
+        return stringBuilder.toString();
     }
 
-    abstract void close();
+    abstract void close() throws IOException; // TODO does this need to be called from outside?
 }
