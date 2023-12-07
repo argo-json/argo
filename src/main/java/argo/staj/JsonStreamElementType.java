@@ -617,7 +617,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
 
         public void close() throws IOException {
-            while (this.skip(8192) > 0) { // NOPMD TODO this should be turned off in the rules
+            while (skip(8192) > 0) { // NOPMD TODO this should be turned off in the rules
                 // do nothing
             }
         }
