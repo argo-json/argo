@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -286,10 +286,9 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         boolean stringClosed = false;
         while (!stringClosed) {
             final int nextChar = in.read();
-            if (-1 == nextChar) {
-                throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
-            }
             switch (nextChar) {
+                case -1:
+                    throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
                 case DOUBLE_QUOTE:
                     stringClosed = true;
                     break;
