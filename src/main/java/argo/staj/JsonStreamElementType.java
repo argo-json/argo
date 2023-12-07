@@ -574,7 +574,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             this.in = in;
         }
 
-        public int read(final char[] cbuf, final int offset, final int length) throws IOException {
+        public int read(final char[] cbuf, final int offset, final int length) {
             validateArguments(cbuf, offset, length);
             synchronized (lock) {
                 if (openDoubleQuotesPosition == null) {
@@ -584,10 +584,9 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 int n = 0;
                 while (!ended && n < length) {
                     final int nextChar = in.read();
-                    if (-1 == nextChar) {
-                        throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
-                    }
                     switch (nextChar) {
+                        case -1:
+                            throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
                         case DOUBLE_QUOTE:
                             ended = true;
                             break;
