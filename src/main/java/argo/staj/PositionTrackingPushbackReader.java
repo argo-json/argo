@@ -17,7 +17,7 @@ import java.io.Reader;
  * @author Mark Slater
  * @author Henrik Sjöstrand
  */
-final class PositionTrackingPushbackReader implements ThingWithPosition { // TODO should delegate to java.io.PushbackReader?
+final class PositionTrackingPushbackReader implements Position { // TODO should delegate to java.io.PushbackReader?
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
 
@@ -136,8 +136,8 @@ final class PositionTrackingPushbackReader implements ThingWithPosition { // TOD
         return lineCount;
     }
 
-    ThingWithPosition snapshotOfPosition() {
-        return new ThingWithPosition() {
+    Position snapshotOfPosition() {
+        return new Position() {
             private final int localCharacterCount = characterCount;
             private final int localLineCount = lineCount;
 

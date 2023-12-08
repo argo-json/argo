@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ *  	http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package argo.staj;
@@ -22,42 +22,42 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
     private final int column;
     private final int row;
 
-    private InvalidSyntaxRuntimeException(final String s, final ThingWithPosition thingWithPosition) {
-        super("At line " + thingWithPosition.getRow() + ", column " + thingWithPosition.getColumn() + ":  " + s);
-        this.column = thingWithPosition.getColumn();
-        this.row = thingWithPosition.getRow();
+    private InvalidSyntaxRuntimeException(final String s, final Position position) {
+        super("At line " + position.getRow() + ", column " + position.getColumn() + ":  " + s);
+        this.column = position.getColumn();
+        this.row = position.getRow();
     }
 
-    private InvalidSyntaxRuntimeException(final String s, final Throwable throwable, final ThingWithPosition thingWithPosition) {
-        super("At line " + thingWithPosition.getRow() + ", column " + thingWithPosition.getColumn() + ":  " + s, throwable);
-        this.column = thingWithPosition.getColumn();
-        this.row = thingWithPosition.getRow();
+    private InvalidSyntaxRuntimeException(final String s, final Throwable throwable, final Position position) {
+        super("At line " + position.getRow() + ", column " + position.getColumn() + ":  " + s, throwable);
+        this.column = position.getColumn();
+        this.row = position.getRow();
     }
 
-    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final ThingWithPosition thingWithPosition) {
-        return new InvalidSyntaxRuntimeException(s, thingWithPosition) {
+    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final Position position) {
+        return new InvalidSyntaxRuntimeException(s, position) {
             @Override
             public InvalidSyntaxException asInvalidSyntaxException() {
-                return new InvalidSyntaxException(s, thingWithPosition.getRow(), thingWithPosition.getColumn());
+                return new InvalidSyntaxException(s, position.getRow(), position.getColumn());
             }
         };
     }
 
-    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final Throwable throwable, final ThingWithPosition thingWithPosition) {
-        return new InvalidSyntaxRuntimeException(s, throwable, thingWithPosition) {
+    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final Throwable throwable, final Position position) {
+        return new InvalidSyntaxRuntimeException(s, throwable, position) {
             @Override
             public InvalidSyntaxException asInvalidSyntaxException() {
-                return new InvalidSyntaxException(s, throwable, thingWithPosition.getRow(), thingWithPosition.getColumn());
+                return new InvalidSyntaxException(s, throwable, position.getRow(), position.getColumn());
             }
         };
     }
 
-    static InvalidSyntaxRuntimeException unexpectedCharacterInvalidSyntaxRuntimeException(final String expectation, final int actual, final ThingWithPosition thingWithPosition) {
-        return new InvalidSyntaxRuntimeException(expectation, thingWithPosition) {
+    static InvalidSyntaxRuntimeException unexpectedCharacterInvalidSyntaxRuntimeException(final String expectation, final int actual, final Position position) {
+        return new InvalidSyntaxRuntimeException(expectation, position) {
             @Override
             public InvalidSyntaxException asInvalidSyntaxException() {
                 final String message = expectation + (END_OF_STREAM == actual ? " but reached end of input." : " but got [" + (char) actual + "].");
-                return new InvalidSyntaxException(message, thingWithPosition.getRow(), thingWithPosition.getColumn());
+                return new InvalidSyntaxException(message, position.getRow(), position.getColumn());
             }
         };
     }

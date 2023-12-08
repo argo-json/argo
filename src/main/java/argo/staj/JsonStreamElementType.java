@@ -277,7 +277,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return startField(stringToken(pushbackReader, pushbackReader.snapshotOfPosition()));
     }
 
-    private static Reader stringToken(final PositionTrackingPushbackReader in, final ThingWithPosition openDoubleQuotesPosition) {
+    private static Reader stringToken(final PositionTrackingPushbackReader in, final Position openDoubleQuotesPosition) {
         return new StringReader(in, openDoubleQuotesPosition);
     }
 
@@ -338,15 +338,15 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return new NumberReader(in);
     }
 
-    private static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final ThingWithPosition thingWithPosition) {
-        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input." : "got [" + stringify(readBuffer, charactersRead) + "]."), thingWithPosition);
+    private static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final Position position) {
+        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input." : "got [" + stringify(readBuffer, charactersRead) + "]."), position);
     }
 
     private static final class NumberReader extends SingleCharacterReader {
 
         private enum ParserState {
             BEFORE_START {
-                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                ParserState handle(final int character, final Position position) { // NOPMD TODO this should be turned off in the rules
                     switch (character) {
                         case '-':
                             return NEGATIVE;
@@ -367,7 +367,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     }
                 }
             }, NEGATIVE {
-                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                ParserState handle(final int character, final Position position) { // NOPMD TODO this should be turned off in the rules
                     switch (character) {
                         case '0':
                             return ZERO;
@@ -386,7 +386,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     }
                 }
             }, ZERO {
-                ParserState handle(final int character, final ThingWithPosition position) {
+                ParserState handle(final int character, final Position position) {
                     switch (character) {
                         case '.':
                             return DECIMAL_POINT;
@@ -398,7 +398,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     }
                 }
             }, INTEGER_PART {
-                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                ParserState handle(final int character, final Position position) { // NOPMD TODO this should be turned off in the rules
                     switch (character) {
                         case '0':
                         case '1':
@@ -421,7 +421,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     }
                 }
             }, DECIMAL_POINT {
-                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                ParserState handle(final int character, final Position position) { // NOPMD TODO this should be turned off in the rules
                     switch (character) {
                         case '0':
                         case '1':
@@ -439,7 +439,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     }
                 }
             }, FRACTIONAL_PART {
-                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                ParserState handle(final int character, final Position position) { // NOPMD TODO this should be turned off in the rules
                     switch (character) {
                         case '0':
                         case '1':
@@ -460,7 +460,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     }
                 }
             }, EXPONENT_MARKER {
-                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                ParserState handle(final int character, final Position position) { // NOPMD TODO this should be turned off in the rules
                     switch (character) {
                         case '+':
                         case '-':
@@ -481,7 +481,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     }
                 }
             }, EXPONENT_SIGN {
-                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                ParserState handle(final int character, final Position position) { // NOPMD TODO this should be turned off in the rules
                     switch (character) {
                         case '0':
                         case '1':
@@ -499,7 +499,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     }
                 }
             }, EXPONENT {
-                ParserState handle(final int character, final ThingWithPosition position) { // NOPMD TODO this should be turned off in the rules
+                ParserState handle(final int character, final Position position) { // NOPMD TODO this should be turned off in the rules
                     switch (character) {
                         case '0':
                         case '1':
@@ -517,12 +517,12 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     }
                 }
             }, END {
-                ParserState handle(final int character, final ThingWithPosition position) {
+                ParserState handle(final int character, final Position position) {
                     return this;
                 }
             };
 
-            abstract ParserState handle(int character, ThingWithPosition position);
+            abstract ParserState handle(int character, Position position);
         }
 
         private final PositionTrackingPushbackReader in;
@@ -551,10 +551,10 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
     private static final class StringReader extends SingleCharacterReader {
 
         private final PositionTrackingPushbackReader in;
-        private final ThingWithPosition openDoubleQuotesPosition;
+        private final Position openDoubleQuotesPosition;
         private boolean ended = false;
 
-        StringReader(final PositionTrackingPushbackReader in, final ThingWithPosition openDoubleQuotesPosition) {
+        StringReader(final PositionTrackingPushbackReader in, final Position openDoubleQuotesPosition) {
             this.in = in;
             this.openDoubleQuotesPosition = openDoubleQuotesPosition;
         }
