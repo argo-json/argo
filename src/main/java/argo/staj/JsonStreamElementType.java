@@ -207,8 +207,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
-                pushbackReader.unreadLastCharacter();
-                return string(stringToken(pushbackReader));
+                return string(stringToken(pushbackReader, pushbackReader.snapshotOfPosition()));
             case 't':
                 final char[] remainingTrueTokenCharacters = new char[3];
                 final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
@@ -274,13 +273,12 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         if (DOUBLE_QUOTE != nextChar) {
             throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to begin with [\"]", nextChar, pushbackReader);
         }
-        pushbackReader.unreadLastCharacter();
         stack.push(START_FIELD);
-        return startField(stringToken(pushbackReader));
+        return startField(stringToken(pushbackReader, pushbackReader.snapshotOfPosition()));
     }
 
-    private static Reader stringToken(final PositionTrackingPushbackReader in) {
-        return new StringReader(in);
+    private static Reader stringToken(final PositionTrackingPushbackReader in, final ThingWithPosition openDoubleQuotesPosition) {
+        return new StringReader(in, openDoubleQuotesPosition);
     }
 
     private static char escapedStringChar(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
@@ -520,7 +518,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 }
             }, END {
                 ParserState handle(final int character, final ThingWithPosition position) {
-                    throw new UnsupportedOperationException("TODO implement me"); // TODO implement me
+                    return this;
                 }
             };
 
@@ -537,17 +535,13 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         @Override
         public int read() throws IOException {
             synchronized (lock) {
-                if (parserState == ParserState.END) { // TODO do we need this?? It's effectively an (untested) optimisation because it could be handled by END always transitioning to END
+                final int nextChar = in.read();
+                parserState = parserState.handle(nextChar, in);
+                if (parserState == ParserState.END) {
+                    in.unreadLastCharacter();
                     return -1;
                 } else {
-                    final int nextChar = in.read();
-                    parserState = parserState.handle(nextChar, in);
-                    if (parserState == ParserState.END) {
-                        in.unreadLastCharacter();
-                        return -1;
-                    } else {
-                        return nextChar;
-                    }
+                    return nextChar;
                 }
             }
         }
@@ -557,11 +551,12 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
     private static final class StringReader extends SingleCharacterReader {
 
         private final PositionTrackingPushbackReader in;
-        private ThingWithPosition openDoubleQuotesPosition;
+        private final ThingWithPosition openDoubleQuotesPosition;
         private boolean ended = false;
 
-        StringReader(final PositionTrackingPushbackReader in) {
+        StringReader(final PositionTrackingPushbackReader in, final ThingWithPosition openDoubleQuotesPosition) {
             this.in = in;
+            this.openDoubleQuotesPosition = openDoubleQuotesPosition;
         }
 
         @Override
@@ -570,10 +565,6 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 if (ended) {
                     return -1;
                 } else {
-                    if (openDoubleQuotesPosition == null) {
-                        openDoubleQuotesPosition = readOpenDoubleQuotesPosition();
-                    }
-
                     final int nextChar = in.read();
                     switch (nextChar) {
                         case -1:
@@ -589,15 +580,6 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 }
             }
         }
-
-        private ThingWithPosition readOpenDoubleQuotesPosition() {
-            final int firstChar = in.read();
-            if (DOUBLE_QUOTE != firstChar) {
-                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected [" + DOUBLE_QUOTE + "]", firstChar, in);
-            }
-            return in.snapshotOfPosition();
-        }
-
     }
 
     private static abstract class SingleCharacterReader extends Reader {
