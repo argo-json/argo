@@ -203,6 +203,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
     }
 
     private static JsonStreamElement aJsonValue(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) { // NOPMD TODO this should be turned off in the rules
+        // TODO might get a modest performance boost by reusing a char buffer rather than instantiating new for each true/false/null
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
@@ -533,18 +534,31 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             this.in = in;
         }
 
-        public int read(final char[] cbuf, final int offset, final int length) throws IOException {
-            validateArguments(cbuf, offset, length);
+        @Override
+        public int read() throws IOException {
             synchronized (lock) {
-                int n = 0;
-                while (parserState != ParserState.END && n < length) {
+                if (parserState == ParserState.END) { // TODO do we need this?? It's effectively an (untested) optimisation because it could be handled by END always transitioning to END
+                    return -1;
+                } else {
                     final int nextChar = in.read();
                     parserState = parserState.handle(nextChar, in);
                     if (parserState == ParserState.END) {
                         in.unreadLastCharacter();
+                        return -1;
                     } else {
-                        cbuf[n++] = (char) nextChar;
+                        return nextChar;
                     }
+                }
+            }
+        }
+
+        public int read(final char[] cbuf, final int offset, final int length) throws IOException { // TODO duplicate of StringReader implementation
+            validateArguments(cbuf, offset, length);
+            synchronized (lock) {
+                int n = 0;
+                int nextChar;
+                while (n < length && (nextChar = read()) != -1) {
+                    cbuf[n++] = (char) nextChar;
                 }
                 return n==0 && length != 0 ? -1 : n;
             }
@@ -558,7 +572,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
 
         public void close() throws IOException {
-            while (this.skip(8192) > 0) { // NOPMD TODO this should be turned off in the rules
+            while (read() != -1) { // NOPMD TODO this should be turned off in the rules
                 // do nothing
             }
         }
@@ -574,28 +588,39 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             this.in = in;
         }
 
-        public int read(final char[] cbuf, final int offset, final int length) {
-            validateArguments(cbuf, offset, length);
+        @Override
+        public int read() { // TODO probably *should* throw IO exception
             synchronized (lock) {
-                if (openDoubleQuotesPosition == null) {
-                    openDoubleQuotesPosition = readOpenDoubleQuotesPosition();
-                }
+                if (ended) {
+                    return -1;
+                } else {
+                    if (openDoubleQuotesPosition == null) {
+                        openDoubleQuotesPosition = readOpenDoubleQuotesPosition();
+                    }
 
-                int n = 0;
-                while (!ended && n < length) {
                     final int nextChar = in.read();
                     switch (nextChar) {
                         case -1:
                             throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
                         case DOUBLE_QUOTE:
                             ended = true;
-                            break;
+                            return -1;
                         case BACK_SLASH:
-                            cbuf[n++] = escapedStringChar(in);
-                            break;
+                            return escapedStringChar(in);
                         default:
-                            cbuf[n++] = (char) nextChar;
+                            return nextChar;
                     }
+                }
+            }
+        }
+
+        public int read(final char[] cbuf, final int offset, final int length) { // TODO test this
+            validateArguments(cbuf, offset, length);
+            synchronized (lock) {
+                int n = 0;
+                int nextChar;
+                while (n < length && (nextChar = read()) != -1) {
+                    cbuf[n++] = (char) nextChar;
                 }
                 return n==0 && length != 0 ? -1 : n;
             }
@@ -617,7 +642,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
 
         public void close() throws IOException {
-            while (skip(8192) > 0) { // NOPMD TODO this should be turned off in the rules
+            while (read() != -1) { // NOPMD TODO this should be turned off in the rules
                 // do nothing
             }
         }

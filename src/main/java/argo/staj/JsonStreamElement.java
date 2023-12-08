@@ -154,7 +154,7 @@ public abstract class JsonStreamElement {
     public static String asString(final Reader reader) {
         // TODO constants for "", "0", and "1"
         final StringBuilder stringBuilder = new StringBuilder();
-        final char[] buffer = new char[8096];
+        final char[] buffer = new char[8096]; // TODO this doesn't account for the fact that the underlying reader is inherently single-char based.
         try {
             int c;
             while((c = reader.read(buffer)) != -1) {
