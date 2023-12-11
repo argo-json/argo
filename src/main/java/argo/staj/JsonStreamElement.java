@@ -154,11 +154,10 @@ public abstract class JsonStreamElement {
     public static String asString(final Reader reader) {
         // TODO constants for "", "0", and "1"
         final StringBuilder stringBuilder = new StringBuilder();
-        final char[] buffer = new char[8096]; // TODO this doesn't account for the fact that the underlying reader is inherently single-char based.
         try {
             int c;
-            while((c = reader.read(buffer)) != -1) {
-                stringBuilder.append(buffer, 0, c);
+            while((c = reader.read()) != -1) {
+                stringBuilder.append((char) c);
             }
             reader.close(); // TODO this isn't in a finally because we want to preserve exceptions thrown earlier in the block... but is it a good idea?
         } catch (IOException e) {
