@@ -26,7 +26,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JsonNodeTest {
 
@@ -155,88 +155,56 @@ final class JsonNodeTest {
 
     @Test
     void getArrayNodeFromObjectHandledNicely() {
-        try {
-            SAMPLE_JSON.getStringValue("championships", 2, 12);
-            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
-        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), equalTo("Failed to find an array at [\"championships\".2.12] while resolving [\"championships\".2.12] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
-        }
+        final JsonNodeDoesNotMatchJsonNodeSelectorException exception = assertThrows(JsonNodeDoesNotMatchJsonNodeSelectorException.class, () -> SAMPLE_JSON.getStringValue("championships", 2, 12));
+        assertThat(exception.getMessage(), equalTo("Failed to find an array at [\"championships\".2.12] while resolving [\"championships\".2.12] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
     }
 
     @Test
     void getFromWrongTypeOfPathElementsHandledNicely() {
-        try {
-            SAMPLE_JSON.getStringValue("championships", "bob", 2);
-            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
-        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), equalTo("Failed to find an object at [\"championships\".\"bob\"] while resolving [\"championships\".\"bob\".2] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
-        }
+        final JsonNodeDoesNotMatchJsonNodeSelectorException exception = assertThrows(JsonNodeDoesNotMatchJsonNodeSelectorException.class, () -> SAMPLE_JSON.getStringValue("championships", "bob", 2));
+        assertThat(exception.getMessage(), equalTo("Failed to find an object at [\"championships\".\"bob\"] while resolving [\"championships\".\"bob\".2] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
     }
 
     @Test
     void getFromMissingFieldNameElementsHandledNicely() {
-        try {
-            SAMPLE_JSON.getStringValue("wrong field name", 2);
-            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
-        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), equalTo("Failed to find a field called [\"wrong field name\"] at [\"wrong field name\"] while resolving [\"wrong field name\".2] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
-        }
+        final JsonNodeDoesNotMatchJsonNodeSelectorException exception = assertThrows(JsonNodeDoesNotMatchJsonNodeSelectorException.class, () -> SAMPLE_JSON.getStringValue("wrong field name", 2));
+        assertThat(exception.getMessage(), equalTo("Failed to find a field called [\"wrong field name\"] at [\"wrong field name\"] while resolving [\"wrong field name\".2] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
     }
 
     @Test
     void getFromMissingIndexElementsHandledNicely() {
-        try {
-            SAMPLE_JSON.getStringValue("championships", 22);
-            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
-        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(
-                    e.getMessage(),
-                    equalTo("Failed to find an element at index [22] at [\"championships\".22] while resolving [\"championships\".22] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
-        }
+        final JsonNodeDoesNotMatchJsonNodeSelectorException exception = assertThrows(JsonNodeDoesNotMatchJsonNodeSelectorException.class, () -> SAMPLE_JSON.getStringValue("championships", 22));
+        assertThat(
+                exception.getMessage(),
+                equalTo("Failed to find an element at index [22] at [\"championships\".22] while resolving [\"championships\".22] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
     }
 
     @Test
     void getArrayNodeFromObjectForSingleElementPathHandledNicely() {
-        try {
-            SAMPLE_JSON.getStringValue(12);
-            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
-        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), equalTo("Failed to find an array while resolving [12] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
-        }
+        final JsonNodeDoesNotMatchJsonNodeSelectorException exception = assertThrows(JsonNodeDoesNotMatchJsonNodeSelectorException.class, () -> SAMPLE_JSON.getStringValue(12));
+        assertThat(exception.getMessage(), equalTo("Failed to find an array while resolving [12] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
     }
 
     @Test
     void getFromWrongTypeOfPathElementsForSingleElementPathHandledNicely() {
         final JsonNode aNode = SAMPLE_JSON.getNode("championships");
-        try {
-            aNode.getStringValue("bob");
-            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
-        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), equalTo("Failed to find an object while resolving [\"bob\"] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(aNode) + "]."));
-        }
+        final JsonNodeDoesNotMatchJsonNodeSelectorException exception = assertThrows(JsonNodeDoesNotMatchJsonNodeSelectorException.class, () -> aNode.getStringValue("bob"));
+        assertThat(exception.getMessage(), equalTo("Failed to find an object while resolving [\"bob\"] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(aNode) + "]."));
     }
 
     @Test
     void getFromMissingFieldNameElementsForSingleElementPathHandledNicely() {
-        try {
-            SAMPLE_JSON.getStringValue("wrong field name");
-            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
-        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(e.getMessage(), equalTo("Failed to find a field called [\"wrong field name\"] while resolving [\"wrong field name\"] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
-        }
+        final JsonNodeDoesNotMatchJsonNodeSelectorException exception = assertThrows(JsonNodeDoesNotMatchJsonNodeSelectorException.class, () -> SAMPLE_JSON.getStringValue("wrong field name"));
+        assertThat(exception.getMessage(), equalTo("Failed to find a field called [\"wrong field name\"] while resolving [\"wrong field name\"] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(SAMPLE_JSON) + "]."));
     }
 
     @Test
     void getFromMissingIndexElementsForSingleElementPathHandledNicely() {
         final JsonNode aNode = SAMPLE_JSON.getNode("championships");
-        try {
-            aNode.getStringValue(22);
-            fail("Should have thrown a JsonNodeDoesNotMatchJsonNodeSelectorException");
-        } catch (final JsonNodeDoesNotMatchJsonNodeSelectorException e) {
-            assertThat(
-                    e.getMessage(),
-                    equalTo("Failed to find an element at index [22] while resolving [22] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(aNode) + "]."));
-        }
+        final JsonNodeDoesNotMatchJsonNodeSelectorException exception = assertThrows(JsonNodeDoesNotMatchJsonNodeSelectorException.class, () -> aNode.getStringValue(22));
+        assertThat(
+                exception.getMessage(),
+                equalTo("Failed to find an element at index [22] while resolving [22] in [" + CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter().format(aNode) + "]."));
     }
 
     @Test

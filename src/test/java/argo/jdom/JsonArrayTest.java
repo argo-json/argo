@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -34,13 +34,8 @@ final class JsonArrayTest {
         baseElements.add(number("1"));
         assertEquals(1, jsonArray.getElements().size());
         assertEquals(baseJsonNode, jsonArray.getElements().get(0));
-        try {
-            jsonArray.getElements().add(number("1"));
-            fail("modifying the elements retrieved from a JsonArray should result in an UnsupportedOperationException");
-        } catch (UnsupportedOperationException e) {
-            assertThat(e.getMessage(), is(nullValue()));
-            // expect to end up here
-        }
+        final UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> jsonArray.getElements().add(number("1")));
+        assertThat(exception.getMessage(), is(nullValue()));
     }
 
     @Test
