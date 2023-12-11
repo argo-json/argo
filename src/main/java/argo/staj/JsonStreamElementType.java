@@ -182,15 +182,13 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
     }
 
-    private static boolean isWhitespace(final int character) {
-        return character == ' ' || character == TAB || character == NEWLINE || character == CARRIAGE_RETURN;
-    }
     private static int readNextNonWhitespaceChar(final PositionTrackingPushbackReader in) {
-        int nextChar;
-        while (isWhitespace(nextChar = in.read())) {
-            // keep looping
+        while (true) {
+            final int nextChar = in.read();
+            if (nextChar != ' ' && nextChar != TAB && nextChar != NEWLINE && nextChar != CARRIAGE_RETURN) {
+                return nextChar;
+            }
         }
-        return nextChar;
     }
 
     private static JsonStreamElement aJsonValue(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) { // NOPMD TODO this should be turned off in the rules
