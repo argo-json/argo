@@ -152,7 +152,6 @@ public abstract class JsonStreamElement {
     }
 
     public static String asString(final Reader reader) { // TODO move
-        // TODO constants for "", "0", and "1"
         final StringBuilder stringBuilder = new StringBuilder();
         try {
             int c;
