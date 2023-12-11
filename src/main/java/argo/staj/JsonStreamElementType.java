@@ -15,9 +15,7 @@ import java.io.Reader;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import static argo.staj.InvalidSyntaxRuntimeException.END_OF_STREAM;
-import static argo.staj.InvalidSyntaxRuntimeException.invalidSyntaxRuntimeException;
-import static argo.staj.InvalidSyntaxRuntimeException.unexpectedCharacterInvalidSyntaxRuntimeException;
+import static argo.staj.InvalidSyntaxRuntimeException.*;
 import static argo.staj.JsonStreamElement.*;
 
 /**
@@ -184,21 +182,14 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
     }
 
+    private static boolean isWhitespace(final int character) {
+        return character == ' ' || character == TAB || character == NEWLINE || character == CARRIAGE_RETURN;
+    }
     private static int readNextNonWhitespaceChar(final PositionTrackingPushbackReader in) {
         int nextChar;
-        boolean gotNonWhitespace = false;
-        do {
-            nextChar = in.read();
-            switch (nextChar) {
-                case ' ':
-                case TAB:
-                case NEWLINE:
-                case CARRIAGE_RETURN:
-                    break;
-                default:
-                    gotNonWhitespace = true;
-            }
-        } while (!gotNonWhitespace);
+        while (isWhitespace(nextChar = in.read())) {
+            // keep looping
+        }
         return nextChar;
     }
 
