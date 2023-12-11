@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,10 +10,10 @@
 
 package argo.jdom;
 
+import argo.MapBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -98,9 +98,9 @@ final class JsonNodeSelectorsTest {
     @Test
     void matchesAnObjectNode() {
         final JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> jsonNodeSelector = JsonNodeSelectors.anObjectNode();
-        final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Barry"), string("Lemons"));
-        }};
+        final Map<JsonStringNode, JsonNode> someJsonMappings = MapBuilder.<JsonStringNode, JsonNode>mapBuilder()
+                .put(string("Barry"), string("Lemons"))
+                .build();
         final JsonNode node = object(someJsonMappings);
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo(someJsonMappings));
@@ -109,9 +109,9 @@ final class JsonNodeSelectorsTest {
     @Test
     void matchesANullableObjectNode() {
         final JsonNodeSelector<JsonNode, Map<JsonStringNode, JsonNode>> jsonNodeSelector = JsonNodeSelectors.aNullableObjectNode();
-        final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Barry"), string("Lemons"));
-        }};
+        final Map<JsonStringNode, JsonNode> someJsonMappings = MapBuilder.<JsonStringNode, JsonNode>mapBuilder()
+                .put(string("Barry"), string("Lemons"))
+                .build();
         final JsonNode node = object(someJsonMappings);
         assertTrue(jsonNodeSelector.matches(node));
         assertTrue(jsonNodeSelector.matches(nullNode()));
@@ -122,9 +122,9 @@ final class JsonNodeSelectorsTest {
     @Test
     void matchesAFieldOfAnObjectNode() {
         final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.aField("Wobbly");
-        final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Wobbly"), string("Bob"));
-        }};
+        final Map<JsonStringNode, JsonNode> node = MapBuilder.<JsonStringNode, JsonNode>mapBuilder()
+                .put(string("Wobbly"), string("Bob"))
+                .build();
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo(string("Bob")));
     }
@@ -132,9 +132,7 @@ final class JsonNodeSelectorsTest {
     @Test
     void matchesAnObjectWithField() {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.anObjectNodeWithField("Wobbly");
-        final JsonNode node = object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Wobbly"), string("Bob"));
-        }});
+        final JsonNode node = object(field("Wobbly", string("Bob")));
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo(string("Bob")));
     }
@@ -142,18 +140,18 @@ final class JsonNodeSelectorsTest {
     @Test
     void rejectsAFieldOfAnObjectNodeThatDoesNotExist() {
         final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.aField("Golden");
-        final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Wobbly"), string("Bob"));
-        }};
+        final Map<JsonStringNode, JsonNode> node = MapBuilder.<JsonStringNode, JsonNode>mapBuilder()
+                .put(string("Wobbly"), string("Bob"))
+                .build();
         assertFalse(jsonNodeSelector.matches(node));
     }
 
     @Test
     void doesNotGetAFieldOfAnObjectNodeThatDoesNotExist() {
         final JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> jsonNodeSelector = JsonNodeSelectors.aField("Golden");
-        final Map<JsonStringNode, JsonNode> node = new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Wobbly"), string("Bob"));
-        }};
+        final Map<JsonStringNode, JsonNode> node = MapBuilder.<JsonStringNode, JsonNode>mapBuilder()
+                .put(string("Wobbly"), string("Bob"))
+                .build();
         assertThrows(IllegalArgumentException.class, () -> jsonNodeSelector.getValue(node));
     }
 

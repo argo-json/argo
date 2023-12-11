@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,8 +12,8 @@ package argo.jdom;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.StringReader;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -26,14 +26,12 @@ final class JsonListenerToJdomAdapterTest {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startObject();
-        jsonListenerToJdomAdapter.startField("Hello");
-        jsonListenerToJdomAdapter.stringValue("World");
+        jsonListenerToJdomAdapter.startField(new StringReader("Hello"));
+        jsonListenerToJdomAdapter.stringValue(new StringReader("World"));
         jsonListenerToJdomAdapter.endField();
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Hello"), string("World"));
-        }});
+        final JsonNode expected = object(field("Hello", string("World")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -42,14 +40,12 @@ final class JsonListenerToJdomAdapterTest {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startObject();
-        jsonListenerToJdomAdapter.startField("Gigawatts");
-        jsonListenerToJdomAdapter.numberValue("1.21");
+        jsonListenerToJdomAdapter.startField(new StringReader("Gigawatts"));
+        jsonListenerToJdomAdapter.numberValue(new StringReader("1.21"));
         jsonListenerToJdomAdapter.endField();
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Gigawatts"), number("1.21"));
-        }});
+        final JsonNode expected = object(field("Gigawatts", number("1.21")));
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 
@@ -58,8 +54,8 @@ final class JsonListenerToJdomAdapterTest {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startArray();
-        jsonListenerToJdomAdapter.stringValue("Hello");
-        jsonListenerToJdomAdapter.stringValue("World");
+        jsonListenerToJdomAdapter.stringValue(new StringReader("Hello"));
+        jsonListenerToJdomAdapter.stringValue(new StringReader("World"));
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
         final JsonNode expected = array(Arrays.asList((JsonNode) string("Hello"), string("World")));
@@ -71,8 +67,8 @@ final class JsonListenerToJdomAdapterTest {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startArray();
-        jsonListenerToJdomAdapter.numberValue("1.21");
-        jsonListenerToJdomAdapter.numberValue("42");
+        jsonListenerToJdomAdapter.numberValue(new StringReader("1.21"));
+        jsonListenerToJdomAdapter.numberValue(new StringReader("42"));
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
         final JsonNode expected = array(Arrays.asList(number("1.21"), number("42")));
@@ -85,8 +81,8 @@ final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.startDocument();
         jsonListenerToJdomAdapter.startArray();
         jsonListenerToJdomAdapter.startObject();
-        jsonListenerToJdomAdapter.startField("anObject");
-        jsonListenerToJdomAdapter.stringValue("objectValue");
+        jsonListenerToJdomAdapter.startField(new StringReader("anObject"));
+        jsonListenerToJdomAdapter.stringValue(new StringReader("objectValue"));
         jsonListenerToJdomAdapter.endField();
         jsonListenerToJdomAdapter.endObject();
         jsonListenerToJdomAdapter.nullValue();
@@ -94,14 +90,12 @@ final class JsonListenerToJdomAdapterTest {
         jsonListenerToJdomAdapter.falseValue();
         jsonListenerToJdomAdapter.endArray();
         jsonListenerToJdomAdapter.endDocument();
-        final JsonNode expected = array(Arrays.asList(
-                object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("anObject"), string("objectValue"));
-                }})
-                , nullNode()
-                , trueNode()
-                , falseNode()
-        ));
+        final JsonNode expected = array(
+                object(field("anObject", string("objectValue"))),
+                nullNode(),
+                trueNode(),
+                falseNode()
+        );
         assertThat(jsonListenerToJdomAdapter.getDocument(), equalTo(expected));
     }
 }

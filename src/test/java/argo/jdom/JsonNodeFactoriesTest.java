@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,12 +10,14 @@
 
 package argo.jdom;
 
+import argo.MapBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+import static argo.MapBuilder.mapBuilder;
 import static argo.jdom.JsonNodeFactories.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
@@ -40,8 +42,8 @@ final class JsonNodeFactoriesTest {
 
     @Test
     void createsALazyJsonArrayNode() {
-        List<JsonNode> elements = new ArrayList<>();
-        JsonNode jsonNode = lazyArray(elements);
+        final List<JsonNode> elements = new ArrayList<>();
+        final JsonNode jsonNode = lazyArray(elements);
         elements.add(string("late element"));
         assertThat(
                 jsonNode
@@ -90,8 +92,8 @@ final class JsonNodeFactoriesTest {
 
     @Test
     void createsANullableLazyJsonArrayNode() {
-        List<JsonNode> elements = new ArrayList<>();
-        JsonNode jsonNode = nullableLazyArray(elements);
+        final List<JsonNode> elements = new ArrayList<>();
+        final JsonNode jsonNode = nullableLazyArray(elements);
         elements.add(string("late element"));
         assertThat(
                 jsonNode
@@ -125,7 +127,7 @@ final class JsonNodeFactoriesTest {
 
     @Test
     void createsANullNodeWithLazyJsonArrayNull() {
-        JsonNode jsonNode = nullableLazyArray(null);
+        final JsonNode jsonNode = nullableLazyArray(null);
         assertThat(
                 jsonNode
                 , equalTo(nullNode()));
@@ -134,11 +136,12 @@ final class JsonNodeFactoriesTest {
     @Test
     void createsJsonObjectNodeWithFieldArray() {
         assertThat(
-                object(field("Gina", string("Dreams of running away")), field(string("Tommy"), string("Used to work on the dock")))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Gina"), string("Dreams of running away"));
-                    put(string("Tommy"), string("Used to work on the dock"));
-                }}))
+                object(field("Gina", string("Dreams of running away")), field(string("Tommy"), string("Used to work on the dock"))),
+                equalTo(object(
+                        mapBuilder(string("Gina"), string("Dreams of running away"))
+                        .put(string("Tommy"), string("Used to work on the dock"))
+                        .build()
+                ))
         );
     }
 
@@ -148,10 +151,11 @@ final class JsonNodeFactoriesTest {
                 field("Gina", string("Dreams of running away"))
                 , field("Tommy", string("Used to work on the dock"))
                 ).iterator()),
-                equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Gina"), string("Dreams of running away"));
-                    put(string("Tommy"), string("Used to work on the dock"));
-                }}))
+                equalTo(object(
+                        mapBuilder(string("Gina"), string("Dreams of running away"))
+                                .put(string("Tommy"), string("Used to work on the dock"))
+                                .build()
+                ))
         );
     }
 
@@ -161,17 +165,18 @@ final class JsonNodeFactoriesTest {
                 field("Gina", string("Dreams of running away"))
                 , field("Tommy", string("Used to work on the dock"))
                 )),
-                equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Gina"), string("Dreams of running away"));
-                    put(string("Tommy"), string("Used to work on the dock"));
-                }}))
+                equalTo(object(
+                        mapBuilder(string("Gina"), string("Dreams of running away"))
+                                .put(string("Tommy"), string("Used to work on the dock"))
+                                .build()
+                ))
         );
     }
 
     @Test
     void createsALazyJsonObjectNode() {
-        List<JsonField> fields = new ArrayList<>();
-        JsonNode jsonNode = lazyObject(fields);
+        final List<JsonField> fields = new ArrayList<>();
+        final JsonNode jsonNode = lazyObject(fields);
         fields.add(field("late", string("field")));
         assertThat(
                 jsonNode
@@ -182,59 +187,63 @@ final class JsonNodeFactoriesTest {
 
     @Test
     void createsNullableJsonObjectNodeWithMap() {
-        Map<JsonStringNode, JsonNode> fields = new HashMap<>();
-        fields.put(string("Gina"), string("Dreams of running away"));
-        fields.put(string("Tommy"), string("Used to work on the dock"));
+        final Map<JsonStringNode, JsonNode> fields = MapBuilder.<JsonStringNode, JsonNode>mapBuilder(string("Gina"), string("Dreams of running away"))
+                .put(string("Tommy"), string("Used to work on the dock"))
+                .build();
         assertThat(
-                nullableObject(fields)
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Gina"), string("Dreams of running away"));
-                    put(string("Tommy"), string("Used to work on the dock"));
-                }}))
+                nullableObject(fields),
+                equalTo(object(
+                        mapBuilder(string("Gina"), string("Dreams of running away"))
+                                .put(string("Tommy"), string("Used to work on the dock"))
+                                .build()
+                ))
         );
     }
 
     @Test
     void createsNullableJsonObjectNodeWithFieldArray() {
         assertThat(
-                nullableObject(field("Gina", string("Dreams of running away")), field(string("Tommy"), string("Used to work on the dock")))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Gina"), string("Dreams of running away"));
-                    put(string("Tommy"), string("Used to work on the dock"));
-                }}))
+                nullableObject(field("Gina", string("Dreams of running away")), field(string("Tommy"), string("Used to work on the dock"))),
+                equalTo(object(
+                        mapBuilder(string("Gina"), string("Dreams of running away"))
+                                .put(string("Tommy"), string("Used to work on the dock"))
+                                .build()
+                ))
         );
     }
 
     @Test
     void createsNullableJsonObjectNodeWithFieldIterator() {
         assertThat(nullableObject(asList(
-                field("Gina", string("Dreams of running away"))
-                , field("Tommy", string("Used to work on the dock"))
+                        field("Gina", string("Dreams of running away")),
+                        field("Tommy", string("Used to work on the dock"))
                 ).iterator()),
-                equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Gina"), string("Dreams of running away"));
-                    put(string("Tommy"), string("Used to work on the dock"));
-                }}))
+                equalTo(object(
+                        mapBuilder(string("Gina"), string("Dreams of running away"))
+                                .put(string("Tommy"), string("Used to work on the dock"))
+                                .build()
+                ))
         );
     }
 
     @Test
     void createsNullableJsonObjectNodeWithFieldIterable() {
         assertThat(nullableObject(asList(
-                field("Gina", string("Dreams of running away"))
-                , field("Tommy", string("Used to work on the dock"))
+                        field("Gina", string("Dreams of running away")),
+                        field("Tommy", string("Used to work on the dock"))
                 )),
-                equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Gina"), string("Dreams of running away"));
-                    put(string("Tommy"), string("Used to work on the dock"));
-                }}))
+                equalTo(object(
+                        mapBuilder(string("Gina"), string("Dreams of running away"))
+                                .put(string("Tommy"), string("Used to work on the dock"))
+                                .build()
+                ))
         );
     }
 
     @Test
     void createsANullableLazyJsonObjectNode() {
-        List<JsonField> fields = new ArrayList<>();
-        JsonNode jsonNode = nullableLazyObject(fields);
+        final List<JsonField> fields = new ArrayList<>();
+        final JsonNode jsonNode = nullableLazyObject(fields);
         fields.add(field("late", string("field")));
         assertThat(
                 jsonNode
@@ -277,7 +286,7 @@ final class JsonNodeFactoriesTest {
 
     @Test
     void aNullableLazyJsonObjectNodeCreatesNullNode() {
-        JsonNode jsonNode = nullableLazyObject(null);
+        final JsonNode jsonNode = nullableLazyObject(null);
         assertThat(
                 jsonNode
                 , equalTo(
@@ -288,100 +297,80 @@ final class JsonNodeFactoriesTest {
     @Test
     void createsJsonNumberNodeUsingABigInteger() {
         assertThat(
-                object(field("Number of shots to give it", number(BigInteger.ONE)))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), number("1"));
-                }}))
+                object(field("Number of shots to give it", number(BigInteger.ONE))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), number("1")).build()))
         );
     }
 
     @Test
     void createsJsonNumberNodeUsingALong() {
         assertThat(
-                object(field("Number of shots to give it", number(1)))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), number("1"));
-                }}))
+                object(field("Number of shots to give it", number(1))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), number("1")).build()))
         );
     }
 
     @Test
     void nullableNumberCreatesJsonNumberNodeUsingABigInteger() {
         assertThat(
-                object(field("Number of shots to give it", nullableNumber(BigInteger.ONE)))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), number("1"));
-                }}))
+                object(field("Number of shots to give it", nullableNumber(BigInteger.ONE))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), number("1")).build()))
         );
     }
 
     @Test
     void nullableNumberCreatesJsonNumberNodeUsingABigDecimal() {
         assertThat(
-                object(field("Number of shots to give it", nullableNumber(BigDecimal.ONE)))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), number("1"));
-                }}))
+                object(field("Number of shots to give it", nullableNumber(BigDecimal.ONE))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), number("1")).build()))
         );
     }
 
     @Test
     void nullableNumberCreatesJsonNumberNodeUsingALong() {
         assertThat(
-                object(field("Number of shots to give it", nullableNumber(1L)))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), number("1"));
-                }}))
+                object(field("Number of shots to give it", nullableNumber(1L))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), number("1")).build()))
         );
     }
 
     @Test
     void nullableNumberCreatesJsonNumberNodeUsingAString() {
         assertThat(
-                object(field("Number of shots to give it", nullableNumber("1")))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), number("1"));
-                }}))
+                object(field("Number of shots to give it", nullableNumber("1"))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), number("1")).build()))
         );
     }
 
     @Test
     void nullableNumberCreatesJsonNullNodeUsingANullBigInteger() {
         assertThat(
-                object(field("Number of shots to give it", nullableNumber((BigInteger) null)))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), nullNode());
-                }}))
+                object(field("Number of shots to give it", nullableNumber((BigInteger) null))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), nullNode()).build()))
         );
     }
 
     @Test
     void nullableNumberCreatesJsonNullNodeUsingANullBigDecimal() {
         assertThat(
-                object(field("Number of shots to give it", nullableNumber((BigDecimal) null)))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), nullNode());
-                }}))
+                object(field("Number of shots to give it", nullableNumber((BigDecimal) null))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), nullNode()).build()))
         );
     }
 
     @Test
     void nullableNumberCreatesJsonNullNodeUsingANullLong() {
         assertThat(
-                object(field("Number of shots to give it", nullableNumber((Long) null)))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), nullNode());
-                }}))
+                object(field("Number of shots to give it", nullableNumber((Long) null))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), nullNode()).build()))
         );
     }
 
     @Test
     void nullableNumberCreatesJsonNullNodeUsingANullString() {
         assertThat(
-                object(field("Number of shots to give it", nullableNumber((String) null)))
-                , equalTo(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Number of shots to give it"), nullNode());
-                }}))
+                object(field("Number of shots to give it", nullableNumber((String) null))),
+                equalTo(object(mapBuilder(string("Number of shots to give it"), nullNode()).build()))
         );
     }
 

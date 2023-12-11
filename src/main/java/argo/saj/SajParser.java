@@ -17,8 +17,6 @@ import argo.staj.StajParser;
 import java.io.Reader;
 import java.io.StringReader;
 
-import static argo.staj.JsonStreamElement.asString;
-
 /**
  * Converts a character stream into calls to a {@code JsonListener}.
  *
@@ -75,7 +73,7 @@ public final class SajParser {
                         jsonListener.endObject();
                         break;
                     case START_FIELD:
-                        jsonListener.startField(asString(jsonStreamElement.reader()));
+                        jsonListener.startField(jsonStreamElement.reader());
                         break;
                     case END_FIELD:
                         jsonListener.endField();
@@ -90,10 +88,10 @@ public final class SajParser {
                         jsonListener.falseValue();
                         break;
                     case STRING:
-                        jsonListener.stringValue(asString(jsonStreamElement.reader()));
+                        jsonListener.stringValue(jsonStreamElement.reader());
                         break;
                     case NUMBER:
-                        jsonListener.numberValue(asString(jsonStreamElement.reader()));
+                        jsonListener.numberValue(jsonStreamElement.reader());
                         break;
                     default:
                         throw new IllegalStateException("Got a JsonStreamElement of unexpected type: " + jsonStreamElement);

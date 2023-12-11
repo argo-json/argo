@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,12 +12,10 @@ package argo.format;
 
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
-import argo.jdom.JsonStringNode;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.HashMap;
 
 import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
 import static argo.format.PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter;
@@ -49,15 +47,13 @@ final class PrettyJsonFormatterTest {
 
     @Test
     void formatsAnEmptyJsonObject() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(string("Hello"), object(new HashMap<>()));
-        }})), equalTo(
-                aJsonStringResultBuilder()
+        assertThat(
+                fieldOrderPreservingPrettyJsonFormatter().format(object(field("Hello", object()))),
+                equalTo(aJsonStringResultBuilder()
                         .printLine("{")
                         .printLine("\t\"Hello\": {}")
                         .print("}")
-                        .build()
-        )
+                        .build())
         );
     }
 

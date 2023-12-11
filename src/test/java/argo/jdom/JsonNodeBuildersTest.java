@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,7 +12,6 @@ package argo.jdom;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import static argo.jdom.JsonNodeBuilders.*;
@@ -73,7 +72,7 @@ final class JsonNodeBuildersTest {
 
     @Test
     void objectBuilderBuildsAnObjectWithNoFields() {
-        assertThat(anObjectBuilder().build(), equalTo(JsonNodeFactories.object(new HashMap<>())));
+        assertThat(anObjectBuilder().build(), equalTo(JsonNodeFactories.object()));
     }
 
     @Test
@@ -81,11 +80,13 @@ final class JsonNodeBuildersTest {
         assertThat(
                 anObjectBuilder()
                         .withField("Hunky", aStringBuilder("dory"))
-                        .build()
-                , equalTo(
-                JsonNodeFactories.object(new HashMap<JsonStringNode, JsonNode>() {{
-                    put(JsonNodeFactories.string("Hunky"), JsonNodeFactories.string("dory"));
-                }})
-        ));
+                        .build(),
+                equalTo(JsonNodeFactories.object(
+                        JsonNodeFactories.field(
+                                "Hunky",
+                                JsonNodeFactories.string("dory")
+                        )
+                ))
+        );
     }
 }

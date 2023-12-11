@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,8 +12,6 @@ package argo.jdom;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-
 import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -25,9 +23,7 @@ final class JsonNodeSelectorTest {
     void chainingUsingWithChildMatches() {
         final JsonNodeSelector<JsonNode, JsonNode> jsonNodeSelector = JsonNodeSelectors.anObjectNode()
                 .with(JsonNodeSelectors.aField("Hello"));
-        final JsonNode node = object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Hello"), number("12.5"));
-        }});
+        final JsonNode node = object(field("Hello", number("12.5")));
         assertTrue(jsonNodeSelector.matches(node));
         assertThat(jsonNodeSelector.getValue(node), equalTo(number("12.5")));
     }

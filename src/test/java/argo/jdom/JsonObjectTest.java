@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,23 +12,14 @@ package argo.jdom;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import static argo.jdom.JsonNodeFactories.field;
-import static argo.jdom.JsonNodeFactories.number;
-import static argo.jdom.JsonNodeFactories.object;
-import static argo.jdom.JsonNodeFactories.string;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
+import static argo.MapBuilder.mapBuilder;
+import static argo.jdom.JsonNodeFactories.*;
+import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 final class JsonObjectTest {
 
@@ -36,8 +27,7 @@ final class JsonObjectTest {
     void testImmutability() {
         final JsonStringNode baseJsonKey = string("Test");
         final JsonNode baseJsonNode = number("0");
-        final Map<JsonStringNode, JsonNode> baseElements = new HashMap<>();
-        baseElements.put(baseJsonKey, baseJsonNode);
+        final Map<JsonStringNode, JsonNode> baseElements = mapBuilder(baseJsonKey, baseJsonNode).build();
         final JsonNode jsonObject = object(baseElements);
         assertEquals(1, jsonObject.getFields().size());
         assertTrue(jsonObject.getFields().containsKey(baseJsonKey));
@@ -52,7 +42,7 @@ final class JsonObjectTest {
 
     @Test
     void testEquals() {
-        assertEquals(object(new HashMap<>()), object(new HashMap<>()));
+        assertEquals(object(emptyMap()), object(emptyMap()));
         assertEquals(object(singletonMap(string("Test"), number("0"))), object(singletonMap(string("Test"), number("0"))));
         assertEquals(object(field(string("Test"), number("0"))), object(singletonMap(string("Test"), number("0"))));
         assertEquals(object(field(string("Test"), number("0"))), object(field(string("Test"), number("0"))));
@@ -67,7 +57,7 @@ final class JsonObjectTest {
 
     @Test
     void testHashCode() {
-        assertEquals(object(new HashMap<>()), object(new HashMap<>()));
+        assertEquals(object(emptyMap()), object(emptyMap()));
         assertEquals(object(singletonMap(string("Test"), number("0"))).hashCode(), object(singletonMap(string("Test"), number("0"))).hashCode());
         assertEquals(object(field(string("Test"), number("0"))).hashCode(), object(singletonMap(string("Test"), number("0"))).hashCode());
         assertEquals(object(field(string("Test"), number("0"))).hashCode(), object(field(string("Test"), number("0"))).hashCode());

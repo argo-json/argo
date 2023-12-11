@@ -23,7 +23,10 @@ import argo.staj.StajParser;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.AbstractList;
 import java.util.HashSet;
@@ -31,18 +34,12 @@ import java.util.List;
 import java.util.Set;
 
 import static argo.format.JsonNumberUtils.asBigDecimal;
-import static argo.jdom.JsonNodeBuilders.aNumberBuilder;
-import static argo.jdom.JsonNodeBuilders.aStringBuilder;
-import static argo.jdom.JsonNodeBuilders.anArrayBuilder;
-import static argo.jdom.JsonNodeBuilders.anObjectBuilder;
-import static argo.jdom.JsonNodeFactories.array;
-import static argo.jdom.JsonNodeFactories.field;
-import static argo.jdom.JsonNodeFactories.number;
-import static argo.jdom.JsonNodeFactories.object;
-import static argo.jdom.JsonNodeFactories.string;
+import static argo.jdom.JsonNodeBuilders.*;
+import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeSelectors.aStringNode;
 import static argo.jdom.JsonNodeSelectors.anArrayNode;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Files.newInputStream;
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.readFileToString;
@@ -166,12 +163,12 @@ final class MainDocumentationExamples {
 
     @Test
     void parsesUsingSaj() throws Exception {
-        final Reader jsonReader = new InputStreamReader(new FileInputStream(new File(this.getClass().getResource("SimpleExample.json").getFile())), UTF_8);
+        final Reader jsonReader = newBufferedReader(new File(this.getClass().getResource("SimpleExample.json").getFile()).toPath(), UTF_8);
         try {
             final Set<String> fieldNames = new HashSet<>();
             SAJ_PARSER.parse(jsonReader, new JsonListener() {
-                public void startField(String name) {
-                    fieldNames.add(name);
+                public void startField(Reader name) {
+                    fieldNames.add(JsonStreamElement.asString(name));
                 }
 
                 public void startDocument() {
@@ -195,10 +192,10 @@ final class MainDocumentationExamples {
                 public void endField() {
                 }
 
-                public void stringValue(final String value) {
+                public void stringValue(final Reader value) {
                 }
 
-                public void numberValue(final String value) {
+                public void numberValue(final Reader value) {
                 }
 
                 public void trueValue() {

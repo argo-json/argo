@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,6 +12,7 @@ package argo.jdom;
 
 import argo.saj.JsonListener;
 
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -23,6 +24,7 @@ import static argo.jdom.JsonNodeBuilders.aTrueBuilder;
 import static argo.jdom.JsonNodeBuilders.anArrayBuilder;
 import static argo.jdom.JsonNodeBuilders.anObjectBuilder;
 import static argo.jdom.JsonNodeFactories.field;
+import static argo.staj.JsonStreamElement.asString;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
 
@@ -62,8 +64,8 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         stack.pop();
     }
 
-    public void startField(final String name) {
-        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(name, jsonStringNodeFactory);
+    public void startField(final Reader name) {
+        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(asString(name), jsonStringNodeFactory);
         stack.peek().addField(fieldNodeContainer);
         stack.push(fieldNodeContainer);
     }
@@ -72,16 +74,16 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         stack.pop();
     }
 
-    public void numberValue(final String value) {
-        addValue(jsonNumberNodeFactory.jsonNumberNode(value));
+    public void numberValue(final Reader value) {
+        addValue(jsonNumberNodeFactory.jsonNumberNode(asString(value)));
     }
 
     public void trueValue() {
         addValue(aTrueBuilder());
     }
 
-    public void stringValue(final String value) {
-        addValue(jsonStringNodeFactory.jsonStringNode(value));
+    public void stringValue(final Reader value) {
+        addValue(jsonStringNodeFactory.jsonStringNode(asString(value)));
     }
 
     public void falseValue() {

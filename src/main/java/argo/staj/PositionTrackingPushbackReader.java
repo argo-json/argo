@@ -114,7 +114,7 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
         }
     }
 
-    private void updateCharacterAndLineCounts(final int result) {
+    private void updateCharacterAndLineCounts(final int result) { // TODO does this work when a newline has been pushed back?
         if (CARRIAGE_RETURN == result) {
             characterCount = 0;
             lineCount++;

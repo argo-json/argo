@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -11,10 +11,7 @@
 package argo.format;
 
 import argo.jdom.JsonNode;
-import argo.jdom.JsonStringNode;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
 
 import static argo.format.CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter;
 import static argo.format.CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter;
@@ -36,9 +33,10 @@ final class CompactJsonFormatterTest {
 
     @Test
     void formatsAJsonNumber() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("S"), number("7"));
-        }})), equalTo("{\"S\":7}"));
+        assertThat(
+                fieldOrderPreservingCompactJsonFormatter().format(object(field("S", number("7")))),
+                equalTo("{\"S\":7}")
+        );
     }
 
     @Test

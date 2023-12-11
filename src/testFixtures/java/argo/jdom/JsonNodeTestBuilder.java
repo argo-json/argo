@@ -13,20 +13,16 @@ package argo.jdom;
 import net.sourceforge.ickles.RandomListMemberSupplier;
 import net.sourceforge.ickles.RandomSupplierSwitcher;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import static argo.jdom.JsonNodeFactories.array;
-import static argo.jdom.JsonNodeFactories.falseNode;
-import static argo.jdom.JsonNodeFactories.field;
-import static argo.jdom.JsonNodeFactories.nullNode;
-import static argo.jdom.JsonNodeFactories.object;
-import static argo.jdom.JsonNodeFactories.trueNode;
+import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 public final class JsonNodeTestBuilder {
 
@@ -50,19 +46,15 @@ public final class JsonNodeTestBuilder {
     ));
 
     private static JsonNode anArrayNode(final int maxDepth) {
-        return array(new ArrayList<JsonNode>() {{
-            for (int i = 0; i < RANDOM.nextInt(5); i++) {
-                add(aJsonNode(maxDepth));
-            }
-        }});
+        return array(
+                Stream.generate(() -> aJsonNode(maxDepth)).limit(RANDOM.nextInt(5)).collect(toList())
+        );
     }
 
     private static JsonNode anObjectNode(final int maxDepth) {
-        return object(new ArrayList<JsonField>() {{
-            for (int i = 0; i < RANDOM.nextInt(5); i++) {
-                add(field(aStringNode(), aJsonNode(maxDepth)));
-            }
-        }});
+        return object(
+                Stream.generate(() -> field(aStringNode(), aJsonNode(maxDepth))).limit(RANDOM.nextInt(5)).collect(toList())
+        );
     }
 
     public static JsonNode aJsonNode() {

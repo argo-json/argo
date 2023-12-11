@@ -10,82 +10,62 @@
 
 package argo.saj;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.Sequence;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 
+import static argo.saj.BlackHoleJsonListener.BLACK_HOLE_JSON_LISTENER;
 import static argo.saj.InvalidSyntaxExceptionMatcher.anInvalidSyntaxExceptionAtPosition;
+import static argo.saj.RecordingJsonListener.*;
+import static argo.saj.RecordingJsonListener.NumberValue.numberValue;
+import static argo.saj.RecordingJsonListener.StartField.startField;
+import static argo.saj.RecordingJsonListener.StringValue.stringValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.fail;
 
 final class SajParserTest { // NOPMD TODO this should be turned off in the rules
-    private static final JsonListener BLACK_HOLE_LISTENER = new JsonListener() {
-        public void startDocument() {
-        }
-
-        public void endDocument() {
-        }
-
-        public void startArray() {
-        }
-
-        public void endArray() {
-        }
-
-        public void startObject() {
-        }
-
-        public void endObject() {
-        }
-
-        public void startField(String name) {
-        }
-
-        public void endField() {
-        }
-
-        public void stringValue(String value) {
-        }
-
-        public void numberValue(String value) {
-        }
-
-        public void trueValue() {
-        }
-
-        public void falseValue() {
-        }
-
-        public void nullValue() {
-        }
-    };
-    private final Mockery context = new Mockery();
 
     @Test
     void tokenizesValidString() throws Exception {
-        assertJsonValueFragmentResultsInStringValue("\"hello world\"", "hello world");
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("\"hello world\"", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                stringValue("hello world"),
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesValidStringWithEscapedChars() throws Exception {
-        assertJsonValueFragmentResultsInStringValue("\"\\\"hello world\\\"\"", "\"hello world\"");
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("\"\\\"hello world\\\"\"", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                stringValue("\"hello world\""),
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesValidStringWithEscapedUnicodeChars() throws Exception {
-        assertJsonValueFragmentResultsInStringValue("\"hello world \\uF001\"", "hello world \uF001");
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("\"hello world \\uF001\"", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                stringValue("hello world \uF001"),
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void rejectsStringWithInvalidEscapedUnicodeChars() {
         final String inputString = "[\"hello world \\uF0\"]";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
-            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
+            fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException."); // TODO should ditch this pattern in favour of JUnit5 assertThrows()
         } catch (final InvalidSyntaxException e) {
             assertThat(e, anInvalidSyntaxExceptionAtPosition(16, 1));
         }
@@ -95,7 +75,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsInvalidString() {
         final String inputString = "[hello world\"]";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e, anInvalidSyntaxExceptionAtPosition(2, 1));
@@ -104,525 +84,303 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
 
     @Test
     void tokenizesValidNumber() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12.123E-2");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("[12.123E-2]"), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("12.123E-2", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                numberValue("12.123E-2"),
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesValidNumberWithLowerCaseExponent() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12.123e-2");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("[12.123e-2]"), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("12.123e-2", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                numberValue("12.123e-2"),
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesSimpleJsonStringObject() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("hello");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("world");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"hello\":\"world\"}"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesJsonStringObjectFromReader() throws Exception {
+        RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse(new StringReader("\"hello world\""), recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                stringValue("hello world"),
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesSimpleJsonStringObjectFromJsonString() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("hello");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("world");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse("{\"hello\":\"world\"}", jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesJsonStringObjectFromString() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("\"hello world\"", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                stringValue("hello world"),
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesSimpleJsonStringObjectWithWhitespace() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("hello");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("world");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"hello\": \"world\"}"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesJsonObjectWithWhitespace() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("{\"hello\": \"world\"}", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_OBJECT,
+                startField("hello"),
+                stringValue("world"),
+                END_FIELD,
+                END_OBJECT,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesMultiElementArrayWithWhitespace() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("1");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("2");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("[ 1, 2 ]"), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("[ 1, 2 ]", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_ARRAY,
+                numberValue("1"),
+                numberValue("2"),
+                END_ARRAY,
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesJsonStringObjectPair() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("hello");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("world");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("foo");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("bar");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"hello\":\"world\",\"foo\":\"bar\"}"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesMultiFieldObjectWithStringValues() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("{\"hello\":\"world\",\"foo\":\"bar\"}", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_OBJECT,
+                startField("hello"),
+                stringValue("world"),
+                END_FIELD,
+                startField("foo"),
+                stringValue("bar"),
+                END_FIELD,
+                END_OBJECT,
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesSimpleJsonNumberValue() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("room");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("101");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"room\":101}"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesObjectWithNumberValue() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("{\"room\":101}", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_OBJECT,
+                startField("room"),
+                numberValue("101"),
+                END_FIELD,
+                END_OBJECT,
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesSimpleJsonNull() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("points");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).nullValue();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"points\":null}"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesJsonNull() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("null", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                NULL_VALUE,
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesSimpleJsonTrue() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("points");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).trueValue();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"points\":true}"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesJsonTrue() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("true", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                TRUE_VALUE,
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesSimpleJsonFalse() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("points");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).falseValue();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"points\":false}"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesJsonFalse() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("false", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                FALSE_VALUE,
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesJsonNumberValuePair() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("room");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("101");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("answer");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("42");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"room\":101,\"answer\":42}"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesMultiFieldObjectWithNumberValues() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("{\"room\":101,\"answer\":42}", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_OBJECT,
+                startField("room"),
+                numberValue("101"),
+                END_FIELD,
+                startField("answer"),
+                numberValue("42"),
+                END_FIELD,
+                END_OBJECT,
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesJsonMixedPair() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("room");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("101");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("foo");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("bar");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"room\":101,\"foo\":\"bar\"}"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesMultiFieldObjectWithMixedValueTypes() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("{\"room\":101,\"foo\":\"bar\"}", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_OBJECT,
+                startField("room"),
+                numberValue("101"),
+                END_FIELD,
+                startField("foo"),
+                stringValue("bar"),
+                END_FIELD,
+                END_OBJECT,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesEmptyObject() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        final String inputString = "{}";
-        new SajParser().parse(new StringReader(inputString), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("{}", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_OBJECT,
+                END_OBJECT,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesNestedObject() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Test");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Inner test");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        final String inputString = "{\"Test\":{\"Inner test\":12}}";
-        new SajParser().parse(new StringReader(inputString), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("{\"Test\":{\"Inner test\":12}}", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_OBJECT,
+                startField("Test"),
+                START_OBJECT,
+                startField("Inner test"),
+                numberValue("12"),
+                END_FIELD,
+                END_OBJECT,
+                END_FIELD,
+                END_OBJECT,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesEmptyArray() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        final String inputString = "[]";
-        new SajParser().parse(new StringReader(inputString), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("[]", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_ARRAY,
+                END_ARRAY,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesSingleElementArray() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        final String inputString = "[12]";
-        new SajParser().parse(new StringReader(inputString), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("[12]", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_ARRAY,
+                numberValue("12"),
+                END_ARRAY,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesMultiElementArray() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue("test");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        final String inputString = "[12,\"test\"]";
-        new SajParser().parse(new StringReader(inputString), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("[12,\"test\"]", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_ARRAY,
+                numberValue("12"),
+                stringValue("test"),
+                END_ARRAY,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesNestedArray() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        final String inputString = "[[12]]";
-        new SajParser().parse(new StringReader(inputString), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("[[12]]", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_ARRAY,
+                START_ARRAY,
+                numberValue("12"),
+                END_ARRAY,
+                END_ARRAY,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesObjectWithArrayValue() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Test");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("{\"Test\":[12]}"), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("{\"Test\":[12]}", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_OBJECT,
+                startField("Test"),
+                START_ARRAY,
+                numberValue("12"),
+                END_ARRAY,
+                END_FIELD,
+                END_OBJECT,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void tokenizesArrayWithObjectElement() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startField("Test");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).numberValue("12");
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endField();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endObject();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("[{\"Test\":12}]"), jsonListener);
-        context.assertIsSatisfied();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("[{\"Test\":12}]", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_ARRAY,
+                START_OBJECT,
+                startField("Test"),
+                numberValue("12"),
+                END_FIELD,
+                END_OBJECT,
+                END_ARRAY,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void rejectsEmptyDocument() {
         final String inputString = "";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e, anInvalidSyntaxExceptionAtPosition(1, 1));
@@ -634,7 +392,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsLeadingNonWhitespaceCharacters() {
         final String inputString = "whoops[]";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e, anInvalidSyntaxExceptionAtPosition(1, 1));
@@ -645,7 +403,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsTrailingNonWhitespaceCharacters() {
         final String inputString = "[]whoops";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e, anInvalidSyntaxExceptionAtPosition(3, 1));
@@ -656,7 +414,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsMismatchedDoubleQuotes() {
         final String inputString = "{\"}";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e, anInvalidSyntaxExceptionAtPosition(2, 1));
@@ -667,7 +425,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsLeadingNonWhitespaceCharactersWithNewLines() {
         final String inputString = "\n whoops[\n]";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e, anInvalidSyntaxExceptionAtPosition(2, 2));
@@ -678,7 +436,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsTrailingNonWhitespaceCharactersWithNewLines() {
         final String inputString = "[\n]\n whoops";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e, anInvalidSyntaxExceptionAtPosition(2, 3));
@@ -686,67 +444,34 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     }
 
     @Test
-    void tokenizesObjectLeadingWhitespaceCharacters() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        final String inputString = " []";
-        new SajParser().parse(new StringReader(inputString), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesArrayWithLeadingWhitespaceCharacters() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse(" []", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_ARRAY,
+                END_ARRAY,
+                END_DOCUMENT
+        ));
     }
 
     @Test
-    void tokenizesObjectTrailingWhitespaceCharacters() throws Exception {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        final String inputString = "[] ";
-        new SajParser().parse(new StringReader(inputString), jsonListener);
-        context.assertIsSatisfied();
-    }
-
-    private void assertJsonValueFragmentResultsInStringValue(final String jsonFragment, final String expectedStringValue) throws InvalidSyntaxException {
-        final JsonListener jsonListener = context.mock(JsonListener.class);
-        final Sequence expectedSequence = context.sequence("expectedSequence");
-        context.checking(new Expectations() {{
-            oneOf(jsonListener).startDocument();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).startArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).stringValue(expectedStringValue);
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endArray();
-            inSequence(expectedSequence);
-            oneOf(jsonListener).endDocument();
-            inSequence(expectedSequence);
-        }});
-        new SajParser().parse(new StringReader("[" + jsonFragment + "]"), jsonListener);
-        context.assertIsSatisfied();
+    void tokenizesArrayTrailingWhitespaceCharacters() throws Exception {
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        new SajParser().parse("[] ", recordingJsonListener);
+        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
+                START_DOCUMENT,
+                START_ARRAY,
+                END_ARRAY,
+                END_DOCUMENT
+        ));
     }
 
     @Test
     void rejectsPrematureEndOfStreamDuringTrueValueWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[tru";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 5:  Expected 't' to be followed by [[r, u, e]], but got [[r, u]]."));
@@ -757,7 +482,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamDuringFalseValueWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[fal";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 5:  Expected 'f' to be followed by [[a, l, s, e]], but got [[a, l]]."));
@@ -768,7 +493,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamDuringNullValueWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[nul";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 5:  Expected 'n' to be followed by [[u, l, l]], but got [[u, l]]."));
@@ -779,7 +504,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamDuringHexCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[\"\\uab";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 7:  Expected 4 hexadecimal digits, but got [[a, b]]."));
@@ -790,7 +515,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamDuringNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 3:  Expected either , or ] but reached end of input."));
@@ -801,7 +526,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamDuringExponentWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1E";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected '+' or '-' or a digit 0 - 9 but reached end of input."));
@@ -812,7 +537,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamDuringFractionalPartOfNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1.";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected a digit 0 - 9 but reached end of input."));
@@ -823,7 +548,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamDuringNegativeNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[-";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 3:  Expected a digit 0 - 9 but reached end of input."));
@@ -834,7 +559,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamDuringEscapedCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[\"\\";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 4:  Unexpectedly reached end of input during escaped character."));
@@ -845,7 +570,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamStartingArrayOrObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 1:  Expected a value but reached end of input."));
@@ -856,7 +581,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamEndingArrayWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected a value but reached end of input."));
@@ -867,7 +592,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamEndingPopulatedArrayWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 3:  Expected either , or ] but reached end of input."));
@@ -878,7 +603,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamEndingObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected object identifier to begin with [\"] but reached end of input."));
@@ -889,7 +614,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamFollowingFieldNameWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\"";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 5:  Expected object identifier to be followed by : but reached end of input."));
@@ -900,7 +625,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamFollowingFieldNameAndSeparatorWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\":";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 6:  Expected a value but reached end of input."));
@@ -911,7 +636,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsPrematureEndOfStreamEndingPopulatedObjectWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "{\"a\":1";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 7:  Expected either , or ] but reached end of input."));
@@ -922,7 +647,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void rejectsNumberWithTwoDecimalPoints() {
         final String inputString = "[1.1.1]";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 5:  Expected either , or ] but got [.]."));
@@ -933,7 +658,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void handlesIncompleteEscapedUnicodeCorrectly() {
         final String inputString = "\"\\u";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 4:  Expected 4 hexadecimal digits, but reached end of input."));
@@ -944,7 +669,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void handlesIncompleteTrueCorrectly() {
         final String inputString = "t";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected 't' to be followed by [[r, u, e]], but reached end of input."));
@@ -955,7 +680,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void handlesIncompleteFalseCorrectly() {
         final String inputString = "f";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected 'f' to be followed by [[a, l, s, e]], but reached end of input."));
@@ -966,7 +691,7 @@ final class SajParserTest { // NOPMD TODO this should be turned off in the rules
     void handlesIncompleteNullCorrectly() {
         final String inputString = "n";
         try {
-            new SajParser().parse(new StringReader(inputString), BLACK_HOLE_LISTENER);
+            new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER);
             fail("Parsing [" + inputString + "] should result in an InvalidSyntaxException.");
         } catch (final InvalidSyntaxException e) {
             assertThat(e.getMessage(), equalTo("At line 1, column 2:  Expected 'n' to be followed by [[u, l, l]], but reached end of input."));

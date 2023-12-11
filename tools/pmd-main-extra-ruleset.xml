@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-  ~  Copyright  2020 Mark Slater
+  ~  Copyright 2023 Mark Slater
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
   ~
@@ -19,7 +19,6 @@
         Extra rules that only apply to main classes
     </description>
 
-    <rule ref="category/java/bestpractices.xml/DoubleBraceInitialization"/> <!-- This rule was turned off for unit tests -->
     <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal"/> <!-- This rule was turned off for the code samples -->
     <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal"/> <!-- This rule was turned off for the code samples -->
 

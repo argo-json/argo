@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,10 +10,10 @@
 
 package argo.jdom;
 
+import argo.MapBuilder;
 import argo.format.CompactJsonFormatter;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -107,9 +107,9 @@ final class JsonNodeTest {
 
     @Test
     void matchesAnObjectNode() {
-        final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Barry"), string("Lemons"));
-        }};
+        final Map<JsonStringNode, JsonNode> someJsonMappings = MapBuilder.<JsonStringNode, JsonNode>mapBuilder()
+                .put(string("Barry"), string("Lemons"))
+                .build();
         final JsonNode node = object(someJsonMappings);
         assertThat(node.isObjectNode(), equalTo(true));
         assertThat(nullNode().isObjectNode(), equalTo(false));
@@ -119,9 +119,9 @@ final class JsonNodeTest {
 
     @Test
     void matchesANullableObjectNode() {
-        final Map<JsonStringNode, JsonNode> someJsonMappings = new HashMap<JsonStringNode, JsonNode>() {{
-            put(string("Barry"), string("Lemons"));
-        }};
+        final Map<JsonStringNode, JsonNode> someJsonMappings = MapBuilder.<JsonStringNode, JsonNode>mapBuilder()
+                .put(string("Barry"), string("Lemons"))
+                .build();
         final JsonNode node = object(someJsonMappings);
         assertThat(node.isNullableObjectNode(), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableObjectNode("retirement age"), equalTo(true));

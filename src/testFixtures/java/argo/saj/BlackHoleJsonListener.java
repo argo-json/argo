@@ -8,19 +8,13 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo;
-
-import argo.saj.JsonListener;
-import org.openjdk.jmh.infra.Blackhole;
+package argo.saj;
 
 import java.io.Reader;
 
-public final class BlackholeJsonListener implements JsonListener { // TODO can this be replaced with the version from TestFixtures?
+public final class BlackHoleJsonListener implements JsonListener {
 
-    private final Blackhole blackhole;
-    public BlackholeJsonListener(final Blackhole blackhole) {
-        this.blackhole = blackhole;
-    }
+    public static final BlackHoleJsonListener BLACK_HOLE_JSON_LISTENER = new BlackHoleJsonListener();
 
     public void startDocument() {
     }
@@ -41,18 +35,15 @@ public final class BlackholeJsonListener implements JsonListener { // TODO can t
     }
 
     public void startField(Reader name) {
-        blackhole.consume(name);
     }
 
     public void endField() {
     }
 
     public void stringValue(Reader value) {
-        blackhole.consume(value);
     }
 
     public void numberValue(Reader value) {
-        blackhole.consume(value);
     }
 
     public void trueValue() {

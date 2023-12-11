@@ -279,7 +279,7 @@ final class DocumentationPage {
                         "final Set<String> fieldNames = new HashSet<String>();\n" +
                         "SAJ_PARSER.parse(jsonReader, new JsonListener() {\n" +
                         "    public void startField(String name) {\n" +
-                        "        fieldNames.add(name);\n" +
+                        "        fieldNames.add(JsonStreamElement.asString(name));\n" +
                         "    }\n" +
                         "    public void startDocument() { }\n" +
                         "    public void endDocument() { }\n" +
