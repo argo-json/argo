@@ -17,7 +17,7 @@ import argo.saj.InvalidSyntaxException;
  */
 public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
 
-    static final int END_OF_STREAM = -1;
+    static final int END_OF_STREAM = -1; // TODO inline
 
     private final int column;
     private final int row;

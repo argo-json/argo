@@ -22,109 +22,98 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
     private static final int CARRIAGE_RETURN = '\r';
 
     private final Reader delegate;
-    private int characterCount = 0;
-    private int lineCount = 1;
+    private int columnCount = 0; // TODO test for overflow
+    private int lineCount = 1; // TODO test for overflow; should start at 0 and immediately increment?
 
-    private int lastCharacter;
-    private boolean pushedBackValueAvailable = false;
+    private boolean endOfStream = false;
+
+    private char pushbackBuffer;
+    private boolean bufferPopulated = false;
 
     PositionTrackingPushbackReader(final Reader in) {
         this.delegate = in;
     }
 
-    void unreadLastCharacter() {
-        if (pushedBackValueAvailable) {
-            throw new RuntimeException("Coding failure in Argo: Tried to pushback when pushback buffer is already full with " + lastCharacter);
+    void unread(final char character) { // TODO this needs to guard against unreading -1?  PushbackReader doesn't.
+        // TODO move cast here?
+        if (bufferPopulated) { // TODO  is this check necessary?
+            throw new RuntimeException("Coding failure in Argo: Tried to pushback when pushback buffer is already full with " + pushbackBuffer);
         } else {
-            characterCount--;
-            if (characterCount < 0) {
-                characterCount = 0;
+            columnCount--;
+            if (columnCount < 0) {
+                columnCount = 0;
             }
-            pushedBackValueAvailable = true;
+            pushbackBuffer = character;
+            bufferPopulated = true;
         }
     }
 
     void uncount(final char[] resultCharArray) {
-        characterCount = characterCount - resultCharArray.length;
-        if (characterCount < 0) {
-            characterCount = 0;
+        columnCount = columnCount - resultCharArray.length;
+        if (columnCount < 0) {
+            columnCount = 0;
         }
     }
 
+    
     int read() throws IOException {
-        if (!pushedBackValueAvailable) {
-            lastCharacter = delegate.read();
+        final int read = readWithoutCounting();
+        updateCharacterAndLineCounts(read);
+        return read;
+    }
+    
+    private int readWithoutCounting() throws IOException {
+        if (bufferPopulated) {
+            bufferPopulated = false;
+            return pushbackBuffer;
+        } else {
+            return delegate.read();
         }
-        pushedBackValueAvailable = false;
-        updateCharacterAndLineCounts(lastCharacter);
-        return lastCharacter;
     }
 
     int read(final char[] buffer) throws IOException {  // NOPMD TODO this should be turned off in the rules
         if (buffer.length == 0) {
             return 0;
         } else {
-            int result = 0;
-            if (pushedBackValueAvailable) {
-                if (lastCharacter == -1) {
-                    updateCharacterAndLineCounts(lastCharacter);
-                    pushedBackValueAvailable = false;
-                    return -1;
-                } else {
-                    buffer[0] = (char) lastCharacter;
-                    result = 1;
-                }
+            int i = 0;
+            int nextChar;
+            while(i < buffer.length && (nextChar = read()) != -1) { // TODO this would be improved by calling read(char[]) on the delegate
+                buffer[i++] = (char) nextChar;
             }
-            int latestCharactersRead;
-            do {
-                latestCharactersRead = delegate.read(buffer, result, buffer.length - result);
-                if (latestCharactersRead != -1 || result == 0) {
-                    result = result + latestCharactersRead;
-                }
-            } while (latestCharactersRead != -1 && result < buffer.length);
-            if (result == -1) {
-                updateCharacterAndLineCounts(-1);
-            } else {
-                for (int i = 0; i < result; i++) {
-                    updateCharacterAndLineCounts(buffer[i]);
-                }
-                if (result < buffer.length) {
-                    updateCharacterAndLineCounts(-1);
-                }
-            }
-            if (result > 0) {
-                lastCharacter = buffer[result - 1];
-                pushedBackValueAvailable = false;
-            }
-            return result;
+            return i == 0 ? -1 : i;
         }
     }
 
     private void updateCharacterAndLineCounts(final int result) { // TODO does this work when a newline has been pushed back?
         if (CARRIAGE_RETURN == result) {
-            characterCount = 0;
+            columnCount = 0;
             lineCount++;
         } else {
-            if (NEWLINE == result && CARRIAGE_RETURN != lastCharacter) {
-                characterCount = 0;
+            if (NEWLINE == result && CARRIAGE_RETURN != pushbackBuffer) {
+                columnCount = 0;
                 lineCount++;
             } else {
-                characterCount++;
+                if (!endOfStream) {
+                    columnCount++;
+                }
+                if (result == -1) {
+                    endOfStream = true;
+                }
             }
         }
     }
 
-    public int getColumn() {
-        return characterCount;
+    public int getColumn() { // TODO why public?
+        return columnCount;
     }
 
-    public int getRow() {
+    public int getRow() { // TODO why public?
         return lineCount;
     }
 
     Position snapshotOfPosition() {
         return new Position() {
-            private final int localCharacterCount = characterCount;
+            private final int localCharacterCount = columnCount;
             private final int localLineCount = lineCount;
 
             public int getColumn() {
@@ -136,4 +125,6 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
             }
         };
     }
+
+    // TODO close?
 }

@@ -27,7 +27,9 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             final int secondChar = readNextNonWhitespaceChar(pushbackReader);
             if (']' != secondChar) {
-                pushbackReader.unreadLastCharacter();
+                if(secondChar != -1) {
+                    pushbackReader.unread((char) secondChar);
+                }
                 return aJsonValue(pushbackReader, stack);
             }
             stack.pop();
@@ -129,7 +131,9 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
     private static JsonStreamElement parseFieldOrObjectEnd(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if ('}' != nextChar) {
-            pushbackReader.unreadLastCharacter();
+            if (nextChar != -1) {
+                pushbackReader.unread((char) nextChar);
+            }
             return aFieldToken(pushbackReader, stack);
         }
         stack.pop();
@@ -166,7 +170,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     return endField();
                 case '}':
                     stack.pop();
-                    pushbackReader.unreadLastCharacter();
+                    pushbackReader.unread((char) nextChar);
                     return endField();
                 default:
                     throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader);
@@ -232,7 +236,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             case '7':
             case '8':
             case '9':
-                pushbackReader.unreadLastCharacter();
+                pushbackReader.unread((char) nextChar);
                 return number(numberToken(pushbackReader));
             case '{':
                 stack.push(START_OBJECT);
@@ -317,7 +321,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         try {
             result = Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
-            in.uncount(resultCharArray);
+            in.uncount(resultCharArray); // TODO maybe this should be repeated unreads... or maybe it doesn't matter because we don't uncount anywhere else.
             throw invalidSyntaxRuntimeException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexadecimal number.", e, in);
         }
         return result;
@@ -527,7 +531,9 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 final int nextChar = in.read();
                 parserState = parserState.handle(nextChar, in);
                 if (parserState == ParserState.END) {
-                    in.unreadLastCharacter();
+                    if (nextChar != -1) {
+                        in.unread((char) nextChar);
+                    }
                     return -1;
                 } else {
                     return nextChar;

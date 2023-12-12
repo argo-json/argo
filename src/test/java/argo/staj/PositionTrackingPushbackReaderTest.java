@@ -33,26 +33,18 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void pushingBackMinusOneCausesNextCharacterToBeMinusOne() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
-        assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unreadLastCharacter();
-        assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-    }
-
-    @Test
     void afterACharacterHasBeenPushedBackItCanBeRead() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"));
-        positionTrackingPushbackReader.read();
-        positionTrackingPushbackReader.unreadLastCharacter();
+        final int character = positionTrackingPushbackReader.read();
+        positionTrackingPushbackReader.unread((char) character);
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'F'));
     }
 
     @Test
     void afterACharacterHasBeenPushedBackItCanBeReadIntoABuffer() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
-        positionTrackingPushbackReader.read();
-        positionTrackingPushbackReader.unreadLastCharacter();
+        final int character = positionTrackingPushbackReader.read();
+        positionTrackingPushbackReader.unread((char) character);
         final char[] buffer = new char[3];
         assertThat(positionTrackingPushbackReader.read(buffer), equalTo(3));
         assertThat(buffer, equalTo("Bar".toCharArray()));
@@ -61,8 +53,8 @@ class PositionTrackingPushbackReaderTest {
     @Test
     void afterACharacterHasBeenPushedBackItCanBeReadIntoABufferThatIsTooLarge() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
-        positionTrackingPushbackReader.read();
-        positionTrackingPushbackReader.unreadLastCharacter();
+        final int character = positionTrackingPushbackReader.read();
+        positionTrackingPushbackReader.unread((char) character);
         final char[] buffer = new char[4];
         assertThat(positionTrackingPushbackReader.read(buffer), equalTo(3));
         assertThat(buffer, equalTo(new char[]{'B', 'a', 'r', 0}));
