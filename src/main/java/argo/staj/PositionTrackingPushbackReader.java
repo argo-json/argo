@@ -34,18 +34,13 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
         this.delegate = in;
     }
 
-    void unread(final char character) { // TODO this needs to guard against unreading -1?  PushbackReader doesn't.
-        // TODO move cast here?
-        if (bufferPopulated) { // TODO  is this check necessary?
-            throw new RuntimeException("Coding failure in Argo: Tried to pushback when pushback buffer is already full with " + pushbackBuffer);
-        } else {
-            columnCount--;
-            if (columnCount < 0) {
-                columnCount = 0;
-            }
-            pushbackBuffer = character;
-            bufferPopulated = true;
+    void unread(final int character) {
+        columnCount--;
+        if (columnCount < 0) {
+            columnCount = 0;
         }
+        pushbackBuffer = (char) character;
+        bufferPopulated = true;
     }
 
     void uncount(final char[] resultCharArray) {

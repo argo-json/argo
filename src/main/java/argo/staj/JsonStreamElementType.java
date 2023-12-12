@@ -28,7 +28,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             final int secondChar = readNextNonWhitespaceChar(pushbackReader);
             if (']' != secondChar) {
                 if(secondChar != -1) {
-                    pushbackReader.unread((char) secondChar);
+                    pushbackReader.unread(secondChar);
                 }
                 return aJsonValue(pushbackReader, stack);
             }
@@ -132,7 +132,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if ('}' != nextChar) {
             if (nextChar != -1) {
-                pushbackReader.unread((char) nextChar);
+                pushbackReader.unread(nextChar);
             }
             return aFieldToken(pushbackReader, stack);
         }
@@ -170,7 +170,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     return endField();
                 case '}':
                     stack.pop();
-                    pushbackReader.unread((char) nextChar);
+                    pushbackReader.unread(nextChar);
                     return endField();
                 default:
                     throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader);
@@ -236,7 +236,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             case '7':
             case '8':
             case '9':
-                pushbackReader.unread((char) nextChar);
+                pushbackReader.unread(nextChar);
                 return number(numberToken(pushbackReader));
             case '{':
                 stack.push(START_OBJECT);
@@ -532,7 +532,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 parserState = parserState.handle(nextChar, in);
                 if (parserState == ParserState.END) {
                     if (nextChar != -1) {
-                        in.unread((char) nextChar);
+                        in.unread(nextChar);
                     }
                     return -1;
                 } else {

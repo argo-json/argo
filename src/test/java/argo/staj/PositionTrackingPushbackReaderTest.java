@@ -36,7 +36,7 @@ class PositionTrackingPushbackReaderTest {
     void afterACharacterHasBeenPushedBackItCanBeRead() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"));
         final int character = positionTrackingPushbackReader.read();
-        positionTrackingPushbackReader.unread((char) character);
+        positionTrackingPushbackReader.unread(character);
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'F'));
     }
 
@@ -44,7 +44,7 @@ class PositionTrackingPushbackReaderTest {
     void afterACharacterHasBeenPushedBackItCanBeReadIntoABuffer() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         final int character = positionTrackingPushbackReader.read();
-        positionTrackingPushbackReader.unread((char) character);
+        positionTrackingPushbackReader.unread(character);
         final char[] buffer = new char[3];
         assertThat(positionTrackingPushbackReader.read(buffer), equalTo(3));
         assertThat(buffer, equalTo("Bar".toCharArray()));
@@ -54,7 +54,7 @@ class PositionTrackingPushbackReaderTest {
     void afterACharacterHasBeenPushedBackItCanBeReadIntoABufferThatIsTooLarge() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         final int character = positionTrackingPushbackReader.read();
-        positionTrackingPushbackReader.unread((char) character);
+        positionTrackingPushbackReader.unread(character);
         final char[] buffer = new char[4];
         assertThat(positionTrackingPushbackReader.read(buffer), equalTo(3));
         assertThat(buffer, equalTo(new char[]{'B', 'a', 'r', 0}));
