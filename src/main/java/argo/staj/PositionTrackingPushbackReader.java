@@ -51,26 +51,16 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
         }
     }
 
-    /**
-     * @throws JsonStreamException if delegate.read() throws an IOException
-     */
-    int read() {
+    int read() throws IOException {
         if (!pushedBackValueAvailable) {
-            try {
-                lastCharacter = delegate.read();
-            } catch (final IOException e) {
-                throw new JsonStreamException("Failed to read from Reader", e);
-            }
+            lastCharacter = delegate.read();
         }
         pushedBackValueAvailable = false;
         updateCharacterAndLineCounts(lastCharacter);
         return lastCharacter;
     }
 
-    /**
-     * @throws JsonStreamException if delegate.read() throws an IOException
-     */
-    int read(final char[] buffer) {  // NOPMD TODO this should be turned off in the rules
+    int read(final char[] buffer) throws IOException {  // NOPMD TODO this should be turned off in the rules
         if (buffer.length == 0) {
             return 0;
         } else {
@@ -85,32 +75,28 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
                     result = 1;
                 }
             }
-            try {
-                int latestCharactersRead;
-                do {
-                    latestCharactersRead = delegate.read(buffer, result, buffer.length - result);
-                    if (latestCharactersRead != -1 || result == 0) {
-                        result = result + latestCharactersRead;
-                    }
-                } while (latestCharactersRead != -1 && result < buffer.length);
-                if (result == -1) {
+            int latestCharactersRead;
+            do {
+                latestCharactersRead = delegate.read(buffer, result, buffer.length - result);
+                if (latestCharactersRead != -1 || result == 0) {
+                    result = result + latestCharactersRead;
+                }
+            } while (latestCharactersRead != -1 && result < buffer.length);
+            if (result == -1) {
+                updateCharacterAndLineCounts(-1);
+            } else {
+                for (int i = 0; i < result; i++) {
+                    updateCharacterAndLineCounts(buffer[i]);
+                }
+                if (result < buffer.length) {
                     updateCharacterAndLineCounts(-1);
-                } else {
-                    for (int i = 0; i < result; i++) {
-                        updateCharacterAndLineCounts(buffer[i]);
-                    }
-                    if (result < buffer.length) {
-                        updateCharacterAndLineCounts(-1);
-                    }
                 }
-                if (result > 0) {
-                    lastCharacter = buffer[result - 1];
-                    pushedBackValueAvailable = false;
-                }
-                return result;
-            } catch (final IOException e) {
-                throw new JsonStreamException("Failed to read from Reader", e);
             }
+            if (result > 0) {
+                lastCharacter = buffer[result - 1];
+                pushedBackValueAvailable = false;
+            }
+            return result;
         }
     }
 

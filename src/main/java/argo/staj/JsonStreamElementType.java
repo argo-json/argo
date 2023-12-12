@@ -24,7 +24,7 @@ import static argo.staj.JsonStreamElement.*;
 public enum JsonStreamElementType { // NOPMD TODO this should be turned off in the rules
     START_ARRAY {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             final int secondChar = readNextNonWhitespaceChar(pushbackReader);
             if (']' != secondChar) {
                 pushbackReader.unreadLastCharacter();
@@ -36,25 +36,25 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
     },
     END_ARRAY {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     START_OBJECT {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return parseFieldOrObjectEnd(pushbackReader, stack);
         }
     },
     END_OBJECT {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     START_FIELD {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             final int separatorChar = readNextNonWhitespaceChar(pushbackReader);
             if (separatorChar != ':') {
                 throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to be followed by :", separatorChar, pushbackReader);
@@ -64,43 +64,43 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
     },
     END_FIELD {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return parseFieldOrObjectEnd(pushbackReader, stack);
         }
     },
     STRING {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     TRUE {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     FALSE {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     NULL {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     NUMBER {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     START_DOCUMENT {
         @Override
-        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             return aJsonValue(pushbackReader, stack);
         }
     },
@@ -119,14 +119,14 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
 
-    abstract JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack);
+    abstract JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException;
 
     static JsonStreamElement startDocument(final Stack<JsonStreamElementType> stack) {
         stack.push(START_DOCUMENT);
         return JsonStreamElement.startDocument();
     }
 
-    private static JsonStreamElement parseFieldOrObjectEnd(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+    private static JsonStreamElement parseFieldOrObjectEnd(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if ('}' != nextChar) {
             pushbackReader.unreadLastCharacter();
@@ -136,7 +136,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return endObject();
     }
 
-    private static JsonStreamElement parseFromEndOfNode(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) { // NOPMD TODO this should be turned off in the rules
+    private static JsonStreamElement parseFromEndOfNode(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException { // NOPMD TODO this should be turned off in the rules
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         final JsonStreamElementType peek = stack.peek();
         if (peek.equals(START_OBJECT)) {
@@ -182,7 +182,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
     }
 
-    private static int readNextNonWhitespaceChar(final PositionTrackingPushbackReader in) {
+    private static int readNextNonWhitespaceChar(final PositionTrackingPushbackReader in) throws IOException {
         while (true) {
             final int nextChar = in.read();
             if (nextChar != ' ' && nextChar != TAB && nextChar != NEWLINE && nextChar != CARRIAGE_RETURN) {
@@ -191,7 +191,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
     }
 
-    private static JsonStreamElement aJsonValue(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) { // NOPMD TODO this should be turned off in the rules
+    private static JsonStreamElement aJsonValue(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException { // NOPMD TODO this should be turned off in the rules
         // TODO might get a modest performance boost by reusing a char buffer rather than instantiating new for each true/false/null
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
@@ -257,7 +257,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return result.toString();
     }
 
-    private static JsonStreamElement aFieldToken(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+    private static JsonStreamElement aFieldToken(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
             throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to begin with [\"]", nextChar, pushbackReader);
@@ -270,7 +270,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return new StringReader(in, openDoubleQuotesPosition);
     }
 
-    private static char escapedStringChar(final PositionTrackingPushbackReader in) { // NOPMD TODO this should be turned off in the rules
+    private static char escapedStringChar(final PositionTrackingPushbackReader in) throws IOException { // NOPMD TODO this should be turned off in the rules
         final char result;
         final int firstChar = in.read();
         switch (firstChar) {
@@ -307,7 +307,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return result;
     }
 
-    private static int hexadecimalNumber(final PositionTrackingPushbackReader in) {
+    private static int hexadecimalNumber(final PositionTrackingPushbackReader in) throws IOException {
         final char[] resultCharArray = new char[4];
         final int readSize = in.read(resultCharArray);
         if (readSize != 4) {
@@ -549,7 +549,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
 
         @Override
-        public int read() { // TODO probably *should* throw IO exception
+        public int read() throws IOException {
             synchronized (lock) {
                 if (ended) {
                     return -1;

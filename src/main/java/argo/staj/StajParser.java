@@ -64,10 +64,9 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * Gets the next element in the stream.
      *
      * @return the next element in the stream.
-     * @throws InvalidSyntaxRuntimeException if the next element could not be read, for example if the next element turns out not to be valid JSON
-     * @throws JsonStreamException           if the underlying character stream failed.
-     * @throws java.util.NoSuchElementException
-     *                                       if there are no more elements to read.
+     * @throws InvalidSyntaxRuntimeException    if the next element could not be read, for example if the next element turns out not to be valid JSON
+     * @throws JsonStreamException              if the underlying character stream failed.
+     * @throws java.util.NoSuchElementException if there are no more elements to read.
      */
     public JsonStreamElement next() {
         if (next == null) {
@@ -85,10 +84,10 @@ public final class StajParser implements Iterator<JsonStreamElement> {
         } else {
             try {
                 current.close();
+                return current.jsonStreamElementType().parseNext(pushbackReader, stack);
             } catch (IOException e) {
                 throw new JsonStreamException("Failed to read from Reader", e);
             }
-            return current.jsonStreamElementType().parseNext(pushbackReader, stack);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,6 +12,7 @@ package argo.staj;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.io.StringReader;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,19 +21,19 @@ import static org.hamcrest.Matchers.equalTo;
 class PositionTrackingPushbackReaderTest {
 
     @Test
-    void readingACharacterFromAnEmptyReaderReturnsMinusOne() {
+    void readingACharacterFromAnEmptyReaderReturnsMinusOne() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
     }
 
     @Test
-    void readingAFixedNumberOfCharactersFromAnEmptyReaderReturnsZero() {
+    void readingAFixedNumberOfCharactersFromAnEmptyReaderReturnsZero() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
         assertThat(positionTrackingPushbackReader.read(new char[1]), equalTo(-1));
     }
 
     @Test
-    void pushingBackMinusOneCausesNextCharacterToBeMinusOne() {
+    void pushingBackMinusOneCausesNextCharacterToBeMinusOne() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unreadLastCharacter();
@@ -40,7 +41,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void afterACharacterHasBeenPushedBackItCanBeRead() {
+    void afterACharacterHasBeenPushedBackItCanBeRead() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"));
         positionTrackingPushbackReader.read();
         positionTrackingPushbackReader.unreadLastCharacter();
@@ -48,7 +49,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void afterACharacterHasBeenPushedBackItCanBeReadIntoABuffer() {
+    void afterACharacterHasBeenPushedBackItCanBeReadIntoABuffer() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         positionTrackingPushbackReader.read();
         positionTrackingPushbackReader.unreadLastCharacter();
@@ -58,7 +59,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void afterACharacterHasBeenPushedBackItCanBeReadIntoABufferThatIsTooLarge() {
+    void afterACharacterHasBeenPushedBackItCanBeReadIntoABufferThatIsTooLarge() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         positionTrackingPushbackReader.read();
         positionTrackingPushbackReader.unreadLastCharacter();
@@ -69,7 +70,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void countsAreCorrectAfterReadingIntoABufferThatIsTooLarge() {
+    void countsAreCorrectAfterReadingIntoABufferThatIsTooLarge() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         positionTrackingPushbackReader.read(new char[10]);
         assertThat(positionTrackingPushbackReader.getColumn(), equalTo(4));
