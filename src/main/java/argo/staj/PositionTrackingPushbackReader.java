@@ -25,6 +25,8 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
     private int column = 0; // TODO test for overflow
     private int line = 1; // TODO test for overflow; should start at 0 and immediately increment?
 
+    private int readsSinceLastCarriageReturn = 3;
+
     private boolean endOfStream = false;
 
     private char pushbackBuffer;
@@ -35,15 +37,31 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
     }
 
     void unread(final int character) {
-        column--;
-        if (column < 0) {
-            column = 0;
-        }
         pushbackBuffer = (char) character;
         bufferPopulated = true;
+
+        if (CARRIAGE_RETURN == character) {
+            column = 0; // TODO this is wrong... need to remember the last column :(
+            line--;
+            readsSinceLastCarriageReturn = 2;
+        } else {
+            if (NEWLINE == character) {
+                if (readsSinceLastCarriageReturn != 1) { // TODO decrement readsSinceLastCarriageReturn
+                    column = 0; // TODO this is wrong... need to remember the last column :(
+                    line--;
+                }
+            } else {
+                column--;
+                endOfStream = true;
+            }
+            if (readsSinceLastCarriageReturn <= 1) {
+                readsSinceLastCarriageReturn--;
+            }
+        }
+
     }
 
-    void uncount(final char[] resultCharArray) {
+    void uncount(final char[] resultCharArray) { // TODO this should take offset and length, and should just iterate over unread calls
         column = column - resultCharArray.length;
         if (column < 0) {
             column = 0;
@@ -52,31 +70,37 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     
     int read() throws IOException {
-        final int nextCharacter;
+        final int character;
         if (bufferPopulated) {
             bufferPopulated = false;
-            nextCharacter = pushbackBuffer;
+            character = pushbackBuffer;
         } else {
-            nextCharacter = delegate.read();
+            character = delegate.read();
         }
-        // TODO does this work when a newline has been pushed back?
-        if (CARRIAGE_RETURN == nextCharacter) {
+
+        if (CARRIAGE_RETURN == character) {
             column = 0;
             line++;
+            readsSinceLastCarriageReturn = 0;
         } else {
-            if (NEWLINE == nextCharacter && CARRIAGE_RETURN != pushbackBuffer) {
-                column = 0;
-                line++;
+            if (NEWLINE == character) {
+                if (readsSinceLastCarriageReturn != 0) {
+                    column = 0;
+                    line++;
+                }
             } else {
                 if (!endOfStream) {
                     column++;
                 }
-                if (nextCharacter == -1) {
+                if (character == -1) {
                     endOfStream = true;
                 }
             }
+            if (readsSinceLastCarriageReturn <= 1) {
+                readsSinceLastCarriageReturn++;
+            }
         }
-        return nextCharacter;
+        return character;
     }
 
     int read(final char[] buffer) throws IOException {
