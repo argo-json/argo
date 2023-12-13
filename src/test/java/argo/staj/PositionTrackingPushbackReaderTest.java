@@ -65,6 +65,6 @@ class PositionTrackingPushbackReaderTest {
     void countsAreCorrectAfterReadingIntoABufferThatIsTooLarge() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         positionTrackingPushbackReader.read(new char[10]);
-        assertThat(positionTrackingPushbackReader.getColumn(), equalTo(4));
+        assertThat(positionTrackingPushbackReader.position().column, equalTo(4));
     }
 }

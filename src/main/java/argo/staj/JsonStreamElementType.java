@@ -59,7 +59,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             final int separatorChar = readNextNonWhitespaceChar(pushbackReader);
             if (separatorChar != ':') {
-                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to be followed by :", separatorChar, pushbackReader);
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to be followed by :", separatorChar, pushbackReader.position());
             }
             return aJsonValue(pushbackReader, stack);
         }
@@ -151,7 +151,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     stack.pop();
                     return endObject();
                 default:
-                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or }", nextChar, pushbackReader);
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or }", nextChar, pushbackReader.position());
             }
         } else if (peek.equals(START_ARRAY)) {
             switch (nextChar) {
@@ -161,7 +161,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     stack.pop();
                     return endArray();
                 default:
-                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader);
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
             }
         } else if (peek.equals(START_FIELD)) {
             switch (nextChar) {
@@ -173,13 +173,13 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     pushbackReader.unread(nextChar);
                     return endField();
                 default:
-                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader);
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
             }
         } else if (peek.equals(START_DOCUMENT)) {
             if (nextChar == -1) {
                 return endDocument();
             } else {
-                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected only whitespace", nextChar, pushbackReader);
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected only whitespace", nextChar, pushbackReader.position());
             }
         } else {
             throw new RuntimeException("Coding failure in Argo: Stack contained unexpected element type " + peek);
@@ -200,14 +200,14 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
-                return string(stringToken(pushbackReader, pushbackReader.snapshotOfPosition()));
+                return string(stringToken(pushbackReader, pushbackReader.position()));
             case 't':
                 final char[] remainingTrueTokenCharacters = new char[3];
                 final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
                 if (trueTokenCharactersRead == 3 && remainingTrueTokenCharacters[0] == 'r' && remainingTrueTokenCharacters[1] == 'u' && remainingTrueTokenCharacters[2] == 'e') {
                     return trueValue();
                 } else {
-                    throw readBufferInvalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]]", trueTokenCharactersRead, remainingTrueTokenCharacters, pushbackReader);
+                    throw readBufferInvalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]]", trueTokenCharactersRead, remainingTrueTokenCharacters, pushbackReader.position());
                 }
             case 'f':
                 final char[] remainingFalseTokenCharacters = new char[4];
@@ -215,7 +215,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 if (falseTokenCharactersRead == 4 && remainingFalseTokenCharacters[0] == 'a' && remainingFalseTokenCharacters[1] == 'l' && remainingFalseTokenCharacters[2] == 's' && remainingFalseTokenCharacters[3] == 'e') {
                     return falseValue();
                 } else {
-                    throw readBufferInvalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]]", falseTokenCharactersRead, remainingFalseTokenCharacters, pushbackReader);
+                    throw readBufferInvalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]]", falseTokenCharactersRead, remainingFalseTokenCharacters, pushbackReader.position());
                 }
             case 'n':
                 final char[] remainingNullTokenCharacters = new char[3];
@@ -223,7 +223,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 if (nullTokenCharactersRead == 3 && remainingNullTokenCharacters[0] == 'u' && remainingNullTokenCharacters[1] == 'l' && remainingNullTokenCharacters[2] == 'l') {
                     return nullValue();
                 } else {
-                    throw readBufferInvalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]]", nullTokenCharactersRead, remainingNullTokenCharacters, pushbackReader);
+                    throw readBufferInvalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]]", nullTokenCharactersRead, remainingNullTokenCharacters, pushbackReader.position());
                 }
             case '-':
             case '0':
@@ -245,7 +245,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 stack.push(START_ARRAY);
                 return startArray();
             default:
-                throw invalidSyntaxRuntimeException(END_OF_STREAM == nextChar ? "Expected a value but reached end of input." : "Invalid character at start of value [" + nextChar + "].", pushbackReader);
+                throw invalidSyntaxRuntimeException(END_OF_STREAM == nextChar ? "Expected a value but reached end of input." : "Invalid character at start of value [" + nextChar + "].", pushbackReader.position());
         }
     }
 
@@ -264,10 +264,10 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
     private static JsonStreamElement aFieldToken(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
-            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to begin with [\"]", nextChar, pushbackReader);
+            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to begin with [\"]", nextChar, pushbackReader.position());
         }
         stack.push(START_FIELD);
-        return startField(stringToken(pushbackReader, pushbackReader.snapshotOfPosition()));
+        return startField(stringToken(pushbackReader, pushbackReader.position()));
     }
 
     private static Reader stringToken(final PositionTrackingPushbackReader in, final Position openDoubleQuotesPosition) {
@@ -306,7 +306,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 result = (char) hexadecimalNumber(in);
                 break;
             default:
-                throw invalidSyntaxRuntimeException(END_OF_STREAM == firstChar ? "Unexpectedly reached end of input during escaped character." : "Unrecognised escape character [" + firstChar + "].", in);
+                throw invalidSyntaxRuntimeException(END_OF_STREAM == firstChar ? "Unexpectedly reached end of input during escaped character." : "Unrecognised escape character [" + firstChar + "].", in.position());
         }
         return result;
     }
@@ -315,14 +315,14 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         final char[] resultCharArray = new char[4];
         final int readSize = in.read(resultCharArray);
         if (readSize != 4) {
-            throw readBufferInvalidSyntaxRuntimeException("Expected 4 hexadecimal digits", readSize, resultCharArray, in);
+            throw readBufferInvalidSyntaxRuntimeException("Expected 4 hexadecimal digits", readSize, resultCharArray, in.position());
         }
         int result;
         try {
             result = Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
             in.uncount(resultCharArray); // TODO maybe this should be repeated unreads... or maybe it doesn't matter because we don't uncount anywhere else.
-            throw invalidSyntaxRuntimeException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexadecimal number.", e, in);
+            throw invalidSyntaxRuntimeException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexadecimal number.", e, in.position());
         }
         return result;
     }
@@ -529,7 +529,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         public int read() throws IOException {
             synchronized (lock) {
                 final int nextChar = in.read();
-                parserState = parserState.handle(nextChar, in);
+                parserState = parserState.handle(nextChar, in.position());
                 if (parserState == ParserState.END) {
                     if (nextChar != -1) {
                         in.unread(nextChar);

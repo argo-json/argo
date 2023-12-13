@@ -20,25 +20,25 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
     static final int END_OF_STREAM = -1; // TODO inline
 
     private final int column;
-    private final int row;
+    private final int line;
 
     private InvalidSyntaxRuntimeException(final String s, final Position position) {
-        super("At line " + position.getRow() + ", column " + position.getColumn() + ":  " + s);
-        this.column = position.getColumn();
-        this.row = position.getRow();
+        super("At line " + position.line + ", column " + position.column + ":  " + s);
+        this.column = position.column;
+        this.line = position.line;
     }
 
     private InvalidSyntaxRuntimeException(final String s, final Throwable throwable, final Position position) {
-        super("At line " + position.getRow() + ", column " + position.getColumn() + ":  " + s, throwable);
-        this.column = position.getColumn();
-        this.row = position.getRow();
+        super("At line " + position.line + ", column " + position.column + ":  " + s, throwable);
+        this.column = position.column;
+        this.line = position.line;
     }
 
     static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final Position position) {
         return new InvalidSyntaxRuntimeException(s, position) {
             @Override
             public InvalidSyntaxException asInvalidSyntaxException() {
-                return new InvalidSyntaxException(s, position.getRow(), position.getColumn());
+                return new InvalidSyntaxException(s, position.line, position.column);
             }
         };
     }
@@ -47,7 +47,7 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
         return new InvalidSyntaxRuntimeException(s, throwable, position) {
             @Override
             public InvalidSyntaxException asInvalidSyntaxException() {
-                return new InvalidSyntaxException(s, throwable, position.getRow(), position.getColumn());
+                return new InvalidSyntaxException(s, throwable, position.line, position.column);
             }
         };
     }
@@ -57,7 +57,7 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
             @Override
             public InvalidSyntaxException asInvalidSyntaxException() {
                 final String message = expectation + (END_OF_STREAM == actual ? " but reached end of input." : " but got [" + (char) actual + "].");
-                return new InvalidSyntaxException(message, position.getRow(), position.getColumn());
+                return new InvalidSyntaxException(message, position.line, position.column);
             }
         };
     }
@@ -67,7 +67,7 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
     }
 
     public int getLine() {
-        return row;
+        return line;
     }
 
     public abstract InvalidSyntaxException asInvalidSyntaxException();

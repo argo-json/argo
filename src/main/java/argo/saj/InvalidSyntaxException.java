@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,18 +16,18 @@ package argo.saj;
 public final class InvalidSyntaxException extends Exception {
 
     private final int column;
-    private final int row;
+    private final int line;
 
-    public InvalidSyntaxException(final String s, final int row, final int column) {
-        super("At line " + row + ", column " + column + ":  " + s);
+    public InvalidSyntaxException(final String s, final int line, final int column) {
+        super("At line " + line + ", column " + column + ":  " + s);
         this.column = column;
-        this.row = row;
+        this.line = line;
     }
 
-    public InvalidSyntaxException(final String s, final Throwable throwable, final int row, final int column) {
-        super("At line " + row + ", column " + column + ":  " + s, throwable);
+    public InvalidSyntaxException(final String s, final Throwable throwable, final int line, final int column) {
+        super("At line " + line + ", column " + column + ":  " + s, throwable);
         this.column = column;
-        this.row = row;
+        this.line = line;
     }
 
     public int getColumn() {
@@ -35,6 +35,6 @@ public final class InvalidSyntaxException extends Exception {
     }
 
     public int getLine() {
-        return row;
+        return line;
     }
 }

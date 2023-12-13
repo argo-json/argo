@@ -10,8 +10,13 @@
 
 package argo.staj;
 
-interface Position {
-    int getColumn();
+final class Position {
+    final int line;
 
-    int getRow();
+    final int column;
+
+    Position(final int column, final int line) {
+        this.line = line;
+        this.column = column;
+    }
 }

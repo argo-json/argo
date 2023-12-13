@@ -17,13 +17,13 @@ import java.io.Reader;
  * @author Mark Slater
  * @author Henrik Sjöstrand
  */
-final class PositionTrackingPushbackReader implements Position { // TODO should delegate to java.io.PushbackReader?
+final class PositionTrackingPushbackReader { // TODO should delegate to java.io.PushbackReader?
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
 
     private final Reader delegate;
-    private int columnCount = 0; // TODO test for overflow
-    private int lineCount = 1; // TODO test for overflow; should start at 0 and immediately increment?
+    private int column = 0; // TODO test for overflow
+    private int line = 1; // TODO test for overflow; should start at 0 and immediately increment?
 
     private boolean endOfStream = false;
 
@@ -35,18 +35,18 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
     }
 
     void unread(final int character) {
-        columnCount--;
-        if (columnCount < 0) {
-            columnCount = 0;
+        column--;
+        if (column < 0) {
+            column = 0;
         }
         pushbackBuffer = (char) character;
         bufferPopulated = true;
     }
 
     void uncount(final char[] resultCharArray) {
-        columnCount = columnCount - resultCharArray.length;
-        if (columnCount < 0) {
-            columnCount = 0;
+        column = column - resultCharArray.length;
+        if (column < 0) {
+            column = 0;
         }
     }
 
@@ -61,15 +61,15 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
         }
         // TODO does this work when a newline has been pushed back?
         if (CARRIAGE_RETURN == nextCharacter) {
-            columnCount = 0;
-            lineCount++;
+            column = 0;
+            line++;
         } else {
             if (NEWLINE == nextCharacter && CARRIAGE_RETURN != pushbackBuffer) {
-                columnCount = 0;
-                lineCount++;
+                column = 0;
+                line++;
             } else {
                 if (!endOfStream) {
-                    columnCount++;
+                    column++;
                 }
                 if (nextCharacter == -1) {
                     endOfStream = true;
@@ -92,27 +92,8 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
         }
     }
 
-    public int getColumn() { // TODO why public?
-        return columnCount;
-    }
-
-    public int getRow() { // TODO why public?
-        return lineCount;
-    }
-
-    Position snapshotOfPosition() {
-        return new Position() {
-            private final int localCharacterCount = columnCount;
-            private final int localLineCount = lineCount;
-
-            public int getColumn() {
-                return localCharacterCount;
-            }
-
-            public int getRow() {
-                return localLineCount;
-            }
-        };
+    Position position() {
+        return new Position(column, line);
     }
 
     // TODO close?
