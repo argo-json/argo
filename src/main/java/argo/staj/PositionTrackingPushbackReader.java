@@ -79,7 +79,7 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
         return nextCharacter;
     }
 
-    int read(final char[] buffer) throws IOException {  // NOPMD TODO this should be turned off in the rules
+    int read(final char[] buffer) throws IOException {
         if (buffer.length == 0) {
             return 0;
         } else {
