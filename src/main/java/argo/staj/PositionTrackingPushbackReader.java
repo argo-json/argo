@@ -52,18 +52,31 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
 
     
     int read() throws IOException {
-        final int read = readWithoutCounting();
-        updateCharacterAndLineCounts(read);
-        return read;
-    }
-    
-    private int readWithoutCounting() throws IOException {
+        final int nextCharacter;
         if (bufferPopulated) {
             bufferPopulated = false;
-            return pushbackBuffer;
+            nextCharacter = pushbackBuffer;
         } else {
-            return delegate.read();
+            nextCharacter = delegate.read();
         }
+        // TODO does this work when a newline has been pushed back?
+        if (CARRIAGE_RETURN == nextCharacter) {
+            columnCount = 0;
+            lineCount++;
+        } else {
+            if (NEWLINE == nextCharacter && CARRIAGE_RETURN != pushbackBuffer) {
+                columnCount = 0;
+                lineCount++;
+            } else {
+                if (!endOfStream) {
+                    columnCount++;
+                }
+                if (nextCharacter == -1) {
+                    endOfStream = true;
+                }
+            }
+        }
+        return nextCharacter;
     }
 
     int read(final char[] buffer) throws IOException {  // NOPMD TODO this should be turned off in the rules
@@ -76,25 +89,6 @@ final class PositionTrackingPushbackReader implements Position { // TODO should 
                 buffer[i++] = (char) nextChar;
             }
             return i == 0 ? -1 : i;
-        }
-    }
-
-    private void updateCharacterAndLineCounts(final int result) { // TODO does this work when a newline has been pushed back?
-        if (CARRIAGE_RETURN == result) {
-            columnCount = 0;
-            lineCount++;
-        } else {
-            if (NEWLINE == result && CARRIAGE_RETURN != pushbackBuffer) {
-                columnCount = 0;
-                lineCount++;
-            } else {
-                if (!endOfStream) {
-                    columnCount++;
-                }
-                if (result == -1) {
-                    endOfStream = true;
-                }
-            }
         }
     }
 
