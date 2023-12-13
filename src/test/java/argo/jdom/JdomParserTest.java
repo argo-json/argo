@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,11 +10,10 @@
 
 package argo.jdom;
 
+import argo.ChoppingReader;
 import argo.saj.InvalidSyntaxException;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -97,30 +96,6 @@ final class JdomParserTest {
         final JsonNode jsonNode = new JdomParser().parse(new ChoppingReader(new StringReader("{\"nullField\":null}")));
         final String result = JsonNodeSelectors.aNullableStringNode("nullField").getValue(jsonNode);
         assertThat(result, equalTo(null));
-    }
-
-    /**
-     * Implementation of Reader that wraps underlying Reader, but forces Reader.read(...) to read at most 1 character.
-     * This makes it useful for exposing the case when a 'some input' is available, but not enough to fill the supplied buffer.
-     * It's expected of the Reader's consumer to keep calling read, until the supplied buffer is filled.
-     *
-     * @author Henrik Sjöstrand
-     */
-    private static final class ChoppingReader extends Reader {
-        private final Reader reader;
-
-        ChoppingReader(Reader reader) {
-            this.reader = reader;
-        }
-
-        @Override
-        public int read(char[] chars, int off, int len) throws IOException {
-            return reader.read(chars, off, (len == 0) ? 0 : 1);
-        }
-
-        @Override
-        public void close() {
-        }
     }
 
     @Test

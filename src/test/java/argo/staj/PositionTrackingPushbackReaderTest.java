@@ -10,6 +10,7 @@
 
 package argo.staj;
 
+import argo.ChoppingReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -156,5 +157,15 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('\n');
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+    }
+
+    @Test
+    void readsFullComplementOfCharactersEvenIfDelegateStallsPartWay() throws IOException {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new ChoppingReader(new StringReader("Bar")));
+        final char[] buffer = new char[3];
+        positionTrackingPushbackReader.read(buffer);
+        assertThat(buffer[0], equalTo('B'));
+        assertThat(buffer[1], equalTo('a'));
+        assertThat(buffer[2], equalTo('r'));
     }
 }
