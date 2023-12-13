@@ -163,7 +163,19 @@ class PositionTrackingPushbackReaderTest {
     void readsFullComplementOfCharactersEvenIfDelegateStallsPartWay() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new ChoppingReader(new StringReader("Bar")));
         final char[] buffer = new char[3];
-        positionTrackingPushbackReader.read(buffer);
+        final int readSize = positionTrackingPushbackReader.read(buffer);
+        assertThat(readSize, equalTo(3));
+        assertThat(buffer[0], equalTo('B'));
+        assertThat(buffer[1], equalTo('a'));
+        assertThat(buffer[2], equalTo('r'));
+    }
+
+    @Test
+    void readToOversizeBufferReturnsCorrectLengthEvenIfDelegateStallsPartWay() throws IOException {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new ChoppingReader(new StringReader("Bar")));
+        final char[] buffer = new char[10];
+        final int readSize = positionTrackingPushbackReader.read(buffer);
+        assertThat(readSize, equalTo(3));
         assertThat(buffer[0], equalTo('B'));
         assertThat(buffer[1], equalTo('a'));
         assertThat(buffer[2], equalTo('r'));
