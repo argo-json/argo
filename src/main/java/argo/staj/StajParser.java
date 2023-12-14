@@ -80,7 +80,8 @@ public final class StajParser implements Iterator<JsonStreamElement> {
 
     private JsonStreamElement getNextElement() {
         if (current == null) {
-            return JsonStreamElementType.startDocument(stack);
+            stack.push(JsonStreamElementType.START_DOCUMENT);
+            return JsonStreamElement.startDocument();
         } else {
             try {
                 current.close();

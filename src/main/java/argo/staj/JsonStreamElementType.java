@@ -123,11 +123,6 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
 
     abstract JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException;
 
-    static JsonStreamElement startDocument(final Stack<JsonStreamElementType> stack) {
-        stack.push(START_DOCUMENT);
-        return JsonStreamElement.startDocument();
-    }
-
     private static JsonStreamElement parseFieldOrObjectEnd(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if ('}' != nextChar) {
