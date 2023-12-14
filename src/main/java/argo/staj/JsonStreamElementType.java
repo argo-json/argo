@@ -200,7 +200,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
-                return string(stringToken(pushbackReader, pushbackReader.position()));
+                return string(new StringReader(pushbackReader, pushbackReader.position()));
             case 't':
                 final char[] remainingTrueTokenCharacters = new char[3];
                 final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
@@ -237,7 +237,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             case '8':
             case '9':
                 pushbackReader.unread(nextChar);
-                return number(numberToken(pushbackReader));
+                return number(new NumberReader(pushbackReader));
             case '{':
                 stack.push(START_OBJECT);
                 return startObject();
@@ -267,11 +267,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to begin with [\"]", nextChar, pushbackReader.position());
         }
         stack.push(START_FIELD);
-        return startField(stringToken(pushbackReader, pushbackReader.position()));
-    }
-
-    private static Reader stringToken(final PositionTrackingPushbackReader in, final Position openDoubleQuotesPosition) {
-        return new StringReader(in, openDoubleQuotesPosition);
+        return startField(new StringReader(pushbackReader, pushbackReader.position()));
     }
 
     private static char escapedStringChar(final PositionTrackingPushbackReader in) throws IOException { // NOPMD TODO this should be turned off in the rules
@@ -325,10 +321,6 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             throw invalidSyntaxRuntimeException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexadecimal number.", e, in.position());
         }
         return result;
-    }
-
-    private static Reader numberToken(final PositionTrackingPushbackReader in) {
-        return new NumberReader(in);
     }
 
     private static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final Position position) {
@@ -585,7 +577,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             }
         }
 
-        public final int read(final char[] cbuf, final int offset, final int length) throws IOException { // TODO test this
+        public final int read(final char[] cbuf, final int offset, final int length) throws IOException { // TODO test this... I think it's supposed to read until it blocks rather than guarantee to return length characters
             SingleCharacterReader.validateArguments(cbuf, offset, length);
             synchronized (lock) {
                 int n = 0;
