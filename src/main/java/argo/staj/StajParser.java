@@ -41,7 +41,7 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * @param json the {@code String} to convert into {@code JsonStreamElement}s.
      */
     public StajParser(final String json) {
-        this.pushbackReader = new PositionTrackingPushbackReader(new StringReader(json));
+        this(new StringReader(json));
     }
 
     /**
