@@ -28,7 +28,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void readingAFixedNumberOfCharactersFromAnEmptyReaderReturnsZero() throws IOException {
+    void readingAFixedNumberOfCharactersFromAnEmptyReaderReturnsMinusOne() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
         final char[] buffer = new char[1];
         assertThat(positionTrackingPushbackReader.read(buffer, 0, 1), equalTo(-1));
