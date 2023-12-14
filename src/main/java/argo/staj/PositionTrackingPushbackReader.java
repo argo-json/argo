@@ -102,20 +102,15 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
         return character;
     }
 
-    int read(final char[] buffer, final int length) throws IOException {
-        if (length < 0 || length > buffer.length) {
-            throw new IndexOutOfBoundsException();
-        } else if (length == 0) {
-            return 0;
-        }
+    int read(final char[] buffer) throws IOException {
         int charactersRead = 0;
         if (bufferPopulated) {
             bufferPopulated = false;
             buffer[0] = pushbackBuffer;
-            charactersRead++;
+            charactersRead = 1;
         }
         int extraCharactersRead;
-        while(charactersRead < length && (extraCharactersRead = delegate.read(buffer, charactersRead, length - charactersRead)) != -1) {
+        while(charactersRead < buffer.length && (extraCharactersRead = delegate.read(buffer, charactersRead, buffer.length - charactersRead)) != -1) {
             charactersRead += extraCharactersRead;
         }
         return charactersRead == 0 ? -1 : charactersRead;
