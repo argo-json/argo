@@ -203,7 +203,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 return string(stringToken(pushbackReader, pushbackReader.position()));
             case 't':
                 final char[] remainingTrueTokenCharacters = new char[3];
-                final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
+                final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters, 0, 3);
                 if (trueTokenCharactersRead == 3 && remainingTrueTokenCharacters[0] == 'r' && remainingTrueTokenCharacters[1] == 'u' && remainingTrueTokenCharacters[2] == 'e') {
                     return trueValue();
                 } else {
@@ -211,7 +211,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 }
             case 'f':
                 final char[] remainingFalseTokenCharacters = new char[4];
-                final int falseTokenCharactersRead = pushbackReader.read(remainingFalseTokenCharacters);
+                final int falseTokenCharactersRead = pushbackReader.read(remainingFalseTokenCharacters, 0, 4);
                 if (falseTokenCharactersRead == 4 && remainingFalseTokenCharacters[0] == 'a' && remainingFalseTokenCharacters[1] == 'l' && remainingFalseTokenCharacters[2] == 's' && remainingFalseTokenCharacters[3] == 'e') {
                     return falseValue();
                 } else {
@@ -219,7 +219,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 }
             case 'n':
                 final char[] remainingNullTokenCharacters = new char[3];
-                final int nullTokenCharactersRead = pushbackReader.read(remainingNullTokenCharacters);
+                final int nullTokenCharactersRead = pushbackReader.read(remainingNullTokenCharacters, 0, 3);
                 if (nullTokenCharactersRead == 3 && remainingNullTokenCharacters[0] == 'u' && remainingNullTokenCharacters[1] == 'l' && remainingNullTokenCharacters[2] == 'l') {
                     return nullValue();
                 } else {
@@ -313,7 +313,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
 
     private static int hexadecimalNumber(final PositionTrackingPushbackReader in) throws IOException {
         final char[] resultCharArray = new char[4];
-        final int readSize = in.read(resultCharArray);
+        final int readSize = in.read(resultCharArray, 0, 4);
         if (readSize != 4) {
             throw readBufferInvalidSyntaxRuntimeException("Expected 4 hexadecimal digits", readSize, resultCharArray, in.position());
         }
