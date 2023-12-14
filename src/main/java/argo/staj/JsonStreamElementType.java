@@ -137,47 +137,48 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
 
     private static JsonStreamElement parseFromEndOfNode(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException { // NOPMD TODO this should be turned off in the rules
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
-        final JsonStreamElementType peek = stack.peek();
-        if (peek.equals(START_OBJECT)) {
-            switch (nextChar) {
-                case ',':
-                    return aJsonValue(pushbackReader, stack);
-                case '}':
-                    stack.pop();
-                    return endObject();
-                default:
-                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or }", nextChar, pushbackReader.position());
-            }
-        } else if (peek.equals(START_ARRAY)) {
-            switch (nextChar) {
-                case ',':
-                    return aJsonValue(pushbackReader, stack);
-                case ']':
-                    stack.pop();
-                    return endArray();
-                default:
-                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
-            }
-        } else if (peek.equals(START_FIELD)) {
-            switch (nextChar) {
-                case ',':
-                    stack.pop();
-                    return endField();
-                case '}':
-                    stack.pop();
-                    pushbackReader.unread(nextChar);
-                    return endField();
-                default:
-                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
-            }
-        } else if (peek.equals(START_DOCUMENT)) {
-            if (nextChar == -1) {
-                return endDocument();
-            } else {
-                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected only whitespace", nextChar, pushbackReader.position());
-            }
-        } else {
-            throw new RuntimeException("Coding failure in Argo: Stack contained unexpected element type " + peek);
+        final JsonStreamElementType peek = stack.peek(); // TODO make this a method on JsonStreamElementType??
+        switch (peek) {
+            case START_OBJECT:
+                switch (nextChar) {
+                    case ',':
+                        return aJsonValue(pushbackReader, stack);
+                    case '}':
+                        stack.pop();
+                        return endObject();
+                    default:
+                        throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or }", nextChar, pushbackReader.position());
+                }
+            case START_ARRAY:
+                switch (nextChar) {
+                    case ',':
+                        return aJsonValue(pushbackReader, stack);
+                    case ']':
+                        stack.pop();
+                        return endArray();
+                    default:
+                        throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
+                }
+            case START_FIELD:
+                switch (nextChar) {
+                    case ',':
+                        stack.pop();
+                        return endField();
+                    case '}':
+                        stack.pop();
+                        pushbackReader.unread(nextChar);
+                        return endField();
+                    default:
+                        throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
+                }
+            case START_DOCUMENT:
+                if (nextChar == -1) {
+                    return endDocument();
+                } else {
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected only whitespace", nextChar, pushbackReader.position());
+                }
+            default:
+                throw new RuntimeException("Coding failure in Argo: Stack contained unexpected element type " + peek);
         }
     }
 
