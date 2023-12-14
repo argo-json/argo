@@ -119,7 +119,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
         while(charactersRead < length && (extraCharactersRead = delegate.read(buffer, offset + charactersRead, length - charactersRead)) != -1) {
             charactersRead += extraCharactersRead;
         }
-        return charactersRead;
+        return charactersRead; // TODO test this returns the correct number when the stream ends mid-buffer and also when the stream is finished.
     }
 
     Position position() {
