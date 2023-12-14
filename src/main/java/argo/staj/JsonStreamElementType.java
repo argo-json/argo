@@ -137,7 +137,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
 
     private static JsonStreamElement parseFromEndOfNode(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException { // NOPMD TODO this should be turned off in the rules
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
-        final JsonStreamElementType peek = stack.peek(); // TODO make this a method on JsonStreamElementType??
+        final JsonStreamElementType peek = stack.peek();
         switch (peek) {
             case START_OBJECT:
                 switch (nextChar) {
