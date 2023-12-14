@@ -151,18 +151,17 @@ public abstract class JsonStreamElement {
         return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType;
     }
 
-    public static String asString(final Reader reader) { // TODO move
-        final StringBuilder stringBuilder = new StringBuilder();
+    public static String asString(final Reader reader) { // TODO remove
+        final StringBuilder stringBuilder = new StringBuilder(32);
         try {
             int c;
             while((c = reader.read()) != -1) {
                 stringBuilder.append((char) c);
             }
-            reader.close(); // TODO this isn't in a finally because we want to preserve exceptions thrown earlier in the block... but is it a good idea?
         } catch (IOException e) {
             // TODO got to improve on this
             throw new RuntimeException(e);
-        }
+        } // TODO this assumes that the reader is closed elsewhere for us
         return stringBuilder.toString();
     }
 

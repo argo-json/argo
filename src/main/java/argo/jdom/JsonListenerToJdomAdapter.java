@@ -12,19 +12,14 @@ package argo.jdom;
 
 import argo.saj.JsonListener;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import static argo.jdom.JsonNodeBuilders.aFalseBuilder;
-import static argo.jdom.JsonNodeBuilders.aNullBuilder;
-import static argo.jdom.JsonNodeBuilders.aNumberBuilder;
-import static argo.jdom.JsonNodeBuilders.aTrueBuilder;
-import static argo.jdom.JsonNodeBuilders.anArrayBuilder;
-import static argo.jdom.JsonNodeBuilders.anObjectBuilder;
+import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.field;
-import static argo.staj.JsonStreamElement.asString;
 
 final class JsonListenerToJdomAdapter implements JsonListener {
 
@@ -65,7 +60,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final Reader name) {
-        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(asString(name), jsonStringNodeFactory);
+        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(asString(name, 32), jsonStringNodeFactory);
         stack.peek().addField(fieldNodeContainer);
         stack.push(fieldNodeContainer);
     }
@@ -75,7 +70,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void numberValue(final Reader value) {
-        addValue(jsonNumberNodeFactory.jsonNumberNode(asString(value)));
+        addValue(jsonNumberNodeFactory.jsonNumberNode(asString(value, 32)));
     }
 
     public void trueValue() {
@@ -83,7 +78,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void stringValue(final Reader value) {
-        addValue(jsonStringNodeFactory.jsonStringNode(asString(value)));
+        addValue(jsonStringNodeFactory.jsonStringNode(asString(value, 16)));
     }
 
     public void falseValue() {
@@ -202,4 +197,19 @@ final class JsonListenerToJdomAdapter implements JsonListener {
             }
         }
     }
+
+    private static String asString(final Reader reader, final int initialCapacity) {
+        final StringBuilder stringBuilder = new StringBuilder(initialCapacity);
+        try {
+            int c;
+            while((c = reader.read()) != -1) {
+                stringBuilder.append((char) c);
+            }
+            return stringBuilder.toString();
+        } catch (IOException e) {
+            // TODO got to improve on this
+            throw new RuntimeException(e);
+        } // TODO this assumes that the reader is closed elsewhere for us
+    }
+
 }
