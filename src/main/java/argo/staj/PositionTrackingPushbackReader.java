@@ -29,16 +29,14 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 //
 //    private boolean endOfStream = false;
 
-    private char pushbackBuffer;
-    private boolean bufferPopulated = false;
+    private int pushbackBuffer = -1;
 
     PositionTrackingPushbackReader(final Reader in) {
         this.delegate = in;
     }
 
     void unread(final int character) {
-        pushbackBuffer = (char) character;
-        bufferPopulated = true;
+        pushbackBuffer = character;
 //
 //        if (CARRIAGE_RETURN == character) {
 //            column = 0; // TODO this is wrong... need to remember the last column :(
@@ -70,11 +68,11 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
     
     int read() throws IOException {
         final int character;
-        if (bufferPopulated) {
-            bufferPopulated = false;
-            character = pushbackBuffer;
-        } else {
+        if (pushbackBuffer < 0) {
             character = delegate.read();
+        } else {
+            character = pushbackBuffer;
+            pushbackBuffer = -1;
         }
 
 //        if (CARRIAGE_RETURN == character) {
@@ -104,9 +102,9 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     int read(final char[] buffer) throws IOException {
         int charactersRead = 0;
-        if (bufferPopulated) {
-            bufferPopulated = false;
-            buffer[0] = pushbackBuffer;
+        if (pushbackBuffer >= 0) {
+            buffer[0] = (char) pushbackBuffer;
+            pushbackBuffer = -1;
             charactersRead = 1;
         }
         int extraCharactersRead;
