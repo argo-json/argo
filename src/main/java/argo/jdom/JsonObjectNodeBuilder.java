@@ -128,11 +128,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
     }
 
     public JsonNode build() {
-        final List<JsonField> result = new ArrayList<JsonField>(fieldCollector.size()); // TODO would this be more efficient with streams?
-        for (final JsonField field : fieldCollector) {
-            result.add(field);
-        }
-        return JsonNodeFactories.object(result);
+        return JsonNodeFactories.object(fieldCollector); // TODO we know the size of the FieldCollector, but we can't communicate it to the factory
     }
 
     private interface FieldCollector extends Iterable<JsonField> {

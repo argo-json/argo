@@ -10,16 +10,14 @@
 
 package argo.jdom;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Builder for {@code JsonNode}s representing JSON arrays.
  */
 public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
-    private final List<JsonNodeBuilder<?>> elementBuilders = new LinkedList<JsonNodeBuilder<?>>();
+    private final Queue<JsonNodeBuilder<?>> elementBuilders = new LinkedList<JsonNodeBuilder<?>>();
 
     JsonArrayNodeBuilder() {
     }
@@ -36,10 +34,19 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
     }
 
     public JsonNode build() {
-        final List<JsonNode> elements = new ArrayList<JsonNode>(elementBuilders.size()); // TODO are streams more efficient here?
-        for (final JsonNodeBuilder<?> elementBuilder : elementBuilders) {
-            elements.add(elementBuilder.build());
-        }
-        return JsonNodeFactories.array(new ArrayList<JsonNode>(elements));
+        final Iterator<JsonNodeBuilder<?>> delegate = elementBuilders.iterator();
+        return JsonNodeFactories.array(new Iterator<JsonNode>() {
+            public boolean hasNext() {
+                return delegate.hasNext();
+            }
+
+            public JsonNode next() {
+                return delegate.next().build();
+            }
+
+            public void remove() {
+                delegate.remove();
+            }
+        });
     }
 }
