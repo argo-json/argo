@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,6 +10,7 @@
 
 package argo.jdom;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,10 +36,10 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
     }
 
     public JsonNode build() {
-        final List<JsonNode> elements = new LinkedList<JsonNode>();
+        final List<JsonNode> elements = new ArrayList<JsonNode>(elementBuilders.size()); // TODO are streams more efficient here?
         for (final JsonNodeBuilder<?> elementBuilder : elementBuilders) {
             elements.add(elementBuilder.build());
         }
-        return JsonNodeFactories.array(elements);
+        return JsonNodeFactories.array(new ArrayList<JsonNode>(elements));
     }
 }

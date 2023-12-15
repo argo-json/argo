@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -128,7 +128,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
     }
 
     public JsonNode build() {
-        final List<JsonField> result = new ArrayList<JsonField>(fieldCollector.size());
+        final List<JsonField> result = new ArrayList<JsonField>(fieldCollector.size()); // TODO would this be more efficient with streams?
         for (final JsonField field : fieldCollector) {
             result.add(field);
         }

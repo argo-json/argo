@@ -60,7 +60,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void startField(final Reader name) {
-        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(asString(name, 32), jsonStringNodeFactory);
+        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(jsonStringNodeFactory.jsonStringNode(asString(name, 32)));
         stack.peek().addField(fieldNodeContainer);
         stack.push(fieldNodeContainer);
     }
@@ -70,7 +70,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void numberValue(final Reader value) {
-        addValue(jsonNumberNodeFactory.jsonNumberNode(asString(value, 32)));
+        addValue(jsonNumberNodeFactory.jsonNumberNode(asString(value, 16)));
     }
 
     public void trueValue() {
@@ -78,7 +78,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     public void stringValue(final Reader value) {
-        addValue(jsonStringNodeFactory.jsonStringNode(asString(value, 16)));
+        addValue(jsonStringNodeFactory.jsonStringNode(asString(value, 32)));
     }
 
     public void falseValue() {
@@ -138,13 +138,11 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     private static final class FieldNodeContainer implements NodeContainer, JsonFieldBuilder {
-        private final String name;
-        private final JsonStringNodeFactory jsonStringNodeFactory;
+        private final JsonStringNode name;
         private JsonNodeBuilder<?> valueBuilder;
 
-        FieldNodeContainer(final String name, final JsonStringNodeFactory jsonStringNodeFactory) {
+        FieldNodeContainer(final JsonStringNode name) {
             this.name = name;
-            this.jsonStringNodeFactory = jsonStringNodeFactory;
         }
 
         public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
@@ -156,14 +154,14 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
 
         public String name() {
-            return name;
+            return name.getText();
         }
 
         public JsonField build() {
             if (valueBuilder == null) {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to create a field without a value.");
             } else {
-                return field(jsonStringNodeFactory.jsonStringNode(name), valueBuilder.build());
+                return field(name, valueBuilder.build());
             }
         }
     }
@@ -172,7 +170,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         private final Map<String, JsonStringNode> existingJsonStringNodes = new HashMap<String, JsonStringNode>();
 
         JsonStringNode jsonStringNode(final String value) {
-            final JsonStringNode cachedStringNode = existingJsonStringNodes.get(value);
+            final JsonStringNode cachedStringNode = existingJsonStringNodes.get(value); // TODO what about singleton Strings?
             if (cachedStringNode == null) {
                 final JsonStringNode newJsonStringNode = JsonNodeFactories.string(value);
                 existingJsonStringNodes.put(value, newJsonStringNode);
@@ -187,7 +185,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         private final Map<String, JsonNodeBuilder<JsonNode>> existingJsonNumberNodes = new HashMap<String, JsonNodeBuilder<JsonNode>>();
 
         JsonNodeBuilder<JsonNode> jsonNumberNode(final String value) {
-            final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);
+            final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);  // TODO what about singleton numbers?
             if (cachedNumberNode == null) {
                 final JsonNodeBuilder<JsonNode> newJsonNumberNode = aNumberBuilder(value);
                 existingJsonNumberNodes.put(value, newJsonNumberNode);
