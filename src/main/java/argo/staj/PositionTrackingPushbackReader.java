@@ -18,16 +18,18 @@ import java.io.Reader;
  * @author Henrik Sjöstrand
  */
 final class PositionTrackingPushbackReader { // TODO should delegate to java.io.PushbackReader?
-//    private static final int NEWLINE = '\n';
-//    private static final int CARRIAGE_RETURN = '\r';
+    private static final int NEWLINE = '\n';
+    private static final int CARRIAGE_RETURN = '\r';
 
     private final Reader delegate;
-//    private int column = 0; // TODO test for overflow
-//    private int line = 1; // TODO test for overflow; should start at 0 and immediately increment?
-//
-//    private int readsSinceLastCarriageReturn = 3;
-//
-//    private boolean endOfStream = false;
+    private int column = 0; // TODO test for overflow
+    private int line = 1; // TODO test for overflow; should start at 0 and immediately increment?
+
+    private int previousLineEnd;
+
+    private int readsSinceLastCarriageReturn = 3;
+
+    private boolean endOfStream = false;
 
     private int pushbackBuffer = -1;
 
@@ -37,32 +39,32 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     void unread(final int character) {
         pushbackBuffer = character;
-//
-//        if (CARRIAGE_RETURN == character) {
-//            column = 0; // TODO this is wrong... need to remember the last column :(
-//            line--;
-//            readsSinceLastCarriageReturn = 2;
-//        } else {
-//            if (NEWLINE == character) {
-//                if (readsSinceLastCarriageReturn != 1) { // TODO decrement readsSinceLastCarriageReturn
-//                    column = 0; // TODO this is wrong... need to remember the last column :(
-//                    line--;
-//                }
-//            } else {
-//                column--;
-//                endOfStream = true;
-//            }
-//            if (readsSinceLastCarriageReturn <= 1) {
-//                readsSinceLastCarriageReturn--;
-//            }
-//        }
+
+        if (CARRIAGE_RETURN == character) {
+            column = previousLineEnd;
+            line--;
+            readsSinceLastCarriageReturn = 2;
+        } else {
+            if (NEWLINE == character) {
+                if (readsSinceLastCarriageReturn != 1) { // TODO decrement readsSinceLastCarriageReturn
+                    column = previousLineEnd;
+                    line--;
+                }
+            } else {
+                column--;
+                endOfStream = false;
+            }
+            if (readsSinceLastCarriageReturn <= 1) {
+                readsSinceLastCarriageReturn--;
+            }
+        }
     }
 
     void uncount(final char[] resultCharArray) { // TODO this should take offset and length, and should just iterate over unread calls
-//        column = column - resultCharArray.length;
-//        if (column < 0) {
-//            column = 0;
-//        }
+        column = column - resultCharArray.length;
+        if (column < 0) {
+            column = 0;
+        }
     }
 
     
@@ -75,47 +77,44 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
             pushbackBuffer = -1;
         }
 
-//        if (CARRIAGE_RETURN == character) {
-//            column = 0;
-//            line++;
-//            readsSinceLastCarriageReturn = 0;
-//        } else {
-//            if (NEWLINE == character) {
-//                if (readsSinceLastCarriageReturn != 0) {
-//                    column = 0;
-//                    line++;
-//                }
-//            } else {
-//                if (!endOfStream) {
-//                    column++;
-//                }
-//                if (character == -1) {
-//                    endOfStream = true;
-//                }
-//            }
-//            if (readsSinceLastCarriageReturn <= 1) {
-//                readsSinceLastCarriageReturn++;
-//            }
-//        }
+        if (CARRIAGE_RETURN == character) {
+            previousLineEnd = column;
+            column = 0;
+            line++;
+            readsSinceLastCarriageReturn = 0;
+        } else {
+            if (NEWLINE == character) {
+                if (readsSinceLastCarriageReturn != 0) {
+                    previousLineEnd = column;
+                    column = 0;
+                    line++;
+                }
+            } else {
+                if (!endOfStream) {
+                    column++;
+                }
+                if (character == -1) {
+                    endOfStream = true;
+                }
+            }
+            if (readsSinceLastCarriageReturn <= 1) {
+                readsSinceLastCarriageReturn++;
+            }
+        }
         return character;
     }
 
-    int read(final char[] buffer) throws IOException {
-        int charactersRead = 0;
-        if (pushbackBuffer >= 0) {
-            buffer[0] = (char) pushbackBuffer;
-            pushbackBuffer = -1;
-            charactersRead = 1;
+    int read(final char[] buffer) throws IOException { // TODO test performance vs reading an array from the delegate
+        int i = 0;
+        int nextCharacater;
+        for (; i < buffer.length && (nextCharacater = read()) != -1; i++) {
+            buffer[i] = (char) nextCharacater;
         }
-        int extraCharactersRead;
-        while(charactersRead < buffer.length && (extraCharactersRead = delegate.read(buffer, charactersRead, buffer.length - charactersRead)) != -1) {
-            charactersRead += extraCharactersRead;
-        }
-        return charactersRead == 0 ? -1 : charactersRead;
+        return i == 0 ? -1 : i;
     }
 
     Position position() {
-        return new Position(0, 1);
+        return new Position(column, line);
     }
 
     // TODO close?
