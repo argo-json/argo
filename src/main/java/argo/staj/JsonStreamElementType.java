@@ -515,17 +515,15 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
 
         @Override
         public int read() throws IOException {
-            synchronized (lock) {
-                final int nextChar = in.read();
-                parserState = parserState.handle(nextChar, in.position());
-                if (parserState == ParserState.END) {
-                    if (nextChar != -1) {
-                        in.unread(nextChar);
-                    }
-                    return -1;
-                } else {
-                    return nextChar;
+            final int nextChar = in.read();
+            parserState = parserState.handle(nextChar, in.position());
+            if (parserState == ParserState.END) {
+                if (nextChar != -1) {
+                    in.unread(nextChar);
                 }
+                return -1;
+            } else {
+                return nextChar;
             }
         }
 
@@ -544,22 +542,20 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
 
         @Override
         public int read() throws IOException {
-            synchronized (lock) {
-                if (ended) {
-                    return -1;
-                } else {
-                    final int nextChar = in.read();
-                    switch (nextChar) {
-                        case -1:
-                            throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
-                        case DOUBLE_QUOTE:
-                            ended = true;
-                            return -1;
-                        case BACK_SLASH:
-                            return escapedStringChar(in);
-                        default:
-                            return nextChar;
-                    }
+            if (ended) {
+                return -1;
+            } else {
+                final int nextChar = in.read();
+                switch (nextChar) {
+                    case -1:
+                        throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
+                    case DOUBLE_QUOTE:
+                        ended = true;
+                        return -1;
+                    case BACK_SLASH:
+                        return escapedStringChar(in);
+                    default:
+                        return nextChar;
                 }
             }
         }
@@ -575,14 +571,12 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
 
         public final int read(final char[] cbuf, final int offset, final int length) throws IOException { // TODO test this... I think it's supposed to read until it blocks rather than guarantee to return length characters
             SingleCharacterReader.validateArguments(cbuf, offset, length);
-            synchronized (lock) {
-                int n = 0;
-                int nextChar;
-                while (n < length && (nextChar = read()) != -1) {
-                    cbuf[n++] = (char) nextChar;
-                }
-                return n == 0 && length != 0 ? -1 : n;
+            int n = 0;
+            int nextChar;
+            while (n < length && (nextChar = read()) != -1) {
+                cbuf[n++] = (char) nextChar;
             }
+            return n == 0 && length != 0 ? -1 : n;
         }
 
         public final void close() throws IOException {
