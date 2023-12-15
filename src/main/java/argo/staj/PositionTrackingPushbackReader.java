@@ -27,7 +27,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     private int previousLineEnd;
 
-    private int readsSinceLastCarriageReturn = 3;
+    private int readsSinceLastCarriageReturn = 2;
 
     private boolean endOfStream = false;
 
@@ -97,7 +97,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
                     endOfStream = true;
                 }
             }
-            if (readsSinceLastCarriageReturn <= 1) {
+            if (readsSinceLastCarriageReturn < 2) {
                 readsSinceLastCarriageReturn++;
             }
         }
