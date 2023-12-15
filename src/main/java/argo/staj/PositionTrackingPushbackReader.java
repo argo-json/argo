@@ -46,15 +46,18 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
             readsSinceLastCarriageReturn = 2;
         } else {
             if (NEWLINE == character) {
-                if (readsSinceLastCarriageReturn != 1) { // TODO decrement readsSinceLastCarriageReturn
+                if (readsSinceLastCarriageReturn != 1) {
                     column = previousLineEnd;
                     line--;
                 }
             } else {
                 column--;
+            }
+            if (endOfStream) { // TODO needs more testing
+                column--;
                 endOfStream = false;
             }
-            if (readsSinceLastCarriageReturn <= 1) {
+            if (readsSinceLastCarriageReturn < 2) {
                 readsSinceLastCarriageReturn--;
             }
         }
@@ -97,7 +100,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
                     endOfStream = true;
                 }
             }
-            if (readsSinceLastCarriageReturn < 2) {
+            if (!endOfStream && readsSinceLastCarriageReturn < 2) {
                 readsSinceLastCarriageReturn++;
             }
         }

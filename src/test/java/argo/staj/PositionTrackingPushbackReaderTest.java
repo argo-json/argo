@@ -162,7 +162,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void canReadPastEndOfStreamAndThenPushBack() throws IOException {
+    void canReadPastEndOfStreamAndThenPushBackALineFeedThatFollowedACarriageReturn() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"));
         final char[] buffer = new char[6];
         positionTrackingPushbackReader.read(buffer);
