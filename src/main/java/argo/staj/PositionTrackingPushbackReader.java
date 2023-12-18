@@ -109,9 +109,9 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     int read(final char[] buffer) throws IOException { // TODO test performance vs reading an array from the delegate
         int i = 0;
-        int nextCharacater;
-        for (; i < buffer.length && (nextCharacater = read()) != -1; i++) {
-            buffer[i] = (char) nextCharacater;
+        int nextCharacter;
+        for (; i < buffer.length && (nextCharacter = read()) != -1; i++) {
+            buffer[i] = (char) nextCharacter;
         }
         return i == 0 ? -1 : i;
     }
