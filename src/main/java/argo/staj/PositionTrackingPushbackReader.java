@@ -22,8 +22,8 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
     private static final int CARRIAGE_RETURN = '\r';
 
     private final Reader delegate;
-    private int column = 0; // TODO test for overflow
-    private int line = 1; // TODO test for overflow; should start at 0 and immediately increment?
+    private int column = 0;
+    private int line = 1;
 
     private int previousLineEnd;
 

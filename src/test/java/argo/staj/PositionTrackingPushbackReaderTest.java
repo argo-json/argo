@@ -11,6 +11,7 @@
 package argo.staj;
 
 import argo.ChoppingReader;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread(character);
         final char[] buffer = new char[3];
         assertThat(positionTrackingPushbackReader.read(buffer), equalTo(3));
-        assertThat(buffer, equalTo(new char[] {'B', 'a', 'r'}));
+        assertThat(buffer, equalTo(new char[]{'B', 'a', 'r'}));
     }
 
     @Test
@@ -165,7 +166,7 @@ class PositionTrackingPushbackReaderTest {
         final char[] buffer = new char[3];
         final int readSize = positionTrackingPushbackReader.read(buffer);
         assertThat(readSize, equalTo(3));
-        assertThat(buffer, equalTo(new char[] {'B', 'a', 'r'}));
+        assertThat(buffer, equalTo(new char[]{'B', 'a', 'r'}));
     }
 
     @Test
@@ -174,7 +175,7 @@ class PositionTrackingPushbackReaderTest {
         final char[] buffer = new char[4];
         final int readSize = positionTrackingPushbackReader.read(buffer);
         assertThat(readSize, equalTo(3));
-        assertThat(buffer, equalTo(new char[] {'B', 'a', 'r', 0}));
+        assertThat(buffer, equalTo(new char[]{'B', 'a', 'r', 0}));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
     }
 
@@ -193,7 +194,7 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.read(new char[3]), equalTo(3));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unread('o');
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'o'));
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'o'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(3));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
     }
@@ -204,7 +205,7 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.read(new char[4]);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unread('\n');
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
     }
@@ -215,7 +216,7 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.read(new char[4]);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unread('\r');
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\r'));
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\r'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
     }
@@ -226,7 +227,7 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.read(new char[5]);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unread('\n');
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
     }
@@ -237,7 +238,7 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.read(new char[3]), equalTo(3));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unread('o');
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'o'));
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'o'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(4));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
@@ -249,7 +250,7 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.read(new char[4]);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unread('\n');
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
@@ -261,7 +262,7 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.read(new char[4]);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unread('\r');
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\r'));
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\r'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
@@ -273,10 +274,32 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.read(new char[5]);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         positionTrackingPushbackReader.unread('\n');
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+    }
+
+    @Test
+    @Disabled("Proposed implementation needs performance test")
+    void handlesLinesLongerThanLargestInteger() throws IOException {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('a'));
+        for (int i = -1; i != Integer.MAX_VALUE; i++) {
+            positionTrackingPushbackReader.read();
+        }
+        assertThat(positionTrackingPushbackReader.position().column, equalTo(-1)); // TODO return -1 if > Integer.MAX_VALUE?  Needs documenting
+        assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+    }
+
+    @Test
+    @Disabled("Proposed implementation needs performance test")
+    void handlesMoreLinesThanLargestInteger() throws IOException {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('\n'));
+        for (int i = -1; i != Integer.MAX_VALUE; i++) {
+            positionTrackingPushbackReader.read();
+        }
+        assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.position().line, equalTo(-1)); // TODO return -1 if > Integer.MAX_VALUE?  Needs documenting
     }
 
 }
