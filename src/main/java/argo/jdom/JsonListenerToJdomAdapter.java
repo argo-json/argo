@@ -182,7 +182,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
     }
 
     private static final class JsonNumberNodeFactory {
-        private final Map<String, JsonNodeBuilder<JsonNode>> existingJsonNumberNodes = new HashMap<String, JsonNodeBuilder<JsonNode>>();
+        private final Map<String, JsonNodeBuilder<JsonNode>> existingJsonNumberNodes = new HashMap<String, JsonNodeBuilder<JsonNode>>(); // TODO make object reuse switchable.
 
         JsonNodeBuilder<JsonNode> jsonNumberNode(final String value) {
             final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);  // TODO what about singleton numbers?
