@@ -63,7 +63,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
         }
     }
 
-    void uncount(final char[] resultCharArray) { // TODO this should take offset and length, and should just iterate over unread calls
+    void uncount(final char[] resultCharArray) { // TODO this should just iterate over unread calls?
         column = column - resultCharArray.length;
         if (column < 0) {
             column = 0;
