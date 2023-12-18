@@ -569,8 +569,8 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             }
         }
 
-        public final int read(final char[] cbuf, final int offset, final int length) throws IOException { // TODO test this... I think it's supposed to read until it blocks rather than guarantee to return length characters
-            SingleCharacterReader.validateArguments(cbuf, offset, length);
+        public final int read(final char[] cbuf, final int offset, final int length) throws IOException { // TODO test this...
+            validateArguments(cbuf, offset, length);
             int n = 0;
             int nextChar;
             while (n < length && (nextChar = read()) != -1) {
