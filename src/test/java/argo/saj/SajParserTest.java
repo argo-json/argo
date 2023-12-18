@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-final class SajParserTest { // NOPMD TODO this should be turned off in the rules
+final class SajParserTest {
 
     @Test
     void tokenizesValidString() throws Exception {
