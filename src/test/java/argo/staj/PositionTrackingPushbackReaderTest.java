@@ -53,7 +53,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void afterACharacterHasBeenPushedBackItCanBeReadIntoABufferThatIsTooLarge() throws IOException {
+    void afterACharacterHasBeenPushedBackItCanBeReadIntoAnOversizeBuffer() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         final int character = positionTrackingPushbackReader.read();
         positionTrackingPushbackReader.unread(character);
@@ -64,7 +64,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void countsAreCorrectAfterReadingIntoABufferThatIsTooLarge() throws IOException {
+    void countsAreCorrectAfterReadingIntoAnOversizeBuffer() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"));
         final char[] buffer = new char[4];
         positionTrackingPushbackReader.read(buffer);
@@ -185,11 +185,12 @@ class PositionTrackingPushbackReaderTest {
     @Test
     void readToOversizeBufferReturnsCorrectLengthEvenIfDelegateStallsPartWay() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new ChoppingReader(new StringReader("Bar")));
-        final char[] buffer = new char[10];
+        final char[] buffer = new char[4];
         final int readSize = positionTrackingPushbackReader.read(buffer);
         assertThat(readSize, equalTo(3));
         assertThat(buffer[0], equalTo('B'));
         assertThat(buffer[1], equalTo('a'));
         assertThat(buffer[2], equalTo('r'));
+        assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
     }
 }
