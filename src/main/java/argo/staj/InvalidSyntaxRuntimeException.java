@@ -17,19 +17,16 @@ import argo.saj.InvalidSyntaxException;
  */
 public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
 
-    private final int column;
-    private final int line;
+    private final Position position;
 
     private InvalidSyntaxRuntimeException(final String s, final Position position) {
         super("At line " + position.line + ", column " + position.column + ":  " + s);
-        this.column = position.column;
-        this.line = position.line;
+        this.position = position;
     }
 
     private InvalidSyntaxRuntimeException(final String s, final Throwable throwable, final Position position) {
         super("At line " + position.line + ", column " + position.column + ":  " + s, throwable);
-        this.column = position.column;
-        this.line = position.line;
+        this.position = position;
     }
 
     static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final Position position) {
@@ -61,11 +58,11 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
     }
 
     public int getColumn() {
-        return column;
+        return position.column;
     }
 
     public int getLine() {
-        return line;
+        return position.line;
     }
 
     public abstract InvalidSyntaxException asInvalidSyntaxException();
