@@ -53,13 +53,13 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
             } else {
                 column--;
             }
-            if (endOfStream) { // TODO needs more testing
-                column--;
-                endOfStream = false;
-            }
             if (readsSinceLastCarriageReturn < 2) {
                 readsSinceLastCarriageReturn--;
             }
+        }
+        if (endOfStream) {
+            column--;
+            endOfStream = false;
         }
     }
 
