@@ -17,8 +17,6 @@ import argo.saj.InvalidSyntaxException;
  */
 public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
 
-    static final int END_OF_STREAM = -1; // TODO inline
-
     private final int column;
     private final int line;
 
@@ -56,7 +54,7 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
         return new InvalidSyntaxRuntimeException(expectation, position) {
             @Override
             public InvalidSyntaxException asInvalidSyntaxException() {
-                final String message = expectation + (END_OF_STREAM == actual ? " but reached end of input." : " but got [" + (char) actual + "].");
+                final String message = expectation + (-1 == actual ? " but reached end of input." : " but got [" + (char) actual + "].");
                 return new InvalidSyntaxException(message, position.line, position.column);
             }
         };

@@ -241,7 +241,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 stack.push(START_ARRAY);
                 return startArray();
             default:
-                throw invalidSyntaxRuntimeException(END_OF_STREAM == nextChar ? "Expected a value but reached end of input." : "Invalid character at start of value [" + nextChar + "].", pushbackReader.position());
+                throw invalidSyntaxRuntimeException(-1 == nextChar ? "Expected a value but reached end of input." : "Invalid character at start of value [" + nextChar + "].", pushbackReader.position());
         }
     }
 
@@ -298,7 +298,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                 result = (char) hexadecimalNumber(in);
                 break;
             default:
-                throw invalidSyntaxRuntimeException(END_OF_STREAM == firstChar ? "Unexpectedly reached end of input during escaped character." : "Unrecognised escape character [" + firstChar + "].", in.position());
+                throw invalidSyntaxRuntimeException(-1 == firstChar ? "Unexpectedly reached end of input during escaped character." : "Unrecognised escape character [" + firstChar + "].", in.position());
         }
         return result;
     }
