@@ -278,8 +278,17 @@ final class DocumentationPage {
                         "\n" +
                         "final Set<String> fieldNames = new HashSet<String>();\n" +
                         "SAJ_PARSER.parse(jsonReader, new JsonListener() {\n" +
-                        "    public void startField(String name) {\n" +
-                        "        fieldNames.add(JsonStreamElement.asString(name));\n" +
+                        "    public void startField(Reader name) {\n" +
+                        "        StringBuilder stringBuilder = new StringBuilder();\n" +
+                        "        int next;\n" +
+                        "        try {\n" +
+                        "            while((next = name.read()) != -1) {\n" +
+                        "                stringBuilder.append((char) next);\n" +
+                        "            }\n" +
+                        "        } catch (IOException e) {\n" +
+                        "            throw new RuntimeException(e);\n" +
+                        "        }\n" +
+                        "        fieldNames.add(stringBuilder.toString());\n" +
                         "    }\n" +
                         "    public void startDocument() { }\n" +
                         "    public void endDocument() { }\n" +
@@ -301,10 +310,16 @@ final class DocumentationPage {
                 codeBlock("Set<String> fieldNames = new HashSet<String>();\n" +
                         "StajParser stajParser = null;\n" +
                         "stajParser = new StajParser(jsonReader);\n" +
-                        "while (stajParser.hasNext()) {\n" +
                         "    JsonStreamElement next = stajParser.next();\n" +
                         "    if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {\n" +
-                        "        fieldNames.add(JsonStreamElement.asString(next.reader()));\n" +
+                        "        StringBuilder stringBuilder = new StringBuilder();\n" +
+                        "        try (Reader fieldNameReader = next.reader()) {\n" +
+                        "            int nextChar;\n" +
+                        "            while ((nextChar = fieldNameReader.read()) != -1) {\n" +
+                        "                stringBuilder.append((char) nextChar);\n" +
+                        "            }\n" +
+                        "        }\n" +
+                        "        fieldNames.add(stringBuilder.toString());\n" +
                         "    }\n" +
                         "}\n"),
                 paragraphTag(xhtmlText("Iterating through the elements of a piece of JSON like this has the advantage that the parser " +

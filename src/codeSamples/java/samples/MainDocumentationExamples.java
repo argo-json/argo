@@ -23,10 +23,7 @@ import argo.staj.StajParser;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.AbstractList;
 import java.util.HashSet;
@@ -168,7 +165,16 @@ final class MainDocumentationExamples {
             final Set<String> fieldNames = new HashSet<>();
             SAJ_PARSER.parse(jsonReader, new JsonListener() {
                 public void startField(Reader name) {
-                    fieldNames.add(JsonStreamElement.asString(name));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    int next;
+                    try {
+                        while((next = name.read()) != -1) {
+                            stringBuilder.append((char) next);
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    fieldNames.add(stringBuilder.toString());
                 }
 
                 public void startDocument() {
@@ -222,7 +228,14 @@ final class MainDocumentationExamples {
             while (stajParser.hasNext()) {
                 JsonStreamElement next = stajParser.next();
                 if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {
-                    fieldNames.add(JsonStreamElement.asString(next.reader()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    try (Reader fieldNameReader = next.reader()) {
+                        int nextChar;
+                        while ((nextChar = fieldNameReader.read()) != -1) {
+                            stringBuilder.append((char) nextChar);
+                        }
+                    }
+                    fieldNames.add(stringBuilder.toString());
                 }
             }
             assertThat(fieldNames, equalTo(new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));

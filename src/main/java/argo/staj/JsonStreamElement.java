@@ -151,19 +151,5 @@ public abstract class JsonStreamElement {
         return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType;
     }
 
-    public static String asString(final Reader reader) { // TODO remove
-        final StringBuilder stringBuilder = new StringBuilder(32);
-        try {
-            int c;
-            while((c = reader.read()) != -1) {
-                stringBuilder.append((char) c);
-            }
-        } catch (IOException e) {
-            // TODO got to improve on this
-            throw new RuntimeException(e);
-        } // TODO this assumes that the reader is closed elsewhere for us
-        return stringBuilder.toString();
-    }
-
     abstract void close() throws IOException; // TODO does this need to be called from outside?
 }

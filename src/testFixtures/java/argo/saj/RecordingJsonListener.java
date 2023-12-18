@@ -10,13 +10,14 @@
 
 package argo.saj;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import static argo.staj.JsonStreamElement.asString;
 
 public final class RecordingJsonListener implements JsonListener {
 
@@ -186,7 +187,7 @@ public final class RecordingJsonListener implements JsonListener {
 
     @Override
     public void startField(Reader name) {
-        jsonListenerEvents.add(new StartField(asString(name)));
+        jsonListenerEvents.add(new StartField(toString(name)));
     }
 
     @Override
@@ -196,12 +197,12 @@ public final class RecordingJsonListener implements JsonListener {
 
     @Override
     public void stringValue(Reader value) {
-        jsonListenerEvents.add(new StringValue(asString(value)));
+        jsonListenerEvents.add(new StringValue(toString(value)));
     }
 
     @Override
     public void numberValue(Reader value) {
-        jsonListenerEvents.add(new NumberValue(asString(value)));
+        jsonListenerEvents.add(new NumberValue(toString(value)));
     }
 
     @Override
@@ -221,5 +222,13 @@ public final class RecordingJsonListener implements JsonListener {
 
     public List<JsonListenerEvent> jsonListenerEvents() {
         return Collections.unmodifiableList(new ArrayList<>(jsonListenerEvents));
+    }
+
+    private static String toString(final Reader reader) {
+        try {
+            return IOUtils.toString(reader);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
