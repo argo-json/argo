@@ -14,11 +14,13 @@ import argo.saj.InvalidSyntaxException;
 import argo.saj.StajBasedSajParser;
 import argo.staj.StajParser;
 
+import java.io.IOException;
+
 public final class StajBasedJdomParser {
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
 
-    public JsonNode parse(final StajParser stajParser) throws InvalidSyntaxException {
+    public JsonNode parse(final StajParser stajParser) throws InvalidSyntaxException, IOException {
         return JDOM_PARSER.parse(jsonListener -> new StajBasedSajParser().parse(stajParser, jsonListener));
     }
 

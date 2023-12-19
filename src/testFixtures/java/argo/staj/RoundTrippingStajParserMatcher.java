@@ -18,6 +18,8 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
+import java.io.IOException;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatcher<StajParser> {
@@ -41,7 +43,7 @@ public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatc
         if (parseResult == null) {
             try {
                 parseResult = new StajBasedJdomParser().parse(item);
-            } catch (InvalidSyntaxException e) {
+            } catch (InvalidSyntaxException | IOException e) {
                 throw new RuntimeException("Caught exception matching", e);
             }
         }

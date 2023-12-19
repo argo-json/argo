@@ -15,18 +15,20 @@ import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonStringNode;
 import argo.jdom.JsonStringNodeTestBuilder;
+import org.apache.commons.io.input.BrokenReader;
+import org.apache.commons.io.input.SequenceReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
-import static argo.jdom.JsonStringNodeTestBuilder.*;
+import static argo.jdom.JsonStringNodeTestBuilder.aNonEmptyString;
+import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 import static argo.staj.ElementTrackingStajParserMatcher.generatesElements;
 import static argo.staj.JsonStreamElement.number;
 import static argo.staj.JsonStreamElement.string;
@@ -34,6 +36,7 @@ import static argo.staj.JsonStreamElement.*;
 import static argo.staj.RoundTrippingStajParserMatcher.parsesTo;
 import static argo.staj.StajParserBuilder.stajParser;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -214,43 +217,29 @@ final class StajParserTest {
 
     @Test
     void handlesIoExceptionDuringParsing() {
-        final StajParser stajParser = new StajParser(new Reader() {
-            public int read(char[] chars, int offset, int length) throws IOException {
-                throw new IOException("An IOException");
-            }
-
-            public void close() {
-            }
-        });
+        final IOException ioException = new IOException("An IOException");
+        final StajParser stajParser = new StajParser(new BrokenReader(ioException));
         stajParser.next();
-        assertThrows(JsonStreamException.class, stajParser::next);
+        final JsonStreamException jsonStreamException = assertThrows(JsonStreamException.class, stajParser::next);
+        assertThat(jsonStreamException.getCause(), equalTo(ioException));
     }
 
     @Test
     void handlesIoExceptionSkippingElement() {
-        final AtomicInteger callCount = new AtomicInteger(0);
-        final StajParser stajParser = new StajParser(new Reader() {
-            public int read(char[] chars, int offset, int length) throws IOException {
-                if (callCount.get() == 0) {
-                    chars[offset] = '[';
-                    callCount.incrementAndGet();
-                    return 1;
-                } else {
-                    throw new IOException("An IOException");
-                }
-            }
-
-            public void close() {
-            }
-        });
+        final IOException ioException = new IOException("An IOException");
+        final StajParser stajParser = new StajParser(new SequenceReader(
+                new StringReader("["),
+                new BrokenReader(ioException)
+        ));
         stajParser.next();
         stajParser.next();
-        assertThrows(JsonStreamException.class, stajParser::next);
+        final JsonStreamException jsonStreamException = assertThrows(JsonStreamException.class, stajParser::next);
+        assertThat(jsonStreamException.getCause(), sameInstance(ioException));
     }
 
     @Test
     void handlesRuntimeExceptionDuringParsing() {
-        final StajParser stajParser = new StajParser(new Reader() {
+        final StajParser stajParser = new StajParser(new Reader() { // TODO commons-io BrokenReader ought to be made to throw RuntimeExceptions too.
             public int read(char[] chars, int offset, int length) {
                 throw new MyTestRuntimeException();
             }

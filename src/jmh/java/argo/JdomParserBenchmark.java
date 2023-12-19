@@ -19,6 +19,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
+import java.io.IOException;
 import java.io.StringReader;
 
 @State(Scope.Benchmark)
@@ -117,7 +118,7 @@ public class JdomParserBenchmark {
     private final SajParser sajParser = new SajParser();
 
     @Benchmark
-    public void jdomParser(final Blackhole blackhole) throws InvalidSyntaxException {
+    public void jdomParser(final Blackhole blackhole) throws InvalidSyntaxException, IOException {
         blackhole.consume(jdomParser.parse(JSON_STRING));
     }
 
@@ -130,7 +131,7 @@ public class JdomParserBenchmark {
     }
 
     @Benchmark
-    public void sajParser(final Blackhole blackhole) throws InvalidSyntaxException {
+    public void sajParser(final Blackhole blackhole) throws InvalidSyntaxException, IOException {
         sajParser.parse(new StringReader(JSON_STRING), new BlackholeJsonListener(blackhole));
     }
 

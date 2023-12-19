@@ -12,8 +12,10 @@ package argo.saj;
 
 import argo.staj.InvalidSyntaxRuntimeException;
 import argo.staj.JsonStreamElement;
+import argo.staj.JsonStreamException;
 import argo.staj.StajParser;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -33,8 +35,9 @@ public final class SajParser {
      * @param json         the {@code String} to parse.
      * @param jsonListener the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
+     * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
-    public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
+    public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
         parse(jsonListener, new StajParser(new StringReader(json)));
     }
 
@@ -44,12 +47,13 @@ public final class SajParser {
      * @param in           the character stream to parse
      * @param jsonListener the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
+     * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
-    public void parse(final Reader in, final JsonListener jsonListener) throws InvalidSyntaxException {
+    public void parse(final Reader in, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
         parse(jsonListener, new StajParser(in));
     }
 
-    void parse(final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException { // NOPMD TODO this should be turned off in the rules
+    void parse(final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException, IOException { // NOPMD TODO this should be turned off in the rules
         try {
             while (stajParser.hasNext()) {
                 final JsonStreamElement jsonStreamElement = stajParser.next();
@@ -99,6 +103,8 @@ public final class SajParser {
             }
         } catch (final InvalidSyntaxRuntimeException e) {
             throw e.asInvalidSyntaxException();
+        } catch (final JsonStreamException e) {
+            e.rethrowCause();
         }
     }
 

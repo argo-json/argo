@@ -10,8 +10,10 @@
 
 package argo.saj;
 
+import org.apache.commons.io.input.BrokenReader;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.io.StringReader;
 
 import static argo.saj.BlackHoleJsonListener.BLACK_HOLE_JSON_LISTENER;
@@ -21,8 +23,7 @@ import static argo.saj.RecordingJsonListener.NumberValue.numberValue;
 import static argo.saj.RecordingJsonListener.StartField.startField;
 import static argo.saj.RecordingJsonListener.StringValue.stringValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class SajParserTest {
@@ -580,6 +581,13 @@ final class SajParserTest {
         final String inputString = "n";
         final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
         assertThat(exception.getMessage(), equalTo("At line 1, column 2:  Expected 'n' to be followed by [[u, l, l]], but reached end of input."));
+    }
+
+    @Test
+    void rethrowsIOExceptionFromReader() {
+        final IOException ioException = new IOException("An IOException");
+        final IOException actualException = assertThrows(IOException.class, () -> new SajParser().parse(new BrokenReader(ioException), BLACK_HOLE_JSON_LISTENER));
+        assertThat(actualException, sameInstance(ioException));
     }
 
 }

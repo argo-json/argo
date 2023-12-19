@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2023 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -14,6 +14,7 @@ import argo.saj.InvalidSyntaxException;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -29,8 +30,9 @@ public final class JdomParser {
      * @param json the {@code String} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code String}.
      * @throws InvalidSyntaxException if the characters streamed from the specified {@code String} does not represent valid JSON.
+     * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
-    public JsonNode parse(final String json) throws InvalidSyntaxException {
+    public JsonNode parse(final String json) throws InvalidSyntaxException, IOException {
         return parse(new StringReader(json));
     }
 
@@ -40,23 +42,24 @@ public final class JdomParser {
      * @param reader the {@code Reader} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code Reader}.
      * @throws InvalidSyntaxException if the characters streamed from the specified {@code Reader} does not represent valid JSON.
+     * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
-    public JsonNode parse(final Reader reader) throws InvalidSyntaxException {
+    public JsonNode parse(final Reader reader) throws InvalidSyntaxException, IOException {
         return parse(new JsonListenerBasedParser() {
-            public void parse(final JsonListener jsonListener) throws InvalidSyntaxException {
+            public void parse(final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
                 new SajParser().parse(reader, jsonListener);
             }
         });
     }
 
-    JsonNode parse(final JsonListenerBasedParser jsonListenerBasedParser) throws InvalidSyntaxException {
+    JsonNode parse(final JsonListenerBasedParser jsonListenerBasedParser) throws InvalidSyntaxException, IOException {
         final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
         jsonListenerBasedParser.parse(jsonListenerToJdomAdapter);
         return jsonListenerToJdomAdapter.getDocument();
     }
 
     interface JsonListenerBasedParser {
-        void parse(JsonListener jsonListener) throws InvalidSyntaxException;
+        void parse(JsonListener jsonListener) throws InvalidSyntaxException, IOException;
     }
 
 }

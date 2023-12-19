@@ -12,8 +12,10 @@ package argo.jdom;
 
 import argo.ChoppingReader;
 import argo.saj.InvalidSyntaxException;
+import org.apache.commons.io.input.BrokenReader;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.io.StringReader;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -69,6 +71,13 @@ final class JdomParserTest {
     @Test
     void parsesMismatchedDoubleQuotesInAnObject() {
         assertThrows(InvalidSyntaxException.class, () -> new JdomParser().parse("{\"a\":\"b}"));
+    }
+
+    @Test
+    void rethrowsIOExceptionFromReader() {
+        final IOException ioException = new IOException("An IOException");
+        final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new BrokenReader(ioException)));
+        assertThat(actualException, sameInstance(ioException));
     }
 
     @Test
