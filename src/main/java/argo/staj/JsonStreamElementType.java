@@ -341,6 +341,8 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             return n == 0 && length != 0 ? -1 : n;
         }
 
+        // TODO override skip more efficiently?
+
         public final void close() throws IOException {
             while (read() != -1) { // NOPMD TODO this should be turned off in the rules
                 // do nothing

@@ -120,5 +120,6 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
         return new Position(column, line);
     }
 
+    // TODO ready?
     // TODO close?
 }
