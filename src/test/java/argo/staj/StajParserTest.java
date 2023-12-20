@@ -17,11 +17,13 @@ import argo.jdom.JsonStringNode;
 import argo.jdom.JsonStringNodeTestBuilder;
 import org.apache.commons.io.input.BrokenReader;
 import org.apache.commons.io.input.SequenceReader;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.CharBuffer;
 import java.util.NoSuchElementException;
 
 import static argo.jdom.JsonNodeFactories.*;
@@ -204,6 +206,580 @@ final class StajParserTest {
         while (stajParser.hasNext()) {
             stajParser.next();
         }
+    }
+
+    @Test
+    void propagatesIoExceptionReadingNumber() throws IOException {
+        final IOException ioException = new IOException("An IOException");
+        final StajParser stajParser = new StajParser(new SequenceReader(
+                new StringReader("1"),
+                new BrokenReader(ioException)
+        ));
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.read();
+        final IOException actualException = assertThrows(IOException.class, reader::read);
+        assertThat(actualException, sameInstance(ioException));
+    }
+
+    @Test
+    void propagatesIoExceptionSkippingNumberByGettingNextElement() {
+        final IOException ioException = new IOException("An IOException");
+        final StajParser stajParser = new StajParser(new SequenceReader(
+                new StringReader("1"),
+                new BrokenReader(ioException)
+        ));
+        stajParser.next();
+        stajParser.next();
+        final JsonStreamException actualException = assertThrows(JsonStreamException.class, stajParser::next);
+        assertThat(actualException.getCause(), sameInstance(ioException));
+    }
+
+    @Test
+    void propagatesIoExceptionSkippingNumberByQueryingNextElement() {
+        final IOException ioException = new IOException("An IOException");
+        final StajParser stajParser = new StajParser(new SequenceReader(
+                new StringReader("1"),
+                new BrokenReader(ioException)
+        ));
+        stajParser.next();
+        stajParser.next();
+        final JsonStreamException actualException = assertThrows(JsonStreamException.class, stajParser::hasNext);
+        assertThat(actualException.getCause(), sameInstance(ioException));
+    }
+
+    @Test
+    void canCloseANumberReader() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        stajParser.next().reader().close();
+    }
+
+    @Test
+    void afterClosingANumberReaderCanCallCloseAgain() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        reader.close();
+    }
+
+    @Test
+    void afterClosingANumberReaderMarkThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.mark(0));
+    }
+
+    @Test
+    void afterClosingANumberReaderMarkSupportedReturnsFalse() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThat(reader.markSupported(), equalTo(false));
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingANumberReaderReadingACharacterThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.read());
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingANumberReaderReadingToABufferThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.read(new char[3]));
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingANumberReaderReadingToABufferWithOffsetAndLengthThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.read(new char[3], 0, 1));
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingANumberReaderReadingToACharBufferThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.read(CharBuffer.allocate(3)));
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingANumberReaderReadyThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.ready());
+    }
+
+    @Test
+    void afterClosingANumberReaderResetThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.reset());
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingANumberReaderSkipThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.skip(0));
+    }
+
+    @Test
+    void attemptingToMarkANumberReaderThrowsIOException() {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IOException.class, () -> reader.mark(0));
+    }
+
+    @Test
+    void aNumberReaderDoesNotSupportMark() {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        assertThat(stajParser.next().reader().markSupported(), equalTo(false));
+    }
+
+    @Test
+    void canReadNumberCharacterByCharacter() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThat(reader.read(), equalTo((int)'1'));
+        assertThat(reader.read(), equalTo((int)'2'));
+        assertThat(reader.read(), equalTo(-1));
+    }
+
+    @Test
+    void canReadNumberToABuffer() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        final char[] buffer = new char[3];
+        assertThat(reader.read(buffer), equalTo(2));
+        assertThat(buffer, equalTo(new char[]{'1', '2', 0}));
+        assertThat(reader.read(buffer), equalTo(-1));
+    }
+
+    @Test
+    void canReadNumberToABufferWithOffsetAndLength() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        final char[] buffer = new char[3];
+        assertThat(reader.read(buffer, 1, 1), equalTo(1));
+        assertThat(buffer, equalTo(new char[]{0, '1', 0}));
+        assertThat(reader.read(), equalTo((int)'2'));
+        assertThat(reader.read(buffer), equalTo(-1));
+    }
+
+    @Test
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetIsNegativeThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], -1, 0));
+    }
+
+    @Test
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 4, 0));
+    }
+
+    @Test
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereLengthIsLessThanZeroThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 0, -1));
+    }
+
+    @Test
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetPlusLengthIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 1, 3));
+    }
+
+    @Test
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetPlusLengthOverflowsThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 1, Integer.MAX_VALUE));
+    }
+
+    @Test
+    void canReadNumberToACharBuffer() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        final CharBuffer charBuffer = CharBuffer.allocate(3);
+        assertThat(reader.read(charBuffer), equalTo(2));
+        assertThat(charBuffer.array(), equalTo(new char[]{'1', '2', 0}));
+        assertThat(reader.read(charBuffer), equalTo(-1));
+    }
+
+    @Test
+    void numberReaderReadyReturnsFalseToBeOnTheSafeSide() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        assertThat(stajParser.next().reader().ready(), equalTo(false));
+    }
+
+    @Test
+    void attemptingToResetANumberReaderThrowsIOException() {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IOException.class, () -> reader.reset());
+    }
+
+    @Test
+    void canSkipASubsetCharactersInANumberReader() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThat(reader.skip(1), equalTo(1L));
+        assertThat(reader.read(), equalTo((int)'2'));
+        assertThat(reader.read(), equalTo(-1));
+    }
+
+    @Test
+    void canSkipPastAllCharactersInANumberReader() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThat(reader.skip(3), equalTo(2L));
+        assertThat(reader.read(), equalTo(-1));
+    }
+
+    @Test
+    void canSkipZeroCharactersInANumberReader() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThat(reader.skip(0), equalTo(0L));
+        assertThat(reader.read(), equalTo((int)'1'));
+        assertThat(reader.read(), equalTo((int)'2'));
+        assertThat(reader.read(), equalTo(-1));
+    }
+
+    @Test
+    void propagatesIoExceptionReadingString() throws IOException {
+        final IOException ioException = new IOException("An IOException");
+        final StajParser stajParser = new StajParser(new SequenceReader(
+                new StringReader("\"F"),
+                new BrokenReader(ioException)
+        ));
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.read();
+        final IOException actualException = assertThrows(IOException.class, reader::read);
+        assertThat(actualException, sameInstance(ioException));
+    }
+
+    @Test
+    void propagatesIoExceptionSkippingStringByGettingNextElement() {
+        final IOException ioException = new IOException("An IOException");
+        final StajParser stajParser = new StajParser(new SequenceReader(
+                new StringReader("\"F"),
+                new BrokenReader(ioException)
+        ));
+        stajParser.next();
+        stajParser.next();
+        final JsonStreamException actualException = assertThrows(JsonStreamException.class, stajParser::next);
+        assertThat(actualException.getCause(), sameInstance(ioException));
+    }
+
+    @Test
+    void propagatesIoExceptionSkippingStringByQueryingNextElement() {
+        final IOException ioException = new IOException("An IOException");
+        final StajParser stajParser = new StajParser(new SequenceReader(
+                new StringReader("\"F"),
+                new BrokenReader(ioException)
+        ));
+        stajParser.next();
+        stajParser.next();
+        final JsonStreamException actualException = assertThrows(JsonStreamException.class, stajParser::hasNext);
+        assertThat(actualException.getCause(), sameInstance(ioException));
+    }
+
+    @Test
+    void canCloseAStringReader() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        stajParser.next().reader().close();
+    }
+
+    @Test
+    void afterClosingAStringReaderCanCallCloseAgain() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        reader.close();
+    }
+
+    @Test
+    void afterClosingAStringReaderMarkThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.mark(0));
+    }
+
+    @Test
+    void afterClosingAStringReaderMarkSupportedReturnsFalse() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThat(reader.markSupported(), equalTo(false));
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingAStringReaderReadingACharacterThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.read());
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingAStringReaderReadingToABufferThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.read(new char[3]));
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingAStringReaderReadingToABufferWithOffsetAndLengthThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.read(new char[3], 0, 1));
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingAStringReaderReadingToACharBufferThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.read(CharBuffer.allocate(3)));
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingAStringReaderReadyThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.ready());
+    }
+
+    @Test
+    void afterClosingAStringReaderResetThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.reset());
+    }
+
+    @Test
+    @Disabled("Not implemented yet")
+    void afterClosingAStringReaderSkipThrowsIOException() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.skip(0));
+    }
+
+    @Test
+    void attemptingToMarkAStringReaderThrowsIOException() {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IOException.class, () -> reader.mark(0));
+    }
+
+    @Test
+    void aStringReaderDoesNotSupportMark() {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        assertThat(stajParser.next().reader().markSupported(), equalTo(false));
+    }
+
+    @Test
+    void canReadStringCharacterByCharacter() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThat(reader.read(), equalTo((int)'F'));
+        assertThat(reader.read(), equalTo((int)'o'));
+        assertThat(reader.read(), equalTo(-1));
+    }
+
+    @Test
+    void canReadStringToABuffer() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        final char[] buffer = new char[3];
+        assertThat(reader.read(buffer), equalTo(2));
+        assertThat(buffer, equalTo(new char[]{'F', 'o', 0}));
+        assertThat(reader.read(buffer), equalTo(-1));
+    }
+
+    @Test
+    void canReadStringToABufferWithOffsetAndLength() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        final char[] buffer = new char[3];
+        assertThat(reader.read(buffer, 1, 1), equalTo(1));
+        assertThat(buffer, equalTo(new char[]{0, 'F', 0}));
+        assertThat(reader.read(), equalTo((int)'o'));
+        assertThat(reader.read(buffer), equalTo(-1));
+    }
+
+    @Test
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetIsNegativeThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], -1, 0));
+    }
+
+    @Test
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 4, 0));
+    }
+
+    @Test
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereLengthIsLessThanZeroThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 0, -1));
+    }
+
+    @Test
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetPlusLengthIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 1, 3));
+    }
+
+    @Test
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetPlusLengthOverflowsThrowsIndexOutOfBoundsException() {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 1, Integer.MAX_VALUE));
+    }
+
+    @Test
+    void canReadStringToACharBuffer() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        final CharBuffer charBuffer = CharBuffer.allocate(3);
+        assertThat(reader.read(charBuffer), equalTo(2));
+        assertThat(charBuffer.array(), equalTo(new char[]{'F', 'o', 0}));
+        assertThat(reader.read(charBuffer), equalTo(-1));
+    }
+
+    @Test
+    void stringReaderReadyReturnsFalseToBeOnTheSafeSide() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        assertThat(stajParser.next().reader().ready(), equalTo(false));
+    }
+
+    @Test
+    void attemptingToResetAStringReaderThrowsIOException() {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThrows(IOException.class, () -> reader.reset());
+    }
+
+    @Test
+    void canSkipASubsetCharactersInAStringReader() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThat(reader.skip(1), equalTo(1L));
+        assertThat(reader.read(), equalTo((int)'o'));
+        assertThat(reader.read(), equalTo(-1));
+    }
+
+    @Test
+    void canSkipPastAllCharactersInAStringReader() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThat(reader.skip(3), equalTo(2L));
+        assertThat(reader.read(), equalTo(-1));
+    }
+
+    @Test
+    void canSkipZeroCharactersInAStringReader() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        assertThat(reader.skip(0), equalTo(0L));
+        assertThat(reader.read(), equalTo((int)'F'));
+        assertThat(reader.read(), equalTo((int)'o'));
+        assertThat(reader.read(), equalTo(-1));
     }
 
     @Test

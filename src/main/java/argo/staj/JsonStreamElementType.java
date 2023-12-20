@@ -336,7 +336,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             int n = 0;
             int nextChar;
             while (n < length && (nextChar = read()) != -1) {
-                cbuf[n++] = (char) nextChar;
+                cbuf[offset + n++] = (char) nextChar;
             }
             return n == 0 && length != 0 ? -1 : n;
         }
