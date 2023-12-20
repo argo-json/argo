@@ -323,6 +323,31 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input." : "got [" + stringify(readBuffer, charactersRead) + "]."), position);
     }
 
+    private static abstract class SingleCharacterReader extends Reader {
+        private static void validateArguments(final char[] cbuf, final int offset, final int length) {
+            if (offset < 0 || offset > cbuf.length || length < 0 ||
+                    offset + length > cbuf.length || offset + length < 0) {
+                throw new IndexOutOfBoundsException();
+            }
+        }
+
+        public final int read(final char[] cbuf, final int offset, final int length) throws IOException { // TODO test this...
+            validateArguments(cbuf, offset, length);
+            int n = 0;
+            int nextChar;
+            while (n < length && (nextChar = read()) != -1) {
+                cbuf[n++] = (char) nextChar;
+            }
+            return n == 0 && length != 0 ? -1 : n;
+        }
+
+        public final void close() throws IOException {
+            while (read() != -1) { // NOPMD TODO this should be turned off in the rules
+                // do nothing
+            }
+        }
+    }
+
     private static final class NumberReader extends SingleCharacterReader {
 
         private enum ParserState {
@@ -561,28 +586,4 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
     }
 
-    private static abstract class SingleCharacterReader extends Reader {
-        private static void validateArguments(final char[] cbuf, final int offset, final int length) {
-            if (offset < 0 || offset > cbuf.length || length < 0 ||
-                    offset + length > cbuf.length || offset + length < 0) {
-                throw new IndexOutOfBoundsException();
-            }
-        }
-
-        public final int read(final char[] cbuf, final int offset, final int length) throws IOException { // TODO test this...
-            validateArguments(cbuf, offset, length);
-            int n = 0;
-            int nextChar;
-            while (n < length && (nextChar = read()) != -1) {
-                cbuf[n++] = (char) nextChar;
-            }
-            return n == 0 && length != 0 ? -1 : n;
-        }
-
-        public final void close() throws IOException {
-            while (read() != -1) { // NOPMD TODO this should be turned off in the rules
-                // do nothing
-            }
-        }
-    }
 }
