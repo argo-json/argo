@@ -23,9 +23,15 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     private final Reader delegate;
     private int column = 0;
-    private int line = 1;
+    private boolean columnOverflow = false;
 
     private int previousLineEnd;
+
+    private boolean previousColumnOverflow;
+
+    private int line = 1;
+
+    private boolean lineOverflow = false;
 
     private int readsSinceLastCarriageReturn = 2;
 
@@ -37,17 +43,19 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
         this.delegate = in;
     }
 
-    void unread(final int character) {
+    void unread(final int character) { // TODO overflow
         pushbackBuffer = character;
 
         if (CARRIAGE_RETURN == character) {
             column = previousLineEnd;
+            columnOverflow = previousColumnOverflow;
             line--;
             readsSinceLastCarriageReturn = 2;
         } else {
             if (NEWLINE == character) {
                 if (readsSinceLastCarriageReturn != 1) {
                     column = previousLineEnd;
+                    columnOverflow = previousColumnOverflow;
                     line--;
                 }
             } else {
@@ -82,19 +90,32 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
         if (CARRIAGE_RETURN == character) {
             previousLineEnd = column;
+            previousColumnOverflow = columnOverflow;
             column = 0;
+            columnOverflow = false;
             line++;
+            if (line < 0) {
+                lineOverflow = true;
+            }
             readsSinceLastCarriageReturn = 0;
         } else {
             if (NEWLINE == character) {
                 if (readsSinceLastCarriageReturn != 0) {
                     previousLineEnd = column;
+                    previousColumnOverflow = columnOverflow;
                     column = 0;
+                    columnOverflow = false;
                     line++;
+                    if (line < 0) {
+                        lineOverflow = true;
+                    }
                 }
             } else {
                 if (!endOfStream) {
                     column++;
+                    if (column < 0) {
+                        columnOverflow = true;
+                    }
                 }
                 if (character == -1) {
                     endOfStream = true;
@@ -117,7 +138,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
     }
 
     Position position() {
-        return new Position(column, line);
+        return new Position(columnOverflow ? -1 : column, lineOverflow ? -1 : line);
     }
 
     // TODO ready?
