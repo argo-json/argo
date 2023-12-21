@@ -342,12 +342,6 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         }
 
         // TODO override skip more efficiently?
-
-        public final void close() throws IOException {
-            while (read() != -1) { // NOPMD TODO this should be turned off in the rules
-                // do nothing
-            }
-        }
     }
 
     private static final class NumberReader extends SingleCharacterReader {
@@ -533,15 +527,22 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             abstract ParserState handle(int character, Position position);
         }
 
-        private final PositionTrackingPushbackReader in;
+        private PositionTrackingPushbackReader in;
         private ParserState parserState = ParserState.BEFORE_START;
 
         NumberReader(final PositionTrackingPushbackReader in) {
             this.in = in;
         }
 
+        private void ensureOpen() throws IOException {
+            if (in == null) {
+                throw new IOException("Stream closed");
+            }
+        }
+
         @Override
         public int read() throws IOException {
+            ensureOpen();
             final int nextChar = in.read();
             parserState = parserState.handle(nextChar, in.position());
             if (parserState == ParserState.END) {
@@ -554,11 +555,20 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             }
         }
 
+        public void close() throws IOException {
+            if (in != null) {
+                while (read() != -1) { // NOPMD TODO this should be turned off in the rules
+                    // do nothing
+                }
+                in = null;
+            }
+        }
+
     }
 
     private static final class StringReader extends SingleCharacterReader {
 
-        private final PositionTrackingPushbackReader in;
+        private PositionTrackingPushbackReader in;
         private final Position openDoubleQuotesPosition;
         private boolean ended = false;
 
@@ -567,8 +577,15 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             this.openDoubleQuotesPosition = openDoubleQuotesPosition;
         }
 
+        private void ensureOpen() throws IOException {
+            if (in == null) {
+                throw new IOException("Stream closed");
+            }
+        }
+
         @Override
         public int read() throws IOException {
+            ensureOpen();
             if (ended) {
                 return -1;
             } else {
@@ -584,6 +601,16 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     default:
                         return nextChar;
                 }
+            }
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (in != null) {
+                while (read() != -1) { // NOPMD TODO this should be turned off in the rules
+                    // do nothing
+                }
+                in = null;
             }
         }
     }

@@ -187,6 +187,10 @@ pmdMain {
     ruleSets = []
 }
 
+spotbugsTest {
+    excludeFilter = file('tools/spotbugs-test-filter.xml')
+}
+
 artifacts {
     archives javadocJar, sourcesJar
 }

@@ -42,6 +42,7 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SuppressWarnings("PMD.CloseResource")
 final class StajParserTest {
 
     @Test
@@ -283,7 +284,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
     void afterClosingANumberReaderReadingACharacterThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("12");
         stajParser.next();
@@ -293,7 +293,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
     void afterClosingANumberReaderReadingToABufferThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("12");
         stajParser.next();
@@ -303,7 +302,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
     void afterClosingANumberReaderReadingToABufferWithOffsetAndLengthThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("12");
         stajParser.next();
@@ -313,7 +311,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
     void afterClosingANumberReaderReadingToACharBufferThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("12");
         stajParser.next();
@@ -323,7 +320,7 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
+    @Disabled("It's not totally clear whether always returning false is OK")
     void afterClosingANumberReaderReadyThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("12");
         stajParser.next();
@@ -342,7 +339,7 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
+    @Disabled("It's not totally clear whether skip(0) should fail")
     void afterClosingANumberReaderSkipThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("12");
         stajParser.next();
@@ -570,7 +567,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
     void afterClosingAStringReaderReadingACharacterThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("\"Fo\"");
         stajParser.next();
@@ -580,7 +576,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
     void afterClosingAStringReaderReadingToABufferThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("\"Fo\"");
         stajParser.next();
@@ -590,7 +585,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
     void afterClosingAStringReaderReadingToABufferWithOffsetAndLengthThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("\"Fo\"");
         stajParser.next();
@@ -600,7 +594,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
     void afterClosingAStringReaderReadingToACharBufferThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("\"Fo\"");
         stajParser.next();
@@ -610,7 +603,7 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
+    @Disabled("It's not totally clear whether always returning false is OK")
     void afterClosingAStringReaderReadyThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("\"Fo\"");
         stajParser.next();
@@ -629,7 +622,7 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("Not implemented yet")
+    @Disabled("It's not totally clear whether skip(0) should fail")
     void afterClosingAStringReaderSkipThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("\"Fo\"");
         stajParser.next();
