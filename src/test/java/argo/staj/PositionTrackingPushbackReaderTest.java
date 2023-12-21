@@ -316,7 +316,7 @@ class PositionTrackingPushbackReaderTest {
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
         positionTrackingPushbackReader.unread('\n');
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(-1)); // TODO Needs documenting
+        assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
     }
 
