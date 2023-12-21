@@ -11,7 +11,6 @@
 package argo.staj;
 
 import argo.ChoppingReader;
-import org.apache.commons.io.input.BoundedReader;
 import org.apache.commons.io.input.SequenceReader;
 import org.junit.jupiter.api.Test;
 
@@ -294,7 +293,7 @@ class PositionTrackingPushbackReaderTest {
     @Test
     void afterLineLongerThanLargestIntegerNextLineHasCorrectPosition() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new BoundedReader(new InfiniteReader('a'), Integer.MAX_VALUE),
+                new FastBoundedReader(new InfiniteReader('a'), Integer.MAX_VALUE),
                 new StringReader("a\n")
         ));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
@@ -308,7 +307,7 @@ class PositionTrackingPushbackReaderTest {
     @Test
     void pushingBackNewlineAfterLineLongerThanLargestIntegerFollowedByNewlineHasCorrectPosition() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new BoundedReader(new InfiniteReader('a'), Integer.MAX_VALUE),
+                new FastBoundedReader(new InfiniteReader('a'), Integer.MAX_VALUE),
                 new StringReader("a\n")
         ));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
@@ -344,7 +343,7 @@ class PositionTrackingPushbackReaderTest {
     @Test
     void afterMoreLinesThanLargestIntegerNextColumnIsCorrect() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new BoundedReader(new InfiniteReader('\n'), Integer.MAX_VALUE),
+                new FastBoundedReader(new InfiniteReader('\n'), Integer.MAX_VALUE),
                 new StringReader("\na")
         ));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
@@ -358,7 +357,7 @@ class PositionTrackingPushbackReaderTest {
     @Test
     void pushingBackNewlineAfterMoreLinesThanLargestIntegerHasCorrectPosition() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new BoundedReader(new InfiniteReader('\n'), Integer.MAX_VALUE - 1),
+                new FastBoundedReader(new InfiniteReader('\n'), Integer.MAX_VALUE - 1),
                 new StringReader("ab\n")
         ));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {

@@ -13,21 +13,20 @@ package argo.staj;
 import java.io.Reader;
 import java.util.Arrays;
 
-public class InfiniteReader extends Reader {
+public final class InfiniteReader extends Reader {
 
     private final char repeatingChar;
 
-    public InfiniteReader(char repeatingChar) {
+    public InfiniteReader(final char repeatingChar) {
         this.repeatingChar = repeatingChar;
     }
 
     @Override
-    public int read(char[] cbuf, int off, int len) {
+    public int read(final char[] cbuf, final int off, final int len) {
         Arrays.fill(cbuf, off, off + len, repeatingChar);
         return len;
     }
 
     @Override
-    public void close() {
-    }
+    public void close() {}
 }
