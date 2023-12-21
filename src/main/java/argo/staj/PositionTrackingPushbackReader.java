@@ -23,7 +23,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     private final Reader delegate;
     private int column = 0;
-    private boolean columnOverflow = false;
+    private boolean columnOverflow = false; // TODO review using column = -1 for this
 
     private int previousLineEnd;
 
@@ -31,7 +31,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     private int line = 1;
 
-    private boolean lineOverflow = false;
+    private boolean lineOverflow = false; // TODO review using line = -1 for this
 
     private int readsSinceLastCarriageReturn = 2;
 
@@ -71,14 +71,6 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
         }
     }
 
-    void uncount(final char[] resultCharArray) { // TODO this should just iterate over unread calls?
-        column = column - resultCharArray.length;
-        if (column < 0) {
-            column = 0;
-        }
-    }
-
-    
     int read() throws IOException { // NOPMD TODO this should be turned off in the rules
         final int character;
         if (pushbackBuffer < 0) {

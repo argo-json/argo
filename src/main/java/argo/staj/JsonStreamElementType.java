@@ -313,7 +313,9 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         try {
             result = Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
-            in.uncount(resultCharArray); // TODO maybe this should be repeated unreads... or maybe it doesn't matter because we don't uncount anywhere else.
+            for (int i = resultCharArray.length - 1; i >= 0; i--) {
+                in.unread(resultCharArray[i]);
+            }
             throw invalidSyntaxRuntimeException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexadecimal number.", e, in.position());
         }
         return result;
