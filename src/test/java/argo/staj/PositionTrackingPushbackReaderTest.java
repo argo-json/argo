@@ -14,6 +14,8 @@ import argo.ChoppingReader;
 import org.apache.commons.io.input.SequenceReader;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -391,9 +393,10 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
     }
 
-    @Test
-    void handlesMoreLinesThanLargestInteger() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('\n'));
+    @ParameterizedTest
+    @ValueSource(chars = { '\n', '\r' })
+    void handlesMoreNewlinesThanLargestInteger(final char lineEnding) throws IOException {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader(lineEnding));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
             positionTrackingPushbackReader.read();
         }
