@@ -29,8 +29,7 @@ import java.util.NoSuchElementException;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
-import static argo.jdom.JsonStringNodeTestBuilder.aNonEmptyString;
-import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
+import static argo.jdom.JsonStringNodeTestBuilder.*;
 import static argo.staj.ElementTrackingStajParserMatcher.generatesElements;
 import static argo.staj.JsonStreamElement.number;
 import static argo.staj.JsonStreamElement.string;
@@ -823,4 +822,10 @@ final class StajParserTest {
     private static final class MyTestRuntimeException extends RuntimeException {
     }
 
+    @Test
+    void removeThrowsUnsupportedOperationException() {
+        final StajParser stajParser = new StajParser(aValidJsonString());
+        final UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> stajParser.remove());
+        assertThat(exception.getMessage(), equalTo("StajParser cannot remove elements from JSON it has parsed."));
+    }
 }
