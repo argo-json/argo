@@ -333,7 +333,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
             }
         }
 
-        public final int read(final char[] cbuf, final int offset, final int length) throws IOException { // TODO test this...
+        public final int read(final char[] cbuf, final int offset, final int length) throws IOException {
             validateArguments(cbuf, offset, length);
             int n = 0;
             int nextChar;
