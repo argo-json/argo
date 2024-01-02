@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -23,7 +23,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     private final Reader delegate;
     private int column = 0;
-    private boolean columnOverflow = false; // TODO review using column = -1 for this
+    private boolean columnOverflow = false;
 
     private int previousLineEnd;
 
@@ -31,7 +31,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
 
     private int line = 1;
 
-    private boolean lineOverflow = false; // TODO review using line = -1 for this
+    private boolean lineOverflow = false;
 
     private int readsSinceLastCarriageReturn = 2;
 
