@@ -834,7 +834,6 @@ final class StajParserTest {
 
 
     @ParameterizedTest
-    // TODO this type of test should be against the StajParser, which is what's ultimately being tested here.
     @ValueSource(strings = {
             "-0",
 
