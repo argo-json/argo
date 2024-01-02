@@ -134,5 +134,4 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
     }
 
     // TODO ready?
-    // TODO close?
 }
