@@ -139,16 +139,6 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         final JsonStreamElementType peek = stack.peek();
         switch (peek) {
-            case START_OBJECT: // TODO unreachable??
-                switch (nextChar) {
-                    case ',':
-                        return aJsonValue(pushbackReader, stack);
-                    case '}':
-                        stack.pop();
-                        return endObject();
-                    default:
-                        throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or }", nextChar, pushbackReader.position());
-                }
             case START_ARRAY:
                 switch (nextChar) {
                     case ',':
