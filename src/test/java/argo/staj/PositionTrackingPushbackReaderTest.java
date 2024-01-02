@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -13,6 +13,7 @@ package argo.staj;
 import argo.ChoppingReader;
 import org.apache.commons.io.input.SequenceReader;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -344,6 +345,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
+    @Tag("slow")
     void handlesLinesLongerThanLargestInteger() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('a'));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
@@ -354,6 +356,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
+    @Tag("slow")
     void afterLineLongerThanLargestIntegerNextLineHasCorrectPosition() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
                 new FastBoundedReader(new InfiniteReader('a'), Integer.MAX_VALUE),
@@ -368,6 +371,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
+    @Tag("slow")
     void pushingBackNewlineAfterLineLongerThanLargestIntegerFollowedByNewlineHasCorrectPosition() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
                 new FastBoundedReader(new InfiniteReader('a'), Integer.MAX_VALUE),
@@ -383,6 +387,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
+    @Tag("slow")
     void canUnreadAfterLineLongerThanLargestInteger() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('a'));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
@@ -395,6 +400,7 @@ class PositionTrackingPushbackReaderTest {
 
     @ParameterizedTest
     @ValueSource(chars = { '\n', '\r' })
+    @Tag("slow")
     void handlesMoreNewlinesThanLargestInteger(final char lineEnding) throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader(lineEnding));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
@@ -405,6 +411,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
+    @Tag("slow")
     void afterMoreLinesThanLargestIntegerNextColumnIsCorrect() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
                 new FastBoundedReader(new InfiniteReader('\n'), Integer.MAX_VALUE),
@@ -419,6 +426,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
+    @Tag("slow")
     void pushingBackNewlineAfterMoreLinesThanLargestIntegerHasCorrectPosition() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
                 new FastBoundedReader(new InfiniteReader('\n'), Integer.MAX_VALUE - 1),
@@ -436,6 +444,7 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
+    @Tag("slow")
     void canUnreadAfterMoreLinesThanLargestInteger() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('\n'));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
