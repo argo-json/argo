@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -139,7 +139,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         final JsonStreamElementType peek = stack.peek();
         switch (peek) {
-            case START_OBJECT:
+            case START_OBJECT: // TODO unreachable??
                 switch (nextChar) {
                     case ',':
                         return aJsonValue(pushbackReader, stack);
@@ -367,7 +367,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                         case '9':
                             return INTEGER_PART;
                         default:
-                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected '-' or a digit 0 - 9", character, position);
+                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected '-' or a digit 0 - 9", character, position);  // TODO unreachable??  Can only get to this state by one of the handled characters being pushed back.
                     }
                 }
             }, NEGATIVE {
