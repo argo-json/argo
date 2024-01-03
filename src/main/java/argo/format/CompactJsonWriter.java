@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -176,7 +176,7 @@ public final class CompactJsonWriter implements JsonWriter {
         final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer);
         writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
         if (!jsonNumberValidatingWriter.isEndState()) {
-            throw new IllegalArgumentException("Attempt to write an incomplete JSON number.");
+            throw new IllegalArgumentException("Incomplete JSON number");
         }
     }
 

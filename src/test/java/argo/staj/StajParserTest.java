@@ -829,7 +829,7 @@ final class StajParserTest {
     void removeThrowsUnsupportedOperationException() {
         final StajParser stajParser = new StajParser(aValidJsonString());
         final UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> stajParser.remove());
-        assertThat(exception.getMessage(), equalTo("StajParser cannot remove elements from JSON it has parsed."));
+        assertThat(exception.getMessage(), equalTo("StajParser cannot remove elements from JSON it has parsed"));
     }
 
 
@@ -2139,7 +2139,7 @@ final class StajParserTest {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected a value but reached end of input."));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected a value but reached end of input"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
@@ -2253,9 +2253,10 @@ final class StajParserTest {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Invalid character at start of value [" + (int)numberString.charAt(0) + "]."));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Invalid character [" + (int)numberString.charAt(0) + "] at start of value"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        // TODO get invalid character from exception
     }
 
     @ParameterizedTest
@@ -2276,6 +2277,5 @@ final class StajParserTest {
     }
 
     // TODO test failures where . or e would have been valid
-    // TODO consistify punctuation at end of exceptions
     // TODO specify invalid character in exception messages
 }

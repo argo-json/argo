@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -28,11 +28,11 @@ public final class JsonField {
      */
     public JsonField(final String name, final JsonNode value) {
         if (name == null) {
-            throw new NullPointerException("Attempt to construct a JsonField with a null name.");
+            throw new NullPointerException("Name is null");
         }
         this.name = name;
         if (value == null) {
-            throw new NullPointerException("Attempt to construct a JsonField with a null value.");
+            throw new NullPointerException("Value is null");
         }
         this.value = value;
     }
@@ -45,12 +45,12 @@ public final class JsonField {
      */
     public JsonField(final JsonStringNode name, final JsonNode value) {
         if (name == null) {
-            throw new NullPointerException("Attempt to construct a JsonField with a null name.");
+            throw new NullPointerException("Name is null");
         }
         this.name = name.getText();
         this.jsonStringNode = name;
         if (value == null) {
-            throw new NullPointerException("Attempt to construct a JsonField with a null value.");
+            throw new NullPointerException("Value is null");
         }
         this.value = value;
     }

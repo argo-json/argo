@@ -232,7 +232,7 @@ public enum JsonStreamElementType {
                 stack.push(START_ARRAY);
                 return startArray();
             default:
-                throw invalidSyntaxRuntimeException(-1 == nextChar ? "Expected a value but reached end of input." : "Invalid character at start of value [" + nextChar + "].", pushbackReader.position());
+                throw invalidSyntaxRuntimeException(-1 == nextChar ? "Expected a value but reached end of input" : "Invalid character [" + nextChar + "] at start of value", pushbackReader.position());
         }
     }
 
@@ -289,7 +289,7 @@ public enum JsonStreamElementType {
                 result = (char) hexadecimalNumber(in);
                 break;
             default:
-                throw invalidSyntaxRuntimeException(-1 == firstChar ? "Unexpectedly reached end of input during escaped character." : "Unrecognised escape character [" + firstChar + "].", in.position());
+                throw invalidSyntaxRuntimeException(-1 == firstChar ? "Unexpectedly reached end of input during escaped character" : "Invalid escape character [" + firstChar + "]", in.position()); // should be char as int?
         }
         return result;
     }
@@ -307,13 +307,13 @@ public enum JsonStreamElementType {
             for (int i = resultCharArray.length - 1; i >= 0; i--) {
                 in.unread(resultCharArray[i]);
             }
-            throw invalidSyntaxRuntimeException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexadecimal number.", e, in.position());
+            throw invalidSyntaxRuntimeException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexadecimal number", e, in.position()); // TODO should be char as int?
         }
         return result;
     }
 
     private static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final Position position) {
-        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input." : "got [" + stringify(readBuffer, charactersRead) + "]."), position);
+        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input" : "got [" + stringify(readBuffer, charactersRead) + "]"), position); // TODO should be chars as int?
     }
 
     private static abstract class SingleCharacterReader extends Reader {

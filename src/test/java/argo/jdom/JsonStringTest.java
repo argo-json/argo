@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -23,7 +23,7 @@ final class JsonStringTest {
     @Test
     void testConstructorRejectsNullValue() {
         final NullPointerException nullPointerException = assertThrows(NullPointerException.class, () -> JsonNodeFactories.string(null));
-        assertThat(nullPointerException.getMessage(), equalTo("Attempt to construct a JsonString with a null value."));
+        assertThat(nullPointerException.getMessage(), equalTo("Value is null"));
     }
 
     @Test

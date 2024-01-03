@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -24,7 +24,7 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
 
     private JsonNumberNode(final String value) {
         if (value == null) {
-            throw new NullPointerException("Attempt to construct a JsonNumber with a null value.");
+            throw new NullPointerException("Value is null");
         }
         final JsonNumberValidator jsonNumberValidator = new JsonNumberValidator();
         try {
@@ -35,7 +35,7 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
                 throw new JsonNumberValidator.ParsingFailedException();
             }
         } catch (JsonNumberValidator.ParsingFailedException e) {
-            throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification.");
+            throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
         }
         this.value = value;
     }
@@ -67,12 +67,12 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
     }
 
     public Map<JsonStringNode, JsonNode> getFields() {
-        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
+        throw new UnsupportedOperationException("Numbers do not have fields");
     }
 
     @Override
     public List<JsonField> getFieldList() {
-        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
+        throw new UnsupportedOperationException("Numbers do not have fields");
     }
 
     public boolean hasElements() {
@@ -80,7 +80,7 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
     }
 
     public List<JsonNode> getElements() {
-        throw new IllegalStateException("Attempt to get elements on a JsonNode without elements.");
+        throw new UnsupportedOperationException("Numbers do not have elements");
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -24,7 +24,7 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
 
     private JsonStringNode(final String value) {
         if (value == null) {
-            throw new NullPointerException("Attempt to construct a JsonString with a null value.");
+            throw new NullPointerException("Value is null");
         }
         this.value = value;
     }
@@ -50,12 +50,12 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
     }
 
     public Map<JsonStringNode, JsonNode> getFields() {
-        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
+        throw new UnsupportedOperationException("Strings do not have fields");
     }
 
     @Override
     public List<JsonField> getFieldList() {
-        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
+        throw new UnsupportedOperationException("Strings do not have fields");
     }
 
     public boolean hasElements() {
@@ -63,7 +63,7 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
     }
 
     public List<JsonNode> getElements() {
-        throw new IllegalStateException("Attempt to get elements on a JsonNode without elements.");
+        throw new UnsupportedOperationException("Strings do not have elements");
     }
 
     @Override

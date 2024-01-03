@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -51,7 +51,7 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
         return new InvalidSyntaxRuntimeException(expectation, position) {
             @Override
             public InvalidSyntaxException asInvalidSyntaxException() {
-                final String message = expectation + (-1 == actual ? " but reached end of input." : " but got [" + (char) actual + "].");
+                final String message = expectation + (-1 == actual ? " but reached end of input" : " but got [" + (char) actual + "]"); // TODO should be char as int?
                 return new InvalidSyntaxException(message, position.line, position.column);
             }
         };

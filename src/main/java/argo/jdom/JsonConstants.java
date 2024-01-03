@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -34,7 +34,7 @@ final class JsonConstants extends JsonNode implements JsonNodeBuilder<JsonNode> 
     }
 
     public String getText() {
-        throw new IllegalStateException("Attempt to get text on a JsonNode without text.");
+        throw new UnsupportedOperationException("Does not have text");
     }
 
     public boolean hasFields() {
@@ -42,12 +42,12 @@ final class JsonConstants extends JsonNode implements JsonNodeBuilder<JsonNode> 
     }
 
     public Map<JsonStringNode, JsonNode> getFields() {
-        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
+        throw new UnsupportedOperationException("Does not have fields");
     }
 
     @Override
     public List<JsonField> getFieldList() {
-        throw new IllegalStateException("Attempt to get fields on a JsonNode without fields.");
+        throw new UnsupportedOperationException("Does not have fields");
     }
 
     public boolean hasElements() {
@@ -55,7 +55,7 @@ final class JsonConstants extends JsonNode implements JsonNodeBuilder<JsonNode> 
     }
 
     public List<JsonNode> getElements() {
-        throw new IllegalStateException("Attempt to get elements on a JsonNode without elements.");
+        throw new UnsupportedOperationException("Does not have elements");
     }
 
     public JsonNode build() {

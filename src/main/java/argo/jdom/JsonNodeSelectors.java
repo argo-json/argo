@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -376,7 +376,7 @@ public final class JsonNodeSelectors {
             } else {
                 throw new IllegalArgumentException("Element [" + pathElements[i] + "] of path elements" +
                         " [" + Arrays.toString(pathElements) + "] was of illegal type [" + pathElements[i].getClass().getCanonicalName()
-                        + "]; only Integer and String are valid.");
+                        + "]; only Integer and String are valid");
             }
         }
         return result;

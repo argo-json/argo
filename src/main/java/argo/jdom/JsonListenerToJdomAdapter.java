@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -113,7 +113,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
 
         public void addField(final JsonFieldBuilder jsonFieldBuilder) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array.");
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array");
         }
 
         public JsonNode build() {
@@ -125,7 +125,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         private final JsonObjectNodeBuilder objectNodeBuilder = anObjectBuilder();
 
         public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object.");
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object");
         }
 
         public void addField(final JsonFieldBuilder jsonFieldBuilder) {
@@ -150,7 +150,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         }
 
         public void addField(final JsonFieldBuilder jsonFieldBuilder) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field.");
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field");
         }
 
         public String name() {
@@ -159,7 +159,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
 
         public JsonField build() {
             if (valueBuilder == null) {
-                throw new RuntimeException("Coding failure in Argo:  Attempt to create a field without a value.");
+                throw new RuntimeException("Coding failure in Argo:  Attempt to create a field without a value");
             } else {
                 return field(name, valueBuilder.build());
             }
