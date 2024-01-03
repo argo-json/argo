@@ -71,7 +71,7 @@ final class PositionTrackingPushbackReader { // TODO should delegate to java.io.
         }
     }
 
-    int read() throws IOException { // NOPMD TODO this should be turned off in the rules
+    int read() throws IOException {
         final int character;
         if (pushbackBuffer < 0) {
             character = delegate.read();

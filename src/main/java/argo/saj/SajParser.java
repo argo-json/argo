@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -53,7 +53,8 @@ public final class SajParser {
         parse(jsonListener, new StajParser(in));
     }
 
-    void parse(final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException, IOException { // NOPMD TODO this should be turned off in the rules
+    @SuppressWarnings("PMD.CyclomaticComplexity")
+    void parse(final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException, IOException {
         try {
             while (stajParser.hasNext()) {
                 final JsonStreamElement jsonStreamElement = stajParser.next();
