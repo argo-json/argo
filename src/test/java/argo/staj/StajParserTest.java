@@ -1714,19 +1714,6 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "-0.0E+.",
-            "-0.0E+.",
-
-            "-0.0e-.",
-            "-0.0e-.",
-            "-0.0E-.",
-            "-0.0E-.",
-
-            "-0.0e.",
-            "-0.0e.",
-            "-0.0E.",
-            "-0.0E.",
-
             "-0.0e+",
             "-0.1e+",
             "-0.2e+",
@@ -1769,45 +1756,7 @@ final class StajParserTest {
             "-0.8E-",
             "-0.9E-",
 
-            "-0.0e",
-            "-0.1e",
-            "-0.2e",
-            "-0.3e",
-            "-0.4e",
-            "-0.5e",
-            "-0.6e",
-            "-0.7e",
-            "-0.8e",
-            "-0.9e",
-            "-0.0E",
-            "-0.1E",
-            "-0.2E",
-            "-0.3E",
-            "-0.4E",
-            "-0.5E",
-            "-0.6E",
-            "-0.7E",
-            "-0.8E",
-            "-0.9E",
-
             "-0.",
-            "-0..",
-            "-0.e",
-
-
-
-            "-1.0E+.",
-            "-1.0E+.",
-
-            "-1.0e-.",
-            "-1.0e-.",
-            "-1.0E-.",
-            "-1.0E-.",
-
-            "-1.0e.",
-            "-1.0e.",
-            "-1.0E.",
-            "-1.0E.",
 
             "-1.0e+",
             "-1.1e+",
@@ -1851,46 +1800,7 @@ final class StajParserTest {
             "-1.8E-",
             "-1.9E-",
 
-            "-1.0e",
-            "-1.1e",
-            "-1.2e",
-            "-1.3e",
-            "-1.4e",
-            "-1.5e",
-            "-1.6e",
-            "-1.7e",
-            "-1.8e",
-            "-1.9e",
-            "-1.0E",
-            "-1.1E",
-            "-1.2E",
-            "-1.3E",
-            "-1.4E",
-            "-1.5E",
-            "-1.6E",
-            "-1.7E",
-            "-1.8E",
-            "-1.9E",
-
             "-1.",
-            "-1..",
-            "-1.e",
-
-
-            "-00",
-
-            "-0E+.",
-            "-0E+.",
-
-            "-0e-.",
-            "-0e-.",
-            "-0E-.",
-            "-0E-.",
-
-            "-0e.",
-            "-0e.",
-            "-0E.",
-            "-0E.",
 
             "-0e+",
             "-1e+",
@@ -1934,43 +1844,7 @@ final class StajParserTest {
             "-8E-",
             "-9E-",
 
-            "-0e",
-            "-1e",
-            "-2e",
-            "-3e",
-            "-4e",
-            "-5e",
-            "-6e",
-            "-7e",
-            "-8e",
-            "-9e",
-            "-0E",
-            "-1E",
-            "-2E",
-            "-3E",
-            "-4E",
-            "-5E",
-            "-6E",
-            "-7E",
-            "-8E",
-            "-9E",
-
             "-",
-            "-.",
-            "-e",
-
-            "0.0E+.",
-            "0.0E+.",
-
-            "0.0e-.",
-            "0.0e-.",
-            "0.0E-.",
-            "0.0E-.",
-
-            "0.0e.",
-            "0.0e.",
-            "0.0E.",
-            "0.0E.",
 
             "0.0e+",
             "0.1e+",
@@ -2014,45 +1888,7 @@ final class StajParserTest {
             "0.8E-",
             "0.9E-",
 
-            "0.0e",
-            "0.1e",
-            "0.2e",
-            "0.3e",
-            "0.4e",
-            "0.5e",
-            "0.6e",
-            "0.7e",
-            "0.8e",
-            "0.9e",
-            "0.0E",
-            "0.1E",
-            "0.2E",
-            "0.3E",
-            "0.4E",
-            "0.5E",
-            "0.6E",
-            "0.7E",
-            "0.8E",
-            "0.9E",
-
             "0.",
-            "0..",
-            "0.e",
-
-
-
-            "1.0E+.",
-            "1.0E+.",
-
-            "1.0e-.",
-            "1.0e-.",
-            "1.0E-.",
-            "1.0E-.",
-
-            "1.0e.",
-            "1.0e.",
-            "1.0E.",
-            "1.0E.",
 
             "1.0e+",
             "1.1e+",
@@ -2096,46 +1932,7 @@ final class StajParserTest {
             "1.8E-",
             "1.9E-",
 
-            "1.0e",
-            "1.1e",
-            "1.2e",
-            "1.3e",
-            "1.4e",
-            "1.5e",
-            "1.6e",
-            "1.7e",
-            "1.8e",
-            "1.9e",
-            "1.0E",
-            "1.1E",
-            "1.2E",
-            "1.3E",
-            "1.4E",
-            "1.5E",
-            "1.6E",
-            "1.7E",
-            "1.8E",
-            "1.9E",
-
             "1.",
-            "1..",
-            "1.e",
-
-
-            "00",
-
-            "0E+.",
-            "0E+.",
-
-            "0e-.",
-            "0e-.",
-            "0E-.",
-            "0E-.",
-
-            "0e.",
-            "0e.",
-            "0E.",
-            "0E.",
 
             "0e+",
             "1e+",
@@ -2178,6 +1975,125 @@ final class StajParserTest {
             "7E-",
             "8E-",
             "9E-",
+    })
+    void handlesIncompleteNumberWhenDigitIsExpected(final String numberString) {
+        final StajParser stajParser = new StajParser(numberString);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected a digit 0 - 9"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "-0.0e",
+            "-0.1e",
+            "-0.2e",
+            "-0.3e",
+            "-0.4e",
+            "-0.5e",
+            "-0.6e",
+            "-0.7e",
+            "-0.8e",
+            "-0.9e",
+            "-0.0E",
+            "-0.1E",
+            "-0.2E",
+            "-0.3E",
+            "-0.4E",
+            "-0.5E",
+            "-0.6E",
+            "-0.7E",
+            "-0.8E",
+            "-0.9E",
+
+            "-1.0e",
+            "-1.1e",
+            "-1.2e",
+            "-1.3e",
+            "-1.4e",
+            "-1.5e",
+            "-1.6e",
+            "-1.7e",
+            "-1.8e",
+            "-1.9e",
+            "-1.0E",
+            "-1.1E",
+            "-1.2E",
+            "-1.3E",
+            "-1.4E",
+            "-1.5E",
+            "-1.6E",
+            "-1.7E",
+            "-1.8E",
+            "-1.9E",
+
+            "-0e",
+            "-1e",
+            "-2e",
+            "-3e",
+            "-4e",
+            "-5e",
+            "-6e",
+            "-7e",
+            "-8e",
+            "-9e",
+            "-0E",
+            "-1E",
+            "-2E",
+            "-3E",
+            "-4E",
+            "-5E",
+            "-6E",
+            "-7E",
+            "-8E",
+            "-9E",
+
+            "0.0e",
+            "0.1e",
+            "0.2e",
+            "0.3e",
+            "0.4e",
+            "0.5e",
+            "0.6e",
+            "0.7e",
+            "0.8e",
+            "0.9e",
+            "0.0E",
+            "0.1E",
+            "0.2E",
+            "0.3E",
+            "0.4E",
+            "0.5E",
+            "0.6E",
+            "0.7E",
+            "0.8E",
+            "0.9E",
+
+            "1.0e",
+            "1.1e",
+            "1.2e",
+            "1.3e",
+            "1.4e",
+            "1.5e",
+            "1.6e",
+            "1.7e",
+            "1.8e",
+            "1.9e",
+            "1.0E",
+            "1.1E",
+            "1.2E",
+            "1.3E",
+            "1.4E",
+            "1.5E",
+            "1.6E",
+            "1.7E",
+            "1.8E",
+            "1.9E",
 
             "0e",
             "1e",
@@ -2199,19 +2115,167 @@ final class StajParserTest {
             "7E",
             "8E",
             "9E",
-
-            "",
-            ".",
-            "e",
     })
-    void handlesInvalidNumber(final String numberString) {
+    void handlesIncompleteNumberWhenDigitOrSignIsExpected(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
         stajParser.next();
-        assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        // TODO assert message is correct
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected '+' or '-' or a digit 0 - 9"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "",
+    })
+    void handlesMissingValue(final String numberString) {
+        final StajParser stajParser = new StajParser(numberString);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected a value but reached end of input."));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "-0.0e+.",
+            "-0.0E+.",
+
+            "-0.0e-.",
+            "-0.0E-.",
+
+            "-0..",
+            "-0.e",
+
+            "-1.0e+.",
+            "-1.0E+.",
+
+            "-1.0e-.",
+            "-1.0E-.",
+
+            "-0e+.",
+            "-0E+.",
+
+            "-0e-.",
+            "-0E-.",
+
+            "-1..",
+            "-1.e",
+
+            "-.",
+            "-e",
+
+            "0.0e+.",
+            "0.0E+.",
+
+            "0.0e-.",
+            "0.0E-.",
+
+            "0..",
+            "0.e",
+
+            "1.0e+.",
+            "1.0E+.",
+
+            "1.0e-.",
+            "1.0E-.",
+
+            "1..",
+            "1.e",
+
+            "0e+.",
+            "0E+.",
+
+            "0e-.",
+            "0E-.",
+    })
+    void handlesInvalidCharacterInNumberWhenDigitIsExpected(final String numberString) {
+        final StajParser stajParser = new StajParser(numberString);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "-0.0e.",
+            "-0.0E.",
+
+            "-1.0e.",
+            "-1.0E.",
+
+            "-0e.",
+            "-0E.",
+
+            "0.0e.",
+            "0.0E.",
+
+            "1.0e.",
+            "1.0E.",
+
+            "0e.",
+            "0E.",
+    })
+    void handlesInvalidCharacterInNumberWhenDigitOrSignIsExpected(final String numberString) {
+        final StajParser stajParser = new StajParser(numberString);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            ".",
+            "e",
+    })
+    void handlesInvalidCharacterAtStartOfValue(final String numberString) {
+        final StajParser stajParser = new StajParser(numberString);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Invalid character at start of value [" + (int)numberString.charAt(0) + "]."));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "-00",
+            "00",
+    })
+    void handlesSuperfluousCharactersAfterNumber(final String numberString) {
+        final StajParser stajParser = new StajParser(numberString);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected only whitespace")); // TODO this message is misleading.
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    // TODO test failures where . or e would have been valid
+    // TODO consistify punctuation at end of exceptions
+    // TODO specify invalid character in exception messages
 }
