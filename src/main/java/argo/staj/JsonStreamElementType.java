@@ -168,7 +168,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                     throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected only whitespace", nextChar, pushbackReader.position());
                 }
             default:
-                throw new RuntimeException("Coding failure in Argo: Stack contained unexpected element type " + peek);
+                throw new RuntimeException("Coding failure in Argo:  Stack contained unexpected element type " + peek);
         }
     }
 
@@ -357,7 +357,7 @@ public enum JsonStreamElementType { // NOPMD TODO this should be turned off in t
                         case '9':
                             return INTEGER_PART;
                         default:
-                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected '-' or a digit 0 - 9", character, position);  // TODO unreachable??  Can only get to this state by one of the handled characters being pushed back.
+                            throw new RuntimeException("Coding failure in Argo:  Began parsing number despite with invalid first character " + (char) character);
                     }
                 }
             }, NEGATIVE {
