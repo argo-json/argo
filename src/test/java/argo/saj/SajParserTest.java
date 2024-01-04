@@ -473,7 +473,7 @@ final class SajParserTest {
     void rejectsPrematureEndOfStreamDuringEscapedCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[\"\\";
         final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception.getMessage(), equalTo("At line 1, column 4:  Unexpectedly reached end of input during escaped character"));
+        assertThat(exception.getMessage(), equalTo("At line 1, column 4:  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but reached end of input"));
     }
 
     @Test

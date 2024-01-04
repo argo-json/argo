@@ -279,7 +279,7 @@ public enum JsonStreamElementType {
                 result = (char) hexadecimalNumber(in);
                 break;
             default:
-                throw invalidSyntaxRuntimeException(-1 == firstChar ? "Unexpectedly reached end of input during escaped character" : "Invalid escape character [" + firstChar + "]", in.position()); // should be char as int?
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u", firstChar, in.position());
         }
         return result;
     }
