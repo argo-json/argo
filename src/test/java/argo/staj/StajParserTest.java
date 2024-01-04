@@ -1983,7 +1983,7 @@ final class StajParserTest {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected a digit 0 - 9"));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected a digit 0 - 9 but reached end of input"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
@@ -2123,7 +2123,7 @@ final class StajParserTest {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected '+' or '-' or a digit 0 - 9"));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected '+' or '-' or a digit 0 - 9 but reached end of input"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
@@ -2204,7 +2204,26 @@ final class StajParserTest {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9"));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9 but got [" + numberString.charAt(numberString.length() - 1) + "]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "0.\u0000",
+            "0.\u007f",
+            "0.\ud800",
+    })
+    void handlesInvalidUnprintableCharacterInNumberWhenDigitIsExpected(final String numberString) {
+        final StajParser stajParser = new StajParser(numberString);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9 but got [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "]"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
@@ -2236,7 +2255,26 @@ final class StajParserTest {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9"));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + numberString.charAt(numberString.length() -1) + "]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "0e\u0000",
+            "0e\u007f",
+            "0e\ud800",
+    })
+    void handlesInvalidUnprintableCharacterInNumberWhenDigitOrSignIsExpected(final String numberString) {
+        final StajParser stajParser = new StajParser(numberString);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "]"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
@@ -2253,10 +2291,29 @@ final class StajParserTest {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Invalid character [" + (int)numberString.charAt(0) + "] at start of value"));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Invalid character [" + numberString.charAt(0) + "] at start of value"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
         // TODO get invalid character from exception
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "\u0000",
+            "\u007f",
+            "\ud800",
+    })
+    void handlesInvalidUnprintableCharacterAtStartOfValue(final String numberString) {
+        final StajParser stajParser = new StajParser(numberString);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        final char expectedInvalidCharacter = numberString.charAt(0);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Invalid character [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "] at start of value"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
     @ParameterizedTest
@@ -2271,11 +2328,11 @@ final class StajParserTest {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected only whitespace")); // TODO this message is misleading.
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected only whitespace but got [" + numberString.charAt(numberString.length() - 1) + "]")); // TODO this message is misleading.
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
     // TODO test failures where . or e would have been valid
-    // TODO specify invalid character in exception messages
+    // TODO specify invalid characters in exception messages
 }

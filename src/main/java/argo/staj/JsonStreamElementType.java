@@ -15,7 +15,9 @@ import java.io.Reader;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import static argo.staj.InvalidSyntaxRuntimeException.*;
+import static argo.internal.CharacterUtilities.asPrintableString;
+import static argo.staj.InvalidSyntaxRuntimeException.invalidSyntaxRuntimeException;
+import static argo.staj.InvalidSyntaxRuntimeException.unexpectedCharacterInvalidSyntaxRuntimeException;
 import static argo.staj.JsonStreamElement.*;
 
 /**
@@ -57,9 +59,9 @@ public enum JsonStreamElementType {
     START_FIELD {
         @Override
         JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
-            final int separatorChar = readNextNonWhitespaceChar(pushbackReader);
-            if (separatorChar != ':') {
-                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to be followed by :", separatorChar, pushbackReader.position());
+            final int nextChar = readNextNonWhitespaceChar(pushbackReader);
+            if (nextChar != ':') {
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to be followed by :", nextChar, pushbackReader.position());
             }
             return aJsonValue(pushbackReader, stack);
         }
@@ -232,7 +234,7 @@ public enum JsonStreamElementType {
                 stack.push(START_ARRAY);
                 return startArray();
             default:
-                throw invalidSyntaxRuntimeException(-1 == nextChar ? "Expected a value but reached end of input" : "Invalid character [" + nextChar + "] at start of value", pushbackReader.position());
+                throw invalidSyntaxRuntimeException(-1 == nextChar ? "Expected a value but reached end of input" : "Invalid character [" + asPrintableString((char) nextChar) + "] at start of value", pushbackReader.position());
         }
     }
 

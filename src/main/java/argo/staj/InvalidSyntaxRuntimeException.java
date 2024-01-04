@@ -12,49 +12,37 @@ package argo.staj;
 
 import argo.saj.InvalidSyntaxException;
 
+import static argo.internal.CharacterUtilities.asPrintableString;
+
 /**
  * Thrown to indicate a given character stream is not valid JSON.
  */
-public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
+public final class InvalidSyntaxRuntimeException extends RuntimeException {
 
+    private final String explanation;
     private final Position position;
 
-    private InvalidSyntaxRuntimeException(final String s, final Position position) {
-        super("At line " + position.line + ", column " + position.column + ":  " + s);
+    private InvalidSyntaxRuntimeException(final String explanation, final Position position) {
+        this(explanation, null, position);
+    }
+
+    private InvalidSyntaxRuntimeException(final String explanation, final Throwable cause, final Position position) {
+        super("At line " + position.line + ", column " + position.column + ":  " + explanation, cause);
+        this.explanation = explanation;
         this.position = position;
     }
 
-    private InvalidSyntaxRuntimeException(final String s, final Throwable throwable, final Position position) {
-        super("At line " + position.line + ", column " + position.column + ":  " + s, throwable);
-        this.position = position;
+    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String explanation, final Position position) {
+        return new InvalidSyntaxRuntimeException(explanation, position);
     }
 
-    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final Position position) {
-        return new InvalidSyntaxRuntimeException(s, position) {
-            @Override
-            public InvalidSyntaxException asInvalidSyntaxException() {
-                return new InvalidSyntaxException(s, position.line, position.column);
-            }
-        };
+    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String explanation, final Throwable cause, final Position position) {
+        return new InvalidSyntaxRuntimeException(explanation, cause, position);
     }
 
-    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String s, final Throwable throwable, final Position position) {
-        return new InvalidSyntaxRuntimeException(s, throwable, position) {
-            @Override
-            public InvalidSyntaxException asInvalidSyntaxException() {
-                return new InvalidSyntaxException(s, throwable, position.line, position.column);
-            }
-        };
-    }
-
-    static InvalidSyntaxRuntimeException unexpectedCharacterInvalidSyntaxRuntimeException(final String expectation, final int actual, final Position position) {
-        return new InvalidSyntaxRuntimeException(expectation, position) {
-            @Override
-            public InvalidSyntaxException asInvalidSyntaxException() {
-                final String message = expectation + (-1 == actual ? " but reached end of input" : " but got [" + (char) actual + "]"); // TODO should be char as int?
-                return new InvalidSyntaxException(message, position.line, position.column);
-            }
-        };
+    static InvalidSyntaxRuntimeException unexpectedCharacterInvalidSyntaxRuntimeException(final String expectation, final int actualCharacter, final Position position) {
+        final String explanation = expectation + (-1 == actualCharacter ? " but reached end of input" : " but got [" + asPrintableString((char) actualCharacter) + "]");
+        return new InvalidSyntaxRuntimeException(explanation, position);
     }
 
     public int getColumn() {
@@ -65,5 +53,7 @@ public abstract class InvalidSyntaxRuntimeException extends RuntimeException {
         return position.line;
     }
 
-    public abstract InvalidSyntaxException asInvalidSyntaxException();
+    public InvalidSyntaxException asInvalidSyntaxException() {
+        return new InvalidSyntaxException(explanation, getCause(), position.line, position.column);
+    }
 }

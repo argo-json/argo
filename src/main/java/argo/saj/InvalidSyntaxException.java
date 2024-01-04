@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,14 +18,12 @@ public final class InvalidSyntaxException extends Exception {
     private final int column;
     private final int line;
 
-    public InvalidSyntaxException(final String s, final int line, final int column) {
-        super("At line " + line + ", column " + column + ":  " + s);
-        this.column = column;
-        this.line = line;
+    public InvalidSyntaxException(final String message, final int line, final int column) {
+        this(message, null, line, column);
     }
 
-    public InvalidSyntaxException(final String s, final Throwable throwable, final int line, final int column) {
-        super("At line " + line + ", column " + column + ":  " + s, throwable);
+    public InvalidSyntaxException(final String message, final Throwable cause, final int line, final int column) {
+        super("At line " + line + ", column " + column + ":  " + message, cause);
         this.column = column;
         this.line = line;
     }
