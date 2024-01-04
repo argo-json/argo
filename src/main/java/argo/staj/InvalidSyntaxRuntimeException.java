@@ -22,22 +22,14 @@ public final class InvalidSyntaxRuntimeException extends RuntimeException {
     private final String explanation;
     private final Position position;
 
-    private InvalidSyntaxRuntimeException(final String explanation, final Position position) {
+    InvalidSyntaxRuntimeException(final String explanation, final Position position) {
         this(explanation, null, position);
     }
 
-    private InvalidSyntaxRuntimeException(final String explanation, final Throwable cause, final Position position) {
+    InvalidSyntaxRuntimeException(final String explanation, final Throwable cause, final Position position) {
         super("At line " + position.line + ", column " + position.column + ":  " + explanation, cause);
         this.explanation = explanation;
         this.position = position;
-    }
-
-    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String explanation, final Position position) {
-        return new InvalidSyntaxRuntimeException(explanation, position);
-    }
-
-    static InvalidSyntaxRuntimeException invalidSyntaxRuntimeException(final String explanation, final Throwable cause, final Position position) {
-        return new InvalidSyntaxRuntimeException(explanation, cause, position);
     }
 
     static InvalidSyntaxRuntimeException unexpectedCharacterInvalidSyntaxRuntimeException(final String expectation, final int actualCharacter, final Position position) {

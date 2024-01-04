@@ -16,7 +16,6 @@ import java.util.NoSuchElementException;
 import java.util.Stack;
 
 import static argo.internal.CharacterUtilities.asPrintableString;
-import static argo.staj.InvalidSyntaxRuntimeException.invalidSyntaxRuntimeException;
 import static argo.staj.InvalidSyntaxRuntimeException.unexpectedCharacterInvalidSyntaxRuntimeException;
 import static argo.staj.JsonStreamElement.*;
 
@@ -234,7 +233,8 @@ public enum JsonStreamElementType {
                 stack.push(START_ARRAY);
                 return startArray();
             default:
-                throw invalidSyntaxRuntimeException(-1 == nextChar ? "Expected a value but reached end of input" : "Invalid character [" + asPrintableString((char) nextChar) + "] at start of value", pushbackReader.position());
+                final String explanation = -1 == nextChar ? "Expected a value but reached end of input" : "Invalid character [" + asPrintableString((char) nextChar) + "] at start of value";
+                throw new InvalidSyntaxRuntimeException(explanation, pushbackReader.position());
         }
     }
 
@@ -294,16 +294,17 @@ public enum JsonStreamElementType {
         try {
             result = Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
-            for (int i = resultCharArray.length - 1; i >= 0; i--) {
+            for (int i = resultCharArray.length - 1; i >= 0; i--) { // TODO can we make life easier by just giving the location of the end of the number?
                 in.unread(resultCharArray[i]);
             }
-            throw invalidSyntaxRuntimeException("Unable to parse [" + asPrintableString(resultCharArray, readSize) + "] as a hexadecimal number", e, in.position());
+            throw new InvalidSyntaxRuntimeException("Unable to parse [" + asPrintableString(resultCharArray, readSize) + "] as a hexadecimal number", e, in.position());
         }
         return result;
     }
 
-    private static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final Position position) {
-        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input" : "got [" + asPrintableString(readBuffer, charactersRead) + "]"), position);
+    static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final Position position) {
+        final String explanation = expectation + ", but " + (charactersRead == -1 ? "reached end of input" : "got [" + asPrintableString(readBuffer, charactersRead) + "]");
+        return new InvalidSyntaxRuntimeException(explanation, position);
     }
 
     private static abstract class SingleCharacterReader extends Reader {
@@ -576,7 +577,7 @@ public enum JsonStreamElementType {
                 final int nextChar = in.read();
                 switch (nextChar) {
                     case -1:
-                        throw invalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
+                        throw new InvalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
                     case DOUBLE_QUOTE:
                         ended = true;
                         return -1;
