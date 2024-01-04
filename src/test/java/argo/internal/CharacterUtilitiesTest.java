@@ -10,6 +10,7 @@
 
 package argo.internal;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -164,5 +165,25 @@ class CharacterUtilitiesTest {
     })
     void convertsNonPrintableCharacterToItsUnicodeEscapedRepresentation(final int character, final String expectedRepresentation) {
         assertThat(CharacterUtilities.asPrintableString((char)character), equalTo(expectedRepresentation));
+    }
+
+    @Test
+    void convertsCharArrayLimitedByLength() {
+        assertThat(CharacterUtilities.asPrintableString(new char[]{'F', 'o', 'o'}, 2), equalTo("[F, o]"));
+    }
+
+    @Test
+    void convertsEntireCharArrayWhenLengthIsGreaterThanArrayLength() {
+        assertThat(CharacterUtilities.asPrintableString(new char[]{'F', 'o', 'o'}, 10), equalTo("[F, o, o]"));
+    }
+
+    @Test
+    void convertsCharArrayOfNonPrintableCharacters() {
+        assertThat(CharacterUtilities.asPrintableString(new char[]{'\ud800', '\udfff', '\uffff'}, 3), equalTo("[\\uD800, \\uDFFF, \\uFFFF]"));
+    }
+
+    @Test
+    void convertsCharArrayOfMixedPrintableAndNonPrintableCharacters() {
+        assertThat(CharacterUtilities.asPrintableString(new char[]{'F', '\u0000', '\u0000'}, 3), equalTo("[F, \\u0000, \\u0000]"));
     }
 }

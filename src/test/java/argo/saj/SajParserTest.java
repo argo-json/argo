@@ -438,7 +438,7 @@ final class SajParserTest {
     void rejectsPrematureEndOfStreamDuringHexCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[\"\\uab";
         final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception.getMessage(), equalTo("At line 1, column 7:  Expected 4 hexadecimal digits, but got [[a, b]]")); // TODO is turning invalid stuff into a string safe?
+        assertThat(exception.getMessage(), equalTo("At line 1, column 7:  Expected 4 hexadecimal digits, but got [[a, b]]"));
     }
 
     @Test

@@ -21,4 +21,16 @@ public final class CharacterUtilities {
             return Character.toString(character);
         }
     }
+
+    public static String asPrintableString(final char[] characters, final int length) {
+        final StringBuilder result = new StringBuilder("[");
+        for (int i = 0; i < characters.length && i < length; i++) {
+            if (i > 0) {
+                result.append(", ");
+            }
+            result.append(asPrintableString(characters[i]));
+        }
+        result.append(']');
+        return result.toString();
+    }
 }

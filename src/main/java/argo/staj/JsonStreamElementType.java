@@ -238,18 +238,6 @@ public enum JsonStreamElementType {
         }
     }
 
-    private static String stringify(final char[] chars, final int maxLength) {
-        final StringBuilder result = new StringBuilder("[");
-        for (int i = 0; i < chars.length && i < maxLength; i++) {
-            if (i > 0) {
-                result.append(", ");
-            }
-            result.append(chars[i]);
-        }
-        result.append(']');
-        return result.toString();
-    }
-
     private static JsonStreamElement aFieldToken(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
@@ -309,13 +297,13 @@ public enum JsonStreamElementType {
             for (int i = resultCharArray.length - 1; i >= 0; i--) {
                 in.unread(resultCharArray[i]);
             }
-            throw invalidSyntaxRuntimeException("Unable to parse [" + String.valueOf(resultCharArray) + "] as a hexadecimal number", e, in.position()); // TODO should be char as int?
+            throw invalidSyntaxRuntimeException("Unable to parse [" + asPrintableString(resultCharArray, readSize) + "] as a hexadecimal number", e, in.position());
         }
         return result;
     }
 
     private static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final Position position) {
-        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input" : "got [" + stringify(readBuffer, charactersRead) + "]"), position); // TODO should be chars as int?
+        return invalidSyntaxRuntimeException(expectation + ", but " + (charactersRead == -1 ? "reached end of input" : "got [" + asPrintableString(readBuffer, charactersRead) + "]"), position);
     }
 
     private static abstract class SingleCharacterReader extends Reader {

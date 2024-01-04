@@ -2334,5 +2334,4 @@ final class StajParserTest {
     }
 
     // TODO test failures where . or e would have been valid
-    // TODO specify invalid characters in exception messages
 }
