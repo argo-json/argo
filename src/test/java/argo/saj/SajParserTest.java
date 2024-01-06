@@ -40,40 +40,12 @@ final class SajParserTest {
     }
 
     @Test
-    void tokenizesValidStringWithEscapedChars() throws Exception {
-        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("\"\\\"hello world\\\"\"", recordingJsonListener);
-        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
-                START_DOCUMENT,
-                stringValue("\"hello world\""),
-                END_DOCUMENT
-        ));
-    }
-
-    @Test
-    void tokenizesValidStringWithEscapedUnicodeChars() throws Exception {
-        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("\"hello world \\uF001\"", recordingJsonListener);
-        assertThat(recordingJsonListener.jsonListenerEvents(), contains(
-                START_DOCUMENT,
-                stringValue("hello world \uF001"),
-                END_DOCUMENT
-        ));
-    }
-
-    @Test
-    void rejectsStringWithInvalidEscapedUnicodeChars() {
-        final String inputString = "[\"hello world \\uF0\"]";
-        final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception, anInvalidSyntaxExceptionAtPosition(16, 1));
-    }
-
-    @Test
     void rejectsInvalidString() {
         final String inputString = "[hello world\"]";
         final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
         assertThat(exception, anInvalidSyntaxExceptionAtPosition(2, 1));
     }
+
     @Test
     void tokenizesJsonStringObjectFromReader() throws Exception {
         RecordingJsonListener recordingJsonListener = new RecordingJsonListener();

@@ -299,7 +299,7 @@ public enum JsonStreamElementType {
         try {
             result = Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
-            throw new InvalidSyntaxRuntimeException("Unable to parse [" + asPrintableString(resultCharArray, readSize) + "] as a hexadecimal number", e, startPosition); // TODO test message
+            throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + asPrintableString(resultCharArray, readSize) + " as a hexadecimal number", e, startPosition);
         }
         return result;
     }

@@ -2403,5 +2403,46 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
+
+    @Test
+    void tokenizesValidStringWithEscapedChars() {
+        assertThat(new StajParser("\"\\\"hello world\\\"\""), generatesElements(startDocument(), string(new StringReader("\"hello world\"")), endDocument()));
+    }
+
+    @Test
+    void tokenizesValidStringWithEscapedUnicodeChars() {
+        assertThat(new StajParser("\"\\uF001\""), generatesElements(startDocument(), string(new StringReader("\uF001")), endDocument()));
+    }
+
+    @Test
+    void rejectsStringWithIncompleteEscapedUnicodeChars() {
+        final StajParser stajParser = new StajParser("\"\\uF0\"");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected 4 hexadecimal digits, but got [F, 0, \"]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsStringWithNonHexadecimalEscapedUnicodeChars() {
+        final StajParser stajParser = new StajParser("\"\\uF00L\"");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Unable to parse escaped character [F, 0, 0, L] as a hexadecimal number"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsStringWithNonHexadecimalNonPrintingEscapedUnicodeChars() {
+        final StajParser stajParser = new StajParser("\"\\uF00\u007f\"");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Unable to parse escaped character [F, 0, 0, \\u007F] as a hexadecimal number"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
     // TODO test failures where . or e would have been valid
 }
