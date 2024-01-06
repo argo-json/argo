@@ -12,6 +12,7 @@ package argo.staj;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
@@ -157,7 +158,7 @@ public enum JsonStreamElementType {
                         return endField();
                     case '}':
                         stack.pop();
-                        pushbackReader.unread(nextChar);
+                        pushbackReader.unread(nextChar); // TODO this is really just priming it to move to endObject next.
                         return endField();
                     default:
                         throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
@@ -184,35 +185,16 @@ public enum JsonStreamElementType {
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
     private static JsonStreamElement aJsonValue(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
-        // TODO might get a modest performance boost by calling read() multiple times instead of using char[] buffer
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
                 return string(new StringReader(pushbackReader, pushbackReader.position()));
             case 't':
-                final char[] remainingTrueTokenCharacters = new char[3];
-                final int trueTokenCharactersRead = pushbackReader.read(remainingTrueTokenCharacters);
-                if (trueTokenCharactersRead == 3 && remainingTrueTokenCharacters[0] == 'r' && remainingTrueTokenCharacters[1] == 'u' && remainingTrueTokenCharacters[2] == 'e') {
-                    return trueValue();
-                } else {
-                    throw readBufferInvalidSyntaxRuntimeException("Expected 't' to be followed by [[r, u, e]]", trueTokenCharactersRead, remainingTrueTokenCharacters, pushbackReader.position());
-                }
+                return constant(pushbackReader, "true", trueValue());
             case 'f':
-                final char[] remainingFalseTokenCharacters = new char[4];
-                final int falseTokenCharactersRead = pushbackReader.read(remainingFalseTokenCharacters);
-                if (falseTokenCharactersRead == 4 && remainingFalseTokenCharacters[0] == 'a' && remainingFalseTokenCharacters[1] == 'l' && remainingFalseTokenCharacters[2] == 's' && remainingFalseTokenCharacters[3] == 'e') {
-                    return falseValue();
-                } else {
-                    throw readBufferInvalidSyntaxRuntimeException("Expected 'f' to be followed by [[a, l, s, e]]", falseTokenCharactersRead, remainingFalseTokenCharacters, pushbackReader.position());
-                }
+                return constant(pushbackReader, "false", falseValue());
             case 'n':
-                final char[] remainingNullTokenCharacters = new char[3];
-                final int nullTokenCharactersRead = pushbackReader.read(remainingNullTokenCharacters);
-                if (nullTokenCharactersRead == 3 && remainingNullTokenCharacters[0] == 'u' && remainingNullTokenCharacters[1] == 'l' && remainingNullTokenCharacters[2] == 'l') {
-                    return nullValue();
-                } else {
-                    throw readBufferInvalidSyntaxRuntimeException("Expected 'n' to be followed by [[u, l, l]]", nullTokenCharactersRead, remainingNullTokenCharacters, pushbackReader.position());
-                }
+                return constant(pushbackReader, "null", nullValue());
             case '-':
             case '0':
             case '1':
@@ -236,6 +218,28 @@ public enum JsonStreamElementType {
                 final String explanation = -1 == nextChar ? "Expected a value but reached end of input" : "Invalid character [" + asPrintableString((char) nextChar) + "] at start of value";
                 throw new InvalidSyntaxRuntimeException(explanation, pushbackReader.position());
         }
+    }
+
+    private static JsonStreamElement constant(final PositionTrackingPushbackReader pushbackReader, final String expectedCharacters, final JsonStreamElement result) throws IOException {
+        final char[] actual = new char[expectedCharacters.length() - 1];
+        for(int i = 1; i < expectedCharacters.length(); i++) {
+            final int character = pushbackReader.read();
+            if (character == expectedCharacters.charAt(i)) {
+                actual[i - 1] = (char) character;
+            } else {
+                final char[] expected = new char[expectedCharacters.length() - 1];
+                System.arraycopy(expectedCharacters.toCharArray(), 1, expected, 0, expectedCharacters.length() - 1);
+                final int endIndex;
+                if (character == -1) {
+                    endIndex = i == 1 ? -1 : i - 1;
+                } else {
+                    actual[i - 1] = (char) character;
+                    endIndex = i;
+                }
+                throw readBufferInvalidSyntaxRuntimeException("Expected '" + expectedCharacters.charAt(0) + "' to be followed by " + Arrays.toString(expected), endIndex, actual, pushbackReader.position());
+            }
+        }
+        return result;
     }
 
     private static JsonStreamElement aFieldToken(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
@@ -285,8 +289,9 @@ public enum JsonStreamElementType {
     }
 
     private static int hexadecimalNumber(final PositionTrackingPushbackReader in) throws IOException {
+        final Position startPosition = in.position(); // NOPMD TODO this is apparently fixed in PMD 7.0.0
         final char[] resultCharArray = new char[4];
-        final int readSize = in.read(resultCharArray);
+        final int readSize = in.read(resultCharArray); // TODO this is the only place we read an array
         if (readSize != 4) {
             throw readBufferInvalidSyntaxRuntimeException("Expected 4 hexadecimal digits", readSize, resultCharArray, in.position());
         }
@@ -294,16 +299,13 @@ public enum JsonStreamElementType {
         try {
             result = Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
-            for (int i = resultCharArray.length - 1; i >= 0; i--) { // TODO can we make life easier by just giving the location of the end of the number?
-                in.unread(resultCharArray[i]);
-            }
-            throw new InvalidSyntaxRuntimeException("Unable to parse [" + asPrintableString(resultCharArray, readSize) + "] as a hexadecimal number", e, in.position());
+            throw new InvalidSyntaxRuntimeException("Unable to parse [" + asPrintableString(resultCharArray, readSize) + "] as a hexadecimal number", e, startPosition); // TODO test message
         }
         return result;
     }
 
-    static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final Position position) {
-        final String explanation = expectation + ", but " + (charactersRead == -1 ? "reached end of input" : "got [" + asPrintableString(readBuffer, charactersRead) + "]");
+    static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final Position position) { // TODO inline?
+        final String explanation = expectation + ", but " + (charactersRead == -1 ? "reached end of input" : "got " + asPrintableString(readBuffer, charactersRead));
         return new InvalidSyntaxRuntimeException(explanation, position);
     }
 

@@ -414,34 +414,6 @@ final class SajParserTest {
     }
 
     @Test
-    void rejectsPrematureEndOfStreamDuringTrueValueWithoutNonPrintingCharactersInTheExceptionMessage() {
-        final String inputString = "[tru";
-        final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception.getMessage(), equalTo("At line 1, column 5:  Expected 't' to be followed by [[r, u, e]], but got [[r, u]]"));
-    }
-
-    @Test
-    void rejectsPrematureEndOfStreamDuringFalseValueWithoutNonPrintingCharactersInTheExceptionMessage() {
-        final String inputString = "[fal";
-        final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception.getMessage(), equalTo("At line 1, column 5:  Expected 'f' to be followed by [[a, l, s, e]], but got [[a, l]]"));
-    }
-
-    @Test
-    void rejectsPrematureEndOfStreamDuringNullValueWithoutNonPrintingCharactersInTheExceptionMessage() {
-        final String inputString = "[nul";
-        final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception.getMessage(), equalTo("At line 1, column 5:  Expected 'n' to be followed by [[u, l, l]], but got [[u, l]]"));
-    }
-
-    @Test
-    void rejectsPrematureEndOfStreamDuringHexCharacterWithoutNonPrintingCharactersInTheExceptionMessage() {
-        final String inputString = "[\"\\uab";
-        final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception.getMessage(), equalTo("At line 1, column 7:  Expected 4 hexadecimal digits, but got [[a, b]]"));
-    }
-
-    @Test
     void rejectsPrematureEndOfStreamDuringNumberWithoutNonPrintingCharactersInTheExceptionMessage() {
         final String inputString = "[1";
         final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
@@ -536,21 +508,21 @@ final class SajParserTest {
     void handlesIncompleteTrueCorrectly() {
         final String inputString = "t";
         final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception.getMessage(), equalTo("At line 1, column 2:  Expected 't' to be followed by [[r, u, e]], but reached end of input"));
+        assertThat(exception.getMessage(), equalTo("At line 1, column 2:  Expected 't' to be followed by [r, u, e], but reached end of input"));
     }
 
     @Test
     void handlesIncompleteFalseCorrectly() {
         final String inputString = "f";
         final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception.getMessage(), equalTo("At line 1, column 2:  Expected 'f' to be followed by [[a, l, s, e]], but reached end of input"));
+        assertThat(exception.getMessage(), equalTo("At line 1, column 2:  Expected 'f' to be followed by [a, l, s, e], but reached end of input"));
     }
 
     @Test
     void handlesIncompleteNullCorrectly() {
         final String inputString = "n";
         final InvalidSyntaxException exception = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(exception.getMessage(), equalTo("At line 1, column 2:  Expected 'n' to be followed by [[u, l, l]], but reached end of input"));
+        assertThat(exception.getMessage(), equalTo("At line 1, column 2:  Expected 'n' to be followed by [u, l, l], but reached end of input"));
     }
 
     @Test

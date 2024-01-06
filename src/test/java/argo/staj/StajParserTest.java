@@ -2333,5 +2333,75 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
+    @Test
+    void rejectsPrematureEndOfStreamDuringTrueValue() {
+        final StajParser stajParser = new StajParser("tru");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 't' to be followed by [r, u, e], but got [r, u]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(4));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsInvalidCharacterInTrueValue() {
+        final StajParser stajParser = new StajParser("trug");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 't' to be followed by [r, u, e], but got [r, u, g]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(4));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsPrematureEndOfStreamDuringFalseValue() {
+        final StajParser stajParser = new StajParser("fal");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 'f' to be followed by [a, l, s, e], but got [a, l]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(4));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsInvalidCharacterInFalseValue() {
+        final StajParser stajParser = new StajParser("falte");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 'f' to be followed by [a, l, s, e], but got [a, l, t]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(4));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsPrematureEndOfStreamDuringNullValue() {
+        final StajParser stajParser = new StajParser("nul");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 'n' to be followed by [u, l, l], but got [u, l]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(4));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsInvalidCharacterInNullValue() {
+        final StajParser stajParser = new StajParser("nurl");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected 'n' to be followed by [u, l, l], but got [u, r]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsPrematureEndOfStreamDuringHexCharacter() {
+        final StajParser stajParser = new StajParser("\"\\uab");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 6:  Expected 4 hexadecimal digits, but got [a, b]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(6));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
     // TODO test failures where . or e would have been valid
 }
