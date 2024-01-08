@@ -302,6 +302,7 @@ public enum JsonStreamElementType {
     }
 
     private static abstract class SingleCharacterReader extends Reader {
+
         private static void validateArguments(final char[] cbuf, final int offset, final int length) {
             if (offset < 0 || offset > cbuf.length || length < 0 ||
                     offset + length > cbuf.length || offset + length < 0) {
@@ -319,7 +320,19 @@ public enum JsonStreamElementType {
             return n == 0 && length != 0 ? -1 : n;
         }
 
-        // TODO override skip more efficiently?
+        @Override
+        public final long skip(final long n) throws IOException {
+            if (n < 0) {
+                throw new IllegalArgumentException("Skip value is negative: " + n);
+            }
+            for (long i = 0; i < n; i++) { // TODO quicker working with ints?
+                if (read() == -1) {
+                    return i;
+                }
+            }
+            return n;
+        }
+
     }
 
     private static final class NumberReader extends SingleCharacterReader {
@@ -343,7 +356,7 @@ public enum JsonStreamElementType {
                         case '9':
                             return INTEGER_PART;
                         default:
-                            throw new RuntimeException("Coding failure in Argo:  Began parsing number despite with invalid first character " + (char) character);
+                            throw new RuntimeException("Coding failure in Argo:  Began parsing number despite invalid first character " + (char) character);
                     }
                 }
             }, NEGATIVE {

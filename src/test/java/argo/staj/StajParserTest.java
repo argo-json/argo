@@ -2334,6 +2334,55 @@ final class StajParserTest {
     }
 
     @Test
+    void skipsCharactersInANumber() throws IOException {
+        final StajParser stajParser = new StajParser("123456");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            assertThat(reader.skip(5), equalTo(5L));
+            assertThat(reader.read(), equalTo((int)'6'));
+        }
+    }
+
+    @Test
+    void skipsPastEndOfANumber() throws IOException {
+        final StajParser stajParser = new StajParser("123456");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            assertThat(reader.skip(10), equalTo(6L));
+            assertThat(reader.read(), equalTo(-1));
+        }
+    }
+
+    @Test
+    void skipsAfterEndOfANumber() throws IOException {
+        final StajParser stajParser = new StajParser("123456");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            IOUtils.consume(reader);
+            assertThat(reader.skip(10), equalTo(0L));
+            assertThat(reader.read(), equalTo(-1));
+        }
+    }
+
+    @Test
+    void handlesSkippingOnAClosedNumberReader() throws IOException {
+        final StajParser stajParser = new StajParser("123456");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.skip(1L));
+    }
+
+    @Test
+    void rejectsNegateArgumentToSkipOnNumberReader() throws IOException {
+        final StajParser stajParser = new StajParser("123456");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            assertThrows(IllegalArgumentException.class, () -> reader.skip(-1));
+        }
+    }
+
+    @Test
     void rejectsPrematureEndOfStreamDuringTrueValue() {
         final StajParser stajParser = new StajParser("tru");
         stajParser.next();
@@ -2444,5 +2493,54 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
+
+    @Test
+    void skipsCharactersInAString() throws IOException {
+        final StajParser stajParser = new StajParser("\"abcdef\"");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            assertThat(reader.skip(5), equalTo(5L));
+            assertThat(reader.read(), equalTo((int)'f'));
+        }
+    }
+
+    @Test
+    void skipsPastEndOfAString() throws IOException {
+        final StajParser stajParser = new StajParser("\"abcdef\"");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            assertThat(reader.skip(10), equalTo(6L));
+            assertThat(reader.read(), equalTo(-1));
+        }
+    }
+
+    @Test
+    void skipsAfterEndOfAString() throws IOException {
+        final StajParser stajParser = new StajParser("\"abcdef\"");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            IOUtils.consume(reader);
+            assertThat(reader.skip(10), equalTo(0L));
+            assertThat(reader.read(), equalTo(-1));
+        }
+    }
+
+    @Test
+    void handlesSkippingOnAClosedStringReader() throws IOException {
+        final StajParser stajParser = new StajParser("\"abcdef\"");
+        stajParser.next();
+        final Reader reader = stajParser.next().reader();
+        reader.close();
+        assertThrows(IOException.class, () -> reader.skip(1L));
+    }
+
+    @Test
+    void rejectsNegateArgumentToSkipOnStringReader() throws IOException {
+        final StajParser stajParser = new StajParser("\"abcdef\"");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            assertThrows(IllegalArgumentException.class, () -> reader.skip(-1));
+        }
+    }
     // TODO test failures where . or e would have been valid
 }
