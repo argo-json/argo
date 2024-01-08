@@ -133,5 +133,4 @@ final class PositionTrackingPushbackReader {
         return new Position(columnOverflow ? -1 : column, lineOverflow ? -1 : line);
     }
 
-    // TODO ready?
 }
