@@ -18,10 +18,6 @@ public final class InvalidSyntaxException extends Exception {
     private final int column;
     private final int line;
 
-    public InvalidSyntaxException(final String message, final int line, final int column) {
-        this(message, null, line, column);
-    }
-
     public InvalidSyntaxException(final String message, final Throwable cause, final int line, final int column) {
         super("At line " + line + ", column " + column + ":  " + message, cause);
         this.column = column;
