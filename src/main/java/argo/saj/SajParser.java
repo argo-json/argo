@@ -99,7 +99,7 @@ public final class SajParser {
                         jsonListener.numberValue(jsonStreamElement.reader());
                         break;
                     default:
-                        throw new IllegalStateException("Got a JsonStreamElement of unexpected type: " + jsonStreamElement);
+                        throw new IllegalStateException("Coding failure in Argo:  Got a JsonStreamElement of unexpected type: " + jsonStreamElement);
                 }
             }
         } catch (final InvalidSyntaxRuntimeException e) {
