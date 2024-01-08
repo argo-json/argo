@@ -222,21 +222,19 @@ public enum JsonStreamElementType {
 
     private static JsonStreamElement constant(final PositionTrackingPushbackReader pushbackReader, final String expectedCharacters, final JsonStreamElement result) throws IOException {
         final char[] actual = new char[expectedCharacters.length() - 1];
-        for(int i = 1; i < expectedCharacters.length(); i++) {
+        for(int i = 0; i < actual.length; i++) {
             final int character = pushbackReader.read();
-            if (character == expectedCharacters.charAt(i)) {
-                actual[i - 1] = (char) character;
+            if (character == expectedCharacters.charAt(i + 1)) {
+                actual[i] = (char) character;
             } else {
+                if (character != -1) {
+                    actual[i] = (char) character;
+                }
                 final char[] expected = new char[expectedCharacters.length() - 1];
                 System.arraycopy(expectedCharacters.toCharArray(), 1, expected, 0, expectedCharacters.length() - 1);
-                final int endIndex;
-                if (character == -1) {
-                    endIndex = i == 1 ? -1 : i - 1;
-                } else {
-                    actual[i - 1] = (char) character;
-                    endIndex = i;
-                }
-                throw readBufferInvalidSyntaxRuntimeException("Expected '" + expectedCharacters.charAt(0) + "' to be followed by " + Arrays.toString(expected), endIndex, actual, pushbackReader.position());
+                final String explanation = "Expected '" + expectedCharacters.charAt(0) + "' to be followed by " + Arrays.toString(expected) + ", but "
+                        + (character == -1 && i == 0 ? "reached end of input" : "got " + asPrintableString(actual, i + (character == -1 ? 0 : 1)));
+                throw new InvalidSyntaxRuntimeException(explanation, pushbackReader.position());
             }
         }
         return result;
@@ -293,20 +291,14 @@ public enum JsonStreamElementType {
         final char[] resultCharArray = new char[4];
         final int readSize = in.read(resultCharArray); // TODO this is the only place we read an array
         if (readSize != 4) {
-            throw readBufferInvalidSyntaxRuntimeException("Expected 4 hexadecimal digits", readSize, resultCharArray, in.position());
+            final String explanation = "Expected 4 hexadecimal digits" + ", but " + (readSize == -1 ? "reached end of input" : "got " + asPrintableString(resultCharArray, readSize));
+            throw new InvalidSyntaxRuntimeException(explanation, in.position());
         }
-        int result;
         try {
-            result = Integer.parseInt(String.valueOf(resultCharArray), 16);
+            return Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
             throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + asPrintableString(resultCharArray, readSize) + " as a hexadecimal number", e, startPosition);
         }
-        return result;
-    }
-
-    static InvalidSyntaxRuntimeException readBufferInvalidSyntaxRuntimeException(final String expectation, final int charactersRead, final char[] readBuffer, final Position position) { // TODO inline?
-        final String explanation = expectation + ", but " + (charactersRead == -1 ? "reached end of input" : "got " + asPrintableString(readBuffer, charactersRead));
-        return new InvalidSyntaxRuntimeException(explanation, position);
     }
 
     private static abstract class SingleCharacterReader extends Reader {
