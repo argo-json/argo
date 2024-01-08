@@ -17,7 +17,7 @@ import java.io.Reader;
  * @author Mark Slater
  * @author Henrik Sjöstrand
  */
-final class PositionTrackingPushbackReader { // TODO should delegate to java.io.PushbackReader?
+final class PositionTrackingPushbackReader {
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
 
