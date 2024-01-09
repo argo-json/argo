@@ -290,7 +290,7 @@ final class StajParserTest {
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
-        assertThrows(IOException.class, () -> reader.read());
+        assertThrows(IOException.class, reader::read);
     }
 
     @Test
@@ -335,7 +335,7 @@ final class StajParserTest {
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
-        assertThrows(IOException.class, () -> reader.reset());
+        assertThrows(IOException.class, reader::reset);
     }
 
     @Test
@@ -458,7 +458,7 @@ final class StajParserTest {
         final StajParser stajParser = new StajParser("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
-        assertThrows(IOException.class, () -> reader.reset());
+        assertThrows(IOException.class, reader::reset);
     }
 
     @Test
@@ -571,7 +571,7 @@ final class StajParserTest {
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
-        assertThrows(IOException.class, () -> reader.read());
+        assertThrows(IOException.class, reader::read);
     }
 
     @Test
@@ -616,7 +616,7 @@ final class StajParserTest {
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
-        assertThrows(IOException.class, () -> reader.reset());
+        assertThrows(IOException.class, reader::reset);
     }
 
     @Test
@@ -739,7 +739,7 @@ final class StajParserTest {
         final StajParser stajParser = new StajParser("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
-        assertThrows(IOException.class, () -> reader.reset());
+        assertThrows(IOException.class, reader::reset);
     }
 
     @Test
@@ -823,7 +823,7 @@ final class StajParserTest {
     @Test
     void removeThrowsUnsupportedOperationException() {
         final StajParser stajParser = new StajParser(aValidJsonString());
-        final UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> stajParser.remove());
+        final UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, stajParser::remove);
         assertThat(exception.getMessage(), equalTo("StajParser cannot remove elements from JSON it has parsed"));
     }
 
