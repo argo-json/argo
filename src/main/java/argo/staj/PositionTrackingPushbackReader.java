@@ -35,7 +35,7 @@ final class PositionTrackingPushbackReader {
 
     private int readsSinceLastCarriageReturn = 2;
 
-    private boolean endOfStream = false; // TODO can this be integrated into reads since last carriage return to gain some performance?
+    private boolean endOfStream = false;
 
     private int pushbackBuffer = -1;
 
