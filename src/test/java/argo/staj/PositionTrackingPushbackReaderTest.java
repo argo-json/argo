@@ -319,7 +319,7 @@ class PositionTrackingPushbackReaderTest {
     @Tag("slow")
     void afterLineLongerThanLargestIntegerNextLineHasCorrectPosition() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new FastBoundedReader(new InfiniteReader('a'), Integer.MAX_VALUE),
+                new BoundedRepeatingReader('a', Integer.MAX_VALUE),
                 new StringReader("a\n")
         ));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
@@ -334,7 +334,7 @@ class PositionTrackingPushbackReaderTest {
     @Tag("slow")
     void pushingBackNewlineAfterLineLongerThanLargestIntegerFollowedByNewlineHasCorrectPosition() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new FastBoundedReader(new InfiniteReader('a'), Integer.MAX_VALUE),
+                new BoundedRepeatingReader('a', Integer.MAX_VALUE),
                 new StringReader("a\n")
         ));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
@@ -374,7 +374,7 @@ class PositionTrackingPushbackReaderTest {
     @Tag("slow")
     void afterMoreLinesThanLargestIntegerNextColumnIsCorrect() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new FastBoundedReader(new InfiniteReader('\n'), Integer.MAX_VALUE),
+                new BoundedRepeatingReader('\n', Integer.MAX_VALUE),
                 new StringReader("\na")
         ));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
@@ -389,7 +389,7 @@ class PositionTrackingPushbackReaderTest {
     @Tag("slow")
     void pushingBackNewlineAfterMoreLinesThanLargestIntegerHasCorrectPosition() throws IOException {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new FastBoundedReader(new InfiniteReader('\n'), Integer.MAX_VALUE - 1),
+                new BoundedRepeatingReader('\n', Integer.MAX_VALUE - 1),
                 new StringReader("ab\n")
         ));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {

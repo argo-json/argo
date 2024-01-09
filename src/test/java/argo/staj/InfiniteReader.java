@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -25,6 +25,11 @@ public final class InfiniteReader extends Reader {
     public int read(final char[] cbuf, final int off, final int len) {
         Arrays.fill(cbuf, off, off + len, repeatingChar);
         return len;
+    }
+
+    @Override
+    public int read() {
+        return repeatingChar;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -13,14 +13,14 @@ package argo.staj;
 import java.io.IOException;
 import java.io.Reader;
 
-public final class FastBoundedReader extends Reader {
+public final class BoundedRepeatingReader extends Reader {
 
-    private final Reader delegate;
+    private final int repeatingChar;
     private final int maxChars;
     private int charactersRead = 0;
 
-    public FastBoundedReader(final Reader delegate, final int maxChars) {
-        this.delegate = delegate;
+    public BoundedRepeatingReader(final char repeatingChar, final int maxChars) {
+        this.repeatingChar = repeatingChar;
         this.maxChars = maxChars;
     }
 
@@ -42,12 +42,12 @@ public final class FastBoundedReader extends Reader {
     }
 
     @Override
-    public int read() throws IOException {
+    public int read() {
         if (charactersRead == maxChars) {
             return -1;
         } else {
             charactersRead++;
-            return delegate.read();
+            return repeatingChar;
         }
     }
 
