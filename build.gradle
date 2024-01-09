@@ -93,6 +93,8 @@ dependencies {
     documentationImplementation group: 'net.sourceforge.xazzle', name: 'xazzle', version: '0.39'
 
     spotbugs group: 'com.github.spotbugs', name: 'spotbugs', version: '4.8.3'
+
+    jmhImplementation testFixtures(project)
 }
 
 group = 'net.sourceforge.argo'

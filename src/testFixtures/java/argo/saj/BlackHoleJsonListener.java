@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -14,7 +14,19 @@ import java.io.Reader;
 
 public final class BlackHoleJsonListener implements JsonListener {
 
-    public static final BlackHoleJsonListener BLACK_HOLE_JSON_LISTENER = new BlackHoleJsonListener();
+    public static final BlackHoleJsonListener BLACK_HOLE_JSON_LISTENER = new BlackHoleJsonListener(reader -> {});
+
+    private final BlackHoleReader blackHoleReader;
+
+
+    @FunctionalInterface
+    public interface BlackHoleReader {
+        void consume(Reader reader);
+    }
+
+    public BlackHoleJsonListener(final BlackHoleReader blackHoleReader) {
+        this.blackHoleReader = blackHoleReader;
+    }
 
     public void startDocument() {
     }
@@ -35,15 +47,18 @@ public final class BlackHoleJsonListener implements JsonListener {
     }
 
     public void startField(Reader name) {
+        blackHoleReader.consume(name);
     }
 
     public void endField() {
     }
 
     public void stringValue(Reader value) {
+        blackHoleReader.consume(value);
     }
 
     public void numberValue(Reader value) {
+        blackHoleReader.consume(value);
     }
 
     public void trueValue() {

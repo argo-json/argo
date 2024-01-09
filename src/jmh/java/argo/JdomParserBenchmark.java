@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -11,6 +11,7 @@
 package argo;
 
 import argo.jdom.JdomParser;
+import argo.saj.BlackHoleJsonListener;
 import argo.saj.InvalidSyntaxException;
 import argo.saj.SajParser;
 import argo.staj.StajParser;
@@ -132,7 +133,7 @@ public class JdomParserBenchmark {
 
     @Benchmark
     public void sajParser(final Blackhole blackhole) throws InvalidSyntaxException, IOException {
-        sajParser.parse(new StringReader(JSON_STRING), new BlackholeJsonListener(blackhole));
+        sajParser.parse(new StringReader(JSON_STRING), new BlackHoleJsonListener(blackhole::consume));
     }
 
 }
