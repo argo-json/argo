@@ -167,7 +167,7 @@ public enum JsonStreamElementType {
                 if (nextChar == -1) {
                     return endDocument();
                 } else {
-                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected only whitespace", nextChar, pushbackReader.position());
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected end of stream or whitespace", nextChar, pushbackReader.position());
                 }
             default:
                 throw new RuntimeException("Coding failure in Argo:  Stack contained unexpected element type " + peek);

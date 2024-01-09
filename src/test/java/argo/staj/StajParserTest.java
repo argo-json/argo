@@ -2322,7 +2322,7 @@ final class StajParserTest {
             IOUtils.consume(stajParser.next().reader());
             stajParser.next();
         });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected only whitespace but got [" + numberString.charAt(numberString.length() - 1) + "]")); // TODO this message is misleading.
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected end of stream or whitespace but got [" + numberString.charAt(numberString.length() - 1) + "]"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
