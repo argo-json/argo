@@ -548,7 +548,7 @@ public enum JsonStreamElementType {
                 throw new IllegalArgumentException("Skip value is negative: " + n);
             }
             ensureOpen();
-            for (long i = 0; i < n; i++) { // TODO quicker working with ints?
+            for (long i = 0; i < n; i++) {
                 if (read() == -1) {
                     return i;
                 }
@@ -618,7 +618,7 @@ public enum JsonStreamElementType {
                 throw new IllegalArgumentException("Skip value is negative: " + n);
             }
             ensureOpen();
-            for (long i = 0; i < n; i++) { // TODO quicker working with ints?
+            for (long i = 0; i < n; i++) {
                 if (read() == -1) {
                     return i;
                 }
