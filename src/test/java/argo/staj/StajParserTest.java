@@ -2536,5 +2536,5 @@ final class StajParserTest {
             assertThrows(IllegalArgumentException.class, () -> reader.skip(-1));
         }
     }
-    // TODO test failures where . or e would have been valid
+
 }
