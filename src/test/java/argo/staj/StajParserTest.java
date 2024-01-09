@@ -39,6 +39,7 @@ import static argo.staj.JsonStreamElement.*;
 import static argo.staj.RoundTrippingStajParserMatcher.parsesTo;
 import static argo.staj.StajParserBuilder.stajParser;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -219,7 +220,7 @@ final class StajParserTest {
         ));
         stajParser.next();
         final Reader reader = stajParser.next().reader();
-        reader.read();
+        assertThat(reader.read(), not(equalTo(-1)));
         final IOException actualException = assertThrows(IOException.class, reader::read);
         assertThat(actualException, sameInstance(ioException));
     }
@@ -518,7 +519,7 @@ final class StajParserTest {
         ));
         stajParser.next();
         final Reader reader = stajParser.next().reader();
-        reader.read();
+        assertThat(reader.read(), not(equalTo(-1)));
         final IOException actualException = assertThrows(IOException.class, reader::read);
         assertThat(actualException, sameInstance(ioException));
     }
