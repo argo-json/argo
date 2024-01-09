@@ -289,15 +289,18 @@ public enum JsonStreamElementType {
     private static int hexadecimalNumber(final PositionTrackingPushbackReader in) throws IOException {
         final Position startPosition = in.position(); // NOPMD TODO this is apparently fixed in PMD 7.0.0
         final char[] resultCharArray = new char[4];
-        final int readSize = in.read(resultCharArray); // TODO this is the only place we read an array
-        if (readSize != 4) {
-            final String explanation = "Expected 4 hexadecimal digits" + ", but " + (readSize == -1 ? "reached end of input" : "got " + asPrintableString(resultCharArray, readSize));
-            throw new InvalidSyntaxRuntimeException(explanation, in.position());
+        for (int i = 0; i< resultCharArray.length; i++) {
+            final int character = in.read();
+            if (character == -1) {
+                throw new InvalidSyntaxRuntimeException("Expected 4 hexadecimal digits" + ", but " + (i == 0 ? "reached end of input" : "got " + asPrintableString(resultCharArray, i)), in.position());
+            } else {
+                resultCharArray[i] = (char) character;
+            }
         }
         try {
             return Integer.parseInt(String.valueOf(resultCharArray), 16);
         } catch (final NumberFormatException e) {
-            throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + asPrintableString(resultCharArray, readSize) + " as a hexadecimal number", e, startPosition);
+            throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + asPrintableString(resultCharArray, resultCharArray.length) + " as a hexadecimal number", e, startPosition);
         }
     }
 

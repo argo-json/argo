@@ -120,15 +120,6 @@ final class PositionTrackingPushbackReader {
         return character;
     }
 
-    int read(final char[] buffer) throws IOException {
-        int i = 0;
-        int nextCharacter;
-        for (; i < buffer.length && (nextCharacter = read()) != -1; i++) {
-            buffer[i] = (char) nextCharacter;
-        }
-        return i == 0 ? -1 : i;
-    }
-
     Position position() {
         return new Position(columnOverflow ? -1 : column, lineOverflow ? -1 : line);
     }
