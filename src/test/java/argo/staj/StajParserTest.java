@@ -212,6 +212,7 @@ final class StajParserTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UseTryWithResources")
     void propagatesIoExceptionReadingNumber() throws IOException {
         final IOException ioException = new IOException("An IOException");
         final StajParser stajParser = new StajParser(new SequenceReader(
@@ -220,9 +221,13 @@ final class StajParserTest {
         ));
         stajParser.next();
         final Reader reader = stajParser.next().reader();
-        assertThat(reader.read(), not(equalTo(-1)));
-        final IOException actualException = assertThrows(IOException.class, reader::read);
-        assertThat(actualException, sameInstance(ioException));
+        try {
+            assertThat(reader.read(), not(equalTo(-1)));
+            final IOException actualException = assertThrows(IOException.class, reader::read);
+            assertThat(actualException, sameInstance(ioException));
+        } finally {
+            IOUtils.closeQuietly(reader);
+        }
     }
 
     @Test
@@ -511,6 +516,7 @@ final class StajParserTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UseTryWithResources")
     void propagatesIoExceptionReadingString() throws IOException {
         final IOException ioException = new IOException("An IOException");
         final StajParser stajParser = new StajParser(new SequenceReader(
@@ -519,9 +525,13 @@ final class StajParserTest {
         ));
         stajParser.next();
         final Reader reader = stajParser.next().reader();
-        assertThat(reader.read(), not(equalTo(-1)));
-        final IOException actualException = assertThrows(IOException.class, reader::read);
-        assertThat(actualException, sameInstance(ioException));
+        try {
+            assertThat(reader.read(), not(equalTo(-1)));
+            final IOException actualException = assertThrows(IOException.class, reader::read);
+            assertThat(actualException, sameInstance(ioException));
+        } finally {
+            IOUtils.closeQuietly(reader);
+        }
     }
 
     @Test
