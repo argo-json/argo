@@ -12,7 +12,6 @@ package argo.staj;
 
 import argo.ChoppingReader;
 import org.apache.commons.io.input.SequenceReader;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -84,45 +83,6 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('l');
         positionTrackingPushbackReader.unread('l');
         positionTrackingPushbackReader.unread('e');
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
-    }
-
-    @Test
-    @Disabled("Decide about this")
-    void positionIsCorrectAfterPushingBackFourNewlines() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("H\n\n\n\n"));
-        positionTrackingPushbackReader.read(new char[5]);
-        positionTrackingPushbackReader.unread('\n');
-        positionTrackingPushbackReader.unread('\n');
-        positionTrackingPushbackReader.unread('\n');
-        positionTrackingPushbackReader.unread('\n');
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
-    }
-
-    @Test
-    @Disabled("Decide about this")
-    void positionIsCorrectAfterPushingBackFourCarriageReturns() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("H\r\r\r\r"));
-        positionTrackingPushbackReader.read(new char[5]);
-        positionTrackingPushbackReader.unread('\r');
-        positionTrackingPushbackReader.unread('\r');
-        positionTrackingPushbackReader.unread('\r');
-        positionTrackingPushbackReader.unread('\r');
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
-    }
-
-    @Test
-    @Disabled("Decide about this")
-    void positionIsCorrectAfterPushingBackTwoCarriageReturnNewlines() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("H\r\n\r\n"));
-        positionTrackingPushbackReader.read(new char[5]);
-        positionTrackingPushbackReader.unread('\n');
-        positionTrackingPushbackReader.unread('\r');
-        positionTrackingPushbackReader.unread('\n');
-        positionTrackingPushbackReader.unread('\r');
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
     }
