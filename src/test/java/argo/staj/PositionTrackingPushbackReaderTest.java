@@ -311,7 +311,7 @@ class PositionTrackingPushbackReaderTest {
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
             positionTrackingPushbackReader.read();
         }
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(-1)); // TODO Needs documenting
+        assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
     }
 
@@ -367,7 +367,7 @@ class PositionTrackingPushbackReaderTest {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(-1)); // TODO Needs documenting
+        assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
     }
 
     @Test

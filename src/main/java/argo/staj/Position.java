@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -11,8 +11,15 @@
 package argo.staj;
 
 final class Position {
+
+    /**
+     * The line number at which the invalid syntax occurred, or -1 if the line number is unknown.
+     */
     final int line;
 
+    /**
+     * The column number at which the invalid syntax occurred, or -1 if the column number is unknown.
+     */
     final int column;
 
     Position(final int column, final int line) {

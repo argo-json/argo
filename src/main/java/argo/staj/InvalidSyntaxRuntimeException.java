@@ -10,8 +10,6 @@
 
 package argo.staj;
 
-import argo.saj.InvalidSyntaxException;
-
 import static argo.internal.CharacterUtilities.asPrintableString;
 
 /**
@@ -19,7 +17,6 @@ import static argo.internal.CharacterUtilities.asPrintableString;
  */
 public final class InvalidSyntaxRuntimeException extends RuntimeException {
 
-    private final String explanation;
     private final Position position;
 
     InvalidSyntaxRuntimeException(final String explanation, final Position position) {
@@ -27,8 +24,7 @@ public final class InvalidSyntaxRuntimeException extends RuntimeException {
     }
 
     InvalidSyntaxRuntimeException(final String explanation, final Throwable cause, final Position position) {
-        super("At line " + position.line + ", column " + position.column + ":  " + explanation, cause);
-        this.explanation = explanation;
+        super("At " + lineLabel(position.line) + ", " + columnLabel(position.column) + ":  " + explanation, cause);
         this.position = position;
     }
 
@@ -37,15 +33,30 @@ public final class InvalidSyntaxRuntimeException extends RuntimeException {
         return new InvalidSyntaxRuntimeException(explanation, position);
     }
 
+    private static String lineLabel(final int line) {
+        return line == -1 ? "unknown line" : "line " + line;
+    }
+
+    private static String columnLabel(final int column) {
+        return column == -1 ? "unknown column" : "column " + column;
+    }
+
+    /**
+     * The column number at which the invalid syntax occurred, or -1 if the column number is unknown.
+     *
+     * @return the column number at which the invalid syntax occurred, or -1 if the column number is unknown.
+     */
     public int getColumn() {
         return position.column;
     }
 
+    /**
+     * The line number at which the invalid syntax occurred, or -1 if the line number is unknown.
+     *
+     * @return the line number at which the invalid syntax occurred, or -1 if the line number is unknown.
+     */
     public int getLine() {
         return position.line;
     }
 
-    public InvalidSyntaxException asInvalidSyntaxException() {
-        return new InvalidSyntaxException(explanation, getCause(), position.line, position.column);
-    }
 }

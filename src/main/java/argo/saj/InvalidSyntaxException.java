@@ -10,6 +10,8 @@
 
 package argo.saj;
 
+import argo.staj.InvalidSyntaxRuntimeException;
+
 /**
  * Thrown to indicate a given character stream is not valid JSON.
  */
@@ -18,16 +20,35 @@ public final class InvalidSyntaxException extends Exception {
     private final int column;
     private final int line;
 
-    public InvalidSyntaxException(final String message, final Throwable cause, final int line, final int column) {
-        super("At line " + line + ", column " + column + ":  " + message, cause);
+    private InvalidSyntaxException(final String message, final Throwable cause, final int line, final int column) {
+        super(message, cause);
         this.column = column;
         this.line = line;
     }
 
+    static InvalidSyntaxException from(final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException) {
+        return new InvalidSyntaxException(
+                invalidSyntaxRuntimeException.getMessage(),
+                invalidSyntaxRuntimeException.getCause(),
+                invalidSyntaxRuntimeException.getLine(),
+                invalidSyntaxRuntimeException.getColumn()
+        );
+    }
+
+    /**
+     * The column number at which the invalid syntax occurred, or -1 if the column number is unknown.
+     *
+     * @return the column number at which the invalid syntax occurred, or -1 if the column number is unknown.
+     */
     public int getColumn() {
         return column;
     }
 
+    /**
+     * The line number at which the invalid syntax occurred, or -1 if the line number is unknown.
+     *
+     * @return the line number at which the invalid syntax occurred, or -1 if the line number is unknown.
+     */
     public int getLine() {
         return line;
     }
