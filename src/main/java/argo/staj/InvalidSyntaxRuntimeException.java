@@ -10,7 +10,7 @@
 
 package argo.staj;
 
-import static argo.internal.CharacterUtilities.asPrintableString;
+import static argo.staj.CharacterUtilities.asPrintableString;
 
 /**
  * Thrown to indicate a given character stream is not valid JSON.

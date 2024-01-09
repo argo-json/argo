@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import static argo.internal.CharacterUtilities.asPrintableString;
+import static argo.staj.CharacterUtilities.asPrintableString;
 import static argo.staj.InvalidSyntaxRuntimeException.unexpectedCharacterInvalidSyntaxRuntimeException;
 import static argo.staj.JsonStreamElement.*;
 
