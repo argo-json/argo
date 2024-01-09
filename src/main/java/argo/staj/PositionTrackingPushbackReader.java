@@ -43,7 +43,7 @@ final class PositionTrackingPushbackReader {
         this.delegate = in;
     }
 
-    void unread(final int character) { // TODO overflow
+    void unread(final int character) {
         pushbackBuffer = character;
 
         if (CARRIAGE_RETURN == character) {
