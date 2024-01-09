@@ -2294,7 +2294,6 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Invalid character [" + numberString.charAt(0) + "] at start of value"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-        // TODO get invalid character from exception
     }
 
     @ParameterizedTest
