@@ -18,7 +18,6 @@ import argo.jdom.JsonStringNodeTestBuilder;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BrokenReader;
 import org.apache.commons.io.input.SequenceReader;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -322,13 +321,12 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("It's not totally clear whether always returning false is OK")
     void afterClosingANumberReaderReadyThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
-        assertThrows(IOException.class, () -> reader.ready());
+        assertThrows(IOException.class, reader::ready);
     }
 
     @Test
@@ -341,7 +339,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("It's not totally clear whether skip(0) should fail")
     void afterClosingANumberReaderSkipThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("12");
         stajParser.next();
@@ -605,13 +602,12 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("It's not totally clear whether always returning false is OK")
     void afterClosingAStringReaderReadyThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
-        assertThrows(IOException.class, () -> reader.ready());
+        assertThrows(IOException.class, reader::ready);
     }
 
     @Test
@@ -624,7 +620,6 @@ final class StajParserTest {
     }
 
     @Test
-    @Disabled("It's not totally clear whether skip(0) should fail")
     void afterClosingAStringReaderSkipThrowsIOException() throws IOException {
         final StajParser stajParser = new StajParser("\"Fo\"");
         stajParser.next();

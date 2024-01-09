@@ -323,19 +323,6 @@ public enum JsonStreamElementType {
             return n == 0 && length != 0 ? -1 : n;
         }
 
-        @Override
-        public final long skip(final long n) throws IOException {
-            if (n < 0) {
-                throw new IllegalArgumentException("Skip value is negative: " + n);
-            }
-            for (long i = 0; i < n; i++) { // TODO quicker working with ints?
-                if (read() == -1) {
-                    return i;
-                }
-            }
-            return n;
-        }
-
     }
 
     private static final class NumberReader extends SingleCharacterReader {
@@ -549,6 +536,26 @@ public enum JsonStreamElementType {
             }
         }
 
+        @Override
+        public boolean ready() throws IOException {
+            ensureOpen();
+            return false;
+        }
+
+        @Override
+        public long skip(final long n) throws IOException {
+            if (n < 0) {
+                throw new IllegalArgumentException("Skip value is negative: " + n);
+            }
+            ensureOpen();
+            for (long i = 0; i < n; i++) { // TODO quicker working with ints?
+                if (read() == -1) {
+                    return i;
+                }
+            }
+            return n;
+        }
+
         @SuppressWarnings("PMD.EmptyWhileStmt")
         public void close() throws IOException {
             if (in != null) {
@@ -597,6 +604,26 @@ public enum JsonStreamElementType {
                         return nextChar;
                 }
             }
+        }
+
+        @Override
+        public boolean ready() throws IOException {
+            ensureOpen();
+            return false;
+        }
+
+        @Override
+        public long skip(final long n) throws IOException {
+            if (n < 0) {
+                throw new IllegalArgumentException("Skip value is negative: " + n);
+            }
+            ensureOpen();
+            for (long i = 0; i < n; i++) { // TODO quicker working with ints?
+                if (read() == -1) {
+                    return i;
+                }
+            }
+            return n;
         }
 
         @Override
