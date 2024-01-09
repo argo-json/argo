@@ -158,7 +158,7 @@ public enum JsonStreamElementType {
                         return endField();
                     case '}':
                         stack.pop();
-                        pushbackReader.unread(nextChar); // TODO this is really just priming it to move to endObject next.
+                        pushbackReader.unread(nextChar);
                         return endField();
                     default:
                         throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
