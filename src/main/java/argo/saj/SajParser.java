@@ -105,7 +105,7 @@ public final class SajParser {
         } catch (final InvalidSyntaxRuntimeException e) {
             throw InvalidSyntaxException.from(e);
         } catch (final JsonStreamException e) {
-            e.rethrowCause();
+            throw e.getCause();
         }
     }
 

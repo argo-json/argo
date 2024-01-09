@@ -10,25 +10,25 @@
 
 package argo.staj;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 
-/**
- * Thrown to indicate that it was not possible to read any further along the JSON stream.
- */
-public final class JsonStreamException extends RuntimeException {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    private final IOException typedCause;
+class JsonStreamExceptionTest {
 
-    JsonStreamException(final String message, final IOException cause) {
-        super(message, cause);
-        if (cause == null) {
-            throw new NullPointerException("cause is null");
-        }
-        this.typedCause = cause;
+    @Test
+    void rejectsNullCause() {
+        //noinspection ThrowableNotThrown
+        assertThrows(NullPointerException.class, () -> new JsonStreamException("Whoops", null));
     }
 
-    @Override
-    public IOException getCause() {
-        return typedCause;
+    @Test
+    void canGetCause() {
+        final IOException cause = new IOException();
+        assertThat(new JsonStreamException("Whoops", cause).getCause(), sameInstance(cause));
     }
 }

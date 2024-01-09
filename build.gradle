@@ -189,6 +189,10 @@ pmdMain {
     ruleSets = []
 }
 
+spotbugsMain {
+    excludeFilter = file('tools/spotbugs-main-filter.xml')
+}
+
 spotbugsTest {
     excludeFilter = file('tools/spotbugs-test-filter.xml')
 }
