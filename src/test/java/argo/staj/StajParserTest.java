@@ -20,6 +20,7 @@ import org.apache.commons.io.input.BrokenReader;
 import org.apache.commons.io.input.SequenceReader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
@@ -33,19 +34,28 @@ import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
 import static argo.jdom.JsonStringNodeTestBuilder.*;
 import static argo.staj.ElementTrackingStajParserMatcher.generatesElements;
+import static argo.staj.JsonStreamElement.nullValue;
 import static argo.staj.JsonStreamElement.number;
 import static argo.staj.JsonStreamElement.string;
 import static argo.staj.JsonStreamElement.*;
 import static argo.staj.RoundTrippingStajParserMatcher.parsesTo;
 import static argo.staj.StajParserBuilder.stajParser;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("PMD.CloseResource")
 final class StajParserTest {
+
+    @Test
+    void parsesFromReader() {
+        assertThat(new StajParser(new StringReader("null")), generatesElements(startDocument(), nullValue(), endDocument()));
+    }
+
+    @Test
+    void parsesFromString() {
+        assertThat(new StajParser("null"), generatesElements(startDocument(), nullValue(), endDocument()));
+    }
 
     @Test
     void arrayOnlyDocumentHasCorrectElements() {
@@ -58,15 +68,15 @@ final class StajParserTest {
     }
 
     @Test
-    void stringOnlyDocumentHasCorrectElements() {
-        final JsonNode stringNode = aStringNode();
-        assertThat(stajParser(stringNode), generatesElements(startDocument(), string(new StringReader(stringNode.getText())), endDocument()));
-    }
-
-    @Test
     void numberOnlyDocumentHasCorrectElements() {
         final JsonNode numberNode = aNumberNode();
         assertThat(stajParser(numberNode), generatesElements(startDocument(), number(new StringReader(numberNode.getText())), endDocument()));
+    }
+
+    @Test
+    void stringOnlyDocumentHasCorrectElements() {
+        final JsonNode stringNode = aStringNode();
+        assertThat(stajParser(stringNode), generatesElements(startDocument(), string(new StringReader(stringNode.getText())), endDocument()));
     }
 
     @Test
@@ -91,16 +101,48 @@ final class StajParserTest {
 
     @Test
     void arrayWithChildrenHasCorrectElements() {
-        assertThat(stajParser(array(array(), array())), generatesElements(
+        assertThat(stajParser(array(array(), object())), generatesElements(
                 startDocument(),
                 startArray(),
                 startArray(),
                 endArray(),
-                startArray(),
-                endArray(),
+                startObject(),
+                endObject(),
                 endArray(),
                 endDocument()
         ));
+    }
+
+    @Test
+    void arrayWithNullHasCorrectElements() {
+        assertThat(stajParser(array(nullNode())), generatesElements(startDocument(), startArray(), nullValue(), endArray(), endDocument()));
+    }
+
+    @Test
+    void arrayWithNullsHasCorrectElements() {
+        assertThat(stajParser(array(nullNode(), nullNode())), generatesElements(startDocument(), startArray(), nullValue(), nullValue(), endArray(), endDocument()));
+    }
+
+    @Test
+    void arrayWithTrueHasCorrectElements() {
+        assertThat(stajParser(array(trueNode())), generatesElements(startDocument(), startArray(), trueValue(), endArray(), endDocument()));
+    }
+
+    @Test
+    void arrayWithFalseHasCorrectElements() {
+        assertThat(stajParser(array(falseNode())), generatesElements(startDocument(), startArray(), falseValue(), endArray(), endDocument()));
+    }
+
+    @Test
+    void arrayWithATextNodeHasCorrectElements() {
+        final JsonNode aStringNode = aStringNode();
+        assertThat(stajParser(array(aStringNode)), generatesElements(startDocument(), startArray(), string(new StringReader(aStringNode.getText())), endArray(), endDocument()));
+    }
+
+    @Test
+    void arrayWithANumberNodeHasCorrectElements() {
+        final JsonNode aNumberNode = aNumberNode();
+        assertThat(stajParser(array(aNumberNode)), generatesElements(startDocument(), startArray(), number(new StringReader(aNumberNode.getText())), endArray(), endDocument()));
     }
 
     @Test
@@ -136,38 +178,6 @@ final class StajParserTest {
                 endObject(),
                 endDocument()
         ));
-    }
-
-    @Test
-    void arrayWithNullHasCorrectElements() {
-        assertThat(stajParser(array(nullNode())), generatesElements(startDocument(), startArray(), nullValue(), endArray(), endDocument()));
-    }
-
-    @Test
-    void arrayWithNullsHasCorrectElements() {
-        assertThat(stajParser(array(nullNode(), nullNode())), generatesElements(startDocument(), startArray(), nullValue(), nullValue(), endArray(), endDocument()));
-    }
-
-    @Test
-    void arrayWithTrueHasCorrectElements() {
-        assertThat(stajParser(array(trueNode())), generatesElements(startDocument(), startArray(), trueValue(), endArray(), endDocument()));
-    }
-
-    @Test
-    void arrayWithFalseHasCorrectElements() {
-        assertThat(stajParser(array(falseNode())), generatesElements(startDocument(), startArray(), falseValue(), endArray(), endDocument()));
-    }
-
-    @Test
-    void arrayWithATextNodeHasCorrectElements() {
-        final JsonNode aStringNode = aStringNode();
-        assertThat(stajParser(array(aStringNode)), generatesElements(startDocument(), startArray(), string(new StringReader(aStringNode.getText())), endArray(), endDocument()));
-    }
-
-    @Test
-    void arrayWithANumberNodeHasCorrectElements() {
-        final JsonNode aNumberNode = aNumberNode();
-        assertThat(stajParser(array(aNumberNode)), generatesElements(startDocument(), startArray(), number(new StringReader(aNumberNode.getText())), endArray(), endDocument()));
     }
 
     @Test
@@ -516,6 +526,27 @@ final class StajParserTest {
     }
 
     @Test
+    void rejectsNegativeSkipValueInANumberReader() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            assertThrows(IllegalArgumentException.class, () -> reader.skip(-1));
+        }
+    }
+
+    @Test
+    void canSkipAfterEndOfStreamInANumberReader() throws IOException {
+        final StajParser stajParser = new StajParser("12");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            IOUtils.consume(reader);
+            assertThat(reader.read(), equalTo(-1));
+            assertThat(reader.skip(1), equalTo(0L));
+            assertThat(reader.read(), equalTo(-1));
+        }
+    }
+
+    @Test
     @SuppressWarnings("PMD.UseTryWithResources")
     void propagatesIoExceptionReadingString() throws IOException {
         final IOException ioException = new IOException("An IOException");
@@ -817,6 +848,107 @@ final class StajParserTest {
             assertThat(reader.read(), equalTo((int) 'o'));
             assertThat(reader.read(), equalTo(-1));
         }
+    }
+
+    @Test
+    void rejectsNegativeSkipValueInAStringReader() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            assertThrows(IllegalArgumentException.class, () -> reader.skip(-1));
+        }
+    }
+
+    @Test
+    void canSkipAfterEndOfStreamInAStringReader() throws IOException {
+        final StajParser stajParser = new StajParser("\"Fo\"");
+        stajParser.next();
+        try (Reader reader = stajParser.next().reader()) {
+            IOUtils.consume(reader);
+            assertThat(reader.read(), equalTo(-1));
+            assertThat(reader.skip(1), equalTo(0L));
+            assertThat(reader.read(), equalTo(-1));
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "\", 0x22",
+            "\\, 0x5c",
+            "/, 0x2f",
+            "b, 0x8",
+            "f, 0xc",
+            "n, 0xa",
+            "r, 0xd",
+            "t, 0x9",
+    })
+    void parsesValidStringWithEscapedChars(final String input, final int expected) {
+        assertThat(new StajParser("\"\\" + input + "\""), generatesElements(startDocument(), string(new StringReader(String.valueOf((char)expected))), endDocument()));
+    }
+
+    @Test
+    void parsesValidStringWithEscapedUnicodeChars() {
+        assertThat(new StajParser("\"\\uF001\""), generatesElements(startDocument(), string(new StringReader("\uF001")), endDocument()));
+    }
+
+    @Test
+    void rejectsStringWithIncompleteEscapedUnicodeChars() {
+        final StajParser stajParser = new StajParser("\"\\uF0\"");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected 4 hexadecimal digits, but got [F, 0, \"]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsStringWithPrematureEndOfStreamFollowingBackslash() {
+        final StajParser stajParser = new StajParser("\"\\");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsStringWithInvalidCharacterFollowingBackslash() {
+        final StajParser stajParser = new StajParser("\"\\a\"");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but got [a]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsStringWithInvalidUnprintableCharacterFollowingBackslash() {
+        final StajParser stajParser = new StajParser("\"\\\u0000\"");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but got [\\u0000]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsStringWithNonHexadecimalEscapedUnicodeChars() {
+        final StajParser stajParser = new StajParser("\"\\uF00L\"");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Unable to parse escaped character [F, 0, 0, L] as a hexadecimal number"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsStringWithNonHexadecimalNonPrintingEscapedUnicodeChars() {
+        final StajParser stajParser = new StajParser("\"\\uF00\u007f\"");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Unable to parse escaped character [F, 0, 0, \\u007F] as a hexadecimal number"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
     @Test
@@ -1749,7 +1881,7 @@ final class StajParserTest {
             "8E88",
             "9E99",
     })
-    void tokenizesValidNumber(final String numberString) {
+    void parsesValidNumber(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
         assertThat(stajParser, generatesElements(startDocument(), number(new StringReader(numberString)), endDocument()));
     }
@@ -2018,7 +2150,7 @@ final class StajParserTest {
             "8E-",
             "9E-",
     })
-    void handlesIncompleteNumberWhenDigitIsExpected(final String numberString) {
+    void rejectsIncompleteNumberWhenDigitIsExpected(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
@@ -2158,7 +2290,7 @@ final class StajParserTest {
             "8E",
             "9E",
     })
-    void handlesIncompleteNumberWhenDigitOrSignIsExpected(final String numberString) {
+    void rejectsIncompleteNumberWhenDigitOrSignIsExpected(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
@@ -2166,22 +2298,6 @@ final class StajParserTest {
             stajParser.next();
         });
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected '+' or '-' or a digit 0 - 9 but reached end of input"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "",
-    })
-    void handlesMissingValue(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected a value but reached end of input"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
@@ -2239,7 +2355,7 @@ final class StajParserTest {
             "0e-.",
             "0E-.",
     })
-    void handlesInvalidCharacterInNumberWhenDigitIsExpected(final String numberString) {
+    void rejectsInvalidCharacterInNumberWhenDigitIsExpected(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
@@ -2257,7 +2373,7 @@ final class StajParserTest {
             "0.\u007f",
             "0.\ud800",
     })
-    void handlesInvalidUnprintableCharacterInNumberWhenDigitIsExpected(final String numberString) {
+    void rejectsInvalidUnprintableCharacterInNumberWhenDigitIsExpected(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
@@ -2290,7 +2406,7 @@ final class StajParserTest {
             "0e.",
             "0E.",
     })
-    void handlesInvalidCharacterInNumberWhenDigitOrSignIsExpected(final String numberString) {
+    void rejectsInvalidCharacterInNumberWhenDigitOrSignIsExpected(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
@@ -2308,7 +2424,7 @@ final class StajParserTest {
             "0e\u007f",
             "0e\ud800",
     })
-    void handlesInvalidUnprintableCharacterInNumberWhenDigitOrSignIsExpected(final String numberString) {
+    void rejectsInvalidUnprintableCharacterInNumberWhenDigitOrSignIsExpected(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
@@ -2323,46 +2439,10 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            ".",
-            "e",
-    })
-    void handlesInvalidCharacterAtStartOfValue(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Invalid character [" + numberString.charAt(0) + "] at start of value"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "\u0000",
-            "\u007f",
-            "\ud800",
-    })
-    void handlesInvalidUnprintableCharacterAtStartOfValue(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
-        final char expectedInvalidCharacter = numberString.charAt(0);
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Invalid character [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "] at start of value"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
             "-00",
             "00",
     })
-    void handlesSuperfluousCharactersAfterNumber(final String numberString) {
+    void rejectsSuperfluousCharactersAfterNumber(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
@@ -2375,52 +2455,117 @@ final class StajParserTest {
     }
 
     @Test
-    void skipsCharactersInANumber() throws IOException {
-        final StajParser stajParser = new StajParser("123456");
+    void rejectsPrematureEndOfStreamDuringArray() {
+        final StajParser stajParser = new StajParser("[");
         stajParser.next();
-        try (Reader reader = stajParser.next().reader()) {
-            assertThat(reader.skip(5), equalTo(5L));
-            assertThat(reader.read(), equalTo((int)'6'));
-        }
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 2:  Expected a value but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(2));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
     @Test
-    void skipsPastEndOfANumber() throws IOException {
-        final StajParser stajParser = new StajParser("123456");
+    void rejectsPrematureEndOfStreamDuringArrayValue() {
+        final StajParser stajParser = new StajParser("[1");
         stajParser.next();
-        try (Reader reader = stajParser.next().reader()) {
-            assertThat(reader.skip(10), equalTo(6L));
-            assertThat(reader.read(), equalTo(-1));
-        }
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected either , or ] but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
     @Test
-    void skipsAfterEndOfANumber() throws IOException {
-        final StajParser stajParser = new StajParser("123456");
+    void rejectsPrematureEndOfStreamDuringObject() {
+        final StajParser stajParser = new StajParser("{");
         stajParser.next();
-        try (Reader reader = stajParser.next().reader()) {
-            IOUtils.consume(reader);
-            assertThat(reader.skip(10), equalTo(0L));
-            assertThat(reader.read(), equalTo(-1));
-        }
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 2:  Expected object identifier to begin with [\"] but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(2));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
     @Test
-    void handlesSkippingOnAClosedNumberReader() throws IOException {
-        final StajParser stajParser = new StajParser("123456");
+    void rejectsPrematureEndOfStreamDuringFieldName() {
+        final StajParser stajParser = new StajParser("{\"");
         stajParser.next();
-        final Reader reader = stajParser.next().reader();
-        reader.close();
-        assertThrows(IOException.class, () -> reader.skip(1L));
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 2:  Got opening [\"] without matching closing [\"]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(2));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
     @Test
-    void rejectsNegateArgumentToSkipOnNumberReader() throws IOException {
-        final StajParser stajParser = new StajParser("123456");
+    void rejectsPrematureEndOfStreamAwaitingFieldSeparator() {
+        final StajParser stajParser = new StajParser("{\"a\"");
         stajParser.next();
-        try (Reader reader = stajParser.next().reader()) {
-            assertThrows(IllegalArgumentException.class, () -> reader.skip(-1));
-        }
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 5:  Expected object identifier to be followed by : but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(5));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsPrematureEndOfStreamAwaitingFieldValue() {
+        final StajParser stajParser = new StajParser("{\"a\":");
+        stajParser.next();
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 6:  Expected a value but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(6));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsMissingFieldValue() {
+        final StajParser stajParser = new StajParser("{\"a\":}");
+        stajParser.next();
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 6:  Invalid character [}] at start of value"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(6));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsPrematureEndOfStreamAwaitingObjectClose() {
+        final StajParser stajParser = new StajParser("{\"a\":1");
+        stajParser.next();
+        stajParser.next();
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected either , or ] but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsPrematureEndOfStreamDuringString() {
+        final StajParser stajParser = new StajParser("\"");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 1:  Got opening [\"] without matching closing [\"]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(1));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @Test
+    void rejectsPrematureEndOfStreamDuringHexCharacter() {
+        final StajParser stajParser = new StajParser("\"\\uab");
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 6:  Expected 4 hexadecimal digits, but got [a, b]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(6));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
     @Test
@@ -2455,11 +2600,11 @@ final class StajParserTest {
 
     @Test
     void rejectsInvalidCharacterInFalseValue() {
-        final StajParser stajParser = new StajParser("falte");
+        final StajParser stajParser = new StajParser("farce");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 'f' to be followed by [a, l, s, e], but got [a, l, t]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(4));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected 'f' to be followed by [a, l, s, e], but got [a, r]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
@@ -2475,113 +2620,122 @@ final class StajParserTest {
 
     @Test
     void rejectsInvalidCharacterInNullValue() {
-        final StajParser stajParser = new StajParser("nurl");
+        final StajParser stajParser = new StajParser("numb");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected 'n' to be followed by [u, l, l], but got [u, r]"));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected 'n' to be followed by [u, l, l], but got [u, m]"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
+    @ParameterizedTest
+    @ValueSource(chars = {' ', '\n', '\r', '\t'})
+    void permitsWhitespaceAtStartOfDocument(final char whitespaceCharacter) {
+        assertThat(new StajParser(whitespaceCharacter + "null"), generatesElements(startDocument(), nullValue(), endDocument()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(chars = {' ', '\n', '\r', '\t'})
+    void permitsWhitespaceAtEndOfDocument(final char whitespaceCharacter) {
+        assertThat(new StajParser("null" + whitespaceCharacter), generatesElements(startDocument(), nullValue(), endDocument()));
+    }
+
     @Test
-    void rejectsPrematureEndOfStreamDuringHexCharacter() {
-        final StajParser stajParser = new StajParser("\"\\uab");
+    void parsesJsonObjectWithWhitespace() {
+        assertThat(
+                new StajParser("{\"hello\": \"world\"}"),
+                generatesElements(startDocument(), startObject(), startField(new StringReader("hello")), string(new StringReader("world")), endField(), endObject(), endDocument())
+        );
+    }
+
+    @Test
+    void parsesMultiElementArrayWithWhitespace() {
+        assertThat(
+                new StajParser("[ 1, 2 ]"),
+                generatesElements(startDocument(), startArray(), number(new StringReader("1")), number(new StringReader("2")), endArray(), endDocument())
+        );
+    }
+
+    @Test
+    void rejectsEmptyDocument() {
+        final StajParser stajParser = new StajParser("");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 6:  Expected 4 hexadecimal digits, but got [a, b]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(6));
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 1:  Expected a value but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(1));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-
-    @Test
-    void tokenizesValidStringWithEscapedChars() {
-        assertThat(new StajParser("\"\\\"hello world\\\"\""), generatesElements(startDocument(), string(new StringReader("\"hello world\"")), endDocument()));
-    }
-
-    @Test
-    void tokenizesValidStringWithEscapedUnicodeChars() {
-        assertThat(new StajParser("\"\\uF001\""), generatesElements(startDocument(), string(new StringReader("\uF001")), endDocument()));
-    }
-
-    @Test
-    void rejectsStringWithIncompleteEscapedUnicodeChars() {
-        final StajParser stajParser = new StajParser("\"\\uF0\"");
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "a",
+            ".",
+            "e",
+    })
+    void rejectsInvalidCharacterAtStartOfDocument(final String text) {
+        final StajParser stajParser = new StajParser(text);
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected 4 hexadecimal digits, but got [F, 0, \"]"));
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (text.length()) + ":  Invalid character [" + text.charAt(0) + "] at start of value"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(text.length()));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "\u0000",
+            "\u007f",
+            "\ud800",
+    })
+    void rejectsInvalidUnprintableCharacterAtStartOfDocument(final String text) {
+        final StajParser stajParser = new StajParser(text);
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+            IOUtils.consume(stajParser.next().reader());
+            stajParser.next();
+        });
+        final char expectedInvalidCharacter = text.charAt(0);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (text.length()) + ":  Invalid character [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "] at start of value"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(text.length()));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(chars = {
+            'a',
+            '.',
+            'e',
+    })
+    void rejectsInvalidCharacterAtEndOfDocument(final char superfluousCharacter) {
+        final StajParser stajParser = new StajParser("\"foo\" " + superfluousCharacter);
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected end of stream or whitespace but got [" + superfluousCharacter + "]"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsStringWithNonHexadecimalEscapedUnicodeChars() {
-        final StajParser stajParser = new StajParser("\"\\uF00L\"");
+    @ParameterizedTest
+    @ValueSource(chars = {
+            '\u0000',
+            '\u007f',
+            '\ud800',
+    })
+    void rejectsInvalidUnprintableCharacterAtEndOfDocument(final char superfluousCharacter) {
+        final StajParser stajParser = new StajParser("\"foo\" " + superfluousCharacter);
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Unable to parse escaped character [F, 0, 0, L] as a hexadecimal number"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected end of stream or whitespace but got [" + String.format("\\u%04X", (int) superfluousCharacter) + "]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @Test
-    void rejectsStringWithNonHexadecimalNonPrintingEscapedUnicodeChars() {
-        final StajParser stajParser = new StajParser("\"\\uF00\u007f\"");
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Unable to parse escaped character [F, 0, 0, \\u007F] as a hexadecimal number"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(3));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-
-    @Test
-    void skipsCharactersInAString() throws IOException {
-        final StajParser stajParser = new StajParser("\"abcdef\"");
-        stajParser.next();
-        try (Reader reader = stajParser.next().reader()) {
-            assertThat(reader.skip(5), equalTo(5L));
-            assertThat(reader.read(), equalTo((int)'f'));
-        }
-    }
-
-    @Test
-    void skipsPastEndOfAString() throws IOException {
-        final StajParser stajParser = new StajParser("\"abcdef\"");
-        stajParser.next();
-        try (Reader reader = stajParser.next().reader()) {
-            assertThat(reader.skip(10), equalTo(6L));
-            assertThat(reader.read(), equalTo(-1));
-        }
-    }
-
-    @Test
-    void skipsAfterEndOfAString() throws IOException {
-        final StajParser stajParser = new StajParser("\"abcdef\"");
-        stajParser.next();
-        try (Reader reader = stajParser.next().reader()) {
-            IOUtils.consume(reader);
-            assertThat(reader.skip(10), equalTo(0L));
-            assertThat(reader.read(), equalTo(-1));
-        }
-    }
-
-    @Test
-    void handlesSkippingOnAClosedStringReader() throws IOException {
-        final StajParser stajParser = new StajParser("\"abcdef\"");
-        stajParser.next();
-        final Reader reader = stajParser.next().reader();
-        reader.close();
-        assertThrows(IOException.class, () -> reader.skip(1L));
-    }
-
-    @Test
-    void rejectsNegateArgumentToSkipOnStringReader() throws IOException {
-        final StajParser stajParser = new StajParser("\"abcdef\"");
-        stajParser.next();
-        try (Reader reader = stajParser.next().reader()) {
-            assertThrows(IllegalArgumentException.class, () -> reader.skip(-1));
-        }
     }
 
 }
