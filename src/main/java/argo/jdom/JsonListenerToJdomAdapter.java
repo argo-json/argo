@@ -207,7 +207,7 @@ final class JsonListenerToJdomAdapter implements JsonListener {
         } catch (IOException e) {
             // TODO got to improve on this
             throw new RuntimeException(e);
-        } // TODO this assumes that the reader is closed elsewhere for us
+        }
     }
 
 }
