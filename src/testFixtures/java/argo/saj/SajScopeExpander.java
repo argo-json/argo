@@ -14,12 +14,12 @@ import argo.staj.StajParser;
 
 import java.io.IOException;
 
-public final class StajBasedSajParser { // TODO (re)move
+public final class SajScopeExpander {
 
-    private static final SajParser SAJ_PARSER = new SajParser();
-
-    public void parse(final StajParser stajParser, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
-        SAJ_PARSER.parse(jsonListener, stajParser);
+    private SajScopeExpander() {
     }
 
+    public static void parse(final SajParser sajParser, final StajParser stajParser, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
+        sajParser.parse(jsonListener, stajParser);
+    }
 }
