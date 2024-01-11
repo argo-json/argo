@@ -10,7 +10,7 @@
 
 package argo.format;
 
-import argo.jdom.JsonNumberValidator;
+import argo.internal.JsonNumberValidator;
 
 import java.io.IOException;
 import java.io.Writer;

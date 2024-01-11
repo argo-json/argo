@@ -10,6 +10,8 @@
 
 package argo.jdom;
 
+import argo.internal.JsonNumberValidator;
+
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
                 jsonNumberValidator.appendCharacter(value.charAt(i));
             }
             if (!jsonNumberValidator.isEndState()) {
-                throw new JsonNumberValidator.ParsingFailedException();
+                throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
             }
         } catch (JsonNumberValidator.ParsingFailedException e) {
             throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
