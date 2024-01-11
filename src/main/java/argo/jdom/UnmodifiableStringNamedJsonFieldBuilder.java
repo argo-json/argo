@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,7 +12,7 @@ package argo.jdom;
 
 import static argo.jdom.JsonNodeFactories.field;
 
-final class UnmodifiableStringNamedJsonFieldBuilder implements JsonFieldBuilder { // TODO why is this not just JsonField?
+final class UnmodifiableStringNamedJsonFieldBuilder implements JsonFieldBuilder { // Should this be replaced with UnmodifiableJsonStringNamedJsonFieldBuilder?
 
     private final String name;
     private final JsonNodeBuilder<?> valueBuilder;
