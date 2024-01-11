@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -20,6 +20,7 @@ import static argo.staj.JsonStreamElementMatchers.aNonTextJsonStreamElementWithT
 import static argo.staj.JsonStreamElementMatchers.aTextJsonStreamElementWithType;
 import static argo.staj.JsonStreamElementType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 class JsonStreamElementTest {
     @Test
@@ -88,6 +89,74 @@ class JsonStreamElementTest {
     @Test
     void nullHasCorrectAttributes() {
         assertThat(nullValue(), aNonTextJsonStreamElementWithType(NULL));
+    }
+
+    @Test
+    void startDocumentHasCorrectToString() {
+        assertThat(startDocument().toString(), equalTo("JsonStreamElement jsonStreamElementType: START_DOCUMENT"));
+    }
+
+    @Test
+    void endDocumentHasCorrectToString() {
+        assertThat(endDocument().toString(), equalTo("JsonStreamElement jsonStreamElementType: END_DOCUMENT"));
+    }
+
+    @Test
+    void startArrayHasCorrectToString() {
+        assertThat(startArray().toString(), equalTo("JsonStreamElement jsonStreamElementType: START_ARRAY"));
+    }
+
+    @Test
+    void endArrayHasCorrectToString() {
+        assertThat(endArray().toString(), equalTo("JsonStreamElement jsonStreamElementType: END_ARRAY"));
+    }
+
+    @Test
+    void startObjectHasCorrectToString() {
+        assertThat(startObject().toString(), equalTo("JsonStreamElement jsonStreamElementType: START_OBJECT"));
+    }
+
+    @Test
+    void endObjectHasCorrectToString() {
+        assertThat(endObject().toString(), equalTo("JsonStreamElement jsonStreamElementType: END_OBJECT"));
+    }
+
+    @Test
+    void startFieldHasCorrectToString() {
+        final String text = aValidJsonString();
+        assertThat(startField(new StringReader(text)).toString(), equalTo("JsonStreamElement jsonStreamElementType: START_FIELD"));
+    }
+
+    @Test
+    void endFieldHasCorrectToString() {
+        assertThat(endField().toString(), equalTo("JsonStreamElement jsonStreamElementType: END_FIELD"));
+    }
+
+    @Test
+    void stringHasCorrectToString() {
+        final String text = aValidJsonString();
+        assertThat(string(new StringReader(text)).toString(), equalTo("JsonStreamElement jsonStreamElementType: STRING"));
+    }
+
+    @Test
+    void numberHasCorrectToString() {
+        final String text = aValidJsonString();
+        assertThat(number(new StringReader(text)).toString(), equalTo("JsonStreamElement jsonStreamElementType: NUMBER"));
+    }
+
+    @Test
+    void trueHasCorrectToString() {
+        assertThat(trueValue().toString(), equalTo("JsonStreamElement jsonStreamElementType: TRUE"));
+    }
+
+    @Test
+    void falseHasCorrectToString() {
+        assertThat(falseValue().toString(), equalTo("JsonStreamElement jsonStreamElementType: FALSE"));
+    }
+
+    @Test
+    void nullHasCorrectToString() {
+        assertThat(nullValue().toString(), equalTo("JsonStreamElement jsonStreamElementType: NULL"));
     }
 
 }
