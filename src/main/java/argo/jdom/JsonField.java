@@ -16,7 +16,7 @@ import static argo.jdom.JsonNodeFactories.string;
  * A field in a JSON object.  Immutable.
  */
 public final class JsonField {
-    private transient JsonStringNode jsonStringNode;
+    private transient JsonStringNode jsonStringNode; // TODO whiffy
     private final String name;
     private final JsonNode value;
 
