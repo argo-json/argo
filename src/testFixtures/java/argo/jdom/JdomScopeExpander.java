@@ -11,7 +11,7 @@
 package argo.jdom;
 
 import argo.saj.InvalidSyntaxException;
-import argo.saj.JsonListener;
+import argo.staj.StajParser;
 
 import java.io.IOException;
 
@@ -20,12 +20,8 @@ public final class JdomScopeExpander {
     private JdomScopeExpander() {
     }
 
-    public static JsonNode parse(final JdomParser jdomParser, final JsonListenerBasedParser jsonListenerBasedParser) throws InvalidSyntaxException, IOException {
-        return jdomParser.parse(jsonListenerBasedParser::parse);
+    public static JsonNode parse(final JdomParser jdomParser, final StajParser stajParser) throws InvalidSyntaxException, IOException {
+        return jdomParser.parse(stajParser);
     }
 
-    @FunctionalInterface
-    public interface JsonListenerBasedParser {
-        void parse(JsonListener jsonListener) throws InvalidSyntaxException, IOException;
-    }
 }

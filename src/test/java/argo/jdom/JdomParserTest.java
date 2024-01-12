@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -13,17 +13,54 @@ package argo.jdom;
 import argo.ChoppingReader;
 import argo.saj.InvalidSyntaxException;
 import org.apache.commons.io.input.BrokenReader;
+import org.apache.commons.io.input.SequenceReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 
+import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JdomParserTest {
+
+    @Test
+    void parsesANumber() throws Exception {
+        assertThat(new JdomParser().parse("1"), equalTo(number(1)));
+    }
+
+    @Test
+    void parsesAString() throws Exception {
+        assertThat(new JdomParser().parse("\"Foo\""), equalTo(string("Foo")));
+    }
+
+    @Test
+    void parsesANull() throws Exception {
+        assertThat(new JdomParser().parse("null"), equalTo(nullNode()));
+    }
+
+    @Test
+    void parsesATrue() throws Exception {
+        assertThat(new JdomParser().parse("true"), equalTo(trueNode()));
+    }
+
+    @Test
+    void parsesAFalse() throws Exception {
+        assertThat(new JdomParser().parse("false"), equalTo(falseNode()));
+    }
+
+    @Test
+    void parsesAnArray() throws Exception {
+        assertThat(new JdomParser().parse("[]"), equalTo(array()));
+    }
+
+    @Test
+    void parsesAnObject() throws Exception {
+        assertThat(new JdomParser().parse("{\"foo\": \"bar\"}"), equalTo(object(field("foo", string("bar")))));
+    }
 
     @Test
     void parsesNumberBetweenZeroAndOne() throws Exception {
@@ -77,6 +114,26 @@ final class JdomParserTest {
     void rethrowsIOExceptionFromReader() {
         final IOException ioException = new IOException("An IOException");
         final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new BrokenReader(ioException)));
+        assertThat(actualException, sameInstance(ioException));
+    }
+
+    @Test
+    void rethrowsIOExceptionFromPartWayThroughString() {
+        final IOException ioException = new IOException("An IOException");
+        final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new SequenceReader(
+                new StringReader("\"He"),
+                new BrokenReader(ioException)
+        )));
+        assertThat(actualException, sameInstance(ioException));
+    }
+
+    @Test
+    void rethrowsIOExceptionFromPartWayThroughNumber() {
+        final IOException ioException = new IOException("An IOException");
+        final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new SequenceReader(
+                new StringReader("1."),
+                new BrokenReader(ioException)
+        )));
         assertThat(actualException, sameInstance(ioException));
     }
 

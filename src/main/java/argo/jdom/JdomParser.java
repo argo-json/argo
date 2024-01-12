@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -11,12 +11,20 @@
 package argo.jdom;
 
 import argo.saj.InvalidSyntaxException;
-import argo.saj.JsonListener;
-import argo.saj.SajParser;
+import argo.staj.InvalidSyntaxRuntimeException;
+import argo.staj.JsonStreamElement;
+import argo.staj.JsonStreamException;
+import argo.staj.StajParser;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+
+import static argo.jdom.JsonNodeBuilders.*;
+import static argo.jdom.JsonNodeFactories.field;
 
 /**
  * Parses a JSON character stream into a {@code JsonNode} object.  Instances of this class can safely be shared
@@ -45,21 +53,203 @@ public final class JdomParser {
      * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
     public JsonNode parse(final Reader reader) throws InvalidSyntaxException, IOException {
-        return parse(new JsonListenerBasedParser() {
-            public void parse(final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
-                new SajParser().parse(reader, jsonListener);
+        return parse(new StajParser(reader));
+    }
+
+    @SuppressWarnings("PMD.CyclomaticComplexity")
+    JsonNode parse(final StajParser stajParser) throws IOException, InvalidSyntaxException {
+        final JsonStringNodeFactory jsonStringNodeFactory = new JsonStringNodeFactory();
+        final JsonNumberNodeFactory jsonNumberNodeFactory = new JsonNumberNodeFactory();
+        final RootNodeContainer root = new RootNodeContainer();
+        final Stack<NodeContainer> stack = new Stack<NodeContainer>();
+        stack.push(root);
+
+        try {
+            while (stajParser.hasNext()) {
+                final JsonStreamElement jsonStreamElement = stajParser.next();
+                switch (jsonStreamElement.jsonStreamElementType()) {
+                    case START_DOCUMENT:
+                    case END_DOCUMENT:
+                        break;
+                    case START_ARRAY:
+                        final ArrayNodeContainer arrayNodeContainer = new ArrayNodeContainer();
+                        stack.peek().addNode(arrayNodeContainer);
+                        stack.push(arrayNodeContainer);
+                        break;
+                    case START_OBJECT:
+                        final ObjectNodeContainer objectNodeContainer = new ObjectNodeContainer();
+                        stack.peek().addNode(objectNodeContainer);
+                        stack.push(objectNodeContainer);
+                        break;
+                    case START_FIELD:
+                        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(jsonStringNodeFactory.jsonStringNode(asString(jsonStreamElement.reader(), 32)));
+                        stack.peek().addField(fieldNodeContainer);
+                        stack.push(fieldNodeContainer);
+                        break;
+                    case END_ARRAY:
+                    case END_OBJECT:
+                    case END_FIELD:
+                        stack.pop();
+                        break;
+                    case NULL:
+                        stack.peek().addNode(aNullBuilder());
+                        break;
+                    case TRUE:
+                        stack.peek().addNode(aTrueBuilder());
+                        break;
+                    case FALSE:
+                        stack.peek().addNode(aFalseBuilder());
+                        break;
+                    case STRING:
+                        stack.peek().addNode(jsonStringNodeFactory.jsonStringNode(asString(jsonStreamElement.reader(), 32)));
+                        break;
+                    case NUMBER:
+                        stack.peek().addNode(jsonNumberNodeFactory.jsonNumberNode(asString(jsonStreamElement.reader(), 16)));
+                        break;
+                    default:
+                        throw new IllegalStateException("Coding failure in Argo:  Got a JsonStreamElement of unexpected type: " + jsonStreamElement);
+                }
             }
-        });
+        } catch (final InvalidSyntaxRuntimeException e) {
+            throw InvalidSyntaxException.from(e);
+        } catch (final JsonStreamException e) {
+            throw e.getCause();
+        }
+
+        return root.build();
     }
 
-    JsonNode parse(final JsonListenerBasedParser jsonListenerBasedParser) throws InvalidSyntaxException, IOException {
-        final JsonListenerToJdomAdapter jsonListenerToJdomAdapter = new JsonListenerToJdomAdapter();
-        jsonListenerBasedParser.parse(jsonListenerToJdomAdapter);
-        return jsonListenerToJdomAdapter.getDocument();
+    private interface NodeContainer {
+
+        void addNode(JsonNodeBuilder<?> jsonNodeBuilder);
+
+        void addField(JsonFieldBuilder jsonFieldBuilder);
+
     }
 
-    interface JsonListenerBasedParser {
-        void parse(JsonListener jsonListener) throws InvalidSyntaxException, IOException;
+    private static final class RootNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
+
+        private JsonNodeBuilder<?> valueBuilder;
+
+        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
+            if (valueBuilder == null) {
+                valueBuilder = jsonNodeBuilder;
+            } else {
+                throw new RuntimeException("Coding failure in Argo:  Attempt to add more than one root node");
+            }
+        }
+
+        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field as root node");
+        }
+
+        public JsonNode build() {
+            if (valueBuilder == null) {
+                throw new RuntimeException("Coding failure in Argo:  Attempt to build document with no root node");
+            } else {
+                return valueBuilder.build();
+            }
+        }
+    }
+
+    private static final class ArrayNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
+        private final JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
+
+        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
+            arrayBuilder.withElement(jsonNodeBuilder);
+        }
+
+        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array");
+        }
+
+        public JsonNode build() {
+            return arrayBuilder.build();
+        }
+    }
+
+    private static final class ObjectNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
+        private final JsonObjectNodeBuilder objectNodeBuilder = anObjectBuilder();
+
+        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object");
+        }
+
+        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+            objectNodeBuilder.withFieldBuilder(jsonFieldBuilder);
+        }
+
+        public JsonNode build() {
+            return objectNodeBuilder.build();
+        }
+    }
+
+    private static final class FieldNodeContainer implements NodeContainer, JsonFieldBuilder {
+        private final JsonStringNode name;
+        private JsonNodeBuilder<?> valueBuilder;
+
+        FieldNodeContainer(final JsonStringNode name) {
+            this.name = name;
+        }
+
+        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
+            valueBuilder = jsonNodeBuilder;
+        }
+
+        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field");
+        }
+
+        public String name() {
+            return name.getText();
+        }
+
+        public JsonField build() {
+            if (valueBuilder == null) {
+                throw new RuntimeException("Coding failure in Argo:  Attempt to create a field without a value");
+            } else {
+                return field(name, valueBuilder.build());
+            }
+        }
+    }
+
+    private static final class JsonStringNodeFactory {
+        private final Map<String, JsonStringNode> existingJsonStringNodes = new HashMap<String, JsonStringNode>();
+
+        JsonStringNode jsonStringNode(final String value) {
+            final JsonStringNode cachedStringNode = existingJsonStringNodes.get(value); // TODO what about singleton Strings?
+            if (cachedStringNode == null) {
+                final JsonStringNode newJsonStringNode = JsonNodeFactories.string(value);
+                existingJsonStringNodes.put(value, newJsonStringNode);
+                return newJsonStringNode;
+            } else {
+                return cachedStringNode;
+            }
+        }
+    }
+
+    private static final class JsonNumberNodeFactory {
+        private final Map<String, JsonNodeBuilder<JsonNode>> existingJsonNumberNodes = new HashMap<String, JsonNodeBuilder<JsonNode>>(); // TODO make object reuse switchable.
+
+        JsonNodeBuilder<JsonNode> jsonNumberNode(final String value) {
+            final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);  // TODO what about singleton numbers?
+            if (cachedNumberNode == null) {
+                final JsonNodeBuilder<JsonNode> newJsonNumberNode = aNumberBuilder(value);
+                existingJsonNumberNodes.put(value, newJsonNumberNode);
+                return newJsonNumberNode;
+            } else {
+                return cachedNumberNode;
+            }
+        }
+    }
+
+    private static String asString(final Reader reader, final int initialCapacity) throws IOException {
+        final StringBuilder stringBuilder = new StringBuilder(initialCapacity);
+        int c;
+        while((c = reader.read()) != -1) {
+            stringBuilder.append((char) c);
+        }
+        return stringBuilder.toString();
     }
 
 }
