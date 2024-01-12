@@ -89,7 +89,7 @@ final class JsonStringNodeTest {
 
     @Test
     void testToString() {
-        JsonNodeFactories.string("lo");
+        assertThat(JsonNodeFactories.string("lo").toString(), equalTo("JsonStringNode{value='lo'}"));
     }
 
     @Test
