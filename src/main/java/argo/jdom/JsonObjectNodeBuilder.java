@@ -51,8 +51,8 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
                     }
 
                     public void remove() {
-                        delegate.remove();
-                    } // TODO this should throw UOE
+                        throw new UnsupportedOperationException();
+                    }
                 };
             }
         });
@@ -87,7 +87,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
                     }
 
                     public void remove() {
-                        delegate.remove(); // TODO this should throw UOE
+                        throw new UnsupportedOperationException();
                     }
                 };
             }
