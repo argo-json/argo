@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -35,7 +35,7 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
     public JsonNode build() {
         final Iterator<JsonNodeBuilder<?>> delegate = elementBuilders.iterator();
-        return JsonNodeFactories.array(new Iterator<JsonNode>() {
+        return JsonNodeFactories.array(new Iterator<JsonNode>() { // TODO this should pass through size
             public boolean hasNext() {
                 return delegate.hasNext();
             }
