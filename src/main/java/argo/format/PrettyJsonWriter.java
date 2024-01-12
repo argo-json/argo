@@ -29,6 +29,7 @@ public final class PrettyJsonWriter implements JsonWriter {
 
     private final String lineSeparator;
 
+    @SuppressWarnings("SystemGetProperty")
     public PrettyJsonWriter() {
         lineSeparator = System.getProperty("line.separator");
     }
