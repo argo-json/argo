@@ -17,7 +17,7 @@ import java.io.Reader;
  * @author Mark Slater
  * @author Henrik Sjöstrand
  */
-final class PositionTrackingPushbackReader {
+final class PositionTrackingPushbackReader { // TODO make position tracking switchable
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
 
