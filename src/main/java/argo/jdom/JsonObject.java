@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -28,6 +28,10 @@ final class JsonObject extends AbstractJsonObject {
 
     static JsonObject jsonObject(final Iterable<JsonField> fields) {
         return jsonObject(immutableListOf(fields));
+    }
+
+    static JsonObject jsonObject(final JsonFieldIteratorBuilder fields) {
+        return jsonObject(immutableListOf(fields.build(), fields.size()));
     }
 
     private static JsonObject jsonObject(final List<JsonField> fieldList) {

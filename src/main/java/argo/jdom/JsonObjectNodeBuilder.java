@@ -21,14 +21,14 @@ import static argo.jdom.UnmodifiableStringNamedJsonFieldBuilder.anUnmodifiableSt
  */
 public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
-    private final FieldCollector fieldCollector;
+    private final JsonFieldIteratorBuilder jsonFieldIteratorBuilder;
 
-    private JsonObjectNodeBuilder(final FieldCollector fieldCollector) {
-        this.fieldCollector = fieldCollector;
+    private JsonObjectNodeBuilder(final JsonFieldIteratorBuilder jsonFieldIteratorBuilder) {
+        this.jsonFieldIteratorBuilder = jsonFieldIteratorBuilder;
     }
 
     static JsonObjectNodeBuilder duplicateFieldPermittingJsonObjectNodeBuilder() {
-        return new JsonObjectNodeBuilder(new FieldCollector() {
+        return new JsonObjectNodeBuilder(new JsonFieldIteratorBuilder() {
             private final List<JsonFieldBuilder> fieldBuilders = new LinkedList<JsonFieldBuilder>();
 
             public void add(final JsonFieldBuilder jsonFieldBuilder) {
@@ -39,7 +39,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
                 return fieldBuilders.size();
             }
 
-            public Iterator<JsonField> iterator() {
+            public Iterator<JsonField> build() {
                 final Iterator<JsonFieldBuilder> delegate = fieldBuilders.iterator();
                 return new Iterator<JsonField>() {
                     public boolean hasNext() {
@@ -52,14 +52,14 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
                     public void remove() {
                         delegate.remove();
-                    }
+                    } // TODO this should throw UOE
                 };
             }
         });
     }
 
     static JsonObjectNodeBuilder duplicateFieldRejectingJsonObjectNodeBuilder() {
-        return new JsonObjectNodeBuilder(new FieldCollector() {
+        return new JsonObjectNodeBuilder(new JsonFieldIteratorBuilder() {
             private final Map<String, JsonFieldBuilder> fieldBuilders = new LinkedHashMap<String, JsonFieldBuilder>();
 
             public void add(final JsonFieldBuilder jsonFieldBuilder) {
@@ -75,7 +75,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
                 return fieldBuilders.size();
             }
 
-            public Iterator<JsonField> iterator() {
+            public Iterator<JsonField> build() {
                 final Iterator<Map.Entry<String, JsonFieldBuilder>> delegate = fieldBuilders.entrySet().iterator();
                 return new Iterator<JsonField>() {
                     public boolean hasNext() {
@@ -87,7 +87,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
                     }
 
                     public void remove() {
-                        delegate.remove();
+                        delegate.remove(); // TODO this should throw UOE
                     }
                 };
             }
@@ -117,17 +117,12 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
     }
 
     JsonObjectNodeBuilder withFieldBuilder(final JsonFieldBuilder jsonFieldBuilder) {
-        fieldCollector.add(jsonFieldBuilder);
+        jsonFieldIteratorBuilder.add(jsonFieldBuilder);
         return this;
     }
 
     public JsonNode build() {
-        return JsonNodeFactories.object(fieldCollector); // TODO we know the size of the FieldCollector, but we can't communicate it to the factory
+        return JsonObject.jsonObject(jsonFieldIteratorBuilder);
     }
 
-    private interface FieldCollector extends Iterable<JsonField> {
-        void add(JsonFieldBuilder jsonFieldBuilder);
-
-        int size();
-    }
 }
