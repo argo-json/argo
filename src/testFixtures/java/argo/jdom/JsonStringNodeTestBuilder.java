@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static argo.TestingFactories.aString;
 import static argo.TestingFactories.randomSupplierSwitcher;
 import static argo.jdom.JsonNodeFactories.string;
 import static java.util.Arrays.asList;
@@ -57,7 +58,7 @@ public final class JsonStringNodeTestBuilder {
     );
 
     public static JsonStringNode aStringNode() {
-        return string(aValidJsonString()); // TODO why not any random string in here?
+        return string(aString());
     }
 
     public static JsonStringNode aStringNodeDifferentTo(JsonStringNode... jsonStringNode) {
