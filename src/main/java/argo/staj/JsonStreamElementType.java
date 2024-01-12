@@ -286,8 +286,9 @@ public enum JsonStreamElementType {
         return result;
     }
 
+    @SuppressWarnings("PMD.PrematureDeclaration") // TODO this is apparently fixed in PMD 7.0.0
     private static int hexadecimalNumber(final PositionTrackingPushbackReader in) throws IOException {
-        final Position startPosition = in.position(); // NOPMD TODO this is apparently fixed in PMD 7.0.0
+        final Position startPosition = in.position();
         final char[] resultCharArray = new char[4];
         for (int i = 0; i< resultCharArray.length; i++) {
             final int character = in.read();
@@ -556,7 +557,7 @@ public enum JsonStreamElementType {
             return n;
         }
 
-        @SuppressWarnings("PMD.EmptyWhileStmt")
+        @SuppressWarnings({"PMD.EmptyWhileStmt", "StatementWithEmptyBody"})
         public void close() throws IOException {
             if (in != null) {
                 while (read() != -1) {
@@ -627,7 +628,7 @@ public enum JsonStreamElementType {
         }
 
         @Override
-        @SuppressWarnings("PMD.EmptyWhileStmt")
+        @SuppressWarnings({"PMD.EmptyWhileStmt", "StatementWithEmptyBody"})
         public void close() throws IOException {
             if (in != null) {
                 while (read() != -1) {
