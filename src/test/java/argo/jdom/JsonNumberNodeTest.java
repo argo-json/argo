@@ -170,7 +170,7 @@ final class JsonNumberNodeTest {
     }
 
     @Test
-    void getTypeReturnsString() {
+    void getTypeReturnsNumber() {
         assertThat(JsonNodeFactories.number(aValidJsonNumber()).getType(), equalTo(JsonNodeType.NUMBER));
     }
 
