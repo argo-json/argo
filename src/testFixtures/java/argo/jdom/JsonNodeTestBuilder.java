@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -11,13 +11,13 @@
 package argo.jdom;
 
 import net.sourceforge.ickles.RandomListMemberSupplier;
-import net.sourceforge.ickles.RandomSupplierSwitcher;
 
 import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static argo.TestingFactories.randomSupplierSwitcher;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
 public final class JsonNodeTestBuilder {
 
     private static final Random RANDOM = new Random();
-    private static final Supplier<JsonNode> RANDOM_LEAF_NODE = new RandomSupplierSwitcher<>(
+    private static final Supplier<JsonNode> RANDOM_LEAF_NODE = randomSupplierSwitcher(
             JsonStringNodeTestBuilder::aStringNode,
             JsonNumberNodeTestBuilder::aNumberNode,
             JsonNodeFactories::nullNode,

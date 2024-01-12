@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,7 +10,6 @@
 
 package argo.jdom;
 
-import net.sourceforge.ickles.RandomSupplierSwitcher;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.HashSet;
@@ -18,6 +17,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static argo.TestingFactories.randomSupplierSwitcher;
 import static argo.jdom.JsonNodeFactories.string;
 import static java.util.Arrays.asList;
 
@@ -27,7 +27,7 @@ public final class JsonStringNodeTestBuilder {
     private static final String ESCAPED_REVERSE_SOLIDUS = "\\\\";
     private static final Random RANDOM = new Random();
 
-    private static final Supplier<String> RANDOM_ESCAPED_STRING = new RandomSupplierSwitcher<>(
+    private static final Supplier<String> RANDOM_ESCAPED_STRING = randomSupplierSwitcher(
             () -> ESCAPED_DOUBLE_QUOTE,
             () -> ESCAPED_REVERSE_SOLIDUS,
             () -> "\\/",
@@ -42,7 +42,7 @@ public final class JsonStringNodeTestBuilder {
             }
     );
 
-    private static final Supplier<String> RANDOM_JSON_STRING_SINGLE_TOKEN = new RandomSupplierSwitcher<>(
+    private static final Supplier<String> RANDOM_JSON_STRING_SINGLE_TOKEN = randomSupplierSwitcher(
             RANDOM_ESCAPED_STRING,
             () -> {
                 final String candidate = RandomStringUtils.random(1);
