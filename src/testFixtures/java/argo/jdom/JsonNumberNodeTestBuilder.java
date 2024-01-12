@@ -74,12 +74,14 @@ public final class JsonNumberNodeTestBuilder {
     );
 
     public static JsonNode aNumberNode() {
-        return number(
-                RANDOM_OPTIONAL_NEGATIVE_PREFIX.get()
-                        + RANDOM_ZERO_OR_DIGITS.get()
-                        + RANDOM_OPTIONAL_FRACTIONAL_PART.get()
-                        + RANDOM_OPTIONAL_EXPONENTIAL_PART.get()
-        );
+        return number(aValidJsonNumber());
+    }
+
+    public static String aValidJsonNumber() {
+        return RANDOM_OPTIONAL_NEGATIVE_PREFIX.get()
+                + RANDOM_ZERO_OR_DIGITS.get()
+                + RANDOM_OPTIONAL_FRACTIONAL_PART.get()
+                + RANDOM_OPTIONAL_EXPONENTIAL_PART.get();
     }
 
     private JsonNumberNodeTestBuilder() {

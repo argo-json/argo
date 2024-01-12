@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,6 +12,11 @@ package argo.jdom;
 
 import org.junit.jupiter.api.Test;
 
+import static argo.jdom.JsonNumberNodeTestBuilder.aValidJsonNumber;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JsonNumberNodeTest {
@@ -92,6 +97,11 @@ final class JsonNumberNodeTest {
     }
 
     @Test
+    void rejectsNull() {
+        assertThrows(NullPointerException.class, () -> JsonNumberNode.jsonNumberNode(null));
+    }
+
+    @Test
     void rejectsNonIntegerWithNothingBeforeTheDecimalPoint() {
         assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode(".1"));
     }
@@ -110,4 +120,94 @@ final class JsonNumberNodeTest {
     void rejectsMultilingualPlaneCharacters() {
         assertThrows(IllegalArgumentException.class, () -> JsonNumberNode.jsonNumberNode("€"));
     }
+
+    @Test
+    @SuppressWarnings("EqualsWithItself")
+    void testEqualsSameObject() {
+        final JsonNode jsonNode = JsonNodeFactories.number("42");
+        assertThat(jsonNode.equals(jsonNode), equalTo(true));
+    }
+
+    @Test
+    void testEqualsEqualObject() {
+        assertThat(JsonNodeFactories.number("42"), equalTo(JsonNodeFactories.number("42")));
+    }
+
+    @Test
+    void testNotEqualsUnequalJsonStringNode() {
+        assertThat(JsonNodeFactories.number("42").equals(JsonNodeFactories.number("64")), equalTo(false));
+    }
+
+    @Test
+    @SuppressWarnings({"ConstantValue", "PMD.EqualsNull"})
+    void testNotEqualsNull() {
+        assertThat(JsonNodeFactories.number(aValidJsonNumber()).equals(null), equalTo(false));
+    }
+
+    @Test
+    void testNotEqualsObjectOfDifferentType() {
+        assertThat(JsonNodeFactories.number("42").equals(JsonNodeFactories.string("42")), equalTo(false));
+    }
+
+    @Test
+    void testHashCode() {
+        assertEquals(JsonNodeFactories.number("42").hashCode(), JsonNodeFactories.number("42").hashCode());
+    }
+
+    @Test
+    void testToString() {
+        assertThat(JsonNodeFactories.number("42").toString(), equalTo("JsonNumberNode{value='42'}"));
+    }
+
+    @Test
+    void zeroIsAlwaysTheSameInstance() {
+        assertThat(JsonNodeFactories.number("0"), sameInstance(JsonNodeFactories.number("0")));
+    }
+
+    @Test
+    void oneIsAlwaysTheSameInstance() {
+        assertThat(JsonNodeFactories.number("1"), sameInstance(JsonNodeFactories.number("1")));
+    }
+
+    @Test
+    void getTypeReturnsString() {
+        assertThat(JsonNodeFactories.number(aValidJsonNumber()).getType(), equalTo(JsonNodeType.NUMBER));
+    }
+
+    @Test
+    void hasTextReturnsTrue() {
+        assertThat(JsonNodeFactories.number(aValidJsonNumber()).hasText(), equalTo(true));
+    }
+
+    @Test
+    void getTextReturnsCorrectValue() {
+        final String value = aValidJsonNumber();
+        assertThat(JsonNodeFactories.number(value).getText(), equalTo(value));
+    }
+
+    @Test
+    void hasFieldsReturnsFalse() {
+        assertThat(JsonNodeFactories.number(aValidJsonNumber()).hasFields(), equalTo(false));
+    }
+
+    @Test
+    void getFieldsThrowsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> JsonNodeFactories.number(aValidJsonNumber()).getFields());
+    }
+
+    @Test
+    void getFieldListThrowsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> JsonNodeFactories.number(aValidJsonNumber()).getFieldList());
+    }
+
+    @Test
+    void hasElementsReturnsFalse() {
+        assertThat(JsonNodeFactories.number(aValidJsonNumber()).hasElements(), equalTo(false));
+    }
+
+    @Test
+    void getElementsThrowsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> JsonNodeFactories.number(aValidJsonNumber()).getElements());
+    }
+
 }
