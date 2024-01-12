@@ -29,12 +29,27 @@ final class JdomParserTest {
 
     @Test
     void parsesANumber() throws Exception {
-        assertThat(new JdomParser().parse("1"), equalTo(number(1)));
+        assertThat(new JdomParser().parse("42"), equalTo(number(42)));
     }
 
     @Test
     void parsesAString() throws Exception {
         assertThat(new JdomParser().parse("\"Foo\""), equalTo(string("Foo")));
+    }
+
+    @Test
+    void parsesASingletonNumberZero() throws Exception {
+        assertThat(new JdomParser().parse("0"), sameInstance(number(0)));
+    }
+
+    @Test
+    void parsesASingletonNumberOne() throws Exception {
+        assertThat(new JdomParser().parse("1"), sameInstance(number(1)));
+    }
+
+    @Test
+    void parsesASingletonEmptyString() throws Exception {
+        assertThat(new JdomParser().parse("\"\""), sameInstance(string("")));
     }
 
     @Test

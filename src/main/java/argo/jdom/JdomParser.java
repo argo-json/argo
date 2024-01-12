@@ -217,7 +217,7 @@ public final class JdomParser {
         private final Map<String, JsonStringNode> existingJsonStringNodes = new HashMap<String, JsonStringNode>();
 
         JsonStringNode jsonStringNode(final String value) {
-            final JsonStringNode cachedStringNode = existingJsonStringNodes.get(value); // TODO what about singleton Strings?
+            final JsonStringNode cachedStringNode = existingJsonStringNodes.get(value);
             if (cachedStringNode == null) {
                 final JsonStringNode newJsonStringNode = JsonNodeFactories.string(value);
                 existingJsonStringNodes.put(value, newJsonStringNode);
@@ -232,7 +232,7 @@ public final class JdomParser {
         private final Map<String, JsonNodeBuilder<JsonNode>> existingJsonNumberNodes = new HashMap<String, JsonNodeBuilder<JsonNode>>(); // TODO make object reuse switchable.
 
         JsonNodeBuilder<JsonNode> jsonNumberNode(final String value) {
-            final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);  // TODO what about singleton numbers?
+            final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);
             if (cachedNumberNode == null) {
                 final JsonNodeBuilder<JsonNode> newJsonNumberNode = aNumberBuilder(value);
                 existingJsonNumberNodes.put(value, newJsonNumberNode);
