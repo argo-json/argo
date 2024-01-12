@@ -19,6 +19,10 @@
         <Bug pattern="RANGE_ARRAY_OFFSET,RANGE_ARRAY_LENGTH,RR_NOT_CHECKED,SR_NOT_CHECKED"/>
     </Match>
     <Match>
+        <Class name="argo.jdom.JsonStringNodeTest"/>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
+    </Match>
+    <Match>
         <Class name="argo.staj.JsonStreamExceptionTest"/>
         <Bug pattern="RV_EXCEPTION_NOT_THROWN"/>
     </Match>

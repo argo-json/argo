@@ -11,13 +11,22 @@
 package argo;
 
 import net.sourceforge.ickles.RandomSupplierSwitcher;
+import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.Random;
 import java.util.function.Supplier;
 
 public final class TestingFactories {
+
+    private static final Random RANDOM = new Random();
+
     @SafeVarargs
     public static <T> Supplier<T> randomSupplierSwitcher(Supplier<T> supplier, Supplier<T>... suppliers) {
         return new RandomSupplierSwitcher<>(supplier, suppliers);
+    }
+
+    public static String aString() {
+        return RandomStringUtils.random(RANDOM.nextInt(20));
     }
 
     private TestingFactories() {

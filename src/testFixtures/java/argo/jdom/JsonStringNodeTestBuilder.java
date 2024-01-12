@@ -57,7 +57,7 @@ public final class JsonStringNodeTestBuilder {
     );
 
     public static JsonStringNode aStringNode() {
-        return string(aValidJsonString());
+        return string(aValidJsonString()); // TODO why not any random string in here?
     }
 
     public static JsonStringNode aStringNodeDifferentTo(JsonStringNode... jsonStringNode) {
