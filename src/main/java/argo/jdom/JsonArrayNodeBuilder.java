@@ -45,7 +45,7 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
             }
 
             public void remove() {
-                delegate.remove();
+                throw new UnsupportedOperationException();
             }
         });
     }
