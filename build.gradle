@@ -115,6 +115,7 @@ idea {
 compileJava {
     sourceCompatibility = 1.5
     targetCompatibility = 1.5
+    options.compilerArgs += ['-Xlint:-options']
 }
 
 tasks.register('compileTinyJava', JavaCompile) {
@@ -126,7 +127,7 @@ tasks.register('compileTinyJava', JavaCompile) {
     source sourceSets.main.allSource
     classpath = sourceSets.main.compileClasspath
     destinationDirectory.set(file("${project.buildDir}/tiny-classes/main"))
-    options.compilerArgs = ['-g:none']
+    options.compilerArgs = ['-g:none', '-Xlint:-options']
 }
 
 compileModuleInfoJava {
