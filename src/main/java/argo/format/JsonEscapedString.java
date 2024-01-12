@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -23,7 +23,8 @@ final class JsonEscapedString {
         escapeStringTo(writer, chars, 0, chars.length);
     }
 
-    static void escapeStringTo(final Writer writer, final char[] cbuf, final int offset, final int length) throws IOException { // NOPMD TODO this should be turned off in the rules
+    @SuppressWarnings("PMD.CyclomaticComplexity")
+    static void escapeStringTo(final Writer writer, final char[] cbuf, final int offset, final int length) throws IOException {
         if (offset < 0 || offset > cbuf.length || length < 0 || offset + length > cbuf.length || offset + length < 0) {
             throw new IndexOutOfBoundsException();
         } else if (length != 0) {
@@ -56,7 +57,7 @@ final class JsonEscapedString {
                     case '\u0008':
                         writer.append("\\b");
                         break;
-                    case '\u0009':
+                    case '\t':
                         writer.append("\\t");
                         break;
                     case '\n':

@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,15 +10,25 @@
 
 package argo.format;
 
+import org.apache.commons.io.output.NullWriter;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JsonEscapedStringTest {
+
+    @Test
+    void passesThroughUncontentiousCharactersVerbatim() throws Exception {
+        final String uncontentiousCharacters = "abcdefghijklmnopqrstuvwxyz";
+        assertThat(escapeString(uncontentiousCharacters), equalTo(uncontentiousCharacters));
+    }
 
     @Test
     void formatsReverseSolidusAsEscapedReverseSolidus() throws Exception {
@@ -30,40 +40,97 @@ final class JsonEscapedStringTest {
         assertThat(escapeString("\""), equalTo("\\\""));
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "0x0000,\\u0000",
+            "0x0001,\\u0001",
+            "0x0002,\\u0002",
+            "0x0003,\\u0003",
+            "0x0004,\\u0004",
+            "0x0005,\\u0005",
+            "0x0006,\\u0006",
+            "0x0007,\\u0007",
+            "0x0008,\\b",
+            "0x0009,\\t",
+            "0x000a,\\n",
+            "0x000b,\\u000b",
+            "0x000c,\\f",
+            "0x000d,\\r",
+            "0x000e,\\u000e",
+            "0x000f,\\u000f",
+            "0x0010,\\u0010",
+            "0x0011,\\u0011",
+            "0x0012,\\u0012",
+            "0x0013,\\u0013",
+            "0x0014,\\u0014",
+            "0x0015,\\u0015",
+            "0x0016,\\u0016",
+            "0x0017,\\u0017",
+            "0x0018,\\u0018",
+            "0x0019,\\u0019",
+            "0x001a,\\u001a",
+            "0x001b,\\u001b",
+            "0x001c,\\u001c",
+            "0x001d,\\u001d",
+            "0x001e,\\u001e",
+            "0x001f,\\u001f",
+    })
+    void formatsControlCharactersAsEscapedUnicodeCharacters(final int character, final String expectedRepresentation) throws Exception {
+        assertThat(escapeString(String.valueOf((char) character)), equalTo(expectedRepresentation));
+    }
+
     @Test
-    void formatsControlCharactersAsEscapedUnicodeCharacters() throws Exception {
-        assertThat(escapeString("\u0000"), equalTo("\\u0000"));
-        assertThat(escapeString("\u0001"), equalTo("\\u0001"));
-        assertThat(escapeString("\u0002"), equalTo("\\u0002"));
-        assertThat(escapeString("\u0003"), equalTo("\\u0003"));
-        assertThat(escapeString("\u0004"), equalTo("\\u0004"));
-        assertThat(escapeString("\u0005"), equalTo("\\u0005"));
-        assertThat(escapeString("\u0006"), equalTo("\\u0006"));
-        assertThat(escapeString("\u0007"), equalTo("\\u0007"));
-        assertThat(escapeString("\u0008"), equalTo("\\b"));
-        assertThat(escapeString("\u0009"), equalTo("\\t"));
-        assertThat(escapeString("\n"), equalTo("\\n"));
-        assertThat(escapeString("\u000b"), equalTo("\\u000b"));
-        assertThat(escapeString("\u000c"), equalTo("\\f"));
-        assertThat(escapeString("\r"), equalTo("\\r"));
-        assertThat(escapeString("\u000e"), equalTo("\\u000e"));
-        assertThat(escapeString("\u000f"), equalTo("\\u000f"));
-        assertThat(escapeString("\u0010"), equalTo("\\u0010"));
-        assertThat(escapeString("\u0011"), equalTo("\\u0011"));
-        assertThat(escapeString("\u0012"), equalTo("\\u0012"));
-        assertThat(escapeString("\u0013"), equalTo("\\u0013"));
-        assertThat(escapeString("\u0014"), equalTo("\\u0014"));
-        assertThat(escapeString("\u0015"), equalTo("\\u0015"));
-        assertThat(escapeString("\u0016"), equalTo("\\u0016"));
-        assertThat(escapeString("\u0017"), equalTo("\\u0017"));
-        assertThat(escapeString("\u0018"), equalTo("\\u0018"));
-        assertThat(escapeString("\u0019"), equalTo("\\u0019"));
-        assertThat(escapeString("\u001a"), equalTo("\\u001a"));
-        assertThat(escapeString("\u001b"), equalTo("\\u001b"));
-        assertThat(escapeString("\u001c"), equalTo("\\u001c"));
-        assertThat(escapeString("\u001d"), equalTo("\\u001d"));
-        assertThat(escapeString("\u001e"), equalTo("\\u001e"));
-        assertThat(escapeString("\u001f"), equalTo("\\u001f"));
+    void formatsACharArray() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeStringTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 3);
+        assertThat(stringBuilderWriter.toString(), equalTo("abc"));
+    }
+
+    @Test
+    void formatsACharArrayWithOffset() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeStringTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 2);
+        assertThat(stringBuilderWriter.toString(), equalTo("bc"));
+    }
+
+    @Test
+    void formatsACharArrayWithLength() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeStringTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 2);
+        assertThat(stringBuilderWriter.toString(), equalTo("ab"));
+    }
+
+    @Test
+    void formatsACharArrayWithOffsetAndLength() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeStringTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 1);
+        assertThat(stringBuilderWriter.toString(), equalTo("b"));
+    }
+
+
+    @Test
+    void rejectsNegativeOffset() {
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, -1, 3));
+    }
+
+    @Test
+    void rejectsOffsetGreaterThanArrayLength() {
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 4, 3));
+    }
+
+    @Test
+    void rejectsNegativeLength() {
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 0, -1));
+    }
+
+    @Test
+    void rejectsLengthGreaterThanArrayLength() {
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 0, 4));
+    }
+
+    @Test
+    void rejectsOffsetPlusLengthGreaterThanArrayLength() {
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 2, 2));
     }
 
     private static String escapeString(final String unescapedString) throws IOException {
