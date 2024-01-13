@@ -35,7 +35,7 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
     public JsonNode build() {
         final Iterator<JsonNodeBuilder<?>> delegate = elementBuilders.iterator();
-        return JsonNodeFactories.array(new Iterator<JsonNode>() { // TODO this should pass through size
+        return JsonArray.jsonArray(new Iterator<JsonNode>() {
             public boolean hasNext() {
                 return delegate.hasNext();
             }
@@ -47,6 +47,6 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
             public void remove() {
                 throw new UnsupportedOperationException();
             }
-        });
+        }, elementBuilders.size());
     }
 }

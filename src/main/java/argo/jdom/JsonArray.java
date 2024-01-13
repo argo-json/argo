@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -24,6 +24,10 @@ final class JsonArray extends AbstractJsonArray {
 
     static JsonArray jsonArray(final Iterator<? extends JsonNode> elements) {
         return jsonArray(immutableListOf(elements));
+    }
+
+    static JsonArray jsonArray(final Iterator<? extends JsonNode> elements, final int size) {
+        return jsonArray(immutableListOf(elements, size));
     }
 
     static JsonArray jsonArray(final Iterable<? extends JsonNode> elements) {
