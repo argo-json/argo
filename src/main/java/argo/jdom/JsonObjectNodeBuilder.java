@@ -122,7 +122,14 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
     }
 
     public JsonNode build() {
-        return JsonObject.jsonObject(jsonFieldIteratorBuilder);
+        return JsonObject.jsonObject(jsonFieldIteratorBuilder.build(), jsonFieldIteratorBuilder.size());
     }
 
+    private interface JsonFieldIteratorBuilder {
+        void add(JsonFieldBuilder jsonFieldBuilder);
+
+        int size();
+
+        Iterator<JsonField> build();
+    }
 }

@@ -30,8 +30,8 @@ final class JsonObject extends AbstractJsonObject {
         return jsonObject(immutableListOf(fields));
     }
 
-    static JsonObject jsonObject(final JsonFieldIteratorBuilder fields) {
-        return jsonObject(immutableListOf(fields.build(), fields.size()));
+    static JsonObject jsonObject(final Iterator<JsonField> fields, final int size) {
+        return jsonObject(immutableListOf(fields, size));
     }
 
     private static JsonObject jsonObject(final List<JsonField> fieldList) {
