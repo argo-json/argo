@@ -35,17 +35,13 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
     public JsonNode build() {
         final Iterator<JsonNodeBuilder<?>> delegate = elementBuilders.iterator();
-        return JsonArray.jsonArray(new Iterator<JsonNode>() {
+        return JsonArray.jsonArray(new UnmodifiableIterator<JsonNode>() {
             public boolean hasNext() {
                 return delegate.hasNext();
             }
 
             public JsonNode next() {
                 return delegate.next().build();
-            }
-
-            public void remove() {
-                throw new UnsupportedOperationException();
             }
         }, elementBuilders.size());
     }

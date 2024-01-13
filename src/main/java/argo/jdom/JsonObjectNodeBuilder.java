@@ -41,17 +41,13 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
             public Iterator<JsonField> build() {
                 final Iterator<JsonFieldBuilder> delegate = fieldBuilders.iterator();
-                return new Iterator<JsonField>() {
+                return new UnmodifiableIterator<JsonField>() {
                     public boolean hasNext() {
                         return delegate.hasNext();
                     }
 
                     public JsonField next() {
                         return delegate.next().build();
-                    }
-
-                    public void remove() {
-                        throw new UnsupportedOperationException();
                     }
                 };
             }
@@ -77,17 +73,13 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
             public Iterator<JsonField> build() {
                 final Iterator<Map.Entry<String, JsonFieldBuilder>> delegate = fieldBuilders.entrySet().iterator();
-                return new Iterator<JsonField>() {
+                return new UnmodifiableIterator<JsonField>() {
                     public boolean hasNext() {
                         return delegate.hasNext();
                     }
 
                     public JsonField next() {
                         return delegate.next().getValue().build();
-                    }
-
-                    public void remove() {
-                        throw new UnsupportedOperationException();
                     }
                 };
             }
