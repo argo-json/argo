@@ -12,7 +12,9 @@ package argo.jdom;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -38,35 +40,40 @@ class UnmodifiableIteratorTest {
 
     @Test
     void hasNextIsHandledByConcreteSubclass() {
+        final Iterator<Object> delegate = Collections.singletonList(new Object()).iterator();
         final Iterator<Object> unmodifiableIterator = new UnmodifiableIterator<Object>() {
             @Override
             public boolean hasNext() {
-                return true;
+                return delegate.hasNext();
             }
 
             @Override
             public Object next() {
-                return new Object();
+                return delegate.next();
             }
         };
         assertThat(unmodifiableIterator.hasNext(), equalTo(true));
+        unmodifiableIterator.next();
+        assertThat(unmodifiableIterator.hasNext(), equalTo(false));
     }
 
     @Test
     void nextIsHandledByConcreteSubclass() {
         final Object next = new Object();
+        final Iterator<Object> delegate = Collections.singletonList(next).iterator();
         final Iterator<Object> unmodifiableIterator = new UnmodifiableIterator<Object>() {
             @Override
             public boolean hasNext() {
-                return true;
+                return delegate.hasNext();
             }
 
             @Override
             public Object next() {
-                return next;
+                return delegate.next();
             }
         };
         assertThat(unmodifiableIterator.next(), equalTo(next));
+        assertThrows(NoSuchElementException.class, unmodifiableIterator::next);
     }
 
 }
