@@ -24,7 +24,11 @@ final class ImmutableListFactories {
 
     static <T> List<T> immutableListOf(final Iterable<? extends T> elements) {
         if (elements instanceof Collection) {
-            return unmodifiableList(new ArrayList<T>((Collection<? extends T>) elements));
+            final List<T> result = unmodifiableList(new ArrayList<T>((Collection<? extends T>) elements));
+            if (result.contains(null)) {
+                throw new NullPointerException();
+            }
+            return result;
         } else {
             return immutableListOf(elements.iterator());
         }
@@ -33,7 +37,11 @@ final class ImmutableListFactories {
     static <T> List<T> immutableListOf(final Iterator<? extends T> elements) {
         final List<T> copy = new ArrayList<T>();
         while (elements.hasNext()) {
-            copy.add(elements.next());
+            final T next = elements.next();
+            if (next == null) {
+                throw new NullPointerException();
+            }
+            copy.add(next);
         }
         return unmodifiableList(copy);
     }
@@ -41,7 +49,11 @@ final class ImmutableListFactories {
     static <T> List<T> immutableListOf(final Iterator<? extends T> elements, final int size) {
         final List<T> copy = new ArrayList<T>(size);
         while (elements.hasNext()) {
-            copy.add(elements.next());
+            final T next = elements.next();
+            if (next == null) {
+                throw new NullPointerException();
+            }
+            copy.add(next);
         }
         return unmodifiableList(copy);
     }

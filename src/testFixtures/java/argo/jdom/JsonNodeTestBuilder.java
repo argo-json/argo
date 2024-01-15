@@ -12,6 +12,7 @@ package argo.jdom;
 
 import net.sourceforge.ickles.RandomListMemberSupplier;
 
+import java.util.Collection;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -46,9 +47,7 @@ public final class JsonNodeTestBuilder {
     ));
 
     private static JsonNode anArrayNode(final int maxDepth) {
-        return array(
-                Stream.generate(() -> aJsonNode(maxDepth)).limit(RANDOM.nextInt(5)).collect(toList())
-        );
+        return array(someJsonNodes(maxDepth));
     }
 
     private static JsonNode anObjectNode(final int maxDepth) {
@@ -75,6 +74,14 @@ public final class JsonNodeTestBuilder {
         } else {
             return RANDOM_NODE.get().apply(maxDepth - 1);
         }
+    }
+
+    public static Collection<JsonNode> someJsonNodes() {
+        return someJsonNodes(5);
+    }
+
+    private static Collection<JsonNode> someJsonNodes(final int maxDepth) {
+        return Stream.generate(() -> aJsonNode(maxDepth)).limit(RANDOM.nextInt(5)).collect(toList());
     }
 
     private JsonNodeTestBuilder() {

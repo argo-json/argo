@@ -13,14 +13,13 @@ package argo.jdom;
 import net.sourceforge.ickles.RandomSizeListSupplier;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class ImmutableListFactoriesTest {
 
@@ -50,6 +49,47 @@ final class ImmutableListFactoriesTest {
         assertThat(ImmutableListFactories.immutableListOf(emptyIterator(), 32), is(emptyList()));
     }
 
+    @Test
+    void rejectsNullList() {
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Collection<JsonNode>)null));
+    }
+
+    @Test
+    void rejectsNullNonCollectionIterable() {
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Iterable<JsonNode>)null));
+    }
+
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    void rejectsNullIterator() {
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Iterator<JsonNode>) null));
+    }
+
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    void rejectsNullIteratorWithSizeParameter() {
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(null, 32));
+    }
+    @Test
+    void rejectsListContainingNull() {
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(Collections.singletonList(null)));
+    }
+
+    @Test
+    @SuppressWarnings("FunctionalExpressionCanBeFolded")
+    void rejectsNonCollectionIterableContainingNull() {
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(Collections.singletonList(null)::iterator));
+    }
+
+    @Test
+    void rejectsIteratorContainingNull() {
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(Collections.<JsonNode>singletonList(null).iterator()));
+    }
+
+    @Test
+    void rejectsIteratorWithSizeParameterContainingNull() {
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(Collections.<JsonNode>singletonList(null).iterator(), 32));
+    }
     @Test
     void returnedListIsEqualToSourceList() {
         final List<Object> sourceList = aList();
