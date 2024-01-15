@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -14,6 +14,7 @@ import net.sourceforge.ickles.RandomSizeListSupplier;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyIterator;
@@ -30,19 +31,23 @@ final class ImmutableListFactoriesTest {
     }
 
     @Test
-    void handlesEmptyIterator() {
-        assertThat(ImmutableListFactories.immutableListOf(emptyIterator()), is(emptyList()));
-    }
-
-    @Test
     void handlesEmptyList() {
         assertThat(ImmutableListFactories.immutableListOf(emptyList()), is(emptyList()));
     }
 
     @Test
-    void returnedListIsEqualToSourceIterator() {
-        final List<Object> sourceList = aList();
-        assertThat(ImmutableListFactories.immutableListOf(sourceList.iterator()), equalTo(sourceList));
+    void handlesEmptyNonCollectionIterable() {
+        assertThat(ImmutableListFactories.immutableListOf(Collections::emptyIterator), is(emptyList()));
+    }
+
+    @Test
+    void handlesEmptyIterator() {
+        assertThat(ImmutableListFactories.immutableListOf(emptyIterator()), is(emptyList()));
+    }
+
+    @Test
+    void handlesEmptyIteratorWithIncorrectSizeParameter() {
+        assertThat(ImmutableListFactories.immutableListOf(emptyIterator(), 32), is(emptyList()));
     }
 
     @Test
@@ -52,10 +57,60 @@ final class ImmutableListFactoriesTest {
     }
 
     @Test
-    void returnedListIsImmutable() {
+    @SuppressWarnings("FunctionalExpressionCanBeFolded")
+    void returnedListIsEqualToNonCollectionSourceIterable() {
+        final List<Object> sourceList = aList();
+        assertThat(ImmutableListFactories.immutableListOf(sourceList::iterator), equalTo(sourceList));
+    }
+
+    @Test
+    void returnedListIsEqualToSourceIterator() {
+        final List<Object> sourceList = aList();
+        assertThat(ImmutableListFactories.immutableListOf(sourceList.iterator()), equalTo(sourceList));
+    }
+
+    @Test
+    void returnedListIsEqualToSourceIteratorWithSize() {
+        final List<Object> sourceList = aList();
+        assertThat(ImmutableListFactories.immutableListOf(sourceList.iterator(), sourceList.size()), equalTo(sourceList));
+    }
+
+    @Test
+    void returnedListFromListIsImmutable() {
         final List<Object> originalSourceList = aList();
         final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
         final List<Object> immutableList = ImmutableListFactories.immutableListOf(mutableSourceList);
+        mutableSourceList.add(new Object());
+        assertThat(immutableList, equalTo(originalSourceList));
+        assertThat(immutableList, not(equalTo(mutableSourceList)));
+    }
+
+    @Test
+    @SuppressWarnings("FunctionalExpressionCanBeFolded")
+    void returnedListFromNonCollectionIterableIsImmutable() {
+        final List<Object> originalSourceList = aList();
+        final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
+        final List<Object> immutableList = ImmutableListFactories.immutableListOf(mutableSourceList::iterator);
+        mutableSourceList.add(new Object());
+        assertThat(immutableList, equalTo(originalSourceList));
+        assertThat(immutableList, not(equalTo(mutableSourceList)));
+    }
+
+    @Test
+    void returnedListFromIteratorIsImmutable() {
+        final List<Object> originalSourceList = aList();
+        final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
+        final List<Object> immutableList = ImmutableListFactories.immutableListOf(mutableSourceList.iterator());
+        mutableSourceList.add(new Object());
+        assertThat(immutableList, equalTo(originalSourceList));
+        assertThat(immutableList, not(equalTo(mutableSourceList)));
+    }
+
+    @Test
+    void returnedListFromIteratorWithSizeIsImmutable() {
+        final List<Object> originalSourceList = aList();
+        final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
+        final List<Object> immutableList = ImmutableListFactories.immutableListOf(mutableSourceList.iterator(), mutableSourceList.size());
         mutableSourceList.add(new Object());
         assertThat(immutableList, equalTo(originalSourceList));
         assertThat(immutableList, not(equalTo(mutableSourceList)));
