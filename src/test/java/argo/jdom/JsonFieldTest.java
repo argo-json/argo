@@ -12,6 +12,8 @@ package argo.jdom;
 
 import org.junit.jupiter.api.Test;
 
+import static argo.TestingFactories.aString;
+import static argo.jdom.JsonNodeFactories.string;
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonNodeTestBuilder.aJsonNodeDifferentTo;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
@@ -35,9 +37,45 @@ class JsonFieldTest {
     }
 
     @Test
-    void rejectsNullValueInConstructor() {
+    void rejectsNullValueInStringConstructor() {
+        final NullPointerException nullPointerException = assertThrows(NullPointerException.class, () -> new JsonField(aString(), null));
+        assertThat(nullPointerException.getMessage(), equalTo("Value is null"));
+    }
+
+    @Test
+    void rejectsNullValueInJsonStringConstructor() {
         final NullPointerException nullPointerException = assertThrows(NullPointerException.class, () -> new JsonField(aStringNode(), null));
         assertThat(nullPointerException.getMessage(), equalTo("Value is null"));
+    }
+
+    @Test
+    void canGetNameWhenConstructedWithAString() {
+        final String name = aString();
+        assertThat(new JsonField(name, aStringNode()).getName(), equalTo(string(name)));
+    }
+
+    @Test
+    void canGetNameWhenConstructedWithAJsonString() {
+        final JsonStringNode name = aStringNode();
+        assertThat(new JsonField(name, aStringNode()).getName(), equalTo(name));
+    }
+
+    @Test
+    void canGetNameTextWhenConstructedWithAString() {
+        final String name = aString();
+        assertThat(new JsonField(name, aStringNode()).getNameText(), equalTo(name));
+    }
+
+    @Test
+    void canGetNameTextWhenConstructedWithAJsonString() {
+        final JsonStringNode name = aStringNode();
+        assertThat(new JsonField(name, aStringNode()).getNameText(), equalTo(name.getText()));
+    }
+
+    @Test
+    void canGetValue() {
+        final JsonNode value = aJsonNode();
+        assertThat(new JsonField(aStringNode(), value).getValue(), equalTo(value));
     }
 
     @Test
@@ -45,6 +83,26 @@ class JsonFieldTest {
         final JsonStringNode name = aStringNode();
         final JsonNode value = aJsonNode();
         assertThat(new JsonField(name, value).toString(), equalTo("JsonField{name=" + name + ", value=" + value + "}"));
+    }
+
+    @Test
+    @SuppressWarnings("EqualsWithItself")
+    void aJsonFieldIsEqualToItself() {
+        final JsonField aJsonField = new JsonField(aStringNode(), aJsonNode());
+        assertThat(aJsonField.equals(aJsonField), equalTo(true));
+    }
+
+    @Test
+    @SuppressWarnings({"ConstantValue", "PMD.EqualsNull"})
+    void aJsonFieldIsNotEqualToNull() {
+        final JsonField aJsonField = new JsonField(aStringNode(), aJsonNode());
+        assertThat(aJsonField.equals(null), equalTo(false));
+    }
+
+    @Test
+    void aJsonFieldIsNotEqualToAnObjectOfDifferentType() {
+        final JsonField aJsonField = new JsonField(aStringNode(), aJsonNode());
+        assertThat(aJsonField.equals(new Object()), equalTo(false));
     }
 
     @Test
