@@ -51,9 +51,7 @@ public final class JsonNodeTestBuilder {
     }
 
     private static JsonNode anObjectNode(final int maxDepth) {
-        return object(
-                Stream.generate(() -> field(aStringNode(), aJsonNode(maxDepth))).limit(RANDOM.nextInt(5)).collect(toList())
-        );
+        return object(someJsonFields(maxDepth));
     }
 
     public static JsonNode aJsonNode() {
@@ -82,6 +80,14 @@ public final class JsonNodeTestBuilder {
 
     private static Collection<JsonNode> someJsonNodes(final int maxDepth) {
         return Stream.generate(() -> aJsonNode(maxDepth)).limit(RANDOM.nextInt(5)).collect(toList());
+    }
+
+    public static Collection<JsonField> someJsonFields() {
+        return someJsonFields(5);
+    }
+
+    private static Collection<JsonField> someJsonFields(final int maxDepth) {
+        return Stream.generate(() -> field(aStringNode(), aJsonNode(maxDepth))).limit(RANDOM.nextInt(5)).collect(toList());
     }
 
     private JsonNodeTestBuilder() {
