@@ -234,7 +234,7 @@ public final class JdomParser {
         JsonNodeBuilder<JsonNode> jsonNumberNode(final String value) {
             final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);
             if (cachedNumberNode == null) {
-                final JsonNodeBuilder<JsonNode> newJsonNumberNode = aNumberBuilder(value);
+                final JsonNodeBuilder<JsonNode> newJsonNumberNode = aNumberBuilder(value); // TODO this validates the argument, but we already know it's a valid number
                 existingJsonNumberNodes.put(value, newJsonNumberNode);
                 return newJsonNumberNode;
             } else {
