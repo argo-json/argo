@@ -39,6 +39,8 @@ final class JsonNumberValidatingWriter extends Writer {
             throw new IOException("Stream closed");
     }
 
+    // TODO more efficient single character write method?
+
     public void write(final char[] cbuf, final int offset, final int length) throws IOException {
         validateArguments(cbuf, offset, length);
         ensureOpen();
@@ -64,7 +66,7 @@ final class JsonNumberValidatingWriter extends Writer {
         out = null;
     }
 
-    boolean isEndState() {
+    boolean isEndState() { // TODO should we do this on close?
         return numberParserState == NumberParserState.END;
     }
 }
