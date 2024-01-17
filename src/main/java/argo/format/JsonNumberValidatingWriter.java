@@ -53,8 +53,7 @@ final class JsonNumberValidatingWriter extends Writer {
         if (numberParserState == NumberParserState.END) {
             throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification");
         }
-        numberParserState = numberParserState.handle(-1);
-        out.write(cbuf, offset, length); // TODO can this happen character by character as we validate?
+        out.write(cbuf, offset, length);
     }
 
     public void flush() throws IOException {
@@ -63,7 +62,12 @@ final class JsonNumberValidatingWriter extends Writer {
     }
 
     public void close() {
-        out = null;
+        if (out != null) {
+            if (numberParserState != NumberParserState.ERROR_EXPECTED_DIGIT && numberParserState != NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS && numberParserState != NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
+                numberParserState = numberParserState.handle(-1);
+            }
+            out = null;
+        }
     }
 
     boolean isEndState() { // TODO should we do this on close?

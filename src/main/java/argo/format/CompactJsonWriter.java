@@ -174,7 +174,11 @@ public final class CompactJsonWriter implements JsonWriter {
 
     public void write(final Writer writer, final WriteableJsonNumber writeableJsonNumber) throws IOException {
         final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer);
-        writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
+        try {
+            writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
+        } finally {
+            jsonNumberValidatingWriter.close();
+        }
         if (!jsonNumberValidatingWriter.isEndState()) {
             throw new IllegalArgumentException("Incomplete JSON number");
         }

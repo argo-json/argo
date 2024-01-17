@@ -41,6 +41,17 @@ class JsonNumberValidatingWriterTest {
     }
 
     @Test
+    void writesValidNumberCharactersImmediately() throws IOException {
+        final StringWriter stringWriter = new StringWriter();
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter)) {
+            jsonNumberValidatingWriter.write("4");
+            assertThat(stringWriter.toString(), equalTo("4"));
+            jsonNumberValidatingWriter.write("2");
+            assertThat(stringWriter.toString(), equalTo("42"));
+        }
+    }
+
+    @Test
     void rejectsNumberWithTrailingInvalidCharacters() throws IOException {
         final StringWriter stringWriter = new StringWriter();
         try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter)) {
@@ -85,15 +96,11 @@ class JsonNumberValidatingWriterTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UseTryWithResources")
     void propagatesIoExceptionWriting() {
         final IOException ioException = new IOException("An IOException");
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(ioException));
-        try {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(ioException))) {
             final IOException actualException = assertThrows(IOException.class, () -> jsonNumberValidatingWriter.write("0"));
             assertThat(actualException, sameInstance(ioException));
-        } finally {
-            IOUtils.closeQuietly(jsonNumberValidatingWriter);
         }
     }
 
