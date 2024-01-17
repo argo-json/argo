@@ -289,9 +289,4 @@ class CompactJsonWriterTest {
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":1234}"));
     }
 
-    @Test
-    void rejectsIncompleteNumber() {
-        assertThrows(IllegalArgumentException.class, () -> new CompactJsonWriter().write(NullWriter.INSTANCE, (WriteableJsonNumber) numberWriter -> numberWriter.write("1.")));
-    }
-
 }

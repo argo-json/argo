@@ -141,7 +141,7 @@ final class JsonObjectTest {
     @Test
     void getFieldsReturnsCorrectValue() {
         final Collection<JsonField> fields = someJsonFields();
-        assertThat(JsonObject.jsonObject(fields).getFields(), equalTo(fields.stream().collect(Collectors.toMap(JsonField::getName, JsonField::getValue))));
+        assertThat(JsonObject.jsonObject(fields).getFields(), equalTo(fields.stream().collect(Collectors.toMap(JsonField::getName, JsonField::getValue)))); // TODO Flaky: java.lang.IllegalStateException: Duplicate key JsonNode{jsonNodeType=FALSE}
     }
 
     @Test

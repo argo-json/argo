@@ -18,13 +18,30 @@ import java.io.Writer;
 final class JsonNumberValidatingWriter extends Writer {
 
     private NumberParserState numberParserState = NumberParserState.BEFORE_START;
-    private final Writer writer;
+    private Writer out;
 
-    JsonNumberValidatingWriter(final Writer writer) {
-        this.writer = writer;
+    JsonNumberValidatingWriter(final Writer out) {
+        if (out == null) {
+            throw new NullPointerException();
+        }
+        this.out = out;
+    }
+
+    private static void validateArguments(final char[] cbuf, final int offset, final int length) {
+        if (offset < 0 || offset > cbuf.length || length < 0 ||
+                offset + length > cbuf.length || offset + length < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    private void ensureOpen() throws IOException {
+        if (out == null)
+            throw new IOException("Stream closed");
     }
 
     public void write(final char[] cbuf, final int offset, final int length) throws IOException {
+        validateArguments(cbuf, offset, length);
+        ensureOpen();
         for (int i = offset; i < length; i++) {
             numberParserState = numberParserState.handle(cbuf[i]);
             if (numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
@@ -35,13 +52,16 @@ final class JsonNumberValidatingWriter extends Writer {
             throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification");
         }
         numberParserState = numberParserState.handle(-1);
-        writer.write(cbuf, offset, length); // TODO can this happen character by character as we validate?
+        out.write(cbuf, offset, length); // TODO can this happen character by character as we validate?
     }
 
-    public void flush() {
+    public void flush() throws IOException {
+        ensureOpen();
+        out.flush();
     }
 
     public void close() {
+        out = null;
     }
 
     boolean isEndState() {
