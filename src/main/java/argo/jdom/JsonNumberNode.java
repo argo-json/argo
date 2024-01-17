@@ -10,7 +10,7 @@
 
 package argo.jdom;
 
-import argo.internal.JsonNumberValidator;
+import argo.internal.NumberParserState;
 
 import java.util.List;
 import java.util.Map;
@@ -28,15 +28,18 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
         if (value == null) {
             throw new NullPointerException("Value is null");
         }
-        final JsonNumberValidator jsonNumberValidator = new JsonNumberValidator();
-        try {
-            for (int i = 0; i < value.length(); i++) {
-                jsonNumberValidator.appendCharacter(value.charAt(i));
-            }
-            if (!jsonNumberValidator.isEndState()) {
+        NumberParserState numberParserState = NumberParserState.BEFORE_START;
+        for (int i = 0; i < value.length(); i++) {
+            numberParserState = numberParserState.handle(value.charAt(i));
+            if (numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
                 throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
             }
-        } catch (JsonNumberValidator.ParsingFailedException e) {
+        }
+        if (numberParserState == NumberParserState.END) {
+            throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
+        }
+        numberParserState = numberParserState.handle(-1);
+        if (numberParserState != NumberParserState.END) {
             throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
         }
         this.value = value;

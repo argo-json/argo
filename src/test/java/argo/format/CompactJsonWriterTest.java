@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,6 +10,7 @@
 
 package argo.format;
 
+import org.apache.commons.io.output.NullWriter;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
@@ -279,7 +280,6 @@ class CompactJsonWriterTest {
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":1234}"));
     }
 
-
     @Test
     void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonNumberFields() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
@@ -287,6 +287,11 @@ class CompactJsonWriterTest {
                 writer -> writer.write("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
         ));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("{\"Foo\":1234}"));
+    }
+
+    @Test
+    void rejectsIncompleteNumber() {
+        assertThrows(IllegalArgumentException.class, () -> new CompactJsonWriter().write(NullWriter.INSTANCE, (WriteableJsonNumber) numberWriter -> numberWriter.write("1.")));
     }
 
 }

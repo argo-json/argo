@@ -13,12 +13,12 @@ package argo.staj;
 final class Position {
 
     /**
-     * The line number at which the invalid syntax occurred, or -1 if the line number is unknown.
+     * The line number, or -1 if the line number is unknown.
      */
     final int line;
 
     /**
-     * The column number at which the invalid syntax occurred, or -1 if the column number is unknown.
+     * The column number, or -1 if the column number is unknown.
      */
     final int column;
 

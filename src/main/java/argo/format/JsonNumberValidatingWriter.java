@@ -10,14 +10,14 @@
 
 package argo.format;
 
-import argo.internal.JsonNumberValidator;
+import argo.internal.NumberParserState;
 
 import java.io.IOException;
 import java.io.Writer;
 
 final class JsonNumberValidatingWriter extends Writer {
 
-    private final JsonNumberValidator jsonNumberValidator = new JsonNumberValidator();
+    private NumberParserState numberParserState = NumberParserState.BEFORE_START;
     private final Writer writer;
 
     JsonNumberValidatingWriter(final Writer writer) {
@@ -25,12 +25,17 @@ final class JsonNumberValidatingWriter extends Writer {
     }
 
     public void write(final char[] cbuf, final int offset, final int length) throws IOException {
-        try {
-            jsonNumberValidator.appendCharacters(cbuf, offset, length);
-        } catch (JsonNumberValidator.ParsingFailedException e) {
-            throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification"); // TODO which characters?
+        for (int i = offset; i < length; i++) {
+            numberParserState = numberParserState.handle(cbuf[i]);
+            if (numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
+                throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification");
+            }
         }
-        writer.write(cbuf, offset, length);
+        if (numberParserState == NumberParserState.END) {
+            throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification");
+        }
+        numberParserState = numberParserState.handle(-1);
+        writer.write(cbuf, offset, length); // TODO can this happen character by character as we validate?
     }
 
     public void flush() {
@@ -40,6 +45,6 @@ final class JsonNumberValidatingWriter extends Writer {
     }
 
     boolean isEndState() {
-        return jsonNumberValidator.isEndState();
+        return numberParserState == NumberParserState.END;
     }
 }

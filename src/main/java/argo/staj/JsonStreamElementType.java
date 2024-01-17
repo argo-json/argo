@@ -10,6 +10,8 @@
 
 package argo.staj;
 
+import argo.internal.NumberParserState;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
@@ -328,189 +330,8 @@ public enum JsonStreamElementType {
 
     private static final class NumberReader extends SingleCharacterReader {
 
-        private enum ParserState {
-            BEFORE_START {
-                ParserState handle(final int character, final Position position) {
-                    switch (character) {
-                        case '-':
-                            return NEGATIVE;
-                        case '0':
-                            return ZERO;
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            return INTEGER_PART;
-                        default:
-                            throw new RuntimeException("Coding failure in Argo:  Began parsing number despite invalid first character " + (char) character);
-                    }
-                }
-            }, NEGATIVE {
-                ParserState handle(final int character, final Position position) {
-                    switch (character) {
-                        case '0':
-                            return ZERO;
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            return INTEGER_PART;
-                        default:
-                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 0 - 9", character, position);
-                    }
-                }
-            }, ZERO {
-                ParserState handle(final int character, final Position position) {
-                    switch (character) {
-                        case '.':
-                            return DECIMAL_POINT;
-                        case 'e':
-                        case 'E':
-                            return EXPONENT_MARKER;
-                        default:
-                            return END;
-                    }
-                }
-            }, INTEGER_PART {
-                ParserState handle(final int character, final Position position) {
-                    switch (character) {
-                        case '0':
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            return INTEGER_PART;
-                        case '.':
-                            return DECIMAL_POINT;
-                        case 'e':
-                        case 'E':
-                            return EXPONENT_MARKER;
-                        default:
-                            return END;
-                    }
-                }
-            }, DECIMAL_POINT {
-                ParserState handle(final int character, final Position position) {
-                    switch (character) {
-                        case '0':
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            return FRACTIONAL_PART;
-                        default:
-                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 0 - 9", character, position);
-                    }
-                }
-            }, FRACTIONAL_PART {
-                ParserState handle(final int character, final Position position) {
-                    switch (character) {
-                        case '0':
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            return FRACTIONAL_PART;
-                        case 'e':
-                        case 'E':
-                            return EXPONENT_MARKER;
-                        default:
-                            return END;
-                    }
-                }
-            }, EXPONENT_MARKER {
-                ParserState handle(final int character, final Position position) {
-                    switch (character) {
-                        case '+':
-                        case '-':
-                            return EXPONENT_SIGN;
-                        case '0':
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            return EXPONENT;
-                        default:
-                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected '+' or '-' or a digit 0 - 9", character, position);
-                    }
-                }
-            }, EXPONENT_SIGN {
-                ParserState handle(final int character, final Position position) {
-                    switch (character) {
-                        case '0':
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            return EXPONENT;
-                        default:
-                            throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 0 - 9", character, position);
-                    }
-                }
-            }, EXPONENT {
-                ParserState handle(final int character, final Position position) {
-                    switch (character) {
-                        case '0':
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                        case '9':
-                            return EXPONENT;
-                        default:
-                            return END;
-                    }
-                }
-            }, END {
-                ParserState handle(final int character, final Position position) {
-                    return this;
-                }
-            };
-
-            abstract ParserState handle(int character, Position position);
-        }
-
         private PositionTrackingPushbackReader in;
-        private ParserState parserState = ParserState.BEFORE_START;
+        private NumberParserState parserState = NumberParserState.BEFORE_START;
 
         NumberReader(final PositionTrackingPushbackReader in) {
             this.in = in;
@@ -526,8 +347,14 @@ public enum JsonStreamElementType {
         public int read() throws IOException {
             ensureOpen();
             final int nextChar = in.read();
-            parserState = parserState.handle(nextChar, in.position());
-            if (parserState == ParserState.END) {
+            parserState = parserState.handle(nextChar);
+            if (parserState == NumberParserState.ERROR_EXPECTED_DIGIT) {
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 0 - 9", nextChar, in.position());
+            } else if (parserState == NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS) {
+                throw new RuntimeException("Coding failure in Argo:  Began parsing number despite invalid first character " + asPrintableString((char) nextChar));
+            } else if (parserState == NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
+                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected '+' or '-' or a digit 0 - 9", nextChar, in.position());
+            } else if (parserState == NumberParserState.END) {
                 if (nextChar != -1) {
                     in.unread(nextChar);
                 }
