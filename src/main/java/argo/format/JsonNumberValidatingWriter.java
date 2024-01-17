@@ -35,8 +35,9 @@ final class JsonNumberValidatingWriter extends Writer {
     }
 
     private void ensureOpen() throws IOException {
-        if (out == null)
+        if (out == null) {
             throw new IOException("Stream closed");
+        }
     }
 
     // TODO more efficient single character write method?

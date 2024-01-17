@@ -10,7 +10,6 @@
 
 package argo.format;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.BrokenWriter;
 import org.apache.commons.io.output.NullWriter;
 import org.junit.jupiter.api.Test;
@@ -106,29 +105,33 @@ class JsonNumberValidatingWriterTest {
 
     @Test
     void flushIsPropagatedToDelegate() throws IOException {
-        final FlushCountingWriter flushCountingWriter = new FlushCountingWriter();
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(flushCountingWriter);
-        jsonNumberValidatingWriter.write("2");
-        jsonNumberValidatingWriter.flush();
-        assertThat(flushCountingWriter.flushCount(), equalTo(1));
+        try (FlushCountingWriter flushCountingWriter = new FlushCountingWriter(); JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(flushCountingWriter)) {
+            jsonNumberValidatingWriter.write("2");
+            jsonNumberValidatingWriter.flush();
+            assertThat(flushCountingWriter.flushCount(), equalTo(1));
+        }
     }
 
     @Test
+    @SuppressWarnings("PMD.CloseResource")
     void closeIsNotPropagatedToDelegate() throws IOException {
-        final CloseCountingWriter closeCountingWriter = new CloseCountingWriter();
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(closeCountingWriter);
-        jsonNumberValidatingWriter.write("2");
-        jsonNumberValidatingWriter.close();
-        assertThat(closeCountingWriter.closeCount(), equalTo(0));
+        try (CloseCountingWriter closeCountingWriter = new CloseCountingWriter()) {
+            final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(closeCountingWriter);
+            jsonNumberValidatingWriter.write("2");
+            jsonNumberValidatingWriter.close();
+            assertThat(closeCountingWriter.closeCount(), equalTo(0));
+        }
     }
 
     @Test
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingCanCallCloseAgain() throws IOException {
-        final CloseCountingWriter closeCountingWriter = new CloseCountingWriter();
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(closeCountingWriter);
-        jsonNumberValidatingWriter.write("2");
-        jsonNumberValidatingWriter.close();
-        jsonNumberValidatingWriter.close();
+        try (CloseCountingWriter closeCountingWriter = new CloseCountingWriter()) {
+            final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(closeCountingWriter);
+            jsonNumberValidatingWriter.write("2");
+            jsonNumberValidatingWriter.close();
+            jsonNumberValidatingWriter.close();
+        }
     }
 
     @Test

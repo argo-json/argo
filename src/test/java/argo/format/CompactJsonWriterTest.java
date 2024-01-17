@@ -10,7 +10,6 @@
 
 package argo.format;
 
-import org.apache.commons.io.output.NullWriter;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
