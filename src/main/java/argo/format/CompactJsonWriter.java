@@ -17,15 +17,15 @@ import argo.jdom.JsonStringNode;
 import java.io.IOException;
 import java.io.Writer;
 
-import static argo.format.JsonEscapedString.escapeStringTo;
 import static argo.jdom.JsonNodeFactories.string;
 
 /**
  * JsonWriter that writes JSON as compactly as possible.  Instances of this class can safely be shared between threads.
  */
-public final class CompactJsonWriter implements JsonWriter {
+public final class CompactJsonWriter extends AbstractJsonWriter {
 
-    public void write(final Writer writer, final WriteableJsonArray writeableJsonArray) throws IOException {
+    @Override
+    void write(final Writer writer, final WriteableJsonArray writeableJsonArray, final int depth) throws IOException {
         writer.write('[');
         writeableJsonArray.writeTo(new ArrayWriter() {
             private boolean isFirst = true;
@@ -65,7 +65,8 @@ public final class CompactJsonWriter implements JsonWriter {
         writer.write(']');
     }
 
-    public void write(final Writer writer, final WriteableJsonObject writeableJsonObject) throws IOException {
+    @Override
+    void write(final Writer writer, final WriteableJsonObject writeableJsonObject, final int depth) throws IOException {
         writer.write('{');
         writeableJsonObject.writeTo(new ObjectWriter() {
             private boolean isFirst = true;
@@ -166,80 +167,34 @@ public final class CompactJsonWriter implements JsonWriter {
         writer.write('}');
     }
 
-    public void write(final Writer writer, final WriteableJsonString writeableJsonString) throws IOException {
-        writer.write('"');
-        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(writer);
-        try {
-            writeableJsonString.writeTo(jsonStringEscapingWriter);
-        } finally {
-            jsonStringEscapingWriter.close();
-        }
-        writer.write('"');
-    }
-
-    public void write(final Writer writer, final WriteableJsonNumber writeableJsonNumber) throws IOException {
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer);
-        try {
-            writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
-        } finally {
-            jsonNumberValidatingWriter.close();
-        }
-        if (!jsonNumberValidatingWriter.isEndState()) {
-            throw new IllegalArgumentException("Incomplete JSON number");
-        }
-    }
-
-    public void write(final Writer writer, final JsonNode jsonNode) throws IOException {
+    @Override
+    void writeObject(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
         boolean first = true;
-        switch (jsonNode.getType()) {
-            case ARRAY:
-                writer.write('[');
-                for (final JsonNode node : jsonNode.getElements()) {
-                    if (!first) {
-                        writer.write(',');
-                    }
-                    first = false;
-                    write(writer, node);
-                }
-                writer.write(']');
-                break;
-            case OBJECT:
-                writer.write('{');
-                for (final JsonField field : jsonNode.getFieldList()) {
-                    if (!first) {
-                        writer.write(',');
-                    }
-                    first = false;
-                    writeEscapedString(field.getNameText(), writer);
-                    writer.write(':');
-                    write(writer, field.getValue());
-                }
-                writer.write('}');
-                break;
-            case STRING:
-                writeEscapedString(jsonNode.getText(), writer);
-                break;
-            case NUMBER:
-                writer.write(jsonNode.getText());
-                break;
-            case FALSE:
-                writer.write("false");
-                break;
-            case TRUE:
-                writer.write("true");
-                break;
-            case NULL:
-                writer.write("null");
-                break;
-            default:
-                throw new RuntimeException("Coding failure in Argo:  Attempt to format a JsonNode of unknown type [" + jsonNode.getType() + "];");
+        writer.write('{');
+        for (final JsonField field : jsonNode.getFieldList()) {
+            if (!first) {
+                writer.write(',');
+            }
+            first = false;
+            writeEscapedString(field.getNameText(), writer);
+            writer.write(':');
+            write(writer, field.getValue());
         }
+        writer.write('}');
     }
 
-    private static void writeEscapedString(final String text, final Writer writer) throws IOException {
-        writer.write('"');
-        escapeStringTo(writer, text);
-        writer.write('"');
+    @Override
+    void writeArray(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
+        boolean first = true;
+        writer.write('[');
+        for (final JsonNode node : jsonNode.getElements()) {
+            if (!first) {
+                writer.write(',');
+            }
+            first = false;
+            write(writer, node);
+        }
+        writer.write(']');
     }
 
 }

@@ -19,13 +19,12 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 
-import static argo.format.JsonEscapedString.escapeStringTo;
 import static argo.jdom.JsonNodeFactories.string;
 
 /**
  * JsonWriter that writes JSON in a human-readable form.  Instances of this class can safely be shared between threads.
  */
-public final class PrettyJsonWriter implements JsonWriter {
+public final class PrettyJsonWriter extends AbstractJsonWriter {
 
     private final String lineSeparator;
 
@@ -34,130 +33,73 @@ public final class PrettyJsonWriter implements JsonWriter {
         lineSeparator = System.getProperty("line.separator");
     }
 
-    public void write(final Writer writer, final WriteableJsonArray writeableJsonArray) throws IOException {
-        write(writer, writeableJsonArray, 0);
-    }
-
-    private void write(final Writer writer, final WriteableJsonArray writeableJsonArray, final int indent) throws IOException {
+    @Override
+    void write(final Writer writer, final WriteableJsonArray writeableJsonArray, final int depth) throws IOException {
         writer.write('[');
-        final PrettyArrayWriter prettyArrayWriter = new PrettyArrayWriter(writer, indent);
+        final PrettyArrayWriter prettyArrayWriter = new PrettyArrayWriter(writer, depth);
         writeableJsonArray.writeTo(prettyArrayWriter);
         if (prettyArrayWriter.wroteFields()) {
             writer.write(lineSeparator);
-            addTabs(writer, indent);
+            addTabs(writer, depth);
         }
         writer.write(']');
     }
 
-    public void write(final Writer writer, final WriteableJsonObject writeableJsonObject) throws IOException {
-        write(writer, writeableJsonObject, 0);
-    }
-
-    public void write(final Writer writer, final WriteableJsonString writeableJsonString) throws IOException {
-        writer.write('"');
-        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(writer);
-        try {
-            writeableJsonString.writeTo(jsonStringEscapingWriter);
-        } finally {
-            jsonStringEscapingWriter.close();
-        }
-        writer.write('"');
-    }
-
-    public void write(final Writer writer, final WriteableJsonNumber writeableJsonNumber) throws IOException {
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer);
-        try {
-            writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
-        } finally {
-            jsonNumberValidatingWriter.close();
-        }
-        if (!jsonNumberValidatingWriter.isEndState()) {
-            throw new IllegalArgumentException("Attempt to write an incomplete JSON number");
-        }
-    }
-
-    private void write(final Writer writer, final WriteableJsonObject writeableJsonObject, final int indent) throws IOException {
+    @Override
+    void write(final Writer writer, final WriteableJsonObject writeableJsonObject, final int depth) throws IOException {
         writer.write('{');
-        final PrettyObjectWriter prettyObjectWriter = new PrettyObjectWriter(writer, indent);
+        final PrettyObjectWriter prettyObjectWriter = new PrettyObjectWriter(writer, depth);
         writeableJsonObject.writeTo(prettyObjectWriter);
         if (prettyObjectWriter.wroteFields()) {
             writer.write(lineSeparator);
-            addTabs(writer, indent);
+            addTabs(writer, depth);
         }
         writer.write('}');
 
     }
 
-    public void write(final Writer writer, final JsonNode jsonNode) throws IOException {
-        write(writer, jsonNode, 0);
-    }
-
-    private void write(final Writer writer, final JsonNode jsonNode, final int indent) throws IOException {
-        switch (jsonNode.getType()) {
-            case ARRAY:
-                writer.write('[');
-                final List<JsonNode> elements = jsonNode.getElements();
-                final Iterator<JsonNode> elementsIterator = elements.iterator();
-                while (elementsIterator.hasNext()) {
-                    final JsonNode node = elementsIterator.next();
-                    writer.write(lineSeparator);
-                    addTabs(writer, indent + 1);
-                    write(writer, node, indent + 1);
-                    if (elementsIterator.hasNext()) {
-                        writer.write(',');
-                    }
-                }
-                if (!elements.isEmpty()) {
-                    writer.write(lineSeparator);
-                    addTabs(writer, indent);
-                }
-                writer.write(']');
-                break;
-            case OBJECT:
-                writer.write('{');
-                final List<JsonField> fields = jsonNode.getFieldList();
-                final Iterator<JsonField> fieldsIterator = fields.iterator();
-                while (fieldsIterator.hasNext()) {
-                    final JsonField field = fieldsIterator.next();
-                    writer.write(lineSeparator);
-                    addTabs(writer, indent + 1);
-                    writeEscapedString(field.getNameText(), writer);
-                    writer.write(": ");
-                    write(writer, field.getValue(), indent + 1);
-                    if (fieldsIterator.hasNext()) {
-                        writer.write(',');
-                    }
-                }
-                if (!fields.isEmpty()) {
-                    writer.write(lineSeparator);
-                    addTabs(writer, indent);
-                }
-                writer.write('}');
-                break;
-            case STRING:
-                writeEscapedString(jsonNode.getText(), writer);
-                break;
-            case NUMBER:
-                writer.write(jsonNode.getText());
-                break;
-            case FALSE:
-                writer.write("false");
-                break;
-            case TRUE:
-                writer.write("true");
-                break;
-            case NULL:
-                writer.write("null");
-                break;
-            default:
-                throw new RuntimeException("Coding failure in Argo:  Attempt to format a JsonNode of unknown type [" + jsonNode.getType() + "]");
+    @Override
+    void writeObject(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
+        writer.write('{');
+        final List<JsonField> fields = jsonNode.getFieldList();
+        final Iterator<JsonField> fieldsIterator = fields.iterator();
+        while (fieldsIterator.hasNext()) {
+            final JsonField field = fieldsIterator.next();
+            writer.write(lineSeparator);
+            addTabs(writer, depth + 1);
+            writeEscapedString(field.getNameText(), writer);
+            writer.write(": ");
+            write(writer, field.getValue(), depth + 1);
+            if (fieldsIterator.hasNext()) {
+                writer.write(',');
+            }
         }
+        if (!fields.isEmpty()) {
+            writer.write(lineSeparator);
+            addTabs(writer, depth);
+        }
+        writer.write('}');
     }
 
-    private static void writeEscapedString(final String text, final Writer writer) throws IOException {
-        writer.write('"');
-        escapeStringTo(writer, text);
-        writer.write('"');
+    @Override
+    void writeArray(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
+        writer.write('[');
+        final List<JsonNode> elements = jsonNode.getElements();
+        final Iterator<JsonNode> elementsIterator = elements.iterator();
+        while (elementsIterator.hasNext()) {
+            final JsonNode node = elementsIterator.next();
+            writer.write(lineSeparator);
+            addTabs(writer, depth + 1);
+            write(writer, node, depth + 1);
+            if (elementsIterator.hasNext()) {
+                writer.write(',');
+            }
+        }
+        if (!elements.isEmpty()) {
+            writer.write(lineSeparator);
+            addTabs(writer, depth);
+        }
+        writer.write(']');
     }
 
     private static void addTabs(final Writer writer, final int tabs) throws IOException {
