@@ -168,7 +168,12 @@ public final class CompactJsonWriter implements JsonWriter {
 
     public void write(final Writer writer, final WriteableJsonString writeableJsonString) throws IOException {
         writer.write('"');
-        writeableJsonString.writeTo(new JsonStringEscapingWriter(writer));
+        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(writer);
+        try {
+            writeableJsonString.writeTo(jsonStringEscapingWriter);
+        } finally {
+            jsonStringEscapingWriter.close();
+        }
         writer.write('"');
     }
 

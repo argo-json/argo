@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,22 +16,43 @@ import java.io.Writer;
 import static argo.format.JsonEscapedString.escapeStringTo;
 
 final class JsonStringEscapingWriter extends Writer {
-    private final Writer writer;
+    private Writer out;
 
-    JsonStringEscapingWriter(final Writer writer) {
-        this.writer = writer;
+    JsonStringEscapingWriter(final Writer out) {
+        if (out == null) {
+            throw new NullPointerException();
+        }
+        this.out = out;
+    }
+
+    private static void validateArguments(final char[] cbuf, final int offset, final int length) {
+        if (offset < 0 || offset > cbuf.length || length < 0 ||
+                offset + length > cbuf.length || offset + length < 0) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    private void ensureOpen() throws IOException {
+        if (out == null) {
+            throw new IOException("Stream closed");
+        }
     }
 
     @Override
-    public void write(final char[] cbuf, final int off, final int len) throws IOException {
-        escapeStringTo(writer, cbuf, off, len);
+    public void write(final char[] cbuf, final int offset, final int length) throws IOException {
+        validateArguments(cbuf, offset, length);
+        ensureOpen();
+        escapeStringTo(out, cbuf, offset, length);
     }
 
     @Override
-    public void flush() {
+    public void flush() throws IOException {
+        ensureOpen();
+        out.flush();
     }
 
     @Override
     public void close() {
+        out = null;
     }
 }
