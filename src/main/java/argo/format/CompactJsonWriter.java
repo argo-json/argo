@@ -176,7 +176,7 @@ public final class CompactJsonWriter extends AbstractJsonWriter {
                 writer.write(',');
             }
             first = false;
-            writeEscapedString(field.getNameText(), writer);
+            write(writer, field.getName());
             writer.write(':');
             write(writer, field.getValue());
         }

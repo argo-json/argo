@@ -67,7 +67,7 @@ public final class PrettyJsonWriter extends AbstractJsonWriter {
             final JsonField field = fieldsIterator.next();
             writer.write(lineSeparator);
             addTabs(writer, depth + 1);
-            writeEscapedString(field.getNameText(), writer);
+            write(writer, field.getName());
             writer.write(": ");
             write(writer, field.getValue(), depth + 1);
             if (fieldsIterator.hasNext()) {

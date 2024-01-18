@@ -19,12 +19,6 @@ import static argo.format.JsonEscapedString.escapeStringTo;
 
 abstract class AbstractJsonWriter implements JsonWriter {
 
-    static void writeEscapedString(final String text, final Writer writer) throws IOException {
-        writer.write('"');
-        escapeStringTo(writer, text);
-        writer.write('"');
-    }
-
     public final void write(final Writer writer, final WriteableJsonArray writeableJsonArray) throws IOException {
         write(writer, writeableJsonArray, 0);
     }
@@ -73,7 +67,10 @@ abstract class AbstractJsonWriter implements JsonWriter {
                 writeObject(writer, jsonNode, depth);
                 break;
             case STRING:
-                AbstractJsonWriter.writeEscapedString(jsonNode.getText(), writer);
+                final String text = jsonNode.getText();
+                writer.write('"');
+                escapeStringTo(writer, text);
+                writer.write('"');
                 break;
             case NUMBER:
                 writer.write(jsonNode.getText());
