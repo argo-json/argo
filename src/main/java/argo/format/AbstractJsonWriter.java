@@ -58,7 +58,7 @@ abstract class AbstractJsonWriter implements JsonWriter {
 
     abstract void write(Writer writer, WriteableJsonObject writeableJsonObject, int depth) throws IOException;
 
-    protected void write(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
+    protected final void write(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
         switch (jsonNode.getType()) { // TODO can this be replaced with polymorphism?
             case ARRAY:
                 writeArray(writer, jsonNode, depth);
