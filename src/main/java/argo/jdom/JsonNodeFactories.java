@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -12,10 +12,12 @@ package argo.jdom;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 
 /**
  * Factories for {@code JsonNode}s.
@@ -151,34 +153,6 @@ public final class JsonNodeFactories {
     }
 
     /**
-     * Generates an array where the members are only evaluated on request.  This means that arrays generated
-     * by this method might not be immutable, depending on the implementation of {@code List} used in the
-     * argument.  If you supply a list of elements, and then add an item to the list, that item will also be
-     * part of the array.
-     *
-     * @param elements {@code JsonNode}s that will populate the array
-     * @return a JSON array of the given {@code JsonNode}s
-     */
-    public static JsonNode lazyArray(final List<? extends JsonNode> elements) {
-        return new AbstractJsonArray() {
-            @Override
-            public List<JsonNode> getElements() {
-                return new AbstractList<JsonNode>() {
-                    @Override
-                    public JsonNode get(final int i) {
-                        return elements.get(i);
-                    }
-
-                    @Override
-                    public int size() {
-                        return elements.size();
-                    }
-                };
-            }
-        };
-    }
-
-    /**
      * @param elements {@code JsonNode}s that will populate the array
      * @return a JSON array of the given {@code JsonNode}s or a JSON null if the Iterator is null
      */
@@ -200,19 +174,6 @@ public final class JsonNodeFactories {
      */
     public static JsonNode nullableArray(final JsonNode... elements) {
         return elements == null ? nullNode() : array(elements);
-    }
-
-    /**
-     * Generates an array where the members are only evaluated on request.  This means that arrays generated
-     * by this method might not be immutable, depending on the implementation of {@code List} used in the
-     * argument.  If you supply a list of elements, and then add an item to the list, that item will also be
-     * part of the array.
-     *
-     * @param elements {@code JsonNode}s that will populate the array
-     * @return a JSON array of the given {@code JsonNode}s or a JSON null if the List is null
-     */
-    public static JsonNode nullableLazyArray(final List<? extends JsonNode> elements) {
-        return elements == null ? nullNode() : lazyArray(elements);
     }
 
     /**
@@ -252,58 +213,6 @@ public final class JsonNodeFactories {
     }
 
     /**
-     * Generates an object where the members are only evaluated on request.  This means that objects generated
-     * by this method might not be immutable, depending on the implementation of {@code List} used in the
-     * argument.  If you supply a list of fields, and then add an item to the list, that item will also be
-     * part of the object.
-     *
-     * @param fields {@code JsonField}s that the object will contain
-     * @return a JSON object containing the given fields
-     */
-    public static JsonNode lazyObject(final List<JsonField> fields) {
-        return new AbstractJsonObject() {
-            @Override
-            public Map<JsonStringNode, JsonNode> getFields() {
-                final Iterator<JsonField> fieldIterator = fields.iterator();
-                return new AbstractMap<JsonStringNode, JsonNode>() {
-                    @Override
-                    public Set<Entry<JsonStringNode, JsonNode>> entrySet() {
-                        return new AbstractSet<Entry<JsonStringNode, JsonNode>>() {
-                            @Override
-                            public Iterator<Entry<JsonStringNode, JsonNode>> iterator() {
-                                return new Iterator<Entry<JsonStringNode, JsonNode>>() {
-                                    public boolean hasNext() {
-                                        return fieldIterator.hasNext();
-                                    }
-
-                                    public Entry<JsonStringNode, JsonNode> next() {
-                                        final JsonField jsonField = fieldIterator.next();
-                                        return new JsonFieldEntry(jsonField.getName(), jsonField.getValue());
-                                    }
-
-                                    public void remove() {
-                                        throw new UnsupportedOperationException("Removal not supported");
-                                    }
-                                };
-                            }
-
-                            @Override
-                            public int size() {
-                                return fields.size();
-                            }
-                        };
-                    }
-                };
-            }
-
-            @Override
-            public List<JsonField> getFieldList() {
-                return unmodifiableList(fields);
-            }
-        };
-    }
-
-    /**
      * @param fields {@code JsonField}s that the object will contain
      * @return a JSON object containing the given fields or a JSON null if the Map is null
      */
@@ -333,41 +242,6 @@ public final class JsonNodeFactories {
      */
     public static JsonNode nullableObject(final Iterable<JsonField> fields) {
         return fields == null ? nullNode() : object(fields);
-    }
-
-    /**
-     * Generates an object where the members are only evaluated on request.  This means that objects generated
-     * by this method might not be immutable, depending on the implementation of {@code List} used in the
-     * argument.  If you supply a list of fields, and then add an item to the list, that item will also be
-     * part of the object.
-     *
-     * @param fields {@code JsonField}s that the object will contain
-     * @return a JSON object containing the given fields or a JSON null if the List is null
-     */
-    public static JsonNode nullableLazyObject(final List<JsonField> fields) {
-        return fields == null ? nullNode() : lazyObject(fields);
-    }
-
-    private static final class JsonFieldEntry implements Map.Entry<JsonStringNode, JsonNode> {
-        private final JsonStringNode key;
-        private final JsonNode value;
-
-        private JsonFieldEntry(final JsonStringNode key, final JsonNode value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        public JsonStringNode getKey() {
-            return key;
-        }
-
-        public JsonNode getValue() {
-            return value;
-        }
-
-        public JsonNode setValue(final JsonNode value) {
-            throw new UnsupportedOperationException("Not supported");
-        }
     }
 
     /**

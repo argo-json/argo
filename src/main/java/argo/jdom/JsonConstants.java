@@ -25,22 +25,27 @@ final class JsonConstants extends JsonNode implements JsonNodeBuilder<JsonNode> 
         this.jsonNodeType = jsonNodeType;
     }
 
+    @Override
     public JsonNodeType getType() {
         return jsonNodeType;
     }
 
+    @Override
     public boolean hasText() {
         return false;
     }
 
+    @Override
     public String getText() {
         throw new UnsupportedOperationException("Does not have text");
     }
 
+    @Override
     public boolean hasFields() {
         return false;
     }
 
+    @Override
     public Map<JsonStringNode, JsonNode> getFields() {
         throw new UnsupportedOperationException("Does not have fields");
     }
@@ -50,10 +55,12 @@ final class JsonConstants extends JsonNode implements JsonNodeBuilder<JsonNode> 
         throw new UnsupportedOperationException("Does not have fields");
     }
 
+    @Override
     public boolean hasElements() {
         return false;
     }
 
+    @Override
     public List<JsonNode> getElements() {
         throw new UnsupportedOperationException("Does not have elements");
     }

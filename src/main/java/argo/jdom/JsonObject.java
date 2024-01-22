@@ -15,7 +15,7 @@ import java.util.*;
 import static argo.jdom.ImmutableListFactories.immutableListOf;
 import static java.util.Collections.unmodifiableMap;
 
-final class JsonObject extends AbstractJsonObject {
+final class JsonObject extends JsonNode {
 
     private static final JsonObject EMPTY_OBJECT = new JsonObject(Collections.<JsonField>emptyList());
 
@@ -43,6 +43,26 @@ final class JsonObject extends AbstractJsonObject {
     }
 
     @Override
+    public JsonNodeType getType() {
+        return JsonNodeType.OBJECT;
+    }
+
+    @Override
+    public boolean hasText() {
+        return false;
+    }
+
+    @Override
+    public String getText() {
+        throw new UnsupportedOperationException("Objects do not have text");
+    }
+
+    @Override
+    public boolean hasFields() {
+        return true;
+    }
+
+    @Override
     public Map<JsonStringNode, JsonNode> getFields() {
         if (fieldMap == null) {
             final Map<JsonStringNode, JsonNode> modifiableFieldMap = new LinkedHashMap<JsonStringNode, JsonNode>(fields.size() * 4 / 3 + 1);
@@ -57,5 +77,38 @@ final class JsonObject extends AbstractJsonObject {
     @Override
     public List<JsonField> getFieldList() {
         return fields;
+    }
+
+    @Override
+    public boolean hasElements() {
+        return false;
+    }
+
+    @Override
+    public List<JsonNode> getElements() {
+        throw new UnsupportedOperationException("Objects do not have elements");
+    }
+
+    @Override
+    public boolean equals(final Object that) {
+        if (this == that) {
+            return true;
+        }
+        if (that == null || getClass() != that.getClass()) {
+            return false;
+        }
+
+        final JsonObject thatJsonObject = (JsonObject) that;
+        return this.getFieldList().equals(thatJsonObject.getFieldList());
+    }
+
+    @Override
+    public int hashCode() {
+        return getFieldList().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "JsonObject{fields=" + getFieldList() + "}";
     }
 }

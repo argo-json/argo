@@ -33,22 +33,27 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
         return "".equals(value) ? EMPTY : new JsonStringNode(value);
     }
 
+    @Override
     public JsonNodeType getType() {
         return JsonNodeType.STRING;
     }
 
+    @Override
     public boolean hasText() {
         return true;
     }
 
+    @Override
     public String getText() {
         return value;
     }
 
+    @Override
     public boolean hasFields() {
         return false;
     }
 
+    @Override
     public Map<JsonStringNode, JsonNode> getFields() {
         throw new UnsupportedOperationException("Strings do not have fields");
     }
@@ -58,10 +63,12 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
         throw new UnsupportedOperationException("Strings do not have fields");
     }
 
+    @Override
     public boolean hasElements() {
         return false;
     }
 
+    @Override
     public List<JsonNode> getElements() {
         throw new UnsupportedOperationException("Strings do not have elements");
     }

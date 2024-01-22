@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,13 +15,13 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
 
 import static argo.MapBuilder.mapBuilder;
 import static argo.jdom.JsonNodeFactories.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
@@ -36,20 +36,6 @@ final class JsonNodeFactoriesTest {
                         array(asList(
                                 string("Way there")
                                 , number("0.5")
-                        ))
-                ));
-    }
-
-    @Test
-    void createsALazyJsonArrayNode() {
-        final List<JsonNode> elements = new ArrayList<>();
-        final JsonNode jsonNode = lazyArray(elements);
-        elements.add(string("late element"));
-        assertThat(
-                jsonNode
-                , equalTo(
-                        array(singletonList(
-                                (JsonNode) string("late element")
                         ))
                 ));
     }
@@ -91,20 +77,6 @@ final class JsonNodeFactoriesTest {
     }
 
     @Test
-    void createsANullableLazyJsonArrayNode() {
-        final List<JsonNode> elements = new ArrayList<>();
-        final JsonNode jsonNode = nullableLazyArray(elements);
-        elements.add(string("late element"));
-        assertThat(
-                jsonNode
-                , equalTo(
-                        array(singletonList(
-                                (JsonNode) string("late element")
-                        ))
-                ));
-    }
-
-    @Test
     void createsNullNodeWithNullJavaIterableOfElements() {
         assertThat(
                 nullableArray((Iterable<? extends JsonNode>) null)
@@ -122,14 +94,6 @@ final class JsonNodeFactoriesTest {
     void createsNullNodeWithNullJavaArrayOfElements() {
         assertThat(
                 nullableArray((JsonNode[]) null)
-                , equalTo(nullNode()));
-    }
-
-    @Test
-    void createsANullNodeWithLazyJsonArrayNull() {
-        final JsonNode jsonNode = nullableLazyArray(null);
-        assertThat(
-                jsonNode
                 , equalTo(nullNode()));
     }
 
@@ -171,18 +135,6 @@ final class JsonNodeFactoriesTest {
                                 .build()
                 ))
         );
-    }
-
-    @Test
-    void createsALazyJsonObjectNode() {
-        final List<JsonField> fields = new ArrayList<>();
-        final JsonNode jsonNode = lazyObject(fields);
-        fields.add(field("late", string("field")));
-        assertThat(
-                jsonNode
-                , equalTo(
-                        object(field("late", string("field")))
-                ));
     }
 
     @Test
@@ -241,18 +193,6 @@ final class JsonNodeFactoriesTest {
     }
 
     @Test
-    void createsANullableLazyJsonObjectNode() {
-        final List<JsonField> fields = new ArrayList<>();
-        final JsonNode jsonNode = nullableLazyObject(fields);
-        fields.add(field("late", string("field")));
-        assertThat(
-                jsonNode
-                , equalTo(
-                        object(field("late", string("field")))
-                ));
-    }
-
-    @Test
     void nullableJsonObjectNodeWithMapCreatesNullNode() {
         assertThat(
                 nullableObject((Map<JsonStringNode, ? extends JsonNode>) null)
@@ -282,16 +222,6 @@ final class JsonNodeFactoriesTest {
                 nullableObject((Iterable<JsonField>) null)
                 , equalTo(nullNode())
         );
-    }
-
-    @Test
-    void aNullableLazyJsonObjectNodeCreatesNullNode() {
-        final JsonNode jsonNode = nullableLazyObject(null);
-        assertThat(
-                jsonNode
-                , equalTo(
-                        nullNode()
-                ));
     }
 
     @Test

@@ -55,22 +55,27 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
         }
     }
 
+    @Override
     public JsonNodeType getType() {
         return NUMBER;
     }
 
+    @Override
     public boolean hasText() {
         return true;
     }
 
+    @Override
     public String getText() {
         return value;
     }
 
+    @Override
     public boolean hasFields() {
         return false;
     }
 
+    @Override
     public Map<JsonStringNode, JsonNode> getFields() {
         throw new UnsupportedOperationException("Numbers do not have fields");
     }
@@ -80,10 +85,12 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
         throw new UnsupportedOperationException("Numbers do not have fields");
     }
 
+    @Override
     public boolean hasElements() {
         return false;
     }
 
+    @Override
     public List<JsonNode> getElements() {
         throw new UnsupportedOperationException("Numbers do not have elements");
     }
