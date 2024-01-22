@@ -16,8 +16,7 @@ import static argo.jdom.JsonNodeFactories.string;
  * A field in a JSON object.  Immutable.
  */
 public final class JsonField {
-    private transient JsonStringNode jsonStringNode; // TODO whiffy
-    private final String name;
+    private final JsonStringNode name;
     private final JsonNode value;
 
     /**
@@ -27,14 +26,7 @@ public final class JsonField {
      * @param value any {@code JsonNode} representing the value of the field.
      */
     public JsonField(final String name, final JsonNode value) {
-        if (name == null) {
-            throw new NullPointerException("Name is null");
-        }
-        this.name = name;
-        if (value == null) {
-            throw new NullPointerException("Value is null");
-        }
-        this.value = value;
+        this(name == null ? null : string(name), value);
     }
 
     /**
@@ -47,8 +39,7 @@ public final class JsonField {
         if (name == null) {
             throw new NullPointerException("Name is null");
         }
-        this.name = name.getText();
-        this.jsonStringNode = name;
+        this.name = name;
         if (value == null) {
             throw new NullPointerException("Value is null");
         }
@@ -59,17 +50,14 @@ public final class JsonField {
      * @return a JSON string representing the name.
      */
     public JsonStringNode getName() {
-        if (jsonStringNode == null) {
-            jsonStringNode = string(name);
-        }
-        return jsonStringNode;
+        return name;
     }
 
     /**
      * @return the String representation of the name of the field.
      */
     public String getNameText() {
-        return name;
+        return name.getText();
     }
 
     /**
@@ -80,17 +68,16 @@ public final class JsonField {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
+    public boolean equals(final Object that) {
+        if (this == that) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (that == null || getClass() != that.getClass()) {
             return false;
         }
 
-        final JsonField jsonField = (JsonField) o;
-        return name.equals(jsonField.name) && value.equals(jsonField.value);
-
+        final JsonField thatJsonField = (JsonField) that;
+        return name.equals(thatJsonField.name) && value.equals(thatJsonField.value);
     }
 
     @Override
@@ -102,6 +89,6 @@ public final class JsonField {
 
     @Override
     public String toString() {
-        return "JsonField{name=" + getName() + ", value=" + value + '}';
+        return "JsonField{name=" + name + ", value=" + value + '}';
     }
 }
