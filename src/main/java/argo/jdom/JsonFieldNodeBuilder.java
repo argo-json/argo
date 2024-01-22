@@ -12,18 +12,18 @@ package argo.jdom;
 
 import static argo.jdom.JsonNodeFactories.field;
 
-final class UnmodifiableJsonStringNamedJsonFieldBuilder implements JsonFieldBuilder {
+final class JsonFieldNodeBuilder implements JsonFieldBuilder {
 
     private final JsonStringNode name;
     private final JsonNodeBuilder<?> valueBuilder;
 
-    private UnmodifiableJsonStringNamedJsonFieldBuilder(final JsonStringNode name, final JsonNodeBuilder<?> valueBuilder) {
+    private JsonFieldNodeBuilder(final JsonStringNode name, final JsonNodeBuilder<?> valueBuilder) {
         this.name = name;
         this.valueBuilder = valueBuilder;
     }
 
-    static UnmodifiableJsonStringNamedJsonFieldBuilder anUnmodifiableJsonStringNamedJsonFieldBuilder(final JsonStringNode key, final JsonNodeBuilder<?> valueBuilder) {
-        return new UnmodifiableJsonStringNamedJsonFieldBuilder(key, valueBuilder);
+    static JsonFieldNodeBuilder aJsonFieldBuilder(final JsonStringNode key, final JsonNodeBuilder<?> valueBuilder) {
+        return new JsonFieldNodeBuilder(key, valueBuilder);
     }
 
     public String name() {

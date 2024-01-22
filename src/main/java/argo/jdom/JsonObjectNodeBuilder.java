@@ -13,8 +13,7 @@ package argo.jdom;
 import java.util.*;
 
 import static argo.jdom.JsonNodeFactories.string;
-import static argo.jdom.UnmodifiableJsonStringNamedJsonFieldBuilder.anUnmodifiableJsonStringNamedJsonFieldBuilder;
-import static argo.jdom.UnmodifiableStringNamedJsonFieldBuilder.anUnmodifiableStringNamedJsonFieldBuilder;
+import static argo.jdom.JsonFieldNodeBuilder.aJsonFieldBuilder;
 
 /**
  * Builder for {@code JsonNode}s representing JSON objects.
@@ -94,7 +93,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
      * @return the modified object builder.
      */
     public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder<?> value) {
-        return withFieldBuilder(anUnmodifiableStringNamedJsonFieldBuilder(name, value));
+        return withField(name == null ? null : string(name), value);
     }
 
     /**
@@ -105,7 +104,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
      * @return the modified object builder.
      */
     public JsonObjectNodeBuilder withField(final JsonStringNode name, final JsonNodeBuilder<?> value) {
-        return withFieldBuilder(anUnmodifiableJsonStringNamedJsonFieldBuilder(name, value));
+        return withFieldBuilder(aJsonFieldBuilder(name, value));
     }
 
     JsonObjectNodeBuilder withFieldBuilder(final JsonFieldBuilder jsonFieldBuilder) {
