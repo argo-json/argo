@@ -23,6 +23,8 @@ package argo.jdom;
  *
  * @param <T> The type of Object worked on.
  * @param <U> The type of Object returned.
+ *
+ * @see argo.jdom.JsonNodeSelectors
  */
 public final class JsonNodeSelector<T, U> {
 
@@ -35,11 +37,14 @@ public final class JsonNodeSelector<T, U> {
     /**
      * Determines whether this {@code JsonNodeSelector} can extract a value from the given {@code JsonNode}.
      *
-     * @param jsonNode the {@code JsonNode} to test.
+     * @param argument the {@code JsonNode} to test.
      * @return true if a value can be extracted from the given {@code JsonNode}, false otherwise.
      */
-    public boolean matches(final T jsonNode) {
-        return valueGetter.matchesNode(jsonNode);
+    public boolean matches(final T argument) {
+        if (argument == null) {
+            throw new NullPointerException();
+        }
+        return valueGetter.matchesNode(argument);
     }
 
     /**
@@ -50,13 +55,16 @@ public final class JsonNodeSelector<T, U> {
      * @throws IllegalArgumentException if calling {@code matches} with the given {@code JsonNode} would return false, indicating no value can be extracted from it.
      */
     public U getValue(final T argument) {
+        if (argument == null) {
+            throw new NullPointerException();
+        }
         return valueGetter.applyTo(argument);
     }
 
     /**
      * <p>Constructs a JsonNodeSelector consisting of this chained with the given {@code JsonNodeSelector}.</p>
      * 
-     * <p>For example, if we have {@code JsonNodeSelectors} for the first element of an array, and another that
+     * <p>For example, if we have a {@code JsonNodeSelector} for the first element of an array, and another that
      * selects the second element of an array, and we chain them together in that order, we will get a selector that
      * works on nested arrays, selecting the second element from an array stored in the first element of a parent
      * array.</p>

@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -37,7 +37,7 @@ final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNod
     }
 
     private JsonNodeDoesNotMatchChainedJsonNodeSelectorException(final Functor<?, ?> failedNode, final List<JsonNodeSelector<?, ?>> failPath) {
-        super("Failed to match any JSON node at [" + getShortFormFailPath(failPath) + "]");
+        super("Failed to match [" + failedNode.shortForm() + "] at [" + getShortFormFailPath(failPath) + "]");
         this.failedNode = failedNode;
         this.failPath = failPath;
     }
@@ -53,11 +53,4 @@ final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNod
         return result.toString();
     }
 
-    @Override
-    public String toString() {
-        return "JsonNodeDoesNotMatchJsonNodeSelectorException{" +
-                "failedNode=" + failedNode +
-                ", failPath=" + failPath +
-                '}';
-    }
 }

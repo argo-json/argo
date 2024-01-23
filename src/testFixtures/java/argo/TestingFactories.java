@@ -25,8 +25,12 @@ public final class TestingFactories {
         return new RandomSupplierSwitcher<>(supplier, suppliers);
     }
 
+    public static int aSmallNonNegativeInt() {
+        return RANDOM.nextInt(20);
+    }
+
     public static String aString() {
-        return RandomStringUtils.random(RANDOM.nextInt(20));
+        return RandomStringUtils.random(aSmallNonNegativeInt());
     }
 
     private TestingFactories() {

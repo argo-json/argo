@@ -42,7 +42,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A node";
+                return "any value";
             }
 
             public JsonNode typeSafeApplyTo(final JsonNode jsonNode) {
@@ -51,7 +51,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "any node";
+                return shortForm();
             }
         }));
     }
@@ -63,7 +63,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form string";
+                return "a string";
             }
 
             public String typeSafeApplyTo(final JsonNode jsonNode) {
@@ -84,7 +84,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form nullable string";
+                return "a string or null";
             }
 
             public String typeSafeApplyTo(final JsonNode jsonNode) {
@@ -93,7 +93,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "a value that is a string";
+                return "a value that is a string or null";
             }
         }));
     }
@@ -105,7 +105,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form nullable number";
+                return "a number";
             }
 
             public String typeSafeApplyTo(final JsonNode jsonNode) {
@@ -126,7 +126,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form nullable number";
+                return "a number or null";
             }
 
             public String typeSafeApplyTo(final JsonNode jsonNode) {
@@ -135,7 +135,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "a value that is a number";
+                return "a value that is a number or null";
             }
         }));
     }
@@ -147,7 +147,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form boolean";
+                return "a true or false";
             }
 
             public Boolean typeSafeApplyTo(final JsonNode jsonNode) {
@@ -156,7 +156,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "a true or false";
+                return "a value that is true or false";
             }
         }));
     }
@@ -168,7 +168,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form nullable boolean";
+                return "a true or false or null";
             }
 
             public Boolean typeSafeApplyTo(final JsonNode jsonNode) {
@@ -185,7 +185,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "a true or false";
+                return "a value that is true or false or null";
             }
         }));
     }
@@ -197,7 +197,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form null";
+                return "null value";
             }
 
             public JsonNode typeSafeApplyTo(final JsonNode jsonNode) {
@@ -206,7 +206,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "a null";
+                return shortForm();
             }
         }));
     }
@@ -218,7 +218,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form array";
+                return "an array";
             }
 
             public List<JsonNode> typeSafeApplyTo(final JsonNode jsonNode) {
@@ -227,7 +227,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "an array";
+                return shortForm();
             }
         }));
     }
@@ -239,7 +239,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form array";
+                return "an array or null";
             }
 
             public List<JsonNode> typeSafeApplyTo(final JsonNode jsonNode) {
@@ -254,7 +254,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "an array or null";
+                return shortForm();
             }
         }));
     }
@@ -266,7 +266,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form object";
+                return "an object";
             }
 
             public Map<JsonStringNode, JsonNode> typeSafeApplyTo(final JsonNode jsonNode) {
@@ -275,7 +275,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "an object";
+                return shortForm();
             }
         }));
     }
@@ -287,7 +287,7 @@ public final class JsonNodeSelectors {
             }
 
             public String shortForm() {
-                return "A short form nullable object";
+                return "an object or null";
             }
 
             public Map<JsonStringNode, JsonNode> typeSafeApplyTo(final JsonNode jsonNode) {
@@ -303,7 +303,7 @@ public final class JsonNodeSelectors {
 
             @Override
             public String toString() {
-                return "an object or null";
+                return shortForm();
             }
         }));
     }
@@ -313,6 +313,9 @@ public final class JsonNodeSelectors {
     }
 
     public static JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode> aField(final JsonStringNode fieldName) {
+        if (fieldName == null) {
+            throw new NullPointerException();
+        }
         return new JsonNodeSelector<Map<JsonStringNode, JsonNode>, JsonNode>(new LeafFunctor<Map<JsonStringNode, JsonNode>, JsonNode>() {
             public boolean matchesNode(final Map<JsonStringNode, JsonNode> jsonNode) {
                 return jsonNode.containsKey(fieldName);
@@ -342,6 +345,9 @@ public final class JsonNodeSelectors {
     }
 
     public static JsonNodeSelector<List<JsonNode>, JsonNode> anElement(final int index) {
+        if (index < 0) {
+            throw new IllegalArgumentException(Integer.toString(index));
+        }
         return new JsonNodeSelector<List<JsonNode>, JsonNode>(new LeafFunctor<List<JsonNode>, JsonNode>() {
             public boolean matchesNode(final List<JsonNode> jsonNode) {
                 return jsonNode.size() > index;

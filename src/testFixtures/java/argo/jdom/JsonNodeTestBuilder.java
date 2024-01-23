@@ -46,8 +46,16 @@ public final class JsonNodeTestBuilder {
             integer -> falseNode()
     ));
 
+    public static JsonNode anArrayNode() {
+        return anArrayNode(10);
+    }
+
     private static JsonNode anArrayNode(final int maxDepth) {
         return array(someJsonNodes(maxDepth));
+    }
+
+    public static JsonNode anObjectNode() {
+        return anObjectNode(10);
     }
 
     private static JsonNode anObjectNode(final int maxDepth) {
