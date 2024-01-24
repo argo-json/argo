@@ -12,7 +12,7 @@ package argo.jdom;
 
 import static argo.jdom.JsonNodeFactories.field;
 
-final class JsonFieldNodeBuilder implements JsonFieldBuilder {
+final class JsonFieldNodeBuilder implements NamedJsonFieldBuilder {
 
     private final JsonStringNode name;
     private final JsonNodeBuilder<?> valueBuilder;

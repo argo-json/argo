@@ -20,44 +20,21 @@ import static argo.jdom.JsonFieldNodeBuilder.aJsonFieldBuilder;
  */
 public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
-    private final JsonFieldIteratorBuilder jsonFieldIteratorBuilder;
+    private final JsonFieldIteratorBuilder<NamedJsonFieldBuilder> jsonFieldIteratorBuilder;
 
-    private JsonObjectNodeBuilder(final JsonFieldIteratorBuilder jsonFieldIteratorBuilder) {
+    private JsonObjectNodeBuilder(final JsonFieldIteratorBuilder<NamedJsonFieldBuilder> jsonFieldIteratorBuilder) {
         this.jsonFieldIteratorBuilder = jsonFieldIteratorBuilder;
     }
 
     static JsonObjectNodeBuilder duplicateFieldPermittingJsonObjectNodeBuilder() {
-        return new JsonObjectNodeBuilder(new JsonFieldIteratorBuilder() {
-            private final List<JsonFieldBuilder> fieldBuilders = new LinkedList<JsonFieldBuilder>();
-
-            public void add(final JsonFieldBuilder jsonFieldBuilder) {
-                fieldBuilders.add(jsonFieldBuilder);
-            }
-
-            public int size() {
-                return fieldBuilders.size();
-            }
-
-            public Iterator<JsonField> build() {
-                final Iterator<JsonFieldBuilder> delegate = fieldBuilders.iterator();
-                return new UnmodifiableIterator<JsonField>() {
-                    public boolean hasNext() {
-                        return delegate.hasNext();
-                    }
-
-                    public JsonField next() {
-                        return delegate.next().build();
-                    }
-                };
-            }
-        });
+        return new JsonObjectNodeBuilder(new DuplicateKeyPermittingJsonFieldIteratorBuilder<NamedJsonFieldBuilder>());
     }
 
     static JsonObjectNodeBuilder duplicateFieldRejectingJsonObjectNodeBuilder() {
-        return new JsonObjectNodeBuilder(new JsonFieldIteratorBuilder() {
-            private final Map<String, JsonFieldBuilder> fieldBuilders = new LinkedHashMap<String, JsonFieldBuilder>();
+        return new JsonObjectNodeBuilder(new JsonFieldIteratorBuilder<NamedJsonFieldBuilder>() {
+            private final Map<String, NamedJsonFieldBuilder> fieldBuilders = new LinkedHashMap<String, NamedJsonFieldBuilder>();
 
-            public void add(final JsonFieldBuilder jsonFieldBuilder) {
+            public void add(final NamedJsonFieldBuilder jsonFieldBuilder) {
                 final String key = jsonFieldBuilder.name();
                 if (fieldBuilders.containsKey(key)) {
                     throw new IllegalArgumentException("Attempt to add a field with pre-existing key [" + string(key) + "]");
@@ -71,7 +48,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
             }
 
             public Iterator<JsonField> build() {
-                final Iterator<Map.Entry<String, JsonFieldBuilder>> delegate = fieldBuilders.entrySet().iterator();
+                final Iterator<Map.Entry<String, NamedJsonFieldBuilder>> delegate = fieldBuilders.entrySet().iterator();
                 return new UnmodifiableIterator<JsonField>() {
                     public boolean hasNext() {
                         return delegate.hasNext();
@@ -107,7 +84,7 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
         return withFieldBuilder(aJsonFieldBuilder(name, value));
     }
 
-    JsonObjectNodeBuilder withFieldBuilder(final JsonFieldBuilder jsonFieldBuilder) {
+    JsonObjectNodeBuilder withFieldBuilder(final NamedJsonFieldBuilder jsonFieldBuilder) {
         jsonFieldIteratorBuilder.add(jsonFieldBuilder);
         return this;
     }
@@ -116,11 +93,4 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
         return JsonObject.jsonObject(jsonFieldIteratorBuilder.build(), jsonFieldIteratorBuilder.size());
     }
 
-    private interface JsonFieldIteratorBuilder {
-        void add(JsonFieldBuilder jsonFieldBuilder);
-
-        int size();
-
-        Iterator<JsonField> build();
-    }
 }
