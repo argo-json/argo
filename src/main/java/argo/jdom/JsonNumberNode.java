@@ -25,32 +25,42 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
     private final String value;
 
     private JsonNumberNode(final String value) {
-        if (value == null) {
-            throw new NullPointerException("Value is null");
-        }
-        NumberParserState numberParserState = NumberParserState.BEFORE_START;
-        for (int i = 0; i < value.length(); i++) {
-            numberParserState = numberParserState.handle(value.charAt(i));
-            if (numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
-                throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
-            }
-        }
-        if (numberParserState == NumberParserState.END) {
-            throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
-        }
-        numberParserState = numberParserState.handle(-1);
-        if (numberParserState != NumberParserState.END) {
-            throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
-        }
         this.value = value;
     }
 
     static JsonNumberNode jsonNumberNode(final String value) {
+        return singletonAwareJsonNumberNode(value, true);
+    }
+
+    static JsonNumberNode prevalidatedJsonNumberNode(final String value) {
+        return singletonAwareJsonNumberNode(value, false);
+    }
+
+    private static JsonNumberNode singletonAwareJsonNumberNode(final String value, final boolean validate) {
         if ("0".equals(value)) {
             return ZERO;
         } else if ("1".equals(value)) {
             return ONE;
         } else {
+            if (validate) {
+                if (value == null) {
+                    throw new NullPointerException("Value is null");
+                }
+                NumberParserState numberParserState = NumberParserState.BEFORE_START;
+                for (int i = 0; i < value.length(); i++) {
+                    numberParserState = numberParserState.handle(value.charAt(i));
+                    if (numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
+                        throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
+                    }
+                }
+                if (numberParserState == NumberParserState.END) {
+                    throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
+                }
+                numberParserState = numberParserState.handle(-1);
+                if (numberParserState != NumberParserState.END) {
+                    throw new IllegalArgumentException("Attempt to construct a JsonNumber with a String [" + value + "] that does not match the JSON number specification");
+                }
+            }
             return new JsonNumberNode(value);
         }
     }

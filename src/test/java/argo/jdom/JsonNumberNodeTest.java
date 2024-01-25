@@ -170,6 +170,21 @@ final class JsonNumberNodeTest {
     }
 
     @Test
+    void prevalidatedZeroIsAlwaysTheSameInstance() {
+        assertThat(JsonNumberNode.prevalidatedJsonNumberNode("0"), sameInstance(JsonNumberNode.prevalidatedJsonNumberNode("0")));
+    }
+
+    @Test
+    void prevalidatedOneIsAlwaysTheSameInstance() {
+        assertThat(JsonNumberNode.prevalidatedJsonNumberNode("1"), sameInstance(JsonNumberNode.prevalidatedJsonNumberNode("1")));
+    }
+
+    @Test
+    void prevalidatedNumberIsNotRevalidated() {
+        assertThat(JsonNumberNode.prevalidatedJsonNumberNode("rubbish").getText(), equalTo("rubbish"));
+    }
+
+    @Test
     void getTypeReturnsNumber() {
         assertThat(JsonNodeFactories.number(aValidJsonNumber()).getType(), equalTo(JsonNodeType.NUMBER));
     }

@@ -23,6 +23,7 @@ import java.util.Stack;
 
 import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.field;
+import static argo.jdom.JsonNumberNode.prevalidatedJsonNumberNode;
 
 /**
  * Parses a JSON character stream into a {@code JsonNode} object.  Instances of this class can safely be shared
@@ -270,7 +271,7 @@ public final class JdomParser {
         JsonNodeBuilder<JsonNode> jsonNumberNode(final String value) {
             final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);
             if (cachedNumberNode == null) {
-                final JsonNodeBuilder<JsonNode> newJsonNumberNode = aNumberBuilder(value); // TODO this validates the argument, but we already know it's a valid number
+                final JsonNodeBuilder<JsonNode> newJsonNumberNode = prevalidatedJsonNumberNode(value);
                 existingJsonNumberNodes.put(value, newJsonNumberNode);
                 return newJsonNumberNode;
             } else {
