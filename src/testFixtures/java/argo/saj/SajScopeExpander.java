@@ -8,25 +8,19 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.jdom;
+package argo.saj;
 
-import argo.saj.InvalidSyntaxException;
-import argo.saj.JsonListener;
+import argo.staj.StajParser;
 
 import java.io.IOException;
 
-public final class JdomScopeExpander {
+public final class SajScopeExpander {
 
-    private JdomScopeExpander() {
+    private SajScopeExpander() {
     }
 
-    public static JsonNode parse(final JdomParser jdomParser, final ScopeExpandedParseExecutor scopeExpandedParseExecutor) throws InvalidSyntaxException, IOException {
-        return jdomParser.parse(scopeExpandedParseExecutor::parseUsing);
-    }
-
-    @FunctionalInterface
-    public interface ScopeExpandedParseExecutor {
-        void parseUsing(JsonListener jsonListener) throws InvalidSyntaxException, IOException;
+    public static void parse(final SajParser sajParser, final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException, IOException {
+        sajParser.parse(jsonListener, stajParser);
     }
 
 }

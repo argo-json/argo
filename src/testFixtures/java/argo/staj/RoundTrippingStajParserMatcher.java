@@ -15,6 +15,8 @@ import argo.jdom.JdomParser;
 import argo.jdom.JdomScopeExpander;
 import argo.jdom.JsonNode;
 import argo.saj.InvalidSyntaxException;
+import argo.saj.SajParser;
+import argo.saj.SajScopeExpander;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
@@ -45,8 +47,8 @@ public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatc
     protected boolean matchesSafely(final StajParser item, final Description mismatchDescription) {
         if (parseResult == null) {
             try {
-                parseResult = JdomScopeExpander.parse(JDOM_PARSER, item);
-            } catch (InvalidSyntaxException | IOException e) {
+                parseResult = JdomScopeExpander.parse(JDOM_PARSER, jsonListener -> SajScopeExpander.parse(new SajParser(), jsonListener, item));
+            } catch (final InvalidSyntaxException | IOException e) {
                 throw new RuntimeException("Caught exception matching", e);
             }
         }

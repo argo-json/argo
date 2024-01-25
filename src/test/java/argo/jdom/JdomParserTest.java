@@ -133,6 +133,16 @@ final class JdomParserTest {
     }
 
     @Test
+    void rethrowsIOExceptionFromPartWayThroughFieldName() {
+        final IOException ioException = new IOException("An IOException");
+        final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new SequenceReader(
+                new StringReader("{\"He"),
+                new BrokenReader(ioException)
+        )));
+        assertThat(actualException, sameInstance(ioException));
+    }
+
+    @Test
     void rethrowsIOExceptionFromPartWayThroughString() {
         final IOException ioException = new IOException("An IOException");
         final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new SequenceReader(

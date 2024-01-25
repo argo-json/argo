@@ -86,7 +86,7 @@ public final class StajParser implements Iterator<JsonStreamElement> {
             try {
                 current.close();
                 return current.jsonStreamElementType().parseNext(pushbackReader, stack);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new JsonStreamException("Failed to read from Reader", e);
             }
         }

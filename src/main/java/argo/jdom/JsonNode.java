@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -337,7 +337,7 @@ public abstract class JsonNode {
     private static <T, V extends JsonNode> T wrapExceptionsFor(final JsonNodeSelector<V, T> value, final V node, final Object[] pathElements) {
         try {
             return value.getValue(node);
-        } catch (JsonNodeDoesNotMatchChainedJsonNodeSelectorException e) {
+        } catch (final JsonNodeDoesNotMatchChainedJsonNodeSelectorException e) {
             throw jsonNodeDoesNotMatchPathElementsException(e, pathElements, JsonNodeFactories.array(node));
         }
     }

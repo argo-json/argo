@@ -11,10 +11,8 @@
 package argo.jdom;
 
 import argo.saj.InvalidSyntaxException;
-import argo.staj.InvalidSyntaxRuntimeException;
-import argo.staj.JsonStreamElement;
-import argo.staj.JsonStreamException;
-import argo.staj.StajParser;
+import argo.saj.JsonListener;
+import argo.saj.SajParser;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -31,6 +29,8 @@ import static argo.jdom.JsonNodeFactories.field;
  * between threads.
  */
 public final class JdomParser {
+
+    private static final SajParser SAJ_PARSER = new SajParser();
 
     /**
      * Parse the specified JSON {@code String} into a {@code JsonNode} object.
@@ -53,70 +53,110 @@ public final class JdomParser {
      * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
     public JsonNode parse(final Reader reader) throws InvalidSyntaxException, IOException {
-        return parse(new StajParser(reader));
+        return parse(new ParseExecutor() {
+            public void parseUsing(final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
+                SAJ_PARSER.parse(reader, jsonListener);
+            }
+        });
     }
 
-    @SuppressWarnings("PMD.CyclomaticComplexity")
-    JsonNode parse(final StajParser stajParser) throws IOException, InvalidSyntaxException {
+    interface ParseExecutor {
+        void parseUsing(JsonListener jsonListener) throws InvalidSyntaxException, IOException;
+    }
+
+    @SuppressWarnings("PMD.ExceptionAsFlowControl") // TODO this is apparently fixed in PMD 7.0.0
+    JsonNode parse(final ParseExecutor parseExecutor) throws InvalidSyntaxException, IOException {
         final JsonStringNodeFactory jsonStringNodeFactory = new JsonStringNodeFactory();
         final JsonNumberNodeFactory jsonNumberNodeFactory = new JsonNumberNodeFactory();
         final RootNodeContainer root = new RootNodeContainer();
         final Stack<NodeContainer> stack = new Stack<NodeContainer>();
         stack.push(root);
-
         try {
-            while (stajParser.hasNext()) {
-                final JsonStreamElement jsonStreamElement = stajParser.next();
-                switch (jsonStreamElement.jsonStreamElementType()) {
-                    case START_DOCUMENT:
-                    case END_DOCUMENT:
-                        break;
-                    case START_ARRAY:
-                        final ArrayNodeContainer arrayNodeContainer = new ArrayNodeContainer();
-                        stack.peek().addNode(arrayNodeContainer);
-                        stack.push(arrayNodeContainer);
-                        break;
-                    case START_OBJECT:
-                        final ObjectNodeContainer objectNodeContainer = new ObjectNodeContainer();
-                        stack.peek().addNode(objectNodeContainer);
-                        stack.push(objectNodeContainer);
-                        break;
-                    case START_FIELD:
-                        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(jsonStringNodeFactory.jsonStringNode(asString(jsonStreamElement.reader(), 32)));
+            parseExecutor.parseUsing(new JsonListener() {
+                public void startDocument() {}
+
+                public void endDocument() {}
+
+                public void startArray() {
+                    final ArrayNodeContainer arrayNodeContainer = new ArrayNodeContainer();
+                    stack.peek().addNode(arrayNodeContainer);
+                    stack.push(arrayNodeContainer);
+                }
+
+                public void endArray() {
+                    stack.pop();
+                }
+
+                public void startObject() {
+                    final ObjectNodeContainer objectNodeContainer = new ObjectNodeContainer();
+                    stack.peek().addNode(objectNodeContainer);
+                    stack.push(objectNodeContainer);
+                }
+
+                public void endObject() {
+                    stack.pop();
+                }
+
+                public void startField(final Reader name) {
+                    try {
+                        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(jsonStringNodeFactory.jsonStringNode(asString(name, 32)));
                         stack.peek().addField(fieldNodeContainer);
                         stack.push(fieldNodeContainer);
-                        break;
-                    case END_ARRAY:
-                    case END_OBJECT:
-                    case END_FIELD:
-                        stack.pop();
-                        break;
-                    case NULL:
-                        stack.peek().addNode(aNullBuilder());
-                        break;
-                    case TRUE:
-                        stack.peek().addNode(aTrueBuilder());
-                        break;
-                    case FALSE:
-                        stack.peek().addNode(aFalseBuilder());
-                        break;
-                    case STRING:
-                        stack.peek().addNode(jsonStringNodeFactory.jsonStringNode(asString(jsonStreamElement.reader(), 32)));
-                        break;
-                    case NUMBER:
-                        stack.peek().addNode(jsonNumberNodeFactory.jsonNumberNode(asString(jsonStreamElement.reader(), 16)));
-                        break;
-                    default:
-                        throw new IllegalStateException("Coding failure in Argo:  Got a JsonStreamElement of unexpected type: " + jsonStreamElement);
+                    } catch (final IOException e) {
+                        throw new IORuntimeException(e);
+                    }
                 }
-            }
-        } catch (final InvalidSyntaxRuntimeException e) {
-            throw InvalidSyntaxException.from(e);
-        } catch (final JsonStreamException e) {
+
+                public void endField() {
+                    stack.pop();
+                }
+
+                public void stringValue(final Reader value) {
+                    try {
+                        stack.peek().addNode(jsonStringNodeFactory.jsonStringNode(asString(value, 32)));
+                    } catch (final IOException e) {
+                        throw new IORuntimeException(e);
+                    }
+                }
+
+                public void numberValue(final Reader value) {
+                    try {
+                        stack.peek().addNode(jsonNumberNodeFactory.jsonNumberNode(asString(value, 16)));
+                    } catch (final IOException e) {
+                        throw new IORuntimeException(e);
+                    }
+                }
+
+                public void trueValue() {
+                    stack.peek().addNode(aTrueBuilder());
+                }
+
+                public void falseValue() {
+                    stack.peek().addNode(aFalseBuilder());
+                }
+
+                public void nullValue() {
+                    stack.peek().addNode(aNullBuilder());
+                }
+            });
+        } catch (final IORuntimeException e) {
             throw e.getCause();
         }
-
         return root.build();
+    }
+
+    private static final class IORuntimeException extends RuntimeException {
+        private final IOException typedCause;
+
+        IORuntimeException(final IOException cause) {
+            super(cause);
+            this.typedCause = cause;
+        }
+
+        @Override
+        public IOException getCause() {
+            return typedCause;
+        }
     }
 
     private interface NodeContainer {

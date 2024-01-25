@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -171,7 +171,7 @@ final class MainDocumentationExamples {
                         while((next = name.read()) != -1) {
                             stringBuilder.append((char) next);
                         }
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         throw new RuntimeException(e);
                     }
                     fieldNames.add(stringBuilder.toString());

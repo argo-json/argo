@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -37,7 +37,7 @@ public class JsonStreamElementMatchers {
             final String expectedString;
             try (Reader expectedStringReader = expected.reader()) {
                 expectedString = IOUtils.toString(expectedStringReader);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new RuntimeException("Failed to retrieve expected String", e);
             }
             result = aTextJsonStreamElementWithType(expected.jsonStreamElementType(), expectedString);
@@ -80,7 +80,7 @@ public class JsonStreamElementMatchers {
                 final String text;
                 try {
                     text = IOUtils.toString(item.reader());
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new RuntimeException(e);
                 }
                 final boolean matches = textMatcher.matches(text);
