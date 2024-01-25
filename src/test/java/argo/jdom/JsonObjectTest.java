@@ -17,7 +17,9 @@ import java.util.stream.Collectors;
 
 import static argo.MapBuilder.mapBuilder;
 import static argo.jdom.JsonNodeFactories.*;
+import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonNodeTestBuilder.someJsonFields;
+import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -141,7 +143,18 @@ final class JsonObjectTest {
     @Test
     void getFieldsReturnsCorrectValue() {
         final Collection<JsonField> fields = someJsonFields();
-        assertThat(JsonObject.jsonObject(fields).getFields(), equalTo(fields.stream().collect(Collectors.toMap(JsonField::getName, JsonField::getValue)))); // TODO Flaky: java.lang.IllegalStateException: Duplicate key JsonNode{jsonNodeType=FALSE}
+        assertThat(JsonObject.jsonObject(fields).getFields(), equalTo(fields.stream().collect(Collectors.toMap(JsonField::getName, JsonField::getValue, (previousValue, replacementValue) -> replacementValue))));
+    }
+
+    @Test
+    void getFieldsSilentlyOverwritesDuplicateKeysWithLastValue() {
+        final JsonStringNode key = aStringNode();
+        final JsonNode lastValue = aJsonNode();
+        final Collection<JsonField> fields = Arrays.asList(
+                field(key, aJsonNode()),
+                field(key, lastValue)
+        );
+        assertThat(JsonObject.jsonObject(fields).getFields(), equalTo(mapBuilder(key, lastValue).build()));
     }
 
     @Test
