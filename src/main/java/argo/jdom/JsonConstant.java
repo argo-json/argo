@@ -13,22 +13,13 @@ package argo.jdom;
 import java.util.List;
 import java.util.Map;
 
-final class JsonConstants extends JsonNode implements JsonNodeBuilder<JsonNode> {
+abstract class JsonConstant extends JsonNode implements JsonNodeBuilder<JsonNode> {
 
-    static final JsonConstants NULL = new JsonConstants(JsonNodeType.NULL);
-    static final JsonConstants TRUE = new JsonConstants(JsonNodeType.TRUE);
-    static final JsonConstants FALSE = new JsonConstants(JsonNodeType.FALSE);
+    static final JsonConstant NULL = new NullNode();
+    static final JsonConstant TRUE = new TrueNode();
+    static final JsonConstant FALSE = new FalseNode();
 
-    private final JsonNodeType jsonNodeType;
-
-    private JsonConstants(final JsonNodeType jsonNodeType) {
-        this.jsonNodeType = jsonNodeType;
-    }
-
-    @Override
-    public JsonNodeType getType() {
-        return jsonNodeType;
-    }
+    private JsonConstant() {}
 
     @Override
     public boolean hasText() {
@@ -71,6 +62,42 @@ final class JsonConstants extends JsonNode implements JsonNodeBuilder<JsonNode> 
 
     @Override
     public String toString() {
-        return "JsonNode{jsonNodeType=" + jsonNodeType + '}';
+        return "JsonNode{jsonNodeType=" + getType() + '}';
+    }
+
+    private static final class NullNode extends JsonConstant {
+        @Override
+        public JsonNodeType getType() {
+            return JsonNodeType.NULL;
+        }
+
+        @Override
+        public void visit(final JsonNodeVisitor jsonNodeVisitor) {
+            jsonNodeVisitor.nullNode();
+        }
+    }
+
+    private static final class TrueNode extends JsonConstant {
+        @Override
+        public JsonNodeType getType() {
+            return JsonNodeType.TRUE;
+        }
+
+        @Override
+        public void visit(final JsonNodeVisitor jsonNodeVisitor) {
+            jsonNodeVisitor.trueNode();
+        }
+    }
+
+    private static final class FalseNode extends JsonConstant {
+        @Override
+        public JsonNodeType getType() {
+            return JsonNodeType.FALSE;
+        }
+
+        @Override
+        public void visit(final JsonNodeVisitor jsonNodeVisitor) {
+            jsonNodeVisitor.falseNode();
+        }
     }
 }

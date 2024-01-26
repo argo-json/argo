@@ -90,6 +90,11 @@ final class JsonObject extends JsonNode {
     }
 
     @Override
+    public void visit(final JsonNodeVisitor jsonNodeVisitor) {
+        jsonNodeVisitor.object(fields);
+    }
+
+    @Override
     public boolean equals(final Object that) {
         if (this == that) {
             return true;

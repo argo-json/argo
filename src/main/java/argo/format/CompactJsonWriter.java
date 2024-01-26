@@ -168,10 +168,10 @@ public final class CompactJsonWriter extends AbstractJsonWriter {
     }
 
     @Override
-    void writeObject(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
+    void writeObject(final Writer writer, final Iterable<JsonField> fields, final int depth) throws IOException {
         boolean first = true;
         writer.write('{');
-        for (final JsonField field : jsonNode.getFieldList()) {
+        for (final JsonField field : fields) {
             if (!first) {
                 writer.write(',');
             }
@@ -184,10 +184,10 @@ public final class CompactJsonWriter extends AbstractJsonWriter {
     }
 
     @Override
-    void writeArray(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
+    void writeArray(final Writer writer, final Iterable<JsonNode> elements, final int depth) throws IOException {
         boolean first = true;
         writer.write('[');
-        for (final JsonNode node : jsonNode.getElements()) {
+        for (final JsonNode node : elements) {
             if (!first) {
                 writer.write(',');
             }
@@ -196,5 +196,4 @@ public final class CompactJsonWriter extends AbstractJsonWriter {
         }
         writer.write(']');
     }
-
 }

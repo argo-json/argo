@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class JsonConstantsTest {
+class JsonConstantTest {
 
     static final class JsonConstantsArgumentsProvider implements ArgumentsProvider {
 

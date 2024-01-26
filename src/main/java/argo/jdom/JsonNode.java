@@ -331,6 +331,8 @@ public abstract class JsonNode {
         return wrapExceptionsFor(JsonNodeSelectors.aNullableArrayNode(pathElements), this, pathElements);
     }
 
+    public abstract void visit(JsonNodeVisitor jsonNodeVisitor);
+
     /**
      * @throws JsonNodeDoesNotMatchPathElementsException in place of checked Exception.
      */

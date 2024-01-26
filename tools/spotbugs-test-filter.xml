@@ -27,7 +27,7 @@
         <Bug pattern="RANGE_ARRAY_OFFSET,RANGE_ARRAY_LENGTH,RR_NOT_CHECKED,SR_NOT_CHECKED"/>
     </Match>
     <Match>
-        <Class name="argo.jdom.JsonConstantsTest"/>
+        <Class name="argo.jdom.JsonConstantTest"/>
         <Bug pattern="EC_NULL_ARG"/>
     </Match>
     <Match>

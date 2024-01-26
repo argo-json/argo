@@ -31,21 +31,21 @@ public final class JsonNodeFactories {
      * @return a JSON null
      */
     public static JsonNode nullNode() {
-        return JsonConstants.NULL;
+        return JsonConstant.NULL;
     }
 
     /**
      * @return a JSON true
      */
     public static JsonNode trueNode() {
-        return JsonConstants.TRUE;
+        return JsonConstant.TRUE;
     }
 
     /**
      * @return a JSON false
      */
     public static JsonNode falseNode() {
-        return JsonConstants.FALSE;
+        return JsonConstant.FALSE;
     }
 
     /**

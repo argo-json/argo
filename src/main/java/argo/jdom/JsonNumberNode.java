@@ -106,6 +106,11 @@ final class JsonNumberNode extends JsonNode implements JsonNodeBuilder<JsonNode>
     }
 
     @Override
+    public void visit(final JsonNodeVisitor jsonNodeVisitor) {
+        jsonNodeVisitor.number(value);
+    }
+
+    @Override
     public boolean equals(final Object that) {
         if (this == that) {
             return true;

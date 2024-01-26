@@ -10,7 +10,9 @@
 
 package argo.format;
 
+import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
+import argo.jdom.JsonNodeVisitor;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -58,38 +60,89 @@ abstract class AbstractJsonWriter implements JsonWriter {
 
     abstract void write(Writer writer, WriteableJsonObject writeableJsonObject, int depth) throws IOException;
 
+    @SuppressWarnings("PMD.ExceptionAsFlowControl") // TODO this is apparently fixed in PMD 7.0.0
     protected final void write(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
-        switch (jsonNode.getType()) { // TODO can this be replaced with polymorphism?
-            case ARRAY:
-                writeArray(writer, jsonNode, depth);
-                break;
-            case OBJECT:
-                writeObject(writer, jsonNode, depth);
-                break;
-            case STRING:
-                final String text = jsonNode.getText();
-                writer.write('"');
-                escapeStringTo(writer, text);
-                writer.write('"');
-                break;
-            case NUMBER:
-                writer.write(jsonNode.getText());
-                break;
-            case FALSE:
-                writer.write("false");
-                break;
-            case TRUE:
-                writer.write("true");
-                break;
-            case NULL:
-                writer.write("null");
-                break;
-            default:
-                throw new RuntimeException("Coding failure in Argo:  Attempt to format a JsonNode of unknown type [" + jsonNode.getType() + "]");
+        try {
+            jsonNode.visit(new JsonNodeVisitor() {
+                public void object(final Iterable<JsonField> fields) {
+                    try {
+                        writeObject(writer, fields, depth);
+                    } catch (IOException e) {
+                        throw new IORuntimeException(e);
+                    }
+                }
+
+                public void array(final Iterable<JsonNode> elements) {
+                    try {
+                        writeArray(writer, elements, depth);
+                    } catch (IOException e) {
+                        throw new IORuntimeException(e);
+                    }
+                }
+
+                public void string(final String value) {
+                    try {
+                        writer.write('"');
+                        escapeStringTo(writer, value);
+                        writer.write('"');
+                    } catch (IOException e) {
+                        throw new IORuntimeException(e);
+                    }
+                }
+
+                public void number(final String value) {
+                    try {
+                        writer.write(value);
+                    } catch (IOException e) {
+                        throw new IORuntimeException(e);
+                    }
+                }
+
+                public void trueNode() {
+                    try {
+                        writer.write("true");
+                    } catch (IOException e) {
+                        throw new IORuntimeException(e);
+                    }
+                }
+
+                public void falseNode() {
+                    try {
+                        writer.write("false");
+                    } catch (IOException e) {
+                        throw new IORuntimeException(e);
+                    }
+                }
+
+                public void nullNode() {
+                    try {
+                        writer.write("null");
+                    } catch (IOException e) {
+                        throw new IORuntimeException(e);
+                    }
+                }
+            });
+        } catch (IORuntimeException e) {
+            throw e.getCause();
         }
     }
 
-    abstract void writeObject(Writer writer, JsonNode jsonNode, int depth) throws IOException;
+    private static final class IORuntimeException extends RuntimeException {
 
-    abstract void writeArray(Writer writer, JsonNode jsonNode, int depth) throws IOException;
+        private final IOException typedCause;
+
+        public IORuntimeException(final IOException cause) {
+            super(cause);
+            this.typedCause = cause;
+        }
+
+        @Override
+        public IOException getCause() {
+            return typedCause;
+        }
+    }
+
+    abstract void writeObject(Writer writer, Iterable<JsonField> fields, int depth) throws IOException;
+
+    abstract void writeArray(Writer writer, Iterable<JsonNode> elements, int depth) throws IOException;
 }

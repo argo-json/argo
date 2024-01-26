@@ -74,6 +74,11 @@ public final class JsonStringNode extends JsonNode implements Comparable<JsonStr
     }
 
     @Override
+    public void visit(final JsonNodeVisitor jsonNodeVisitor) {
+        jsonNodeVisitor.string(value);
+    }
+
+    @Override
     public boolean equals(final Object that) {
         if (this == that) {
             return true;
