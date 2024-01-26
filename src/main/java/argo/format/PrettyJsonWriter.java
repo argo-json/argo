@@ -16,8 +16,6 @@ import argo.jdom.JsonStringNode;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Iterator;
-import java.util.List;
 
 import static argo.jdom.JsonNodeFactories.string;
 
@@ -60,21 +58,20 @@ public final class PrettyJsonWriter extends AbstractJsonWriter {
 
     @Override
     void writeObject(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
+        boolean first = true;
         writer.write('{');
-        final List<JsonField> fields = jsonNode.getFieldList();
-        final Iterator<JsonField> fieldsIterator = fields.iterator();
-        while (fieldsIterator.hasNext()) {
-            final JsonField field = fieldsIterator.next();
+        for (final JsonField field : jsonNode.getFieldList()) {
+            if (!first) {
+                writer.write(',');
+            }
+            first = false;
             writer.write(lineSeparator);
             addTabs(writer, depth + 1);
             write(writer, field.getName());
             writer.write(": ");
             write(writer, field.getValue(), depth + 1);
-            if (fieldsIterator.hasNext()) {
-                writer.write(',');
-            }
         }
-        if (!fields.isEmpty()) {
+        if (!first) {
             writer.write(lineSeparator);
             addTabs(writer, depth);
         }
@@ -83,19 +80,18 @@ public final class PrettyJsonWriter extends AbstractJsonWriter {
 
     @Override
     void writeArray(final Writer writer, final JsonNode jsonNode, final int depth) throws IOException {
+        boolean first = true;
         writer.write('[');
-        final List<JsonNode> elements = jsonNode.getElements();
-        final Iterator<JsonNode> elementsIterator = elements.iterator();
-        while (elementsIterator.hasNext()) {
-            final JsonNode node = elementsIterator.next();
-            writer.write(lineSeparator);
-            addTabs(writer, depth + 1);
-            write(writer, node, depth + 1);
-            if (elementsIterator.hasNext()) {
+        for (final JsonNode element : jsonNode.getElements()) {
+            if (!first) {
                 writer.write(',');
             }
+            first = false;
+            writer.write(lineSeparator);
+            addTabs(writer, depth + 1);
+            write(writer, element, depth + 1);
         }
-        if (!elements.isEmpty()) {
+        if (!first) {
             writer.write(lineSeparator);
             addTabs(writer, depth);
         }
