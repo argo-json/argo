@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 @State(Scope.Benchmark)
-public class JdomParserBenchmark {
+public class ParserBenchmark {
 
     private static final String JSON_STRING = "{\"web-app\": {\n" +
             "    \"servlet\": [\n" +

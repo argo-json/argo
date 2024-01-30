@@ -1,17 +1,24 @@
 <component name="ProjectDictionaryState">
   <dictionary name="mark">
     <words>
+      <w>aemail</w>
       <w>agadoo</w>
       <w>bestpractices</w>
       <w>cbuf</w>
       <w>codestyle</w>
+      <w>cofax</w>
+      <w>cofaxutil</w>
+      <w>conns</w>
       <w>errorprone</w>
       <w>flakey</w>
       <w>jdom</w>
       <w>ncss</w>
+      <w>nocount</w>
       <w>prevalidated</w>
       <w>pushback</w>
       <w>staj</w>
+      <w>tlds</w>
+      <w>toolstemplates</w>
       <w>uncount</w>
       <w>xlint</w>
     </words>
