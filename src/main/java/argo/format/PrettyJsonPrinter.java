@@ -46,9 +46,9 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
             first = false;
             writer.write(lineSeparator);
             addTabs();
-            field.getName().visit(this);
+            write(field.getName());
             writer.write(": ");
-            field.getValue().visit(this);
+            write(field.getValue());
         }
         depth--;
         if (!first) {
@@ -70,7 +70,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
             first = false;
             writer.write(lineSeparator);
             addTabs();
-            element.visit(this);
+            write(element);
         }
         depth--;
         if (!first) {
@@ -81,7 +81,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
     }
 
     @Override
-    void runtimeExceptionThrowingWrite(final WriteableJsonArray writeableJsonArray) throws IOException {
+    void write(final WriteableJsonArray writeableJsonArray) throws IOException {
         writer.write('[');
         depth++;
         final boolean[] isFirst = {true};
@@ -109,7 +109,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
 
             public void writeElement(final JsonNode element) throws IOException {
                 writePreamble();
-                element.visit(PrettyJsonPrinter.this);
+                PrettyJsonPrinter.this.write(element);
             }
 
             private void writePreamble() throws IOException {
@@ -131,7 +131,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
     }
 
     @Override
-    void runtimeExceptionThrowingWrite(final WriteableJsonObject writeableJsonObject) throws IOException {
+    void write(final WriteableJsonObject writeableJsonObject) throws IOException {
         writer.write('{');
         depth++;
         final boolean[] isFirst = {true};
@@ -178,12 +178,12 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
 
             public void writeField(final JsonStringNode name, final JsonNode value) throws IOException {
                 writeName(name);
-                value.visit(PrettyJsonPrinter.this);
+                PrettyJsonPrinter.this.write(value);
             }
 
             private void writeName(final JsonStringNode name) throws IOException {
                 writePreamble();
-                name.visit(PrettyJsonPrinter.this);
+                PrettyJsonPrinter.this.write(name);
                 writer.write(": ");
             }
 
@@ -209,7 +209,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
 
             public void writeField(final WriteableJsonString name, final JsonNode value) throws IOException {
                 writeName(name);
-                value.visit(PrettyJsonPrinter.this);
+                PrettyJsonPrinter.this.write(value);
             }
 
             private void writeName(final WriteableJsonString name) throws IOException {

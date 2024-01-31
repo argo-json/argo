@@ -27,25 +27,9 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
         this.writer = writer;
     }
 
-    final void write(final WriteableJsonArray writeableJsonArray) throws IOException {
-        try {
-            runtimeExceptionThrowingWrite(writeableJsonArray);
-        } catch (final IORuntimeException e) {
-            throw e.getCause();
-        }
-    }
+    abstract void write(final WriteableJsonArray writeableJsonArray) throws IOException;
 
-    abstract void runtimeExceptionThrowingWrite(final WriteableJsonArray writeableJsonArray) throws IOException;
-
-    final void write(final WriteableJsonObject writeableJsonObject) throws IOException {
-        try {
-            runtimeExceptionThrowingWrite(writeableJsonObject);
-        } catch (final IORuntimeException e) {
-            throw e.getCause();
-        }
-    }
-
-    abstract void runtimeExceptionThrowingWrite(final WriteableJsonObject writeableJsonObject) throws IOException;
+    abstract void write(final WriteableJsonObject writeableJsonObject) throws IOException;
 
     final void write(final WriteableJsonString writeableJsonString) throws IOException {
         writer.write('"'); // TODO combine this implementation with the visitor implementation of string writing
@@ -67,6 +51,14 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
         }
         if (!jsonNumberValidatingWriter.isEndState()) {
             throw new IllegalArgumentException("Attempt to write an incomplete JSON number");
+        }
+    }
+
+    final void write(final JsonNode jsonNode) throws IOException {
+        try {
+            jsonNode.visit(this);
+        } catch (AbstractJsonPrinter.IORuntimeException e) {
+            throw e.getCause();
         }
     }
 

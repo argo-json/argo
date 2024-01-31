@@ -33,9 +33,9 @@ final class CompactJsonPrinter extends AbstractJsonPrinter { // TODO make this a
                 writer.write(',');
             }
             first = false;
-            field.getName().visit(this);
+            write(field.getName());
             writer.write(':');
-            field.getValue().visit(this);
+            write(field.getValue());
         }
         writer.write('}');
     }
@@ -44,18 +44,18 @@ final class CompactJsonPrinter extends AbstractJsonPrinter { // TODO make this a
     void throwingArray(final Iterable<JsonNode> elements) throws IOException {
         boolean first = true;
         writer.write('[');
-        for (final JsonNode node : elements) {
+        for (final JsonNode element : elements) {
             if (!first) {
                 writer.write(',');
             }
             first = false;
-            node.visit(this);
+            write(element);
         }
         writer.write(']');
     }
 
     @Override
-    void runtimeExceptionThrowingWrite(final WriteableJsonArray writeableJsonArray) throws IOException {
+    void write(final WriteableJsonArray writeableJsonArray) throws IOException {
         writer.write('[');
         writeableJsonArray.writeTo(new ArrayWriter() {
             private boolean isFirst = true;
@@ -82,7 +82,7 @@ final class CompactJsonPrinter extends AbstractJsonPrinter { // TODO make this a
 
             public void writeElement(final JsonNode element) throws IOException {
                 writeCommaIfRequired();
-                element.visit(CompactJsonPrinter.this); // TODO can this be CompactJsonPrinter.this.write(element)?
+                CompactJsonPrinter.this.write(element);
             }
 
             private void writeCommaIfRequired() throws IOException {
@@ -96,7 +96,7 @@ final class CompactJsonPrinter extends AbstractJsonPrinter { // TODO make this a
     }
 
     @Override
-    void runtimeExceptionThrowingWrite(final WriteableJsonObject writeableJsonObject) throws IOException {
+    void write(final WriteableJsonObject writeableJsonObject) throws IOException {
         writer.write('{');
         writeableJsonObject.writeTo(new ObjectWriter() {
             private boolean isFirst = true;
@@ -143,12 +143,12 @@ final class CompactJsonPrinter extends AbstractJsonPrinter { // TODO make this a
 
             public void writeField(final JsonStringNode name, final JsonNode value) throws IOException {
                 writeName(name);
-                value.visit(CompactJsonPrinter.this);
+                CompactJsonPrinter.this.write(value);
             }
 
             private void writeName(final JsonStringNode name) throws IOException {
                 writeCommaIfRequired();
-                name.visit(CompactJsonPrinter.this);
+                CompactJsonPrinter.this.write(name);
                 writer.write(':');
             }
 
@@ -174,7 +174,7 @@ final class CompactJsonPrinter extends AbstractJsonPrinter { // TODO make this a
 
             public void writeField(final WriteableJsonString name, final JsonNode value) throws IOException {
                 writeName(name);
-                value.visit(CompactJsonPrinter.this);
+                CompactJsonPrinter.this.write(value);
             }
 
             private void writeName(final WriteableJsonString name) throws IOException {

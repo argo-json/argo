@@ -34,11 +34,7 @@ abstract class AbstractJsonWriter implements JsonWriter {
     }
 
     public final void write(final Writer writer, final JsonNode jsonNode) throws IOException {
-        try {
-            jsonNode.visit(newJsonPrinter(writer));
-        } catch (AbstractJsonPrinter.IORuntimeException e) {
-            throw e.getCause();
-        }
+        newJsonPrinter(writer).write(jsonNode);
     }
 
     abstract AbstractJsonPrinter newJsonPrinter(Writer writer);
