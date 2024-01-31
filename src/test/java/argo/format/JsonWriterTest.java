@@ -23,8 +23,7 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeTestBuilder.anArrayNode;
-import static argo.jdom.JsonNodeTestBuilder.anObjectNode;
+import static argo.jdom.JsonNodeTestBuilder.*;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -68,6 +67,38 @@ class JsonWriterTest {
     void propagatesIOExceptionFromTargetWriter(final JsonWriter jsonWriter, final JsonNode jsonNode) {
         final IOException ioException = new IOException();
         final IOException actualIoException = assertThrows(IOException.class, () -> jsonWriter.write(new BrokenWriter(() -> ioException), jsonNode));
+        assertThat(actualIoException, sameInstance(ioException));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
+    void propagatesIOExceptionWritingWriteableJsonArrayFromTargetWriter(final JsonWriter jsonWriter) {
+        final IOException ioException = new IOException();
+        final IOException actualIoException = assertThrows(IOException.class, () -> jsonWriter.write(new EventuallyBrokenWriter(ioException, 10), (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement(string("a string with more than 10 characters"))));
+        assertThat(actualIoException, sameInstance(ioException));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
+    void propagatesIOExceptionWritingWriteableJsonObjectFromTargetWriter(final JsonWriter jsonWriter) {
+        final IOException ioException = new IOException();
+        final IOException actualIoException = assertThrows(IOException.class, () -> jsonWriter.write(new EventuallyBrokenWriter(ioException, 10), (WriteableJsonObject) objectWriter -> objectWriter.writeField(string("a string with more than 10 characters"), aJsonNode())));
+        assertThat(actualIoException, sameInstance(ioException));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
+    void propagatesIOExceptionWritingWriteableJsonStringFromTargetWriter(final JsonWriter jsonWriter) {
+        final IOException ioException = new IOException();
+        final IOException actualIoException = assertThrows(IOException.class, () -> jsonWriter.write(new EventuallyBrokenWriter(ioException, 10), (WriteableJsonString) writer -> writer.write("a string with more than 10 characters")));
+        assertThat(actualIoException, sameInstance(ioException));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
+    void propagatesIOExceptionWritingWriteableJsonNumberFromTargetWriter(final JsonWriter jsonWriter) {
+        final IOException ioException = new IOException();
+        final IOException actualIoException = assertThrows(IOException.class, () -> jsonWriter.write(new EventuallyBrokenWriter(ioException, 10), (WriteableJsonNumber) writer -> writer.write("12345678901234567890")));
         assertThat(actualIoException, sameInstance(ioException));
     }
 

@@ -199,6 +199,10 @@ spotbugsTest {
     excludeFilter = file('tools/spotbugs-test-filter.xml')
 }
 
+spotbugsTestFixtures {
+    excludeFilter = file('tools/spotbugs-testFixtures-filter.xml')
+}
+
 artifacts {
     archives javadocJar, sourcesJar
 }
