@@ -18,7 +18,7 @@ import argo.jdom.JsonStringNode;
 import java.io.IOException;
 import java.io.Writer;
 
-final class CompactJsonPrinter extends AbstractJsonPrinter { // TODO make this also implement ArrayWriter and ObjectWriter?
+final class CompactJsonPrinter extends AbstractJsonPrinter {
 
     CompactJsonPrinter(final Writer writer) {
         super(writer);
