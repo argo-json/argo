@@ -10,10 +10,7 @@
 
 package argo.saj;
 
-import argo.staj.InvalidSyntaxRuntimeException;
-import argo.staj.JsonStreamElement;
-import argo.staj.JsonStreamException;
-import argo.staj.StajParser;
+import argo.staj.*;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -53,54 +50,10 @@ public final class SajParser {
         parse(jsonListener, new StajParser(in));
     }
 
-    @SuppressWarnings("PMD.CyclomaticComplexity")
     void parse(final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException, IOException {
         try {
             while (stajParser.hasNext()) {
-                final JsonStreamElement jsonStreamElement = stajParser.next();
-                switch (jsonStreamElement.jsonStreamElementType()) {
-                    case START_DOCUMENT:
-                        jsonListener.startDocument();
-                        break;
-                    case END_DOCUMENT:
-                        jsonListener.endDocument();
-                        break;
-                    case START_ARRAY:
-                        jsonListener.startArray();
-                        break;
-                    case END_ARRAY:
-                        jsonListener.endArray();
-                        break;
-                    case START_OBJECT:
-                        jsonListener.startObject();
-                        break;
-                    case END_OBJECT:
-                        jsonListener.endObject();
-                        break;
-                    case START_FIELD:
-                        jsonListener.startField(jsonStreamElement.reader());
-                        break;
-                    case END_FIELD:
-                        jsonListener.endField();
-                        break;
-                    case NULL:
-                        jsonListener.nullValue();
-                        break;
-                    case TRUE:
-                        jsonListener.trueValue();
-                        break;
-                    case FALSE:
-                        jsonListener.falseValue();
-                        break;
-                    case STRING:
-                        jsonListener.stringValue(jsonStreamElement.reader());
-                        break;
-                    case NUMBER:
-                        jsonListener.numberValue(jsonStreamElement.reader());
-                        break;
-                    default:
-                        throw new IllegalStateException("Coding failure in Argo:  Got a JsonStreamElement of unexpected type: " + jsonStreamElement);
-                }
+                stajParser.next().visit(jsonListener);
             }
         } catch (final InvalidSyntaxRuntimeException e) {
             throw InvalidSyntaxException.from(e);

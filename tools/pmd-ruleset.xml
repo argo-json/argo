@@ -34,6 +34,7 @@
         <exclude name="ClassNamingConventions"/> <!-- configured later -->
         <exclude name="CommentDefaultAccessModifier"/>
         <exclude name="DefaultPackage"/>
+        <exclude name="EmptyMethodInAbstractClassShouldBeAbstract"/> <!-- just rubbish -->
         <exclude name="LinguisticNaming"/> <!-- configured later -->
         <exclude name="LocalVariableCouldBeFinal"/> <!-- Don't want this on for code samples; switched back on for main -->
         <exclude name="LongVariable"/> <!-- configured later -->

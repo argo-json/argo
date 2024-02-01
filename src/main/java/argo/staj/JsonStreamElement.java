@@ -10,6 +10,8 @@
 
 package argo.staj;
 
+import argo.saj.JsonListener;
+
 import java.io.IOException;
 import java.io.Reader;
 
@@ -18,104 +20,179 @@ import java.io.Reader;
  */
 public abstract class JsonStreamElement {
 
-    private static final JsonStreamElement START_DOCUMENT = nonTextJsonStreamElement(JsonStreamElementType.START_DOCUMENT);
-    private static final JsonStreamElement END_DOCUMENT = nonTextJsonStreamElement(JsonStreamElementType.END_DOCUMENT);
-    private static final JsonStreamElement START_ARRAY = nonTextJsonStreamElement(JsonStreamElementType.START_ARRAY);
-    private static final JsonStreamElement END_ARRAY = nonTextJsonStreamElement(JsonStreamElementType.END_ARRAY);
-    private static final JsonStreamElement START_OBJECT = nonTextJsonStreamElement(JsonStreamElementType.START_OBJECT);
-    private static final JsonStreamElement END_OBJECT = nonTextJsonStreamElement(JsonStreamElementType.END_OBJECT);
-    private static final JsonStreamElement END_FIELD = nonTextJsonStreamElement(JsonStreamElementType.END_FIELD);
-    private static final JsonStreamElement TRUE = nonTextJsonStreamElement(JsonStreamElementType.TRUE);
-    private static final JsonStreamElement FALSE = nonTextJsonStreamElement(JsonStreamElementType.FALSE);
-    private static final JsonStreamElement NULL = nonTextJsonStreamElement(JsonStreamElementType.NULL);
-
     private final JsonStreamElementType jsonStreamElementType;
 
-    private static JsonStreamElement nonTextJsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
-        return new JsonStreamElement(jsonStreamElementType) {
-            @Override
-            public boolean hasText() {
-                return false;
-            }
+    static abstract class NonTextJsonStreamElement extends JsonStreamElement {
 
-            public Reader reader() {
-                throw new IllegalStateException(jsonStreamElementType().name() + " does not have text associated with it");
-            }
-
+        static final JsonStreamElement START_DOCUMENT = new NonTextJsonStreamElement(JsonStreamElementType.START_DOCUMENT) {
             @Override
-            void close() {}
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.startDocument();
+            }
         };
+        static final JsonStreamElement END_DOCUMENT = new NonTextJsonStreamElement(JsonStreamElementType.END_DOCUMENT) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.endDocument();
+            }
+        };
+        static final JsonStreamElement START_ARRAY = new NonTextJsonStreamElement(JsonStreamElementType.START_ARRAY) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.startArray();
+            }
+        };
+        static final JsonStreamElement END_ARRAY = new NonTextJsonStreamElement(JsonStreamElementType.END_ARRAY) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.endArray();
+            }
+        };
+        static final JsonStreamElement START_OBJECT = new NonTextJsonStreamElement(JsonStreamElementType.START_OBJECT) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.startObject();
+            }
+        };
+        static final JsonStreamElement END_OBJECT = new NonTextJsonStreamElement(JsonStreamElementType.END_OBJECT) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.endObject();
+            }
+        };
+        static final JsonStreamElement END_FIELD = new NonTextJsonStreamElement(JsonStreamElementType.END_FIELD) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.endField();
+            }
+
+        };
+        static final JsonStreamElement TRUE = new NonTextJsonStreamElement(JsonStreamElementType.TRUE) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.trueValue();
+            }
+        };
+        static final JsonStreamElement FALSE = new NonTextJsonStreamElement(JsonStreamElementType.FALSE) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.falseValue();
+            }
+        };
+        static final JsonStreamElement NULL = new NonTextJsonStreamElement(JsonStreamElementType.NULL) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.nullValue();
+            }
+        };
+
+        NonTextJsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
+            super(jsonStreamElementType);
+        }
+
+        @Override
+        public final boolean hasText() {
+            return false;
+        }
+
+        public final Reader reader() {
+            throw new IllegalStateException(jsonStreamElementType().name() + " does not have text associated with it");
+        }
+
+        @Override
+        final void close() {}
     }
 
-    private static JsonStreamElement textJsonStreamElement(final JsonStreamElementType jsonStreamElementType, final Reader reader) {
-        return new JsonStreamElement(jsonStreamElementType) {
-            @Override
-            public boolean hasText() {
-                return true;
-            }
+    private static abstract class TextJsonStreamElement extends JsonStreamElement {
 
-            @Override
-            public Reader reader() {
-                return reader;
-            }
+        private final Reader reader;
 
-            @Override
-            void close() throws IOException {
-                reader.close();
-            }
-        };
+        TextJsonStreamElement(final JsonStreamElementType jsonStreamElementType, final Reader reader) {
+            super(jsonStreamElementType);
+            this.reader = reader;
+        }
+
+        @Override
+        public final boolean hasText() {
+            return true;
+        }
+
+        @Override
+        public final Reader reader() {
+            return reader;
+        }
+
+        @Override
+        final void close() throws IOException {
+            reader.close();
+        }
     }
 
     static JsonStreamElement startDocument() {
-        return START_DOCUMENT;
+        return NonTextJsonStreamElement.START_DOCUMENT;
     }
 
     static JsonStreamElement endDocument() {
-        return END_DOCUMENT;
+        return NonTextJsonStreamElement.END_DOCUMENT;
     }
 
     static JsonStreamElement startArray() {
-        return START_ARRAY;
+        return NonTextJsonStreamElement.START_ARRAY;
     }
 
     static JsonStreamElement endArray() {
-        return END_ARRAY;
+        return NonTextJsonStreamElement.END_ARRAY;
     }
 
     static JsonStreamElement startObject() {
-        return START_OBJECT;
+        return NonTextJsonStreamElement.START_OBJECT;
     }
 
     static JsonStreamElement endObject() {
-        return END_OBJECT;
+        return NonTextJsonStreamElement.END_OBJECT;
     }
 
     static JsonStreamElement startField(final Reader reader) {
-        return textJsonStreamElement(JsonStreamElementType.START_FIELD, reader);
+        return new TextJsonStreamElement(JsonStreamElementType.START_FIELD, reader) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.startField(reader());
+            }
+        };
     }
 
     static JsonStreamElement endField() {
-        return END_FIELD;
+        return NonTextJsonStreamElement.END_FIELD;
     }
 
     static JsonStreamElement string(final Reader reader) {
-        return textJsonStreamElement(JsonStreamElementType.STRING, reader);
+        return new TextJsonStreamElement(JsonStreamElementType.STRING, reader) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.stringValue(reader());
+            }
+        };
     }
 
     static JsonStreamElement number(final Reader reader) {
-        return textJsonStreamElement(JsonStreamElementType.NUMBER, reader);
+        return new TextJsonStreamElement(JsonStreamElementType.NUMBER, reader) {
+            @Override
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.numberValue(reader());
+            }
+        };
     }
 
     static JsonStreamElement trueValue() {
-        return TRUE;
+        return NonTextJsonStreamElement.TRUE;
     }
 
     static JsonStreamElement falseValue() {
-        return FALSE;
+        return NonTextJsonStreamElement.FALSE;
     }
 
     static JsonStreamElement nullValue() {
-        return NULL;
+        return NonTextJsonStreamElement.NULL;
     }
 
     private JsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
@@ -145,6 +222,13 @@ public abstract class JsonStreamElement {
      * @throws IllegalStateException if the element doesn't have any text associated with it.
      */
     public abstract Reader reader();
+
+    /**
+     * Converts this element into a callback to a JsonListener.
+     *
+     * @param jsonListener the JsonListener to call back with the details of this element
+     */
+    public abstract void visit(JsonListener jsonListener);
 
     @Override
     public final String toString() {
