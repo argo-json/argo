@@ -52,7 +52,7 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * @throws JsonStreamException           if the underlying character stream failed.
      */
     public boolean hasNext() {
-        if (current != null && current.jsonStreamElementType().equals(JsonStreamElementType.END_DOCUMENT)) {
+        if (current != null && current == JsonStreamElement.NonTextJsonStreamElement.END_DOCUMENT) {
             return false;
         } else if (next == null) {
             next = getNextElement();
