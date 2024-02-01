@@ -106,7 +106,7 @@ public abstract class JsonStreamElement {
 
         private final Reader reader;
 
-        TextJsonStreamElement(final JsonStreamElementType jsonStreamElementType, final Reader reader) {
+        private TextJsonStreamElement(final JsonStreamElementType jsonStreamElementType, final Reader reader) {
             super(jsonStreamElementType);
             this.reader = reader;
         }
@@ -125,15 +125,40 @@ public abstract class JsonStreamElement {
         final void close() throws IOException {
             reader.close();
         }
-    }
 
-    static JsonStreamElement startField(final Reader reader) {
-        return new TextJsonStreamElement(JsonStreamElementType.START_FIELD, reader) {
-            @Override
+        private static final class StartFieldJsonStreamElement extends TextJsonStreamElement {
+            private StartFieldJsonStreamElement(final Reader reader) {
+                super(JsonStreamElementType.START_FIELD, reader);
+            }
+
             public void visit(final JsonListener jsonListener) {
                 jsonListener.startField(reader());
             }
-        };
+        }
+
+        private static final class StringJsonStreamElement extends TextJsonStreamElement {
+            private StringJsonStreamElement(final Reader reader) {
+                super(JsonStreamElementType.STRING, reader);
+            }
+
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.stringValue(reader());
+            }
+        }
+
+        private static final class NumberJsonStreamElement extends TextJsonStreamElement {
+            private NumberJsonStreamElement(final Reader reader) {
+                super(JsonStreamElementType.NUMBER, reader);
+            }
+
+            public void visit(final JsonListener jsonListener) {
+                jsonListener.numberValue(reader());
+            }
+        }
+    }
+
+    static JsonStreamElement startField(final Reader reader) {
+        return new TextJsonStreamElement.StartFieldJsonStreamElement(reader);
     }
 
     static JsonStreamElement endField() {
@@ -141,21 +166,11 @@ public abstract class JsonStreamElement {
     }
 
     static JsonStreamElement string(final Reader reader) {
-        return new TextJsonStreamElement(JsonStreamElementType.STRING, reader) {
-            @Override
-            public void visit(final JsonListener jsonListener) {
-                jsonListener.stringValue(reader());
-            }
-        };
+        return new TextJsonStreamElement.StringJsonStreamElement(reader);
     }
 
     static JsonStreamElement number(final Reader reader) {
-        return new TextJsonStreamElement(JsonStreamElementType.NUMBER, reader) {
-            @Override
-            public void visit(final JsonListener jsonListener) {
-                jsonListener.numberValue(reader());
-            }
-        };
+        return new TextJsonStreamElement.NumberJsonStreamElement(reader);
     }
 
     private JsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
