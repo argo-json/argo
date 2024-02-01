@@ -10,6 +10,8 @@
 
 package argo.staj;
 
+import argo.BoundedRepeatingReader;
+import argo.InfiniteReader;
 import org.apache.commons.io.input.SequenceReader;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
