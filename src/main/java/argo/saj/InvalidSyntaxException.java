@@ -26,7 +26,7 @@ public final class InvalidSyntaxException extends Exception {
         this.line = line;
     }
 
-    public static InvalidSyntaxException from(final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException) { // TODO this shouldn't be public
+    static InvalidSyntaxException from(final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException) {
         return new InvalidSyntaxException(
                 invalidSyntaxRuntimeException.getMessage(),
                 invalidSyntaxRuntimeException.getCause(),
