@@ -10,7 +10,6 @@
 
 package argo;
 
-import java.io.IOException;
 import java.io.Reader;
 
 public final class BoundedRepeatingReader extends Reader {
@@ -31,7 +30,7 @@ public final class BoundedRepeatingReader extends Reader {
         }
     }
 
-    public int read(final char[] cbuf, final int offset, final int length) throws IOException {
+    public int read(final char[] cbuf, final int offset, final int length) {
         validateArguments(cbuf, offset, length);
         int n = 0;
         int nextChar;
