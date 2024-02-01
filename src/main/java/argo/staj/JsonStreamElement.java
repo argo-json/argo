@@ -23,7 +23,6 @@ public abstract class JsonStreamElement {
     private final JsonStreamElementType jsonStreamElementType;
 
     static abstract class NonTextJsonStreamElement extends JsonStreamElement {
-
         static final JsonStreamElement START_DOCUMENT = new NonTextJsonStreamElement(JsonStreamElementType.START_DOCUMENT) {
             @Override
             public void visit(final JsonListener jsonListener) {
@@ -86,7 +85,7 @@ public abstract class JsonStreamElement {
             }
         };
 
-        NonTextJsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
+        private NonTextJsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
             super(jsonStreamElementType);
         }
 
@@ -128,30 +127,6 @@ public abstract class JsonStreamElement {
         }
     }
 
-    static JsonStreamElement startDocument() {
-        return NonTextJsonStreamElement.START_DOCUMENT;
-    }
-
-    static JsonStreamElement endDocument() {
-        return NonTextJsonStreamElement.END_DOCUMENT;
-    }
-
-    static JsonStreamElement startArray() {
-        return NonTextJsonStreamElement.START_ARRAY;
-    }
-
-    static JsonStreamElement endArray() {
-        return NonTextJsonStreamElement.END_ARRAY;
-    }
-
-    static JsonStreamElement startObject() {
-        return NonTextJsonStreamElement.START_OBJECT;
-    }
-
-    static JsonStreamElement endObject() {
-        return NonTextJsonStreamElement.END_OBJECT;
-    }
-
     static JsonStreamElement startField(final Reader reader) {
         return new TextJsonStreamElement(JsonStreamElementType.START_FIELD, reader) {
             @Override
@@ -181,18 +156,6 @@ public abstract class JsonStreamElement {
                 jsonListener.numberValue(reader());
             }
         };
-    }
-
-    static JsonStreamElement trueValue() {
-        return NonTextJsonStreamElement.TRUE;
-    }
-
-    static JsonStreamElement falseValue() {
-        return NonTextJsonStreamElement.FALSE;
-    }
-
-    static JsonStreamElement nullValue() {
-        return NonTextJsonStreamElement.NULL;
     }
 
     private JsonStreamElement(final JsonStreamElementType jsonStreamElementType) {

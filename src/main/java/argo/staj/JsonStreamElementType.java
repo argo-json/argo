@@ -37,7 +37,7 @@ public enum JsonStreamElementType {
                 return aJsonValue(pushbackReader, stack);
             }
             stack.pop();
-            return endArray();
+            return NonTextJsonStreamElement.END_ARRAY;
         }
     },
     END_ARRAY {
@@ -136,7 +136,7 @@ public enum JsonStreamElementType {
             return aFieldToken(pushbackReader, stack);
         }
         stack.pop();
-        return endObject();
+        return NonTextJsonStreamElement.END_OBJECT;
     }
 
     private static JsonStreamElement parseFromEndOfNode(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
@@ -149,7 +149,7 @@ public enum JsonStreamElementType {
                         return aJsonValue(pushbackReader, stack);
                     case ']':
                         stack.pop();
-                        return endArray();
+                        return NonTextJsonStreamElement.END_ARRAY;
                     default:
                         throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
                 }
@@ -167,7 +167,7 @@ public enum JsonStreamElementType {
                 }
             case START_DOCUMENT:
                 if (nextChar == -1) {
-                    return endDocument();
+                    return NonTextJsonStreamElement.END_DOCUMENT;
                 } else {
                     throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected end of stream or whitespace", nextChar, pushbackReader.position());
                 }
@@ -192,11 +192,11 @@ public enum JsonStreamElementType {
             case '"':
                 return string(new StringReader(pushbackReader, pushbackReader.position()));
             case 't':
-                return constant(pushbackReader, "true", trueValue());
+                return constant(pushbackReader, "true", NonTextJsonStreamElement.TRUE);
             case 'f':
-                return constant(pushbackReader, "false", falseValue());
+                return constant(pushbackReader, "false", NonTextJsonStreamElement.FALSE);
             case 'n':
-                return constant(pushbackReader, "null", nullValue());
+                return constant(pushbackReader, "null", NonTextJsonStreamElement.NULL);
             case '-':
             case '0':
             case '1':
@@ -212,10 +212,10 @@ public enum JsonStreamElementType {
                 return number(new NumberReader(pushbackReader));
             case '{':
                 stack.push(START_OBJECT);
-                return startObject();
+                return NonTextJsonStreamElement.START_OBJECT;
             case '[':
                 stack.push(START_ARRAY);
-                return startArray();
+                return NonTextJsonStreamElement.START_ARRAY;
             default:
                 final String explanation = -1 == nextChar ? "Expected a value but reached end of input" : "Invalid character [" + asPrintableString((char) nextChar) + "] at start of value";
                 throw new InvalidSyntaxRuntimeException(explanation, pushbackReader.position());

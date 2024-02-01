@@ -34,7 +34,6 @@ import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
 import static argo.jdom.JsonStringNodeTestBuilder.*;
 import static argo.staj.ElementTrackingStajParserMatcher.generatesElements;
-import static argo.staj.JsonStreamElement.nullValue;
 import static argo.staj.JsonStreamElement.number;
 import static argo.staj.JsonStreamElement.string;
 import static argo.staj.JsonStreamElement.*;
@@ -49,114 +48,114 @@ final class StajParserTest {
 
     @Test
     void parsesFromReader() {
-        assertThat(new StajParser(new StringReader("null")), generatesElements(startDocument(), nullValue(), endDocument()));
+        assertThat(new StajParser(new StringReader("null")), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void parsesFromString() {
-        assertThat(new StajParser("null"), generatesElements(startDocument(), nullValue(), endDocument()));
+        assertThat(new StajParser("null"), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void arrayOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(array()), generatesElements(startDocument(), startArray(), endArray(), endDocument()));
+        assertThat(stajParser(array()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void objectOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(object()), generatesElements(startDocument(), startObject(), endObject(), endDocument()));
+        assertThat(stajParser(object()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_OBJECT, NonTextJsonStreamElement.END_OBJECT, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void numberOnlyDocumentHasCorrectElements() {
         final JsonNode numberNode = aNumberNode();
-        assertThat(stajParser(numberNode), generatesElements(startDocument(), number(new StringReader(numberNode.getText())), endDocument()));
+        assertThat(stajParser(numberNode), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, number(new StringReader(numberNode.getText())), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void stringOnlyDocumentHasCorrectElements() {
         final JsonNode stringNode = aStringNode();
-        assertThat(stajParser(stringNode), generatesElements(startDocument(), string(new StringReader(stringNode.getText())), endDocument()));
+        assertThat(stajParser(stringNode), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader(stringNode.getText())), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void nullOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(nullNode()), generatesElements(startDocument(), nullValue(), endDocument()));
+        assertThat(stajParser(nullNode()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void trueOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(trueNode()), generatesElements(startDocument(), trueValue(), endDocument()));
+        assertThat(stajParser(trueNode()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.TRUE, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void falseOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(falseNode()), generatesElements(startDocument(), falseValue(), endDocument()));
+        assertThat(stajParser(falseNode()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.FALSE, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void arrayWithChildHasCorrectElements() {
-        assertThat(stajParser(array(array())), generatesElements(startDocument(), startArray(), startArray(), endArray(), endArray(), endDocument()));
+        assertThat(stajParser(array(array())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void arrayWithChildrenHasCorrectElements() {
         assertThat(stajParser(array(array(), object())), generatesElements(
-                startDocument(),
-                startArray(),
-                startArray(),
-                endArray(),
-                startObject(),
-                endObject(),
-                endArray(),
-                endDocument()
+                NonTextJsonStreamElement.START_DOCUMENT,
+                NonTextJsonStreamElement.START_ARRAY,
+                NonTextJsonStreamElement.START_ARRAY,
+                NonTextJsonStreamElement.END_ARRAY,
+                NonTextJsonStreamElement.START_OBJECT,
+                NonTextJsonStreamElement.END_OBJECT,
+                NonTextJsonStreamElement.END_ARRAY,
+                NonTextJsonStreamElement.END_DOCUMENT
         ));
     }
 
     @Test
     void arrayWithNullHasCorrectElements() {
-        assertThat(stajParser(array(nullNode())), generatesElements(startDocument(), startArray(), nullValue(), endArray(), endDocument()));
+        assertThat(stajParser(array(nullNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void arrayWithNullsHasCorrectElements() {
-        assertThat(stajParser(array(nullNode(), nullNode())), generatesElements(startDocument(), startArray(), nullValue(), nullValue(), endArray(), endDocument()));
+        assertThat(stajParser(array(nullNode(), nullNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void arrayWithTrueHasCorrectElements() {
-        assertThat(stajParser(array(trueNode())), generatesElements(startDocument(), startArray(), trueValue(), endArray(), endDocument()));
+        assertThat(stajParser(array(trueNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.TRUE, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void arrayWithFalseHasCorrectElements() {
-        assertThat(stajParser(array(falseNode())), generatesElements(startDocument(), startArray(), falseValue(), endArray(), endDocument()));
+        assertThat(stajParser(array(falseNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.FALSE, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void arrayWithATextNodeHasCorrectElements() {
         final JsonNode aStringNode = aStringNode();
-        assertThat(stajParser(array(aStringNode)), generatesElements(startDocument(), startArray(), string(new StringReader(aStringNode.getText())), endArray(), endDocument()));
+        assertThat(stajParser(array(aStringNode)), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, string(new StringReader(aStringNode.getText())), NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void arrayWithANumberNodeHasCorrectElements() {
         final JsonNode aNumberNode = aNumberNode();
-        assertThat(stajParser(array(aNumberNode)), generatesElements(startDocument(), startArray(), number(new StringReader(aNumberNode.getText())), endArray(), endDocument()));
+        assertThat(stajParser(array(aNumberNode)), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, number(new StringReader(aNumberNode.getText())), NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void objectWithFieldHasCorrectElements() {
         final JsonStringNode aFieldName = JsonStringNodeTestBuilder.aStringNode();
         assertThat(stajParser(object(field(aFieldName, array()))), generatesElements(
-                startDocument(),
-                startObject(),
+                NonTextJsonStreamElement.START_DOCUMENT,
+                NonTextJsonStreamElement.START_OBJECT,
                 startField(new StringReader(aFieldName.getText())),
-                startArray(),
-                endArray(),
+                NonTextJsonStreamElement.START_ARRAY,
+                NonTextJsonStreamElement.END_ARRAY,
                 endField(),
-                endObject(),
-                endDocument()
+                NonTextJsonStreamElement.END_OBJECT,
+                NonTextJsonStreamElement.END_DOCUMENT
         ));
     }
 
@@ -165,18 +164,18 @@ final class StajParserTest {
         final JsonStringNode aFieldName = aStringNode();
         final JsonStringNode anotherFieldName = aStringNode();
         assertThat(stajParser(object(field(aFieldName, array()), field(anotherFieldName, object()))), generatesElements(
-                startDocument(),
-                startObject(),
+                NonTextJsonStreamElement.START_DOCUMENT,
+                NonTextJsonStreamElement.START_OBJECT,
                 startField(new StringReader(aFieldName.getText())),
-                startArray(),
-                endArray(),
+                NonTextJsonStreamElement.START_ARRAY,
+                NonTextJsonStreamElement.END_ARRAY,
                 endField(),
                 startField(new StringReader(anotherFieldName.getText())),
-                startObject(),
-                endObject(),
+                NonTextJsonStreamElement.START_OBJECT,
+                NonTextJsonStreamElement.END_OBJECT,
                 endField(),
-                endObject(),
-                endDocument()
+                NonTextJsonStreamElement.END_OBJECT,
+                NonTextJsonStreamElement.END_DOCUMENT
         ));
     }
 
@@ -194,7 +193,7 @@ final class StajParserTest {
 
     @Test
     void nextWorksWithoutCallingHasNext() {
-        assertThat(stajParser(array()).next(), equalTo(startDocument()));
+        assertThat(stajParser(array()).next(), equalTo(NonTextJsonStreamElement.START_DOCUMENT));
     }
 
     @Test
@@ -883,12 +882,12 @@ final class StajParserTest {
             "t, 0x9",
     })
     void parsesValidStringWithEscapedChars(final String input, final int expected) {
-        assertThat(new StajParser("\"\\" + input + "\""), generatesElements(startDocument(), string(new StringReader(String.valueOf((char)expected))), endDocument()));
+        assertThat(new StajParser("\"\\" + input + "\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader(String.valueOf((char)expected))), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void parsesValidStringWithEscapedUnicodeChars() {
-        assertThat(new StajParser("\"\\uF001\""), generatesElements(startDocument(), string(new StringReader("\uF001")), endDocument()));
+        assertThat(new StajParser("\"\\uF001\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader("\uF001")), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
@@ -1883,7 +1882,7 @@ final class StajParserTest {
     })
     void parsesValidNumber(final String numberString) {
         final StajParser stajParser = new StajParser(numberString);
-        assertThat(stajParser, generatesElements(startDocument(), number(new StringReader(numberString)), endDocument()));
+        assertThat(stajParser, generatesElements(NonTextJsonStreamElement.START_DOCUMENT, number(new StringReader(numberString)), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @ParameterizedTest
@@ -2631,20 +2630,20 @@ final class StajParserTest {
     @ParameterizedTest
     @ValueSource(chars = {' ', '\n', '\r', '\t'})
     void permitsWhitespaceAtStartOfDocument(final char whitespaceCharacter) {
-        assertThat(new StajParser(whitespaceCharacter + "null"), generatesElements(startDocument(), nullValue(), endDocument()));
+        assertThat(new StajParser(whitespaceCharacter + "null"), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @ParameterizedTest
     @ValueSource(chars = {' ', '\n', '\r', '\t'})
     void permitsWhitespaceAtEndOfDocument(final char whitespaceCharacter) {
-        assertThat(new StajParser("null" + whitespaceCharacter), generatesElements(startDocument(), nullValue(), endDocument()));
+        assertThat(new StajParser("null" + whitespaceCharacter), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
     @Test
     void parsesJsonObjectWithWhitespace() {
         assertThat(
                 new StajParser("{\"hello\": \"world\"}"),
-                generatesElements(startDocument(), startObject(), startField(new StringReader("hello")), string(new StringReader("world")), endField(), endObject(), endDocument())
+                generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_OBJECT, startField(new StringReader("hello")), string(new StringReader("world")), endField(), NonTextJsonStreamElement.END_OBJECT, NonTextJsonStreamElement.END_DOCUMENT)
         );
     }
 
@@ -2652,7 +2651,7 @@ final class StajParserTest {
     void parsesMultiElementArrayWithWhitespace() {
         assertThat(
                 new StajParser("[ 1, 2 ]"),
-                generatesElements(startDocument(), startArray(), number(new StringReader("1")), number(new StringReader("2")), endArray(), endDocument())
+                generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, number(new StringReader("1")), number(new StringReader("2")), NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT)
         );
     }
 

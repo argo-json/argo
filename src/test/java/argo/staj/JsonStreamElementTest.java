@@ -25,32 +25,32 @@ import static org.hamcrest.Matchers.equalTo;
 class JsonStreamElementTest {
     @Test
     void startDocumentHasCorrectAttributes() {
-        assertThat(startDocument(), aNonTextJsonStreamElementWithType(START_DOCUMENT));
+        assertThat(NonTextJsonStreamElement.START_DOCUMENT, aNonTextJsonStreamElementWithType(START_DOCUMENT));
     }
 
     @Test
     void endDocumentHasCorrectAttributes() {
-        assertThat(endDocument(), aNonTextJsonStreamElementWithType(END_DOCUMENT));
+        assertThat(NonTextJsonStreamElement.END_DOCUMENT, aNonTextJsonStreamElementWithType(END_DOCUMENT));
     }
 
     @Test
     void startArrayHasCorrectAttributes() {
-        assertThat(startArray(), aNonTextJsonStreamElementWithType(START_ARRAY));
+        assertThat(NonTextJsonStreamElement.START_ARRAY, aNonTextJsonStreamElementWithType(START_ARRAY));
     }
 
     @Test
     void endArrayHasCorrectAttributes() {
-        assertThat(endArray(), aNonTextJsonStreamElementWithType(END_ARRAY));
+        assertThat(NonTextJsonStreamElement.END_ARRAY, aNonTextJsonStreamElementWithType(END_ARRAY));
     }
 
     @Test
     void startObjectHasCorrectAttributes() {
-        assertThat(startObject(), aNonTextJsonStreamElementWithType(START_OBJECT));
+        assertThat(NonTextJsonStreamElement.START_OBJECT, aNonTextJsonStreamElementWithType(START_OBJECT));
     }
 
     @Test
     void endObjectHasCorrectAttributes() {
-        assertThat(endObject(), aNonTextJsonStreamElementWithType(END_OBJECT));
+        assertThat(NonTextJsonStreamElement.END_OBJECT, aNonTextJsonStreamElementWithType(END_OBJECT));
     }
 
     @Test
@@ -78,47 +78,47 @@ class JsonStreamElementTest {
 
     @Test
     void trueHasCorrectAttributes() {
-        assertThat(trueValue(), aNonTextJsonStreamElementWithType(TRUE));
+        assertThat(NonTextJsonStreamElement.TRUE, aNonTextJsonStreamElementWithType(TRUE));
     }
 
     @Test
     void falseHasCorrectAttributes() {
-        assertThat(falseValue(), aNonTextJsonStreamElementWithType(FALSE));
+        assertThat(NonTextJsonStreamElement.FALSE, aNonTextJsonStreamElementWithType(FALSE));
     }
 
     @Test
     void nullHasCorrectAttributes() {
-        assertThat(nullValue(), aNonTextJsonStreamElementWithType(NULL));
+        assertThat(NonTextJsonStreamElement.NULL, aNonTextJsonStreamElementWithType(NULL));
     }
 
     @Test
     void startDocumentHasCorrectToString() {
-        assertThat(startDocument().toString(), equalTo("JsonStreamElement jsonStreamElementType: START_DOCUMENT"));
+        assertThat(NonTextJsonStreamElement.START_DOCUMENT.toString(), equalTo("JsonStreamElement jsonStreamElementType: START_DOCUMENT"));
     }
 
     @Test
     void endDocumentHasCorrectToString() {
-        assertThat(endDocument().toString(), equalTo("JsonStreamElement jsonStreamElementType: END_DOCUMENT"));
+        assertThat(NonTextJsonStreamElement.END_DOCUMENT.toString(), equalTo("JsonStreamElement jsonStreamElementType: END_DOCUMENT"));
     }
 
     @Test
     void startArrayHasCorrectToString() {
-        assertThat(startArray().toString(), equalTo("JsonStreamElement jsonStreamElementType: START_ARRAY"));
+        assertThat(NonTextJsonStreamElement.START_ARRAY.toString(), equalTo("JsonStreamElement jsonStreamElementType: START_ARRAY"));
     }
 
     @Test
     void endArrayHasCorrectToString() {
-        assertThat(endArray().toString(), equalTo("JsonStreamElement jsonStreamElementType: END_ARRAY"));
+        assertThat(NonTextJsonStreamElement.END_ARRAY.toString(), equalTo("JsonStreamElement jsonStreamElementType: END_ARRAY"));
     }
 
     @Test
     void startObjectHasCorrectToString() {
-        assertThat(startObject().toString(), equalTo("JsonStreamElement jsonStreamElementType: START_OBJECT"));
+        assertThat(NonTextJsonStreamElement.START_OBJECT.toString(), equalTo("JsonStreamElement jsonStreamElementType: START_OBJECT"));
     }
 
     @Test
     void endObjectHasCorrectToString() {
-        assertThat(endObject().toString(), equalTo("JsonStreamElement jsonStreamElementType: END_OBJECT"));
+        assertThat(NonTextJsonStreamElement.END_OBJECT.toString(), equalTo("JsonStreamElement jsonStreamElementType: END_OBJECT"));
     }
 
     @Test
@@ -146,17 +146,17 @@ class JsonStreamElementTest {
 
     @Test
     void trueHasCorrectToString() {
-        assertThat(trueValue().toString(), equalTo("JsonStreamElement jsonStreamElementType: TRUE"));
+        assertThat(NonTextJsonStreamElement.TRUE.toString(), equalTo("JsonStreamElement jsonStreamElementType: TRUE"));
     }
 
     @Test
     void falseHasCorrectToString() {
-        assertThat(falseValue().toString(), equalTo("JsonStreamElement jsonStreamElementType: FALSE"));
+        assertThat(NonTextJsonStreamElement.FALSE.toString(), equalTo("JsonStreamElement jsonStreamElementType: FALSE"));
     }
 
     @Test
     void nullHasCorrectToString() {
-        assertThat(nullValue().toString(), equalTo("JsonStreamElement jsonStreamElementType: NULL"));
+        assertThat(NonTextJsonStreamElement.NULL.toString(), equalTo("JsonStreamElement jsonStreamElementType: NULL"));
     }
 
 }
