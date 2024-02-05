@@ -42,15 +42,16 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
         writer.write('"');
     }
 
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
     final void write(final WriteableJsonNumber writeableJsonNumber) throws IOException {
         final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer);
         try {
             writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
+        } catch (final RuntimeException e) {
+            jsonNumberValidatingWriter.endExceptionally();
+            throw e;
         } finally {
             jsonNumberValidatingWriter.close();
-        }
-        if (!jsonNumberValidatingWriter.isEndState()) {
-            throw new IllegalArgumentException("Attempt to write an incomplete JSON number");
         }
     }
 

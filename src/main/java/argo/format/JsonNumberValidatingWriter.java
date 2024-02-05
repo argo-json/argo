@@ -64,14 +64,17 @@ final class JsonNumberValidatingWriter extends Writer {
 
     public void close() {
         if (out != null) {
+            out = null;
             if (numberParserState != NumberParserState.ERROR_EXPECTED_DIGIT && numberParserState != NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS && numberParserState != NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
                 numberParserState = numberParserState.handle(-1);
             }
-            out = null;
+            if (numberParserState != NumberParserState.END) {
+                throw new IllegalStateException("Attempt to write an incomplete JSON number");
+            }
         }
     }
 
-    boolean isEndState() { // TODO should we do this on close?
-        return numberParserState == NumberParserState.END;
+    void endExceptionally() {
+        numberParserState = NumberParserState.END;
     }
 }

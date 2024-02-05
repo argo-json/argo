@@ -105,7 +105,13 @@ class JsonWriterTest {
     @ParameterizedTest
     @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
     void rejectsIncompleteNumber(final JsonWriter jsonWriter) {
-        assertThrows(IllegalArgumentException.class, () -> jsonWriter.write(NullWriter.INSTANCE, (WriteableJsonNumber) numberWriter -> numberWriter.write("1.")));
+        assertThrows(IllegalStateException.class, () -> jsonWriter.write(NullWriter.INSTANCE, (WriteableJsonNumber) numberWriter -> numberWriter.write("1.")));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
+    void correctExceptionIsPropagatedThroughJsonWriter(final JsonWriter jsonWriter) {
+        assertThrows(IndexOutOfBoundsException.class, () -> jsonWriter.write(NullWriter.INSTANCE, (WriteableJsonNumber) numberWriter -> numberWriter.write(new char[] {'1', '.'}, 1, 3)));
     }
 
 }

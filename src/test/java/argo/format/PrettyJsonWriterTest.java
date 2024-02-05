@@ -1,5 +1,5 @@
 /*
- *  Copyright  2019 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -318,7 +318,7 @@ class PrettyJsonWriterTest {
 
     @Test
     void rejectsNumberWithDecimalPointButNothingAfter() {
-        assertThrows(IllegalArgumentException.class, () -> new PrettyJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1.")));
+        assertThrows(IllegalStateException.class, () -> new PrettyJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1.")));
     }
 
     @Test

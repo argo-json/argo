@@ -61,37 +61,47 @@ class JsonNumberValidatingWriterTest {
 
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereOffsetIsNegativeThrowsIndexOutOfBoundsException() {
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
-            assertThrows(IndexOutOfBoundsException.class, () -> jsonNumberValidatingWriter.write(new char[3], -1, 0));
-        }
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+                jsonNumberValidatingWriter.write(new char[3], -1, 0);
+            }
+        });
     }
 
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereOffsetIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() {
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
-            assertThrows(IndexOutOfBoundsException.class, () -> jsonNumberValidatingWriter.write(new char[3], 4, 0));
-        }
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+                jsonNumberValidatingWriter.write(new char[3], 4, 0);
+            }
+        });
     }
 
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereLengthIsLessThanZeroThrowsIndexOutOfBoundsException() {
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
-            assertThrows(IndexOutOfBoundsException.class, () -> jsonNumberValidatingWriter.write(new char[3], 0, -1));
-        }
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+                jsonNumberValidatingWriter.write(new char[3], 0, -1);
+            }
+        });
     }
 
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereOffsetPlusLengthIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() {
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
-            assertThrows(IndexOutOfBoundsException.class, () -> jsonNumberValidatingWriter.write(new char[3], 1, 3));
-        }
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+                jsonNumberValidatingWriter.write(new char[3], 1, 3);
+            }
+        });
     }
 
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereOffsetPlusLengthOverflowsThrowsIndexOutOfBoundsException() {
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
-            assertThrows(IndexOutOfBoundsException.class, () -> jsonNumberValidatingWriter.write(new char[3], 1, Integer.MAX_VALUE));
-        }
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+                jsonNumberValidatingWriter.write(new char[3], 1, Integer.MAX_VALUE);
+            }
+        });
     }
 
     @Test

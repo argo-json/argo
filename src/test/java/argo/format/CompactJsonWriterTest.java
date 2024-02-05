@@ -251,7 +251,7 @@ class CompactJsonWriterTest {
 
     @Test
     void rejectsNumberWithDecimalPointButNothingAfter() {
-        assertThrows(IllegalArgumentException.class, () -> new CompactJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1.")));
+        assertThrows(IllegalStateException.class, () -> new CompactJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1.")));
     }
 
     @Test
