@@ -40,6 +40,7 @@
         <exclude name="LongVariable"/> <!-- configured later -->
         <exclude name="MethodArgumentCouldBeFinal"/> <!-- Don't want this on for code samples; switched back on for main -->
         <exclude name="OnlyOneReturn"/>
+        <exclude name="ShortClassName"/> <!-- configured later -->
         <exclude name="ShortVariable"/>
         <exclude name="TooManyStaticImports"/>
         <exclude name="UnnecessaryFullyQualifiedName"/> <!-- doesn't understand name clashes -->
@@ -68,6 +69,11 @@
     <rule ref="category/java/codestyle.xml/ClassNamingConventions">
         <properties>
             <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]*"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/ShortClassName">
+        <properties>
+            <property name="minimum" value="4" />
         </properties>
     </rule>
 
