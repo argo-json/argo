@@ -22,7 +22,7 @@ import static argo.format.JsonEscapedString.escapeCharBufferTo;
 abstract class AbstractJsonPrinter implements JsonNodeVisitor {
 
     final Writer writer;
-    private char[] writeBuffer;
+    private final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
 
     AbstractJsonPrinter(final Writer writer) {
         this.writer = writer;
@@ -34,7 +34,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
 
     final void write(final WriteableJsonString writeableJsonString) throws IOException {
         writer.write('"'); // TODO combine this implementation with the visitor implementation of string writing
-        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(writer);
+        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(writer, writeBufferHolder);
         try {
             writeableJsonString.writeTo(jsonStringEscapingWriter);
         } finally {
@@ -88,10 +88,10 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
         final char[] cbuf;
         final int length = value.length();
         if (length <= 1024) {
-            if (writeBuffer == null) {
-                writeBuffer = new char[1024];
+            if (writeBufferHolder.writeBuffer == null) {
+                writeBufferHolder.writeBuffer = new char[1024];
             }
-            cbuf = writeBuffer;
+            cbuf = writeBufferHolder.writeBuffer;
         } else {
             cbuf = new char[length];
         }

@@ -17,12 +17,14 @@ import static argo.format.JsonEscapedString.escapeCharBufferTo;
 
 final class JsonStringEscapingWriter extends Writer {
     private Writer out;
+    private final WriteBufferHolder writeBufferHolder;
 
-    JsonStringEscapingWriter(final Writer out) {
+    JsonStringEscapingWriter(final Writer out, final WriteBufferHolder writeBufferHolder) {
         if (out == null) {
             throw new NullPointerException();
         }
         this.out = out;
+        this.writeBufferHolder = writeBufferHolder;
     }
 
     private static void validateArguments(final char[] cbuf, final int offset, final int length) {
@@ -36,6 +38,31 @@ final class JsonStringEscapingWriter extends Writer {
         if (out == null) {
             throw new IOException("Stream closed");
         }
+    }
+
+    @Override
+    public void write(final int c) throws IOException {
+        if (writeBufferHolder.writeBuffer == null){
+            writeBufferHolder.writeBuffer = new char[WriteBufferHolder.WRITE_BUFFER_SIZE];
+        }
+        writeBufferHolder.writeBuffer[0] = (char) c;
+        write(writeBufferHolder.writeBuffer, 0, 1);
+    }
+
+    @Override
+    public void write(final String str, final int off, final int len) throws IOException {
+        ensureOpen();
+        final char[] cbuf;
+        if (len <= WriteBufferHolder.WRITE_BUFFER_SIZE) {
+            if (writeBufferHolder.writeBuffer == null) {
+                writeBufferHolder.writeBuffer = new char[WriteBufferHolder.WRITE_BUFFER_SIZE];
+            }
+            cbuf = writeBufferHolder.writeBuffer;
+        } else {
+            cbuf = new char[len];
+        }
+        str.getChars(off, off + len, cbuf, 0);
+        write(cbuf, 0, len);
     }
 
     @Override
