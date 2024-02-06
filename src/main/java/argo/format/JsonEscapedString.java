@@ -19,7 +19,7 @@ final class JsonEscapedString {
     }
 
     static void escapeStringTo(final Writer writer, final String unescapedString) throws IOException {
-        final char[] chars = unescapedString.toCharArray();
+        final char[] chars = unescapedString.toCharArray(); // TODO this maybe ought to reuse a buffer (see java.io.Writer#write(String))
         escapeStringTo(writer, chars, 0, chars.length);
     }
 

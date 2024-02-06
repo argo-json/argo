@@ -40,7 +40,18 @@ final class JsonNumberValidatingWriter extends Writer {
         }
     }
 
-    // TODO more efficient single character write method?
+    @Override
+    public void write(final int c) throws IOException {
+        ensureOpen();
+        numberParserState = numberParserState.handle(c);
+        if (numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS || numberParserState == NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
+            throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification");
+        }
+        if (numberParserState == NumberParserState.END) {
+            throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification");
+        }
+        out.write(c);
+    }
 
     public void write(final char[] cbuf, final int offset, final int length) throws IOException {
         validateArguments(cbuf, offset, length);
