@@ -45,7 +45,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
 
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     final void write(final WriteableJsonNumber writeableJsonNumber) throws IOException {
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer);
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(writer, writeBufferHolder);
         try {
             writeableJsonNumber.writeTo(jsonNumberValidatingWriter);
         } catch (final RuntimeException e) {

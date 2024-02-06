@@ -27,13 +27,13 @@ class JsonNumberValidatingWriterTest {
     @Test
     @SuppressWarnings("resource")
     void rejectsNullDelegate() {
-        assertThrows(NullPointerException.class, () -> new JsonNumberValidatingWriter(null));
+        assertThrows(NullPointerException.class, () -> new JsonNumberValidatingWriter(null, new WriteBufferHolder()));
     }
 
     @Test
     void writesValidNumberToDelegate() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter)) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
             jsonNumberValidatingWriter.write("0");
         }
         assertThat(stringWriter.toString(), equalTo("0"));
@@ -42,7 +42,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void writesValidNumberAsCharactersToDelegate() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter)) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
             jsonNumberValidatingWriter.write('0');
         }
         assertThat(stringWriter.toString(), equalTo("0"));
@@ -51,7 +51,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void writesValidNumberSubstringsImmediately() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter)) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
             jsonNumberValidatingWriter.write("4");
             assertThat(stringWriter.toString(), equalTo("4"));
             jsonNumberValidatingWriter.write("2");
@@ -62,7 +62,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void writesValidNumberCharactersImmediately() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter)) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
             jsonNumberValidatingWriter.write('4');
             assertThat(stringWriter.toString(), equalTo("4"));
             jsonNumberValidatingWriter.write('2');
@@ -73,7 +73,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void rejectsNumberWithTrailingInvalidSubstring() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter)) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
             jsonNumberValidatingWriter.write("0");
             assertThrows(IllegalArgumentException.class, () -> jsonNumberValidatingWriter.write("p"));
         }
@@ -82,7 +82,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void rejectsNumberWithTrailingInvalidCharacter() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter)) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
             jsonNumberValidatingWriter.write("0");
             assertThrows(IllegalArgumentException.class, () -> jsonNumberValidatingWriter.write('p'));
         }
@@ -91,7 +91,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereOffsetIsNegativeThrowsIndexOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> {
-            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE, new WriteBufferHolder())) {
                 jsonNumberValidatingWriter.write(new char[3], -1, 0);
             }
         });
@@ -100,7 +100,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereOffsetIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> {
-            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE, new WriteBufferHolder())) {
                 jsonNumberValidatingWriter.write(new char[3], 4, 0);
             }
         });
@@ -109,7 +109,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereLengthIsLessThanZeroThrowsIndexOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> {
-            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE, new WriteBufferHolder())) {
                 jsonNumberValidatingWriter.write(new char[3], 0, -1);
             }
         });
@@ -118,7 +118,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereOffsetPlusLengthIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> {
-            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE, new WriteBufferHolder())) {
                 jsonNumberValidatingWriter.write(new char[3], 1, 3);
             }
         });
@@ -127,7 +127,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereOffsetPlusLengthOverflowsThrowsIndexOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> {
-            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE)) {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE, new WriteBufferHolder())) {
                 jsonNumberValidatingWriter.write(new char[3], 1, Integer.MAX_VALUE);
             }
         });
@@ -136,7 +136,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void propagatesIoExceptionWritingString() {
         final IOException ioException = new IOException("An IOException");
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(ioException))) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(ioException), new WriteBufferHolder())) {
             final IOException actualException = assertThrows(IOException.class, () -> jsonNumberValidatingWriter.write("0"));
             assertThat(actualException, sameInstance(ioException));
         }
@@ -145,7 +145,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void propagatesIoExceptionWritingCharacter() {
         final IOException ioException = new IOException("An IOException");
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(ioException))) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(ioException), new WriteBufferHolder())) {
             final IOException actualException = assertThrows(IOException.class, () -> jsonNumberValidatingWriter.write('0'));
             assertThat(actualException, sameInstance(ioException));
         }
@@ -153,7 +153,7 @@ class JsonNumberValidatingWriterTest {
 
     @Test
     void flushIsPropagatedToDelegate() throws IOException {
-        try (FlushCountingWriter flushCountingWriter = new FlushCountingWriter(); JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(flushCountingWriter)) {
+        try (FlushCountingWriter flushCountingWriter = new FlushCountingWriter(); JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(flushCountingWriter, new WriteBufferHolder())) {
             jsonNumberValidatingWriter.write("2");
             jsonNumberValidatingWriter.flush();
             assertThat(flushCountingWriter.flushCount(), equalTo(1));
@@ -164,7 +164,7 @@ class JsonNumberValidatingWriterTest {
     @SuppressWarnings("PMD.CloseResource")
     void closeIsNotPropagatedToDelegate() throws IOException {
         try (CloseCountingWriter closeCountingWriter = new CloseCountingWriter()) {
-            final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(closeCountingWriter);
+            final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(closeCountingWriter, new WriteBufferHolder());
             jsonNumberValidatingWriter.write("2");
             jsonNumberValidatingWriter.close();
             assertThat(closeCountingWriter.closeCount(), equalTo(0));
@@ -175,7 +175,7 @@ class JsonNumberValidatingWriterTest {
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingCanCallCloseAgain() throws IOException {
         try (CloseCountingWriter closeCountingWriter = new CloseCountingWriter()) {
-            final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(closeCountingWriter);
+            final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(closeCountingWriter, new WriteBufferHolder());
             jsonNumberValidatingWriter.write("2");
             jsonNumberValidatingWriter.close();
             jsonNumberValidatingWriter.close();
@@ -185,7 +185,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void afterClosingWritingASubstringThrowsIOException() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter);
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder());
         jsonNumberValidatingWriter.write("2");
         jsonNumberValidatingWriter.close();
         assertThrows(IOException.class, () -> jsonNumberValidatingWriter.write("0"));
@@ -195,7 +195,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void afterClosingWritingACharacterThrowsIOException() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter);
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder());
         jsonNumberValidatingWriter.write('2');
         jsonNumberValidatingWriter.close();
         assertThrows(IOException.class, () -> jsonNumberValidatingWriter.write('0'));
@@ -205,7 +205,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void afterClosingFlushThrowsIOException() throws IOException {
         final StringWriter stringWriter = new StringWriter();
-        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter);
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder());
         jsonNumberValidatingWriter.write("2");
         jsonNumberValidatingWriter.close();
         assertThrows(IOException.class, jsonNumberValidatingWriter::flush);

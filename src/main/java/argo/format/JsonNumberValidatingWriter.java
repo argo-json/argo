@@ -19,12 +19,14 @@ final class JsonNumberValidatingWriter extends Writer {
 
     private NumberParserState numberParserState = NumberParserState.BEFORE_START;
     private Writer out;
+    private final WriteBufferHolder writeBufferHolder;
 
-    JsonNumberValidatingWriter(final Writer out) {
+    JsonNumberValidatingWriter(final Writer out, final WriteBufferHolder writeBufferHolder) {
         if (out == null) {
             throw new NullPointerException();
         }
         this.out = out;
+        this.writeBufferHolder = writeBufferHolder;
     }
 
     private static void validateArguments(final char[] cbuf, final int offset, final int length) {
@@ -51,6 +53,22 @@ final class JsonNumberValidatingWriter extends Writer {
             throw new IllegalArgumentException("Attempted to write characters that do not conform to the JSON number specification");
         }
         out.write(c);
+    }
+
+    @Override
+    public void write(final String str, final int off, final int len) throws IOException {
+        ensureOpen();
+        final char[] cbuf;
+        if (len <= WriteBufferHolder.WRITE_BUFFER_SIZE) {
+            if (writeBufferHolder.writeBuffer == null) {
+                writeBufferHolder.writeBuffer = new char[WriteBufferHolder.WRITE_BUFFER_SIZE];
+            }
+            cbuf = writeBufferHolder.writeBuffer;
+        } else {
+            cbuf = new char[len];
+        }
+        str.getChars(off, off + len, cbuf, 0);
+        write(cbuf, 0, len);
     }
 
     public void write(final char[] cbuf, final int offset, final int length) throws IOException {
