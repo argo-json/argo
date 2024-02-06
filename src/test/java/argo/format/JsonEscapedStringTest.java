@@ -82,60 +82,61 @@ final class JsonEscapedStringTest {
     @Test
     void formatsACharArray() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        JsonEscapedString.escapeStringTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 3);
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 3);
         assertThat(stringBuilderWriter.toString(), equalTo("abc"));
     }
 
     @Test
     void formatsACharArrayWithOffset() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        JsonEscapedString.escapeStringTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 2);
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 2);
         assertThat(stringBuilderWriter.toString(), equalTo("bc"));
     }
 
     @Test
     void formatsACharArrayWithLength() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        JsonEscapedString.escapeStringTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 2);
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 2);
         assertThat(stringBuilderWriter.toString(), equalTo("ab"));
     }
 
     @Test
     void formatsACharArrayWithOffsetAndLength() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        JsonEscapedString.escapeStringTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 1);
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 1);
         assertThat(stringBuilderWriter.toString(), equalTo("b"));
     }
 
 
     @Test
     void rejectsNegativeOffset() {
-        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, -1, 3));
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeCharBufferTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, -1, 3));
     }
 
     @Test
     void rejectsOffsetGreaterThanArrayLength() {
-        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 4, 3));
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeCharBufferTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 4, 3));
     }
 
     @Test
     void rejectsNegativeLength() {
-        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 0, -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeCharBufferTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 0, -1));
     }
 
     @Test
     void rejectsLengthGreaterThanArrayLength() {
-        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 0, 4));
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeCharBufferTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 0, 4));
     }
 
     @Test
     void rejectsOffsetPlusLengthGreaterThanArrayLength() {
-        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeStringTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 2, 2));
+        assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeCharBufferTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, 2, 2));
     }
 
     private static String escapeString(final String unescapedString) throws IOException {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        JsonEscapedString.escapeStringTo(stringBuilderWriter, unescapedString);
+        final char[] charArray = unescapedString.toCharArray();
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, charArray, 0, charArray.length);
         return stringBuilderWriter.toString();
     }
 }

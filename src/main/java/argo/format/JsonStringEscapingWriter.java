@@ -13,7 +13,7 @@ package argo.format;
 import java.io.IOException;
 import java.io.Writer;
 
-import static argo.format.JsonEscapedString.escapeStringTo;
+import static argo.format.JsonEscapedString.escapeCharBufferTo;
 
 final class JsonStringEscapingWriter extends Writer {
     private Writer out;
@@ -42,7 +42,7 @@ final class JsonStringEscapingWriter extends Writer {
     public void write(final char[] cbuf, final int offset, final int length) throws IOException {
         validateArguments(cbuf, offset, length);
         ensureOpen();
-        escapeStringTo(out, cbuf, offset, length);
+        escapeCharBufferTo(out, cbuf, offset, length);
     }
 
     @Override

@@ -18,13 +18,8 @@ final class JsonEscapedString {
     private JsonEscapedString() {
     }
 
-    static void escapeStringTo(final Writer writer, final String unescapedString) throws IOException {
-        final char[] chars = unescapedString.toCharArray(); // TODO this maybe ought to reuse a buffer (see java.io.Writer#write(String))
-        escapeStringTo(writer, chars, 0, chars.length);
-    }
-
     @SuppressWarnings("PMD.CyclomaticComplexity")
-    static void escapeStringTo(final Writer writer, final char[] cbuf, final int offset, final int length) throws IOException {
+    static void escapeCharBufferTo(final Writer writer, final char[] cbuf, final int offset, final int length) throws IOException {
         if (offset < 0 || offset > cbuf.length || length < 0 || offset + length > cbuf.length || offset + length < 0) {
             throw new IndexOutOfBoundsException();
         } else if (length != 0) {

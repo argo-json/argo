@@ -17,11 +17,12 @@ import argo.jdom.JsonNodeVisitor;
 import java.io.IOException;
 import java.io.Writer;
 
-import static argo.format.JsonEscapedString.escapeStringTo;
+import static argo.format.JsonEscapedString.escapeCharBufferTo;
 
 abstract class AbstractJsonPrinter implements JsonNodeVisitor {
 
     final Writer writer;
+    private char[] writeBuffer;
 
     AbstractJsonPrinter(final Writer writer) {
         this.writer = writer;
@@ -84,9 +85,20 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     abstract void throwingArray(final Iterable<JsonNode> elements) throws IOException;
 
     public final void string(final String value) {
+        final char[] cbuf;
+        final int length = value.length();
+        if (length <= 1024) {
+            if (writeBuffer == null) {
+                writeBuffer = new char[1024];
+            }
+            cbuf = writeBuffer;
+        } else {
+            cbuf = new char[length];
+        }
+        value.getChars(0, length, cbuf, 0);
         try {
             writer.write('"');
-            escapeStringTo(writer, value);
+            escapeCharBufferTo(writer, cbuf, 0, length);
             writer.write('"');
         } catch (IOException e) {
             throw new IORuntimeException(e);
