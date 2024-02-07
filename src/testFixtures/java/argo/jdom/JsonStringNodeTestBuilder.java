@@ -15,47 +15,14 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import static argo.TestingFactories.aString;
-import static argo.TestingFactories.randomSupplierSwitcher;
 import static argo.jdom.JsonNodeFactories.string;
 import static java.util.Arrays.asList;
 
 public final class JsonStringNodeTestBuilder {
 
-    private static final String ESCAPED_DOUBLE_QUOTE = "\\\"";
-    private static final String ESCAPED_REVERSE_SOLIDUS = "\\\\";
     private static final Random RANDOM = new Random();
-
-    private static final Supplier<String> RANDOM_ESCAPED_STRING = randomSupplierSwitcher(
-            () -> ESCAPED_DOUBLE_QUOTE,
-            () -> ESCAPED_REVERSE_SOLIDUS,
-            () -> "\\/",
-            () -> "\\b",
-            () -> "\\f",
-            () -> "\\n",
-            () -> "\\r",
-            () -> "\\t",
-            () -> {
-                final char c = (char) RANDOM.nextInt();
-                return "\\u" + String.format("%04x", (long) c);
-            }
-    );
-
-    private static final Supplier<String> RANDOM_JSON_STRING_SINGLE_TOKEN = randomSupplierSwitcher(
-            RANDOM_ESCAPED_STRING,
-            () -> {
-                final String candidate = RandomStringUtils.random(1);
-                if ("\"".equals(candidate)) {
-                    return ESCAPED_DOUBLE_QUOTE;
-                }
-                if ("\\".equals(candidate)) {
-                    return ESCAPED_REVERSE_SOLIDUS;
-                }
-                return candidate;
-            }
-    );
 
     public static JsonStringNode aStringNode() {
         return string(aString());
@@ -65,17 +32,9 @@ public final class JsonStringNodeTestBuilder {
         final Set<JsonStringNode> exclusions = new HashSet<>(asList(jsonStringNode));
         JsonStringNode result;
         do {
-            result = string(aValidJsonString());
+            result = string(aString());
         } while (exclusions.contains(result));
         return result;
-    }
-
-    public static String aValidJsonString() {
-        final StringBuilder result = new StringBuilder();
-        for (int i = 0; i < RANDOM.nextInt(20); i++) {
-            result.append(RANDOM_JSON_STRING_SINGLE_TOKEN.get());
-        }
-        return result.toString();
     }
 
     public static String aNonEmptyString() {

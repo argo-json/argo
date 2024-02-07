@@ -17,9 +17,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Map;
 
+import static argo.TestingFactories.aString;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
-import static argo.jdom.JsonStringNodeTestBuilder.aValidJsonString;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -278,7 +278,7 @@ final class JsonNodeTest {
 
     @Test
     void getFieldListReturnsAllFieldsEvenWhenKeysAreDuplicated() {
-        final String aKeyString = aValidJsonString();
+        final String aKeyString = aString();
         final JsonField aField = field(aKeyString, aJsonNode());
         final JsonField anotherField = field(aKeyString, aJsonNode());
         assertThat(object(aField, anotherField).getFieldList(), contains(aField, anotherField));

@@ -14,7 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 
-import static argo.jdom.JsonStringNodeTestBuilder.aValidJsonString;
+import static argo.TestingFactories.aString;
+import static argo.jdom.JsonNumberNodeTestBuilder.aValidJsonNumber;
 import static argo.staj.JsonStreamElement.*;
 import static argo.staj.JsonStreamElementMatchers.aNonTextJsonStreamElementWithType;
 import static argo.staj.JsonStreamElementMatchers.aTextJsonStreamElementWithType;
@@ -55,7 +56,7 @@ class JsonStreamElementTest {
 
     @Test
     void startFieldHasCorrectAttributes() {
-        final String text = aValidJsonString();
+        final String text = aString();
         assertThat(startField(new StringReader(text)), aTextJsonStreamElementWithType(START_FIELD, text));
     }
 
@@ -66,13 +67,13 @@ class JsonStreamElementTest {
 
     @Test
     void stringHasCorrectAttributes() {
-        final String text = aValidJsonString();
+        final String text = aString();
         assertThat(string(new StringReader(text)), aTextJsonStreamElementWithType(STRING, text));
     }
 
     @Test
     void numberHasCorrectAttributes() {
-        final String text = aValidJsonString();
+        final String text = aValidJsonNumber();
         assertThat(number(new StringReader(text)), aTextJsonStreamElementWithType(NUMBER, text));
     }
 
@@ -123,7 +124,7 @@ class JsonStreamElementTest {
 
     @Test
     void startFieldHasCorrectToString() {
-        final String text = aValidJsonString();
+        final String text = aString();
         assertThat(startField(new StringReader(text)).toString(), equalTo("JsonStreamElement jsonStreamElementType: START_FIELD"));
     }
 
@@ -134,13 +135,13 @@ class JsonStreamElementTest {
 
     @Test
     void stringHasCorrectToString() {
-        final String text = aValidJsonString();
+        final String text = aString();
         assertThat(string(new StringReader(text)).toString(), equalTo("JsonStreamElement jsonStreamElementType: STRING"));
     }
 
     @Test
     void numberHasCorrectToString() {
-        final String text = aValidJsonString();
+        final String text = aString();
         assertThat(number(new StringReader(text)).toString(), equalTo("JsonStreamElement jsonStreamElementType: NUMBER"));
     }
 

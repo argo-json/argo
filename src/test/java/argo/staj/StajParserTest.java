@@ -1000,7 +1000,7 @@ final class StajParserTest {
 
     @Test
     void removeThrowsUnsupportedOperationException() {
-        final StajParser stajParser = new StajParser(aValidJsonString());
+        final StajParser stajParser = new StajParser("null");
         final UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, stajParser::remove);
         assertThat(exception.getMessage(), equalTo("StajParser cannot remove elements from JSON it has parsed"));
     }
