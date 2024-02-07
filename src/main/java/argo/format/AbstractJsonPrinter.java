@@ -33,7 +33,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     abstract void write(final WriteableJsonObject writeableJsonObject) throws IOException;
 
     final void write(final WriteableJsonString writeableJsonString) throws IOException {
-        writer.write('"'); // TODO combine this implementation with the visitor implementation of string writing
+        writer.write('"');
         final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(writer, writeBufferHolder);
         try {
             writeableJsonString.writeTo(jsonStringEscapingWriter);
