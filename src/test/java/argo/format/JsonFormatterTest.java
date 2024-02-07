@@ -22,10 +22,10 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import java.util.stream.Stream;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeTestBuilder.anArrayNode;
-import static argo.jdom.JsonNodeTestBuilder.anObjectNode;
-import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
-import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
+import static argo.jdom.JsonNodeTestingFactories.anArrayNode;
+import static argo.jdom.JsonNodeTestingFactories.anObjectNode;
+import static argo.jdom.JsonNumberNodeTestingFactories.aNumberNode;
+import static argo.jdom.JsonStringNodeTestingFactories.aStringNode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 

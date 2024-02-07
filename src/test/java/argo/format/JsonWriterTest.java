@@ -26,9 +26,9 @@ import java.util.stream.Stream;
 
 import static argo.TestingFactories.*;
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeTestBuilder.*;
-import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
-import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
+import static argo.jdom.JsonNodeTestingFactories.*;
+import static argo.jdom.JsonNumberNodeTestingFactories.aNumberNode;
+import static argo.jdom.JsonStringNodeTestingFactories.aStringNode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;

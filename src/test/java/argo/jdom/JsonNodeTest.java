@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static argo.TestingFactories.aString;
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
+import static argo.jdom.JsonNodeTestingFactories.aJsonNode;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;

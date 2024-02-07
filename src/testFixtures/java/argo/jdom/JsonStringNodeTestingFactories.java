@@ -20,7 +20,7 @@ import static argo.TestingFactories.aString;
 import static argo.jdom.JsonNodeFactories.string;
 import static java.util.Arrays.asList;
 
-public final class JsonStringNodeTestBuilder {
+public final class JsonStringNodeTestingFactories {
 
     private static final Random RANDOM = new Random();
 
@@ -41,6 +41,6 @@ public final class JsonStringNodeTestBuilder {
         return RandomStringUtils.random(RANDOM.nextInt(20) + 1);
     }
 
-    private JsonStringNodeTestBuilder() {
+    private JsonStringNodeTestingFactories() {
     }
 }

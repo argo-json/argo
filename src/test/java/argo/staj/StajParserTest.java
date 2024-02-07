@@ -14,7 +14,7 @@ import argo.format.PrettyJsonBuilder;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonStringNode;
-import argo.jdom.JsonStringNodeTestBuilder;
+import argo.jdom.JsonStringNodeTestingFactories;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BrokenReader;
 import org.apache.commons.io.input.SequenceReader;
@@ -30,9 +30,9 @@ import java.nio.CharBuffer;
 import java.util.NoSuchElementException;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
-import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
-import static argo.jdom.JsonStringNodeTestBuilder.*;
+import static argo.jdom.JsonNodeTestingFactories.aJsonNode;
+import static argo.jdom.JsonNumberNodeTestingFactories.aNumberNode;
+import static argo.jdom.JsonStringNodeTestingFactories.*;
 import static argo.staj.ElementTrackingStajParserMatcher.generatesElements;
 import static argo.staj.JsonStreamElement.number;
 import static argo.staj.JsonStreamElement.string;
@@ -146,7 +146,7 @@ final class StajParserTest {
 
     @Test
     void objectWithFieldHasCorrectElements() {
-        final JsonStringNode aFieldName = JsonStringNodeTestBuilder.aStringNode();
+        final JsonStringNode aFieldName = JsonStringNodeTestingFactories.aStringNode();
         assertThat(stajParser(object(field(aFieldName, array()))), generatesElements(
                 NonTextJsonStreamElement.START_DOCUMENT,
                 NonTextJsonStreamElement.START_OBJECT,

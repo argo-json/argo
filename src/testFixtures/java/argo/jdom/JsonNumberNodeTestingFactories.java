@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import static argo.TestingFactories.randomSupplierSwitcher;
 import static argo.jdom.JsonNodeFactories.number;
 
-public final class JsonNumberNodeTestBuilder {
+public final class JsonNumberNodeTestingFactories {
 
     private static final Random RANDOM = new Random();
 
@@ -84,6 +84,6 @@ public final class JsonNumberNodeTestBuilder {
                 + RANDOM_OPTIONAL_EXPONENTIAL_PART.get();
     }
 
-    private JsonNumberNodeTestBuilder() {
+    private JsonNumberNodeTestingFactories() {
     }
 }

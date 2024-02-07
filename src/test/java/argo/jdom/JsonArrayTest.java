@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeTestBuilder.someJsonNodes;
+import static argo.jdom.JsonNodeTestingFactories.someJsonNodes;
 import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

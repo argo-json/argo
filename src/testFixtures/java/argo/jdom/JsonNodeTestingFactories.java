@@ -20,25 +20,25 @@ import java.util.stream.Stream;
 
 import static argo.TestingFactories.randomSupplierSwitcher;
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
-import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
+import static argo.jdom.JsonNumberNodeTestingFactories.aNumberNode;
+import static argo.jdom.JsonStringNodeTestingFactories.aStringNode;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
-public final class JsonNodeTestBuilder {
+public final class JsonNodeTestingFactories {
 
     private static final Random RANDOM = new Random();
     private static final Supplier<JsonNode> RANDOM_LEAF_NODE = randomSupplierSwitcher(
-            JsonStringNodeTestBuilder::aStringNode,
-            JsonNumberNodeTestBuilder::aNumberNode,
+            JsonStringNodeTestingFactories::aStringNode,
+            JsonNumberNodeTestingFactories::aNumberNode,
             JsonNodeFactories::nullNode,
             JsonNodeFactories::trueNode,
             JsonNodeFactories::falseNode
     );
 
     private static final Supplier<Function<Integer, JsonNode>> RANDOM_NODE = new RandomListMemberSupplier<>(asList(
-            JsonNodeTestBuilder::anArrayNode,
-            JsonNodeTestBuilder::anObjectNode,
+            JsonNodeTestingFactories::anArrayNode,
+            JsonNodeTestingFactories::anObjectNode,
             integer -> aStringNode(),
             integer -> aNumberNode(),
             integer -> nullNode(),
@@ -98,6 +98,6 @@ public final class JsonNodeTestBuilder {
         return Stream.generate(() -> field(aStringNode(), aJsonNode(maxDepth))).limit(RANDOM.nextInt(5)).collect(toList());
     }
 
-    private JsonNodeTestBuilder() {
+    private JsonNodeTestingFactories() {
     }
 }

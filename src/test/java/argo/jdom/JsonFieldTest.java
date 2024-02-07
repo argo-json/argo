@@ -14,10 +14,10 @@ import org.junit.jupiter.api.Test;
 
 import static argo.TestingFactories.aString;
 import static argo.jdom.JsonNodeFactories.string;
-import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
-import static argo.jdom.JsonNodeTestBuilder.aJsonNodeDifferentTo;
-import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
-import static argo.jdom.JsonStringNodeTestBuilder.aStringNodeDifferentTo;
+import static argo.jdom.JsonNodeTestingFactories.aJsonNode;
+import static argo.jdom.JsonNodeTestingFactories.aJsonNodeDifferentTo;
+import static argo.jdom.JsonStringNodeTestingFactories.aStringNode;
+import static argo.jdom.JsonStringNodeTestingFactories.aStringNodeDifferentTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;

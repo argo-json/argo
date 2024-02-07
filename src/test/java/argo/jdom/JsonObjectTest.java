@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 
 import static argo.MapBuilder.mapBuilder;
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeTestBuilder.aJsonNode;
-import static argo.jdom.JsonNodeTestBuilder.someJsonFields;
-import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
+import static argo.jdom.JsonNodeTestingFactories.aJsonNode;
+import static argo.jdom.JsonNodeTestingFactories.someJsonFields;
+import static argo.jdom.JsonStringNodeTestingFactories.aStringNode;
 import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
