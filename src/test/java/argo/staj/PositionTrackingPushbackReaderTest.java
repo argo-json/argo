@@ -13,10 +13,7 @@ package argo.staj;
 import argo.BoundedRepeatingReader;
 import argo.InfiniteReader;
 import org.apache.commons.io.input.SequenceReader;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -292,113 +289,108 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
     }
 
-    @Test
-    @Tag("slow")
-    void handlesLinesLongerThanLargestInteger() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('a'));
-        for (int i = -1; i != Integer.MAX_VALUE; i++) {
-            positionTrackingPushbackReader.read();
-        }
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
-    }
-
-    @Test
-    @Tag("slow")
-    void afterLineLongerThanLargestIntegerNextLineHasCorrectPosition() throws IOException {
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    final class ColumnOverflow {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
                 new BoundedRepeatingReader('a', Integer.MAX_VALUE),
                 new StringReader("a\n")
         ));
-        for (int i = -1; i != Integer.MAX_VALUE; i++) {
-            positionTrackingPushbackReader.read();
+
+        @BeforeAll
+        void overflowColumn() throws Exception {
+            for (int i = -1; i != Integer.MAX_VALUE; i++) {
+                positionTrackingPushbackReader.read();
+            }
         }
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+
+        @Test
+        @Order(0)
+        @Tag("slow")
+        void handlesLinesLongerThanLargestInteger() {
+            assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
+            assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+        }
+
+        @Test
+        @Order(1)
+        @Tag("slow")
+        void canUnreadAfterLineLongerThanLargestInteger() throws IOException {
+            positionTrackingPushbackReader.unread('a');
+            assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
+            assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+            positionTrackingPushbackReader.read(); // reset positionTrackingPushbackReader for next test
+        }
+
+        @Test
+        @Order(2)
+        @Tag("slow")
+        void afterLineLongerThanLargestIntegerNextLineHasCorrectPosition() throws IOException {
+            assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
+            assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+            assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        }
+
+        @Test
+        @Order(3)
+        @Tag("slow")
+        void pushingBackNewlineAfterLineLongerThanLargestIntegerFollowedByNewlineHasCorrectPosition() {
+            positionTrackingPushbackReader.unread('\n');
+            assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
+            assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+        }
     }
 
-    @Test
-    @Tag("slow")
-    void pushingBackNewlineAfterLineLongerThanLargestIntegerFollowedByNewlineHasCorrectPosition() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new BoundedRepeatingReader('a', Integer.MAX_VALUE),
-                new StringReader("a\n")
-        ));
-        for (int i = -1; i != Integer.MAX_VALUE; i++) {
-            positionTrackingPushbackReader.read();
-        }
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
-        positionTrackingPushbackReader.unread('\n');
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
-    }
-
-    @Test
-    @Tag("slow")
-    void canUnreadAfterLineLongerThanLargestInteger() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('a'));
-        for (int i = -1; i != Integer.MAX_VALUE; i++) {
-            positionTrackingPushbackReader.read();
-        }
-        positionTrackingPushbackReader.unread('a');
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
-    }
-
-    @ParameterizedTest
-    @ValueSource(chars = { '\n', '\r' })
-    @Tag("slow")
-    void handlesMoreNewlinesThanLargestInteger(final char lineEnding) throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader(lineEnding));
-        for (int i = -1; i != Integer.MAX_VALUE; i++) {
-            positionTrackingPushbackReader.read();
-        }
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
-    }
-
-    @Test
-    @Tag("slow")
-    void afterMoreLinesThanLargestIntegerNextColumnIsCorrect() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
-                new BoundedRepeatingReader('\n', Integer.MAX_VALUE),
-                new StringReader("\na")
-        ));
-        for (int i = -1; i != Integer.MAX_VALUE; i++) {
-            positionTrackingPushbackReader.read();
-        }
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'a'));
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
-    }
-
-    @Test
-    @Tag("slow")
-    void pushingBackNewlineAfterMoreLinesThanLargestIntegerHasCorrectPosition() throws IOException {
+    @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    final class LineOverflow {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
                 new BoundedRepeatingReader('\n', Integer.MAX_VALUE - 1),
-                new StringReader("ab\n")
+                new StringReader("ab\n"),
+                new StringReader("a\n"),
+                new StringReader("\n")
         ));
-        for (int i = -1; i != Integer.MAX_VALUE; i++) {
-            positionTrackingPushbackReader.read();
+
+        @BeforeAll
+        void overflowLines() throws Exception {
+            for (int i = -1; i != Integer.MAX_VALUE; i++) {
+                positionTrackingPushbackReader.read();
+            }
         }
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(2));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(Integer.MAX_VALUE));
-        assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
-        positionTrackingPushbackReader.unread('\n');
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(2));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
+
+        @Test
+        @Order(0)
+        @Tag("slow")
+        void pushingBackNewlineAfterMoreLinesThanLargestIntegerHasCorrectPosition() throws IOException {
+            assertThat(positionTrackingPushbackReader.position().column, equalTo(2));
+            assertThat(positionTrackingPushbackReader.position().line, equalTo(Integer.MAX_VALUE));
+            assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
+            positionTrackingPushbackReader.unread('\n');
+            assertThat(positionTrackingPushbackReader.position().column, equalTo(2));
+            assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
+            positionTrackingPushbackReader.read(); // advance positionTrackingPushbackReader for next test
+        }
+
+        @Test
+        @Order(1)
+        @Tag("slow")
+        void afterMoreLinesThanLargestIntegerNextColumnIsCorrect() throws IOException {
+            assertThat(positionTrackingPushbackReader.read(), equalTo((int)'a'));
+            assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
+            assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
+        }
+
     }
 
     @Test
     @Tag("slow")
-    void canUnreadAfterMoreLinesThanLargestInteger() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('\n'));
+    void handlesMoreCarriageReturnsThanLargestInteger() throws IOException {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('\r'));
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
             positionTrackingPushbackReader.read();
         }
-        positionTrackingPushbackReader.unread('\n');
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
     }
