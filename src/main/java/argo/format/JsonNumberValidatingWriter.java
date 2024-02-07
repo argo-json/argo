@@ -58,15 +58,7 @@ final class JsonNumberValidatingWriter extends Writer {
     @Override
     public void write(final String str, final int off, final int len) throws IOException {
         ensureOpen();
-        final char[] cbuf;
-        if (len <= WriteBufferHolder.WRITE_BUFFER_SIZE) {
-            if (writeBufferHolder.writeBuffer == null) {
-                writeBufferHolder.writeBuffer = new char[WriteBufferHolder.WRITE_BUFFER_SIZE];
-            }
-            cbuf = writeBufferHolder.writeBuffer;
-        } else {
-            cbuf = new char[len];
-        }
+        final char[] cbuf = len <= WriteBufferHolder.WRITE_BUFFER_SIZE ? writeBufferHolder.writeBuffer() : new char[len];
         str.getChars(off, off + len, cbuf, 0);
         write(cbuf, 0, len);
     }

@@ -12,5 +12,13 @@ package argo.format;
 
 final class WriteBufferHolder {
     static final int WRITE_BUFFER_SIZE = 1024;
-    char[] writeBuffer;
+    private char[] writeBuffer;
+
+    @SuppressWarnings("PMD.MethodReturnsInternalArray")
+    char[] writeBuffer() {
+        if (writeBuffer == null) {
+            writeBuffer = new char[WRITE_BUFFER_SIZE];
+        }
+        return writeBuffer;
+    }
 }

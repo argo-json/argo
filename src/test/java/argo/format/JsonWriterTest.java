@@ -10,6 +10,7 @@
 
 package argo.format;
 
+import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
 import org.apache.commons.io.output.BrokenWriter;
 import org.apache.commons.io.output.NullWriter;
@@ -20,13 +21,16 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.stream.Stream;
 
+import static argo.TestingFactories.*;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestBuilder.*;
 import static argo.jdom.JsonNumberNodeTestBuilder.aNumberNode;
 import static argo.jdom.JsonStringNodeTestBuilder.aStringNode;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -54,7 +58,8 @@ class JsonWriterTest {
                             trueNode(),
                             falseNode(),
                             aNumberNode(),
-                            aStringNode(),
+                            string(aStringOfLength(aSmallNonNegativeInt())),
+                            string(aStringOfLength(2048)),
                             anObjectNode(),
                             anArrayNode()
                     ).map(jsonNode -> Arguments.arguments(jsonWriter, jsonNode))
@@ -68,6 +73,28 @@ class JsonWriterTest {
         final IOException ioException = new IOException();
         final IOException actualIoException = assertThrows(IOException.class, () -> jsonWriter.write(new BrokenWriter(() -> ioException), jsonNode));
         assertThat(actualIoException, sameInstance(ioException));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
+    void writesTwoStringsToReuseWriteBuffer(final JsonWriter jsonWriter) throws Exception {
+        final StringWriter stringWriter = new StringWriter();
+        final JsonNode jsonNode = array(aStringNode(), aStringNode());
+        jsonWriter.write(stringWriter, jsonNode);
+        assertThat(new JdomParser().parse(stringWriter.toString()), equalTo(jsonNode));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
+    void writesTwoWriteableJsonStringsToReuseWriteBuffer(final JsonWriter jsonWriter) throws Exception {
+        final StringWriter stringWriter = new StringWriter();
+        final String firstString = aString();
+        final String secondString = aString();
+        jsonWriter.write(stringWriter, (WriteableJsonArray) arrayWriter -> {
+            arrayWriter.writeElement((WriteableJsonString) writer -> writer.write(firstString));
+            arrayWriter.writeElement((WriteableJsonString) writer -> writer.write(secondString));
+        });
+        assertThat(new JdomParser().parse(stringWriter.toString()), equalTo(array(string(firstString), string(secondString))));
     }
 
     @ParameterizedTest

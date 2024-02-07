@@ -85,16 +85,8 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     abstract void throwingArray(final Iterable<JsonNode> elements) throws IOException;
 
     public final void string(final String value) {
-        final char[] cbuf;
         final int length = value.length();
-        if (length <= 1024) {
-            if (writeBufferHolder.writeBuffer == null) {
-                writeBufferHolder.writeBuffer = new char[1024];
-            }
-            cbuf = writeBufferHolder.writeBuffer;
-        } else {
-            cbuf = new char[length];
-        }
+        final char[] cbuf = length <= WriteBufferHolder.WRITE_BUFFER_SIZE ? writeBufferHolder.writeBuffer() : new char[length];
         value.getChars(0, length, cbuf, 0);
         try {
             writer.write('"');

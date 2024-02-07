@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,6 +38,41 @@ class JsonNumberValidatingWriterTest {
             jsonNumberValidatingWriter.write("0");
         }
         assertThat(stringWriter.toString(), equalTo("0"));
+    }
+
+    @Test
+    void writesLongValidNumberToDelegate() throws IOException {
+        final StringWriter stringWriter = new StringWriter();
+        char[] charArray = new char[2048];
+        Arrays.fill(charArray, '1');
+        String value = new String(charArray);
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
+            jsonNumberValidatingWriter.write(value);
+        }
+        assertThat(stringWriter.toString(), equalTo(value));
+    }
+
+    @Test
+    void writingValidNumberToDelegateUsesReusableWriteBuffer() throws IOException {
+        final StringWriter stringWriter = new StringWriter();
+        final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, writeBufferHolder)) {
+            jsonStringEscapingWriter.write("0");
+        }
+        assertThat(writeBufferHolder.writeBuffer()[0], equalTo('0'));
+    }
+
+    @Test
+    void writingLongValidNumberDoesNotUseReusableWriteBuffer() throws IOException {
+        final StringWriter stringWriter = new StringWriter();
+        char[] charArray = new char[2048];
+        Arrays.fill(charArray, '1');
+        String value = new String(charArray);
+        final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, writeBufferHolder)) {
+            jsonStringEscapingWriter.write(value);
+        }
+        assertThat(writeBufferHolder.writeBuffer()[0], equalTo((char) 0));
     }
 
     @Test
@@ -68,6 +104,26 @@ class JsonNumberValidatingWriterTest {
             jsonNumberValidatingWriter.write('2');
             assertThat(stringWriter.toString(), equalTo("42"));
         }
+    }
+
+    @Test
+    void rejectsNumberWithLeadingInvalidSubstring() {
+        final StringWriter stringWriter = new StringWriter();
+        assertThrows(IllegalArgumentException.class, () -> {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
+                jsonNumberValidatingWriter.write(".");
+            }}
+        );
+    }
+
+    @Test
+    void rejectsNumberWithLeadingInvalidCharacter() {
+        final StringWriter stringWriter = new StringWriter();
+        assertThrows(IllegalArgumentException.class, () -> {
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
+                jsonNumberValidatingWriter.write('.');
+            }}
+        );
     }
 
     @Test

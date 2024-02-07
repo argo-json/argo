@@ -30,7 +30,11 @@ public final class TestingFactories {
     }
 
     public static String aString() {
-        return RandomStringUtils.random(aSmallNonNegativeInt());
+        return aStringOfLength(aSmallNonNegativeInt());
+    }
+
+    public static String aStringOfLength(final int length) {
+        return RandomStringUtils.random(length);
     }
 
     private TestingFactories() {

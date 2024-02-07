@@ -42,25 +42,15 @@ final class JsonStringEscapingWriter extends Writer {
 
     @Override
     public void write(final int c) throws IOException {
-        if (writeBufferHolder.writeBuffer == null){
-            writeBufferHolder.writeBuffer = new char[WriteBufferHolder.WRITE_BUFFER_SIZE];
-        }
-        writeBufferHolder.writeBuffer[0] = (char) c;
-        write(writeBufferHolder.writeBuffer, 0, 1);
+        final char[] writeBuffer = writeBufferHolder.writeBuffer();
+        writeBuffer[0] = (char) c;
+        write(writeBuffer, 0, 1);
     }
 
     @Override
     public void write(final String str, final int off, final int len) throws IOException {
         ensureOpen();
-        final char[] cbuf;
-        if (len <= WriteBufferHolder.WRITE_BUFFER_SIZE) {
-            if (writeBufferHolder.writeBuffer == null) {
-                writeBufferHolder.writeBuffer = new char[WriteBufferHolder.WRITE_BUFFER_SIZE];
-            }
-            cbuf = writeBufferHolder.writeBuffer;
-        } else {
-            cbuf = new char[len];
-        }
+        final char[] cbuf = len <= WriteBufferHolder.WRITE_BUFFER_SIZE ? writeBufferHolder.writeBuffer() : new char[len];
         str.getChars(off, off + len, cbuf, 0);
         write(cbuf, 0, len);
     }
