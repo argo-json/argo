@@ -171,7 +171,7 @@ final class MainDocumentationExamples {
                         while((next = name.read()) != -1) {
                             stringBuilder.append((char) next);
                         }
-                    } catch (final IOException e) {
+                    } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                     fieldNames.add(stringBuilder.toString());

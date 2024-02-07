@@ -59,7 +59,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     final void write(final JsonNode jsonNode) throws IOException {
         try {
             jsonNode.visit(this);
-        } catch (AbstractJsonPrinter.IORuntimeException e) {
+        } catch (final AbstractJsonPrinter.IORuntimeException e) {
             throw e.getCause();
         }
     }
@@ -67,7 +67,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     public final void object(final Iterable<JsonField> fields) {
         try {
             throwingObject(fields);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -77,7 +77,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     public final void array(final Iterable<JsonNode> elements) {
         try {
             throwingArray(elements);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -92,7 +92,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
             writer.write('"');
             escapeCharBufferTo(writer, cbuf, 0, length);
             writer.write('"');
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -100,7 +100,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     public final void number(final String value) {
         try {
             writer.write(value);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -108,7 +108,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     public final void trueNode() {
         try {
             writer.write("true");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -116,7 +116,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     public final void falseNode() {
         try {
             writer.write("false");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
     }
@@ -124,7 +124,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     public final void nullNode() {
         try {
             writer.write("null");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IORuntimeException(e);
         }
     }
