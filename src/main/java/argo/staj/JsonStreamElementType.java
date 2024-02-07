@@ -190,7 +190,7 @@ public enum JsonStreamElementType {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
-                return string(new StringReader(pushbackReader, pushbackReader.position()));
+                return string(new StringReader(pushbackReader, pushbackReader.column(), pushbackReader.line()));
             case 't':
                 return constant(pushbackReader, "true", NonTextJsonStreamElement.TRUE);
             case 'f':
@@ -248,7 +248,7 @@ public enum JsonStreamElementType {
             throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to begin with [\"]", nextChar, pushbackReader.position());
         }
         stack.push(START_FIELD);
-        return startField(new StringReader(pushbackReader, pushbackReader.position()));
+        return startField(new StringReader(pushbackReader, pushbackReader.column(), pushbackReader.line()));
     }
 
     private static char escapedStringChar(final PositionTrackingPushbackReader in) throws IOException {
@@ -399,12 +399,14 @@ public enum JsonStreamElementType {
     private static final class StringReader extends SingleCharacterReader {
 
         private PositionTrackingPushbackReader in;
-        private final Position openDoubleQuotesPosition;
+        private final int openDoubleQuotesColumn;
+        private final int openDoubleQuotesLine;
         private boolean ended = false;
 
-        StringReader(final PositionTrackingPushbackReader in, final Position openDoubleQuotesPosition) {
+        StringReader(final PositionTrackingPushbackReader in, final int column, final int line) {
             this.in = in;
-            this.openDoubleQuotesPosition = openDoubleQuotesPosition;
+            this.openDoubleQuotesColumn = column;
+            this.openDoubleQuotesLine = line;
         }
 
         private void ensureOpen() throws IOException {
@@ -422,7 +424,7 @@ public enum JsonStreamElementType {
                 final int nextChar = in.read();
                 switch (nextChar) {
                     case -1:
-                        throw new InvalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", openDoubleQuotesPosition);
+                        throw new InvalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", new Position(openDoubleQuotesColumn, openDoubleQuotesLine));
                     case DOUBLE_QUOTE:
                         ended = true;
                         return -1;

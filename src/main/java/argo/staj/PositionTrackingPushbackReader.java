@@ -120,8 +120,16 @@ final class PositionTrackingPushbackReader { // TODO make position tracking swit
         return character;
     }
 
+    int column() {
+        return columnOverflow ? -1 : column;
+    }
+
+    int line() {
+        return lineOverflow ? -1 : line;
+    }
+
     Position position() {
-        return new Position(columnOverflow ? -1 : column, lineOverflow ? -1 : line);
+        return new Position(column(), line());
     }
 
 }

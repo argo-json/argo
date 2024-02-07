@@ -45,7 +45,9 @@ class PositionTrackingPushbackReaderTest {
         }
         positionTrackingPushbackReader.unread('o');
         assertThat(positionTrackingPushbackReader.position().column, equalTo(4));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(4));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(1));
     }
 
     @Test
@@ -59,7 +61,9 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('l');
         positionTrackingPushbackReader.unread('e');
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(1));
     }
 
     @Test
@@ -69,7 +73,9 @@ class PositionTrackingPushbackReaderTest {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -79,7 +85,9 @@ class PositionTrackingPushbackReaderTest {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -89,7 +97,9 @@ class PositionTrackingPushbackReaderTest {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -100,7 +110,9 @@ class PositionTrackingPushbackReaderTest {
         }
         positionTrackingPushbackReader.unread('\n');
         assertThat(positionTrackingPushbackReader.position().column, equalTo(3));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(3));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(1));
     }
 
     @Test
@@ -111,7 +123,9 @@ class PositionTrackingPushbackReaderTest {
         }
         positionTrackingPushbackReader.unread('\r');
         assertThat(positionTrackingPushbackReader.position().column, equalTo(3));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(3));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(1));
     }
 
     @Test
@@ -122,7 +136,9 @@ class PositionTrackingPushbackReaderTest {
         }
         positionTrackingPushbackReader.unread('\n');
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -134,7 +150,9 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('\n');
         positionTrackingPushbackReader.read();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -146,7 +164,9 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('\r');
         positionTrackingPushbackReader.read();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -158,7 +178,9 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('\n');
         positionTrackingPushbackReader.read();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -169,7 +191,9 @@ class PositionTrackingPushbackReaderTest {
         }
         positionTrackingPushbackReader.unread('\n');
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -178,7 +202,9 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(1));
     }
 
     @Test
@@ -191,7 +217,9 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('o');
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'o'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(3));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(3));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(1));
     }
 
     @Test
@@ -204,7 +232,9 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('\n');
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -217,7 +247,9 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('\r');
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\r'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -230,7 +262,9 @@ class PositionTrackingPushbackReaderTest {
         positionTrackingPushbackReader.unread('\n');
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -244,7 +278,9 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'o'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(4));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(4));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(1));
     }
 
     @Test
@@ -258,7 +294,9 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -272,7 +310,9 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\r'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Test
@@ -286,7 +326,9 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
     @Nested
@@ -310,7 +352,9 @@ class PositionTrackingPushbackReaderTest {
         @Tag("slow")
         void handlesLinesLongerThanLargestInteger() {
             assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
+            assertThat(positionTrackingPushbackReader.column(), equalTo(-1));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+            assertThat(positionTrackingPushbackReader.line(), equalTo(1));
         }
 
         @Test
@@ -319,7 +363,9 @@ class PositionTrackingPushbackReaderTest {
         void canUnreadAfterLineLongerThanLargestInteger() throws IOException {
             positionTrackingPushbackReader.unread('a');
             assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
+            assertThat(positionTrackingPushbackReader.column(), equalTo(-1));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+            assertThat(positionTrackingPushbackReader.line(), equalTo(1));
             positionTrackingPushbackReader.read(); // reset positionTrackingPushbackReader for next test
         }
 
@@ -329,7 +375,9 @@ class PositionTrackingPushbackReaderTest {
         void afterLineLongerThanLargestIntegerNextLineHasCorrectPosition() throws IOException {
             assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
             assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+            assertThat(positionTrackingPushbackReader.column(), equalTo(0));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
+            assertThat(positionTrackingPushbackReader.line(), equalTo(2));
         }
 
         @Test
@@ -338,7 +386,9 @@ class PositionTrackingPushbackReaderTest {
         void pushingBackNewlineAfterLineLongerThanLargestIntegerFollowedByNewlineHasCorrectPosition() {
             positionTrackingPushbackReader.unread('\n');
             assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
+            assertThat(positionTrackingPushbackReader.column(), equalTo(-1));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
+            assertThat(positionTrackingPushbackReader.line(), equalTo(1));
         }
     }
 
@@ -365,11 +415,15 @@ class PositionTrackingPushbackReaderTest {
         @Tag("slow")
         void pushingBackNewlineAfterMoreLinesThanLargestIntegerHasCorrectPosition() throws IOException {
             assertThat(positionTrackingPushbackReader.position().column, equalTo(2));
+            assertThat(positionTrackingPushbackReader.column(), equalTo(2));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(Integer.MAX_VALUE));
+            assertThat(positionTrackingPushbackReader.line(), equalTo(Integer.MAX_VALUE));
             assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
             positionTrackingPushbackReader.unread('\n');
             assertThat(positionTrackingPushbackReader.position().column, equalTo(2));
+            assertThat(positionTrackingPushbackReader.column(), equalTo(2));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
+            assertThat(positionTrackingPushbackReader.line(), equalTo(-1));
             positionTrackingPushbackReader.read(); // advance positionTrackingPushbackReader for next test
         }
 
@@ -379,7 +433,9 @@ class PositionTrackingPushbackReaderTest {
         void afterMoreLinesThanLargestIntegerNextColumnIsCorrect() throws IOException {
             assertThat(positionTrackingPushbackReader.read(), equalTo((int)'a'));
             assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
+            assertThat(positionTrackingPushbackReader.column(), equalTo(1));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
+            assertThat(positionTrackingPushbackReader.line(), equalTo(-1));
         }
 
     }
@@ -392,7 +448,9 @@ class PositionTrackingPushbackReaderTest {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(-1));
     }
 
 }
