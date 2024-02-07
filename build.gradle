@@ -336,6 +336,9 @@ nexusPublishing {
     }
 }
 
+components.java.withVariantsFromConfiguration(configurations.testFixturesApiElements) { skip() }
+components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) { skip() }
+
 tasks.register('performRelease') {
     dependsOn clean, build, publishToSonatype, copyToSourceforge, png, closeAndReleaseStagingRepository, updateSourceforgeDefaultDownload
     doLast {
