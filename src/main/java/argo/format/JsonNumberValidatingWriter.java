@@ -26,6 +26,9 @@ final class JsonNumberValidatingWriter extends Writer {
             throw new NullPointerException();
         }
         this.out = out;
+        if (writeBufferHolder == null) {
+            throw new NullPointerException();
+        }
         this.writeBufferHolder = writeBufferHolder;
     }
 

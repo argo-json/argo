@@ -32,6 +32,11 @@ class JsonNumberValidatingWriterTest {
     }
 
     @Test
+    void rejectsNullWriteBufferHolder() {
+        assertThrows(NullPointerException.class, () -> new JsonNumberValidatingWriter(NullWriter.INSTANCE, null));
+    }
+
+    @Test
     void writesValidNumberToDelegate() throws IOException {
         final StringWriter stringWriter = new StringWriter();
         try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {

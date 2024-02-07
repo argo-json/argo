@@ -21,7 +21,7 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JsonStringEscapingWriterTest {
 
@@ -29,6 +29,11 @@ class JsonStringEscapingWriterTest {
     @SuppressWarnings("resource")
     void rejectsNullDelegate() {
         assertThrows(NullPointerException.class, () -> new JsonStringEscapingWriter(null, new WriteBufferHolder()));
+    }
+
+    @Test
+    void rejectsNullWriteBufferHolder() {
+        assertThrows(NullPointerException.class, () -> new JsonStringEscapingWriter(NullWriter.INSTANCE, null));
     }
 
     @Test
