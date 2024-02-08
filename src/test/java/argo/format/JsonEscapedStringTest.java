@@ -107,7 +107,6 @@ final class JsonEscapedStringTest {
         assertThat(stringBuilderWriter.toString(), equalTo("b"));
     }
 
-
     @Test
     void rejectsNegativeOffset() {
         assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeCharBufferTo(NullWriter.INSTANCE, new char[] {'a', 'b', 'c'}, -1, 3));

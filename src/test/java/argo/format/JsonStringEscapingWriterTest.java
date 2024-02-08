@@ -12,7 +12,13 @@ package argo.format;
 
 import org.apache.commons.io.output.BrokenWriter;
 import org.apache.commons.io.output.NullWriter;
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -21,6 +27,7 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JsonStringEscapingWriterTest {
@@ -111,7 +118,88 @@ class JsonStringEscapingWriterTest {
         }
     }
 
-    // TODO test escaping
+    @Test
+    void passesThroughUncontentiousCharactersVerbatim() {
+        final String uncontentiousCharacters = "abcdefghijklmnopqrstuvwxyz";
+        assertThat(uncontentiousCharacters, is(writtenAs(uncontentiousCharacters)));
+    }
+
+    @Test
+    void formatsReverseSolidusAsEscapedReverseSolidus() {
+        assertThat("\\", is(writtenAs("\\\\")));
+    }
+
+    @Test
+    void formatsDoubleQuoteAsEscapedDoubleQuote() {
+        assertThat("\"", is(writtenAs("\\\"")));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0x0000,\\u0000",
+            "0x0001,\\u0001",
+            "0x0002,\\u0002",
+            "0x0003,\\u0003",
+            "0x0004,\\u0004",
+            "0x0005,\\u0005",
+            "0x0006,\\u0006",
+            "0x0007,\\u0007",
+            "0x0008,\\b",
+            "0x0009,\\t",
+            "0x000a,\\n",
+            "0x000b,\\u000b",
+            "0x000c,\\f",
+            "0x000d,\\r",
+            "0x000e,\\u000e",
+            "0x000f,\\u000f",
+            "0x0010,\\u0010",
+            "0x0011,\\u0011",
+            "0x0012,\\u0012",
+            "0x0013,\\u0013",
+            "0x0014,\\u0014",
+            "0x0015,\\u0015",
+            "0x0016,\\u0016",
+            "0x0017,\\u0017",
+            "0x0018,\\u0018",
+            "0x0019,\\u0019",
+            "0x001a,\\u001a",
+            "0x001b,\\u001b",
+            "0x001c,\\u001c",
+            "0x001d,\\u001d",
+            "0x001e,\\u001e",
+            "0x001f,\\u001f",
+    })
+    void formatsControlCharactersAsEscapedUnicodeCharacters(final int character, final String expectedRepresentation) {
+        assertThat(String.valueOf((char) character), is(writtenAs(expectedRepresentation)));
+    }
+
+    @Test
+    void formatsACharArray() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 3);
+        assertThat(stringBuilderWriter.toString(), equalTo("abc"));
+    }
+
+    @Test
+    void formatsACharArrayWithOffset() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 2);
+        assertThat(stringBuilderWriter.toString(), equalTo("bc"));
+    }
+
+    @Test
+    void formatsACharArrayWithLength() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 2);
+        assertThat(stringBuilderWriter.toString(), equalTo("ab"));
+    }
+
+    @Test
+    void formatsACharArrayWithOffsetAndLength() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 1);
+        assertThat(stringBuilderWriter.toString(), equalTo("b"));
+    }
 
     @Test
     void attemptingToWriteABufferWithOffsetAndLengthWhereOffsetIsNegativeThrowsIndexOutOfBoundsException() {
@@ -227,4 +315,30 @@ class JsonStringEscapingWriterTest {
         assertThat(stringWriter.toString(), equalTo("a"));
     }
 
+    static TypeSafeDiagnosingMatcher<String> writtenAs(final String expected) {
+        final Matcher<String> stringMatcher = equalTo(expected);
+        return new TypeSafeDiagnosingMatcher<String>() {
+            @Override
+            protected boolean matchesSafely(String item, Description mismatchDescription) {
+                final StringWriter stringWriter = new StringWriter();
+                try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder())) {
+                    try {
+                        jsonStringEscapingWriter.write(item);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                final boolean matches = stringMatcher.matches(stringWriter.toString());
+                if (!matches) {
+                    stringMatcher.describeMismatch(stringWriter.toString(), mismatchDescription);
+                }
+                return matches;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Writes output ").appendDescriptionOf(stringMatcher);
+            }
+        };
+    }
 }
