@@ -109,7 +109,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
 
             public void writeElement(final JsonNode element) throws IOException {
                 writePreamble();
-                PrettyJsonPrinter.this.write(element);
+                write(element);
             }
 
             private void writePreamble() throws IOException {
@@ -178,12 +178,12 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
 
             public void writeField(final JsonStringNode name, final JsonNode value) throws IOException {
                 writeName(name);
-                PrettyJsonPrinter.this.write(value);
+                write(value);
             }
 
             private void writeName(final JsonStringNode name) throws IOException {
                 writePreamble();
-                PrettyJsonPrinter.this.write(name);
+                write(name);
                 writer.write(": ");
             }
 
@@ -209,7 +209,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
 
             public void writeField(final WriteableJsonString name, final JsonNode value) throws IOException {
                 writeName(name);
-                PrettyJsonPrinter.this.write(value);
+                write(value);
             }
 
             private void writeName(final WriteableJsonString name) throws IOException {

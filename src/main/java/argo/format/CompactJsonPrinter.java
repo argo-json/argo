@@ -82,7 +82,7 @@ final class CompactJsonPrinter extends AbstractJsonPrinter {
 
             public void writeElement(final JsonNode element) throws IOException {
                 writeCommaIfRequired();
-                CompactJsonPrinter.this.write(element);
+                write(element);
             }
 
             private void writeCommaIfRequired() throws IOException {
@@ -143,12 +143,12 @@ final class CompactJsonPrinter extends AbstractJsonPrinter {
 
             public void writeField(final JsonStringNode name, final JsonNode value) throws IOException {
                 writeName(name);
-                CompactJsonPrinter.this.write(value);
+                write(value);
             }
 
             private void writeName(final JsonStringNode name) throws IOException {
                 writeCommaIfRequired();
-                CompactJsonPrinter.this.write(name);
+                write(name);
                 writer.write(':');
             }
 
@@ -174,7 +174,7 @@ final class CompactJsonPrinter extends AbstractJsonPrinter {
 
             public void writeField(final WriteableJsonString name, final JsonNode value) throws IOException {
                 writeName(name);
-                CompactJsonPrinter.this.write(value);
+                write(value);
             }
 
             private void writeName(final WriteableJsonString name) throws IOException {
