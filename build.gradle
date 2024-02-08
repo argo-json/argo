@@ -99,7 +99,7 @@ dependencies {
 }
 
 group = 'net.sourceforge.argo'
-archivesBaseName = 'argo'
+base.archivesName = 'argo'
 version = "${majorVersion}.${minorVersion}"
 description = 'Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs.'
 
