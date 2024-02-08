@@ -141,10 +141,8 @@ class PrettyJsonWriterTest {
     void canWriteObjectOfJsonFieldObjects() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
-            objectWriter.writeField(string("Foo"), (WriteableJsonObject) objectWriter1 -> {
-            });
-            objectWriter.writeField(string("Bar"), (WriteableJsonObject) objectWriter1 -> {
-            });
+            objectWriter.writeField(field("Foo", object()));
+            objectWriter.writeField(field("Bar", object()));
         });
         assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()
                 .printLine("{")

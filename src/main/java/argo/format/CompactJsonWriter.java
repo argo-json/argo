@@ -12,12 +12,31 @@ package argo.format;
 
 import java.io.Writer;
 
+import static argo.format.CompactJsonPrinter.compactJsonPrinter;
+import static argo.format.CompactJsonPrinter.fieldSortingCompactJsonPrinter;
+
 /**
  * JsonWriter that writes JSON as compactly as possible.  Instances of this class can safely be shared between threads.
  */
 public final class CompactJsonWriter extends AbstractJsonWriter {
+
+    private final boolean sortFields;
+
+    public CompactJsonWriter() {
+        this(false);
+    }
+
+    private CompactJsonWriter(final boolean sortFields) {
+        this.sortFields = sortFields;
+    }
+
+    @Override
+    JsonWriter withFieldSorting(final boolean sortFields) {
+        return new CompactJsonWriter(sortFields);
+    }
+
     @Override
     AbstractJsonPrinter newJsonPrinter(final Writer writer) {
-        return new CompactJsonPrinter(writer);
+        return sortFields ? fieldSortingCompactJsonPrinter(writer) : compactJsonPrinter(writer);
     }
 }

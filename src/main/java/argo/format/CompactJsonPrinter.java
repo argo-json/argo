@@ -17,15 +17,26 @@ import argo.jdom.JsonStringNode;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-final class CompactJsonPrinter extends AbstractJsonPrinter {
+class CompactJsonPrinter extends AbstractJsonPrinter {
 
-    CompactJsonPrinter(final Writer writer) {
+    private CompactJsonPrinter(final Writer writer) {
         super(writer);
     }
 
+    static CompactJsonPrinter compactJsonPrinter(final Writer writer) {
+        return new CompactJsonPrinter(writer);
+    }
+
+    static CompactJsonPrinter fieldSortingCompactJsonPrinter(final Writer writer) {
+        return new FieldSortingCompactJsonPrinter(writer);
+    }
+
     @Override
-    void throwingObject(final Iterable<JsonField> fields) throws IOException {
+    void throwingObject(final List<JsonField> fields) throws IOException {
         boolean first = true;
         writer.write('{');
         for (final JsonField field : fields) {
@@ -41,7 +52,7 @@ final class CompactJsonPrinter extends AbstractJsonPrinter {
     }
 
     @Override
-    void throwingArray(final Iterable<JsonNode> elements) throws IOException {
+    final void throwingArray(final List<JsonNode> elements) throws IOException {
         boolean first = true;
         writer.write('[');
         for (final JsonNode element : elements) {
@@ -55,7 +66,7 @@ final class CompactJsonPrinter extends AbstractJsonPrinter {
     }
 
     @Override
-    void write(final WriteableJsonArray writeableJsonArray) throws IOException {
+    final void write(final WriteableJsonArray writeableJsonArray) throws IOException {
         writer.write('[');
         writeableJsonArray.writeTo(new ArrayWriter() {
             private boolean isFirst = true;
@@ -96,7 +107,7 @@ final class CompactJsonPrinter extends AbstractJsonPrinter {
     }
 
     @Override
-    void write(final WriteableJsonObject writeableJsonObject) throws IOException {
+    final void write(final WriteableJsonObject writeableJsonObject) throws IOException {
         writer.write('{');
         writeableJsonObject.writeTo(new ObjectWriter() {
             private boolean isFirst = true;
@@ -195,5 +206,18 @@ final class CompactJsonPrinter extends AbstractJsonPrinter {
             }
         });
         writer.write('}');
+    }
+
+    private static final class FieldSortingCompactJsonPrinter extends CompactJsonPrinter {
+        FieldSortingCompactJsonPrinter(final Writer writer) {
+            super(writer);
+        }
+
+        @Override
+        void throwingObject(final List<JsonField> fields) throws IOException {
+            final List<JsonField> sorted = new ArrayList<JsonField>(fields);
+            Collections.sort(sorted, JSON_FIELD_COMPARATOR);
+            super.throwingObject(sorted);
+        }
     }
 }

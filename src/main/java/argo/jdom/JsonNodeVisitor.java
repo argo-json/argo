@@ -10,9 +10,11 @@
 
 package argo.jdom;
 
+import java.util.List;
+
 public interface JsonNodeVisitor {
-    void object(Iterable<JsonField> fields);
-    void array(Iterable<JsonNode> elements);
+    void object(List<JsonField> fields);
+    void array(List<JsonNode> elements);
     void string(String value);
     void number(String value);
     void trueNode();

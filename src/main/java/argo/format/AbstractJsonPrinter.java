@@ -16,11 +16,18 @@ import argo.jdom.JsonNodeVisitor;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Comparator;
+import java.util.List;
 
 import static argo.format.JsonEscapedString.escapeCharBufferTo;
 
 abstract class AbstractJsonPrinter implements JsonNodeVisitor {
 
+    static final Comparator<JsonField> JSON_FIELD_COMPARATOR = new Comparator<JsonField>() {
+        public int compare(final JsonField left, final JsonField right) {
+            return left.getNameText().compareTo(right.getNameText());
+        }
+    };
     final Writer writer;
     private final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
 
@@ -64,7 +71,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
         }
     }
 
-    public final void object(final Iterable<JsonField> fields) {
+    public final void object(final List<JsonField> fields) {
         try {
             throwingObject(fields);
         } catch (final IOException e) {
@@ -72,9 +79,9 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
         }
     }
 
-    abstract void throwingObject(final Iterable<JsonField> fields) throws IOException;
+    abstract void throwingObject(final List<JsonField> fields) throws IOException;
 
-    public final void array(final Iterable<JsonNode> elements) {
+    public final void array(final List<JsonNode> elements) {
         try {
             throwingArray(elements);
         } catch (final IOException e) {
@@ -82,7 +89,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
         }
     }
 
-    abstract void throwingArray(final Iterable<JsonNode> elements) throws IOException;
+    abstract void throwingArray(final List<JsonNode> elements) throws IOException;
 
     public final void string(final String value) {
         final int length = value.length();

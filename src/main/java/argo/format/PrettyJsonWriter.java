@@ -12,21 +12,34 @@ package argo.format;
 
 import java.io.Writer;
 
+import static argo.format.PrettyJsonPrinter.fieldSortingPrettyJsonPrinter;
+import static argo.format.PrettyJsonPrinter.prettyJsonPrinter;
+
 /**
  * JsonWriter that writes JSON in a human-readable form.  Instances of this class can safely be shared between threads.
  */
 public final class PrettyJsonWriter extends AbstractJsonWriter {
 
     private final String lineSeparator;
+    private final boolean sortFields;
+
+    public PrettyJsonWriter() {
+        this(false);
+    }
 
     @SuppressWarnings("SystemGetProperty")
-    public PrettyJsonWriter() {
+    private PrettyJsonWriter(final boolean sortFields) {
         lineSeparator = System.getProperty("line.separator");
+        this.sortFields = sortFields;
+    }
+
+    JsonWriter withFieldSorting(final boolean sortFields) {
+        return new PrettyJsonWriter(sortFields);
     }
 
     @Override
     AbstractJsonPrinter newJsonPrinter(final Writer writer) {
-        return new PrettyJsonPrinter(writer, lineSeparator);
+        return sortFields ? fieldSortingPrettyJsonPrinter(writer, lineSeparator) : prettyJsonPrinter(writer, lineSeparator);
     }
 
 }

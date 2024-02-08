@@ -15,27 +15,25 @@ import argo.jdom.JsonNode;
 import java.io.IOException;
 import java.io.Writer;
 
-import static argo.format.JsonNodeWritingWrapper.FIELD_ORDER_NORMALISING_JSON_NODE_WRITING_WRAPPER;
-import static argo.format.JsonNodeWritingWrapper.STRAIGHT_THROUGH_JSON_NODE_WRITING_WRAPPER;
-
 /**
  * JsonFormat that formats JSON in a human-readable form.  Instances of this class can safely be shared between threads.
  */
 public final class PrettyJsonFormatter extends AbstractJsonFormatter {
 
-    private static final JsonWriter PRETTY_JSON_WRITER = new PrettyJsonWriter();
+    private static final AbstractJsonWriter PRETTY_JSON_WRITER = new PrettyJsonWriter();
+    private static final JsonWriter FIELD_SORTING_PRETTY_JSON_WRITER = PRETTY_JSON_WRITER.withFieldSorting(true);
 
-    private final JsonNodeWritingWrapper jsonNodeWritingWrapper;
+    private final JsonWriter jsonWriter;
 
     /**
      * Constructs a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in the order they were defined.
      */
     public PrettyJsonFormatter() {
-        this(STRAIGHT_THROUGH_JSON_NODE_WRITING_WRAPPER);
+        this(PRETTY_JSON_WRITER);
     }
 
-    private PrettyJsonFormatter(final JsonNodeWritingWrapper jsonNodeWritingWrapper) {
-        this.jsonNodeWritingWrapper = jsonNodeWritingWrapper;
+    private PrettyJsonFormatter(final JsonWriter jsonWriter) {
+        this.jsonWriter = jsonWriter;
     }
 
     /**
@@ -53,11 +51,11 @@ public final class PrettyJsonFormatter extends AbstractJsonFormatter {
      * @return a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in alphabetic order.
      */
     public static PrettyJsonFormatter fieldOrderNormalisingPrettyJsonFormatter() {
-        return new PrettyJsonFormatter(FIELD_ORDER_NORMALISING_JSON_NODE_WRITING_WRAPPER);
+        return new PrettyJsonFormatter(FIELD_SORTING_PRETTY_JSON_WRITER);
     }
 
     public void format(final JsonNode jsonNode, final Writer writer) throws IOException {
-        jsonNodeWritingWrapper.write(writer, jsonNode, PRETTY_JSON_WRITER);
+        jsonWriter.write(writer, jsonNode);
     }
 
 }

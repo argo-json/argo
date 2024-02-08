@@ -15,24 +15,22 @@ import argo.jdom.JsonNode;
 import java.io.IOException;
 import java.io.Writer;
 
-import static argo.format.JsonNodeWritingWrapper.FIELD_ORDER_NORMALISING_JSON_NODE_WRITING_WRAPPER;
-import static argo.format.JsonNodeWritingWrapper.STRAIGHT_THROUGH_JSON_NODE_WRITING_WRAPPER;
-
 /**
  * JsonFormat that formats JSON as compactly as possible.  Instances of this class can safely be shared between threads.
  */
 public final class CompactJsonFormatter extends AbstractJsonFormatter {
 
-    private static final JsonWriter COMPACT_JSON_WRITER = new CompactJsonWriter();
+    private static final AbstractJsonWriter COMPACT_JSON_WRITER = new CompactJsonWriter();
+    private static final JsonWriter FIELD_SORTING_COMPACT_JSON_WRITER = COMPACT_JSON_WRITER.withFieldSorting(true);
 
-    private final JsonNodeWritingWrapper jsonNodeWritingWrapper;
+    private final JsonWriter jsonWriter;
 
     public CompactJsonFormatter() {
-        this(STRAIGHT_THROUGH_JSON_NODE_WRITING_WRAPPER);
+        this(COMPACT_JSON_WRITER);
     }
 
-    private CompactJsonFormatter(final JsonNodeWritingWrapper jsonNodeWritingWrapper) {
-        this.jsonNodeWritingWrapper = jsonNodeWritingWrapper;
+    private CompactJsonFormatter(final JsonWriter jsonWriter) {
+        this.jsonWriter = jsonWriter;
     }
 
     /**
@@ -50,11 +48,11 @@ public final class CompactJsonFormatter extends AbstractJsonFormatter {
      * @return a {@code JsonFormatter} that formats JSON as compactly as possible, outputting the fields of objects in alphabetic order.
      */
     public static CompactJsonFormatter fieldOrderNormalisingCompactJsonFormatter() {
-        return new CompactJsonFormatter(FIELD_ORDER_NORMALISING_JSON_NODE_WRITING_WRAPPER);
+        return new CompactJsonFormatter(FIELD_SORTING_COMPACT_JSON_WRITER);
     }
 
     public void format(final JsonNode jsonNode, final Writer writer) throws IOException {
-        jsonNodeWritingWrapper.write(writer, jsonNode, COMPACT_JSON_WRITER);
+        jsonWriter.write(writer, jsonNode);
     }
 
 }

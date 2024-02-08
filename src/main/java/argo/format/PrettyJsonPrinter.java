@@ -17,15 +17,26 @@ import argo.jdom.JsonStringNode;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-final class PrettyJsonPrinter extends AbstractJsonPrinter {
+class PrettyJsonPrinter extends AbstractJsonPrinter {
 
     private final String lineSeparator;
     private int depth = 0;
 
-    PrettyJsonPrinter(final Writer writer, final String lineSeparator) {
+    private PrettyJsonPrinter(final Writer writer, final String lineSeparator) {
         super(writer);
         this.lineSeparator = lineSeparator;
+    }
+
+    static PrettyJsonPrinter prettyJsonPrinter(final Writer writer, final String lineSeparator) {
+        return new PrettyJsonPrinter(writer, lineSeparator);
+    }
+
+    static PrettyJsonPrinter fieldSortingPrettyJsonPrinter(final Writer writer, final String lineSeparator) {
+        return new FieldSortingPrettyJsonPrinter(writer, lineSeparator);
     }
 
     private void addTabs() throws IOException {
@@ -35,7 +46,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
     }
 
     @Override
-    void throwingObject(final Iterable<JsonField> fields) throws IOException {
+    void throwingObject(final List<JsonField> fields) throws IOException {
         boolean first = true;
         writer.write('{');
         depth++;
@@ -59,7 +70,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
     }
 
     @Override
-    void throwingArray(final Iterable<JsonNode> elements) throws IOException {
+    final void throwingArray(final List<JsonNode> elements) throws IOException {
         boolean first = true;
         writer.write('[');
         depth++;
@@ -81,7 +92,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
     }
 
     @Override
-    void write(final WriteableJsonArray writeableJsonArray) throws IOException {
+    final void write(final WriteableJsonArray writeableJsonArray) throws IOException {
         writer.write('[');
         depth++;
         final boolean[] isFirst = {true};
@@ -131,7 +142,7 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
     }
 
     @Override
-    void write(final WriteableJsonObject writeableJsonObject) throws IOException {
+    final void write(final WriteableJsonObject writeableJsonObject) throws IOException {
         writer.write('{');
         depth++;
         final boolean[] isFirst = {true};
@@ -237,5 +248,18 @@ final class PrettyJsonPrinter extends AbstractJsonPrinter {
             addTabs();
         }
         writer.write('}');
+    }
+
+    private static final class FieldSortingPrettyJsonPrinter extends PrettyJsonPrinter {
+        FieldSortingPrettyJsonPrinter(final Writer writer, final String lineSeparator) {
+            super(writer, lineSeparator);
+        }
+
+        @Override
+        void throwingObject(final List<JsonField> fields) throws IOException {
+            final List<JsonField> sorted = new ArrayList<JsonField>(fields);
+            Collections.sort(sorted, JSON_FIELD_COMPARATOR);
+            super.throwingObject(sorted);
+        }
     }
 }

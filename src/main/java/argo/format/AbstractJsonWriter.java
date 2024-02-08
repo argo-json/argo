@@ -17,6 +17,8 @@ import java.io.Writer;
 
 abstract class AbstractJsonWriter implements JsonWriter {
 
+    abstract JsonWriter withFieldSorting(final boolean fieldSorting);
+
     public final void write(final Writer writer, final WriteableJsonArray writeableJsonArray) throws IOException {
         newJsonPrinter(writer).write(writeableJsonArray);
     }

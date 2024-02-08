@@ -123,10 +123,8 @@ class CompactJsonWriterTest {
     void canWriteObjectOfJsonFieldObjects() throws Exception {
         final StringWriter stringWriter = new StringWriter();
         new CompactJsonWriter().write(stringWriter, (WriteableJsonObject) objectWriter -> {
-            objectWriter.writeField(string("Foo"), (WriteableJsonObject) objectWriter1 -> {
-            });
-            objectWriter.writeField(string("Bar"), (WriteableJsonObject) objectWriter1 -> {
-            });
+            objectWriter.writeField(field("Foo", object()));
+            objectWriter.writeField(field("Bar", object()));
         });
         assertThat(stringWriter.toString(), equalTo("{\"Foo\":{},\"Bar\":{}}"));
     }
