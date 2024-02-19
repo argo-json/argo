@@ -38,7 +38,7 @@ repositories {
     mavenCentral()
 }
 
-val documentationDirectory = File(project.buildDir, "documentation")
+val documentationDirectory = project.layout.buildDirectory.dir("documentation")
 
 sourceSets {
     create("moduleInfo")
@@ -137,7 +137,7 @@ val compileTinyJava by tasks.registering(JavaCompile::class) {
     }
     source = sourceSets["main"].allSource
     classpath = sourceSets["main"].compileClasspath
-    destinationDirectory.set(file("${project.buildDir}/tiny-classes/main"))
+    destinationDirectory.set(project.layout.buildDirectory.dir("tiny-classes/main"))
     options.compilerArgs = listOf("-g:none", "-Xlint:-options")
 }
 
@@ -171,7 +171,7 @@ val javadocJar by tasks.registering(Jar::class) {
 val tinyJar by tasks.registering(Jar::class) {
     dependsOn(compileTinyJava)
     archiveClassifier = "tiny"
-    from(file("${project.buildDir}/tiny-classes/main"))
+    from(project.layout.buildDirectory.dir("tiny-classes/main"))
 }
 
 val sourcesJar by tasks.registering(Jar::class) {
@@ -219,7 +219,7 @@ artifacts {
 }
 
 val ico by tasks.registering(Svg2IcoTask::class) {
-    destination = File(documentationDirectory, "favicon.ico")
+    destination = documentationDirectory.get().file("favicon.ico").asFile
     input.source = file("resources/favicon.svg")
     input.width = 32
     input.height = 32
@@ -227,7 +227,7 @@ val ico by tasks.registering(Svg2IcoTask::class) {
 
 val png by tasks.registering(Svg2PngTask::class) {
     source = file("resources/favicon.svg")
-    destination = file("${project.buildDir}/icons/favicon.png")
+    destination = project.layout.buildDirectory.file("icons/favicon.png").get().asFile
     width = 128
     height = 128
 }
@@ -236,7 +236,7 @@ val png by tasks.registering(Svg2PngTask::class) {
 val buildDocumentation by tasks.registering(JavaExec::class) {
     outputs.dir(documentationDirectory)
     mainClass = "documentation.DocumentationGenerator"
-    args(documentationDirectory.toString())
+    args(documentationDirectory.get().toString())
     classpath = sourceSets["documentation"].runtimeClasspath
 }
 
