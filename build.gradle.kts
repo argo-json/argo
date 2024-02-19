@@ -10,7 +10,7 @@
 
 import com.gitlab.svg2ico.Svg2IcoTask
 import com.gitlab.svg2ico.Svg2PngTask
-import java.util.*
+import java.util.Properties
 
 buildscript {
     repositories {
