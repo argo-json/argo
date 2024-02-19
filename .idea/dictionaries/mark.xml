@@ -5,17 +5,22 @@
       <w>agadoo</w>
       <w>bestpractices</w>
       <w>cbuf</w>
+      <w>champeau</w>
       <w>codestyle</w>
       <w>cofax</w>
       <w>cofaxutil</w>
       <w>conns</w>
       <w>errorprone</w>
       <w>flakey</w>
+      <w>hidetake</w>
       <w>jdom</w>
       <w>ncss</w>
       <w>nocount</w>
+      <w>ossrh</w>
       <w>prevalidated</w>
       <w>pushback</w>
+      <w>ruleset</w>
+      <w>sshtools</w>
       <w>staj</w>
       <w>tlds</w>
       <w>toolstemplates</w>
