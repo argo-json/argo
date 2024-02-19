@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -41,7 +41,7 @@ public final class DocumentationGenerator {
 
     private static String versionString() throws IOException {
         final Properties properties = new Properties();
-        try (InputStreamReader reader = new InputStreamReader(new FileInputStream("gradle.properties"), UTF_8)) {
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream("version.properties"), UTF_8)) {
             properties.load(reader);
         }
         return properties.getProperty("majorVersion") + "." + properties.getProperty("minorVersion");
