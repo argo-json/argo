@@ -27,7 +27,7 @@ plugins {
     `java-test-fixtures`
     `jvm-test-suite`
     id("me.champeau.jmh") version "0.7.2"
-    id("com.github.spotbugs") version "5.0.14"
+    id("com.github.spotbugs") version "6.0.7"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("com.gitlab.svg2ico") version "0.14"
 
