@@ -49,12 +49,12 @@ testing {
         val test by getting(JvmTestSuite::class) {
             useJUnitJupiter()
             dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
-                implementation("org.junit.jupiter:junit-jupiter-params:5.9.3")
+                implementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+                implementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
                 implementation("org.hamcrest:hamcrest:2.2")
                 implementation("net.sourceforge.ickles:ickles:0.21")
                 implementation("commons-io:commons-io:2.15.1")
-                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.3")
+                runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
             }
         }
 
