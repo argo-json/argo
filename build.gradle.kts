@@ -8,8 +8,6 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-import com.gitlab.svg2ico.Svg2IcoTask
-import com.gitlab.svg2ico.Svg2PngTask
 import java.util.Properties
 
 buildscript {
@@ -29,7 +27,7 @@ plugins {
     id("me.champeau.jmh") version "0.7.2"
     id("com.github.spotbugs") version "6.0.7"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
-    id("com.gitlab.svg2ico") version "0.14"
+    id("com.gitlab.svg2ico") version "0.15"
     id("org.asciidoctor.jvm.convert") version "4.0.2"
 
     id("release.sourceforge")
@@ -213,14 +211,14 @@ artifacts {
     archives(sourcesJar)
 }
 
-val ico by tasks.registering(Svg2IcoTask::class) {
+val ico by tasks.registering(com.gitlab.svg2ico.Svg2IcoTask::class) {
     destination = project.layout.buildDirectory.file("icons/favicon.ico").get().asFile
     input.source = file("resources/favicon.svg")
     input.width = 32
     input.height = 32
 }
 
-val png by tasks.registering(Svg2PngTask::class) {
+val png by tasks.registering(com.gitlab.svg2ico.Svg2PngTask::class) {
     source = file("resources/favicon.svg")
     destination = project.layout.buildDirectory.file("icons/favicon.png").get().asFile
     width = 128
