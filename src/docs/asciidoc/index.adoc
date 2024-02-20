@@ -1,0 +1,328 @@
+= Argo
+:favicon:
+:source-highlighter: coderay
+:toc: left
+:toclevels: 1
+:description: Argo is an open source JSON parser and generator compliant with RFC 7159 written in Java.  It offers document, push, and pull APIs.
+
+== Introduction
+
+Argo is a JSON parser and generator for Java compliant with https://datatracker.ietf.org/doc/html/rfc7159[RFC 7159]. It offers three parse interfaces - a push parser, a pull parser, and a DOM style parser. It is written to be easy to use, typesafe, and fast. It is open source, and free for you to use.
+
+The latest version of Argo available for download is https://sourceforge.net/projects/argo/files/latest[{revnumber}]. The https://argo.sourceforge.net/javadoc/[javadoc] is also available online.
+
+== Example
+
+A brief example demonstrates the DOM style parser. The example is based on the following JSON, which is assumed to be available in a `+String+` called `+jsonText+`.
+
+[source,json]
+----
+{
+    "name": "Black Lace",
+    "sales": 110921,
+    "totalRoyalties": 10223.82,
+    "singles": [
+        "Superman", "Agadoo"
+    ]
+}
+----
+We can use Argo to get the second single like this:
+
+[source,java]
+----
+String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
+----
+On the first line, we parse the JSON text into an object hierarchy. There are various options for navigating this, but the simplest is just to give the path and type of node we expect.
+
+On line two, we ask for the JSON string at index 1 of the array in the `+singles+` field.
+
+If we check the `+secondSingle+` variable, we will find, as expected, it contains the `+String+` `+"Agadoo"+`.
+
+== Downloads
+
+Argo is available under the http://www.apache.org/licenses/LICENSE-2.0[Apache 2 license]. It can be downloaded in four forms:
+
+- the https://sourceforge.net/projects/argo/files/argo/{revnumber}/argo-{revnumber}.jar/download[standard jar], with source code included,
+- a https://sourceforge.net/projects/argo/files/argo/{revnumber}/argo-small-{revnumber}.jar/download[compact jar], with no source, and no debug information,
+- as a Maven dependency from central, using
+
+[source,xml,subs="+attributes"]
+----
+<dependency>
+    <groupId>net.sourceforge.argo</groupId>
+    <artifactId>argo</artifactId>
+    <version>{revnumber}</version>
+</dependency>
+----
+- or as the full source code including tests etc. using Git from link:git://git.code.sf.net/p/argo/git[].
+
+http://sourceforge.net/projects/argo/files/argo/[Previous versions] are also available.
+
+It has no runtime dependencies, and all dependencies used in tests are retrieved by Gradle.
+
+== Documentation
+
+=== Introduction
+
+This section provides an example-based guide to Argo. In-depth details of the API are available in the https://argo.sourceforge.net/javadoc/[online javadoc], which can also be found in the https://sourceforge.net/projects/argo/files/latest[standard jar].
+
+=== Model of JSON in Argo
+
+JSON is defined in https://tools.ietf.org/html/rfc7159[RFC 7159]. There is a good explanation of the http://www.json.org/[structure of JSON] at http://www.json.org/. Argo models JSON using five types of entity - two that can have children:
+
+- Objects - pairs of a string and any entity type.
+- Arrays - sequences of any entity type.
+
+and three types of leaf entity:
+
+- Strings - essentially the same as a Java String.
+- Numbers - an unlimited precision number.
+- Constants - true, false, and null.
+
+=== Producing JSON from an Object
+
+There are two steps to producing JSON using Argo: First, an instance of `+JsonNode+` representing the JSON is built, and then an instance of `+JsonFormatter+` is used to turn that into a `+String+` representation.
+
+A number of factory methods are provided for constructing ``JsonNode``s in the `+JsonNodeFactories+` class:
+
+[source,java]
+----
+import static argo.jdom.JsonNodeFactories.*;
+
+...
+
+JsonNode json = object(
+    field("name", string("Black Lace")),
+    field("sales", number("110921")),
+    field("totalRoyalties", number("10223.82")),
+    field("singles", array(
+        string("Superman"),
+        string("Agadoo")
+    ))
+);
+----
+
+All implementations of `+JsonNode+` are immutable. The same `+JsonNode+` could have been built up in a mutable manner using the methods in the `+JsonNodeBuilders+` class:
+
+[source,java]
+----
+import static argo.jdom.JsonNodeBuilders.*;
+
+...
+
+JsonObjectNodeBuilder builder = anObjectBuilder()
+    .withField("name", aStringBuilder("Black Lace"))
+    .withField("sales", aNumberBuilder("110921"))
+    .withField("totalRoyalties", aNumberBuilder("10223.82"))
+    .withField("singles", anArrayBuilder()
+        .withElement(aStringBuilder("Superman"))
+        .withElement(aStringBuilder("Agadoo"))
+);
+JsonNode json = builder.build();
+----
+
+Finally, an instance of `+JsonFormatter+` is needed to produce JSON text from the `+JsonNode+`. The two implementations provided are `+PrettyJsonFormatter+`, which produces easy to read JSON, and `+CompactJsonFormatter+`, which produces very brief JSON. Instances of both classes can safely be shared between threads.
+
+[source,java]
+----
+private static final JsonFormatter JSON_FORMATTER = new PrettyJsonFormatter();
+
+...
+
+String jsonText = JSON_FORMATTER.format(json);
+----
+Both classes also accept a `+Writer+` as an argument to the format method, to allow the output to be streamed.
+
+
+=== Producing a stream of JSON
+
+Argo can be used to produce dynamically generated JSON of arbitrary length by implementing the `+WriteableJsonArray+` and `+WriteableJsonObject+` interfaces. For example:
+
+[source,java]
+----
+private static final JsonWriter JSON_WRITER = new PrettyJsonWriter();
+...
+
+final StringWriter stringWriter = new StringWriter();
+JSON_WRITER.write(stringWriter, new WriteableJsonArray() {
+
+    @Override
+    public void writeTo(ArrayWriter arrayWriter) throws IOException {
+        for (int i = 0; i < 10000; i++) {
+            arrayWriter.writeElement(string("I'm Spartacus!"));
+        }
+    }
+
+});
+String jsonText = stringWriter.toString();
+----
+
+Note that the number of iterations of the for loop in this example is only limited by the capacity of the `+Writer+` to accept characters.
+
+JSON strings and numbers of arbitrary length can be produced by implementing the `+WriteableJsonString+` and `+WriteableJsonNumber+` interfaces. For example:
+
+[source,java]
+----
+private static final JsonWriter JSON_WRITER = new PrettyJsonWriter();
+...
+
+final StringWriter stringWriter = new StringWriter();
+JSON_WRITER.write(stringWriter, new WriteableJsonString() {
+    @Override
+    public void writeTo(Writer stringWriter) throws IOException {
+        stringWriter.write("On");
+        for (int i = 0; i < 10000; i++) {
+            stringWriter.write(" and on");
+        }
+    }
+});
+String jsonText = stringWriter.toString();
+----
+
+Once again, the number of iterations of the for loop in this example is only limited by the capacity of the `+Writer+` to accept characters.
+
+=== Parsing JSON into an Object
+
+All the examples in this section are based on the following JSON, which is assumed to be available in a `+String+` variable called `+jsonText+`.
+
+[source,json]
+----
+{
+    "name": "Black Lace",
+    "sales": 110921,
+    "totalRoyalties": 10223.82,
+    "singles": [
+      "Superman", "Agadoo"
+    ]
+}
+----
+
+The `+JdomParser+` class is used to generate a `+JsonNode+` from JSON text. Instances of `+JdomParser+` can safely be shared between threads.
+
+[source,java]
+----
+private static final JdomParser JDOM_PARSER = new JdomParser();
+
+...
+
+JsonNode json = JDOM_PARSER.parse(jsonText);
+----
+
+Instances of `+JsonNode+` are immutable. `+JsonNode+` provides methods for exploring the generated structure, as specified in the javadoc. The simplest of these are the `+getXXXValue(Object... pathElements)+` methods, which are used as follows:
+
+[source,java]
+----
+String secondSingle = json.getStringValue("singles", 1);
+----
+
+It is also possible to check that the node at a particular path is of the required type as follows:
+
+[source,java]
+----
+boolean isString = json.isStringValue("singles", 1);
+----
+
+Alternatively, ``JsonNodeSelector``s can be used to extract data from the `JsonNode` in a typesafe manner. ``JsonNodeSelector``s are functions that can be applied to ``JsonNode``s to extract a value or a child `+JsonNode+`. The `+JsonNodeSelectors+` class provides a number of factory methods for constructing instances of `+JsonNodeSelector+`. The following code gets the name of the second single (note that like arrays, the index of the first element is zero):
+
+[source,java]
+----
+private static final JsonNodeSelector<JsonNode,String> SECOND_SINGLE = JsonNodeSelectors.aStringNode("singles", 1);
+
+...
+
+String secondSingle = SECOND_SINGLE.getValue(json);
+----
+
+The singles can also be converted into a `+List<String>+`:
+
+[source,java]
+----
+private static final JsonNodeSelector<JsonNode, List<JsonNode>> SINGLES = anArrayNode("singles");
+private static final JsonNodeSelector<JsonNode, String> SINGLE_NAME = aStringNode();
+
+...
+
+List<String> singles = new AbstractList<String>() {
+public String get(int index) {
+return SINGLE_NAME.getValue(SINGLES.getValue(json).get(index));
+}
+
+    public int size() {
+        return SINGLES.getValue(json).size();
+    }
+};
+----
+
+JSON number handling deserves a brief explanation. JSON numbers are unlimited precision, and as such, cannot be represented by a Java primitive like `+double+` or `+int+`. The closest numeric representation offered by Java is BigDecimal, which accurately represents almost all JSON numbers, with the exception of some edge cases (for example, `+-0+` and ``+++0 ++``are valid JSON numbers, but collapse to `+BigDecimal.ZERO+`). For this reason, Argo doesn't do any implicit conversion of JSON numbers - they're treated as ``String``s. However, helper methods are provided for converting these ``String``s to other Java numeric types. For example, you could retrieve the total royalties from the example JSON as follows:
+
+[source,java]
+----
+import static argo.format.JsonNumberUtils.asBigDecimal;
+
+...
+
+BigDecimal totalRoyalties = asBigDecimal(json.getNumberValue("totalRoyalties"));
+----
+
+=== Parsing JSON into events
+The SajParser class offers a SAX style interface for parsing JSON. Given a `+Reader+` of a stream of JSON text, and an implementation of `+JsonListener+`, the parse method will parse the JSON from the `+Reader+`, and call methods on the `+JsonListener+` as it encounters parse events, such as the start of the document, the start of a field, or a JSON string.
+
+The following code extracts the names of all the fields in a piece of JSON. It assumes `+jsonReader+` refers to a `+Reader+` of the example JSON in the previous section.
+
+[source,java]
+----
+private static final SajParser SAJ_PARSER = new SajParser();
+
+...
+
+final Set<String> fieldNames = new HashSet<String>();
+SAJ_PARSER.parse(jsonReader, new JsonListener() {
+    public void startField(Reader name) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int next;
+        try {
+            while((next = name.read()) != -1) {
+                stringBuilder.append((char) next);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        fieldNames.add(stringBuilder.toString());
+    }
+});
+----
+
+=== Parsing JSON through iteration
+
+The `+StajParser+` class allows the calling code to request parsing events from a stream of JSON text, similar to how the StAX parser works for XML.
+
+The following code gets the names of all the fields in a piece of JSON using the `+StajParser+`. Again, it assumes `+jsonReader+` refers to a `+Reader+` of the example JSON in the previous section.
+
+[source,java]
+----
+Set<String> fieldNames = new HashSet<>();
+final StajParser stajParser = new StajParser(jsonReader);
+while (stajParser.hasNext()) {
+    JsonStreamElement next = stajParser.next();
+    if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try (Reader fieldNameReader = next.reader()) {
+            int nextChar;
+            while ((nextChar = fieldNameReader.read()) != -1) {
+                stringBuilder.append((char) nextChar);
+            }
+        }
+        fieldNames.add(stringBuilder.toString());
+    }
+}
+----
+
+Iterating through the elements of a piece of JSON like this has the advantage that the parser only holds the current and next element in memory, so the above example would work for a piece of JSON larger than the available memory.
+
+== Support
+
+The best way to get help on Argo is via the https://sourceforge.net/projects/argo/forums/forum/887785[help forum].
+
+Alternatively, report a bug or browse reported bugs via the http://sourceforge.net/tracker/?group_id=245339&atid=1169592[bug tracker].
+
+image::https://sflogo.sourceforge.net/sflogo.php?group_id=245339&type=13["Get Argo at SourceForge.net. Fast, secure and Free Open Source software downloads",align="center",link=https://sourceforge.net/projects/argo]

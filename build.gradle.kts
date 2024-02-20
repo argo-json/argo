@@ -30,6 +30,7 @@ plugins {
     id("com.github.spotbugs") version "6.0.7"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("com.gitlab.svg2ico") version "0.14"
+    id("org.asciidoctor.jvm.convert") version "4.0.2"
 
     id("release.sourceforge")
 }
@@ -42,7 +43,6 @@ val documentationDirectory = project.layout.buildDirectory.dir("documentation")
 
 sourceSets {
     create("moduleInfo")
-    create("documentation")
 }
 
 testing {
@@ -90,11 +90,6 @@ dependencies {
     testFixturesImplementation(group = "commons-io", name = "commons-io", version = "2.15.1")
     testFixturesImplementation(group = "net.sourceforge.ickles", name = "ickles", version = "0.21")
     testFixturesImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
-
-    "documentationImplementation"(sourceSets["main"].output)
-    "documentationImplementation"(group = "net.sourceforge.urin", name = "urin", version = "4.1")
-    "documentationImplementation"(group = "net.sourceforge.writexml", name = "writexml", version = "1.3")
-    "documentationImplementation"(group = "net.sourceforge.xazzle", name = "xazzle", version = "0.39")
 
     spotbugs(group = "com.github.spotbugs", name = "spotbugs", version = "4.8.3")
 
@@ -219,7 +214,7 @@ artifacts {
 }
 
 val ico by tasks.registering(Svg2IcoTask::class) {
-    destination = documentationDirectory.get().file("favicon.ico").asFile
+    destination = project.layout.buildDirectory.file("icons/favicon.ico").get().asFile
     input.source = file("resources/favicon.svg")
     input.width = 32
     input.height = 32
@@ -232,17 +227,10 @@ val png by tasks.registering(Svg2PngTask::class) {
     height = 128
 }
 
-
-val buildDocumentation by tasks.registering(JavaExec::class) {
-    outputs.dir(documentationDirectory)
-    mainClass = "documentation.DocumentationGenerator"
-    args(documentationDirectory.get().toString())
-    classpath = sourceSets["documentation"].runtimeClasspath
-}
-
 val documentationJar by tasks.registering(Tar::class) {
-    dependsOn(buildDocumentation, ico)
-    from(documentationDirectory)
+    dependsOn("asciidoctor", ico, png)
+    from(project.layout.buildDirectory.dir("docs/asciidoc"))
+    from(project.layout.buildDirectory.dir("icons"))
     from("docs")
     archiveBaseName.set("documentation")
     compression = Compression.GZIP
