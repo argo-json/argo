@@ -25,7 +25,7 @@ We can use Argo to get the second single like this:
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jdomPath,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jdomPath,indent=0]
 ----
 On the first line, we parse the JSON text into an object hierarchy. There are various options for navigating this, but the simplest is just to give the path and type of node we expect.
 
@@ -82,21 +82,21 @@ A number of static factory methods are provided for constructing ``JsonNode``s i
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jsonNodeFactory,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNodeFactory,indent=0]
 ----
 
 All implementations of `+JsonNode+` are immutable. The same `+JsonNode+` could have been built up in a mutable manner using the static methods in the `+JsonNodeBuilders+` class:
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jsonNodeBuilder,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNodeBuilder,indent=0]
 ----
 
 Finally, an instance of `+JsonFormatter+` is needed to produce JSON text from the `+JsonNode+`. The two implementations provided are `+PrettyJsonFormatter+`, which produces easy to read JSON, and `+CompactJsonFormatter+`, which produces very brief JSON. Instances of both classes can safely be shared between threads.
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jsonFormatter,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonFormatter,indent=0]
 ----
 Both classes also accept a `+Writer+` as an argument to the format method, to allow the output to be streamed.
 
@@ -106,7 +106,7 @@ Argo can be used to produce dynamically generated JSON of arbitrary length by im
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=unboundedArrayWriting,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=unboundedArrayWriting,indent=0]
 ----
 
 Note that the number of iterations of the for loop in this example is only limited by the capacity of the `+Writer+` to accept characters.
@@ -115,7 +115,7 @@ JSON strings and numbers of arbitrary length can be produced by implementing the
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=unboundedStringWriting,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=unboundedStringWriting,indent=0]
 ----
 
 Once again, the number of iterations of the for loop in this example is only limited by the capacity of the `+Writer+` to accept characters.
@@ -133,42 +133,42 @@ The `+JdomParser+` class is used to generate a `+JsonNode+` from JSON text. Inst
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jdomParser,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jdomParser,indent=0]
 ----
 
 Instances of `+JsonNode+` are immutable. `+JsonNode+` provides methods for exploring the generated structure, as specified in the javadoc. The simplest of these are the `+getXXXValue(Object... pathElements)+` methods, which are used as follows:
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jdomPathExpanded,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jdomPathExpanded,indent=0]
 ----
 
 It is also possible to check that the node at a particular path is of the required type as follows:
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jdomPathTypeCheck,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jdomPathTypeCheck,indent=0]
 ----
 
 Alternatively, ``JsonNodeSelector``s can be used to extract data from the `JsonNode` in a typesafe manner. ``JsonNodeSelector``s are functions that can be applied to ``JsonNode``s to extract a value or a child `+JsonNode+`. The `+JsonNodeSelectors+` class provides a number of factory methods for constructing instances of `+JsonNodeSelector+`. The following code gets the name of the second single (note that like arrays, the index of the first element is zero):
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jsonNodeSelectorPath,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNodeSelectorPath,indent=0]
 ----
 
 The singles can also be converted into a `+List<String>+`:
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jsonNodeSelectorListString,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNodeSelectorListString,indent=0]
 ----
 
 JSON number handling deserves a brief explanation. JSON numbers are unlimited precision, and as such, cannot be represented by a Java primitive like `+double+` or `+int+`. The closest numeric representation offered by Java is BigDecimal, which accurately represents almost all JSON numbers, with the exception of some edge cases (for example, `+-0+` and ``+++0 ++``are valid JSON numbers, but collapse to `+BigDecimal.ZERO+`). For this reason, Argo doesn't do any implicit conversion of JSON numbers - they're treated as ``String``s. However, helper methods are provided for converting these ``String``s to other Java numeric types. For example, you could retrieve the total royalties from the example JSON as follows:
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jsonNumberParsing,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNumberParsing,indent=0]
 ----
 
 === Parsing JSON into events
@@ -178,7 +178,7 @@ The following code extracts the names of all the fields in a piece of JSON. It a
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jsonThroughEvents,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonThroughEvents,indent=0]
 ----
 
 === Parsing JSON through iteration
@@ -189,7 +189,7 @@ The following code gets the names of all the fields in a piece of JSON using the
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamples.java[tags=jsonThroughIteration,indent=0]
+include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonThroughIteration,indent=0]
 ----
 
 Iterating through the elements of a piece of JSON like this has the advantage that the parser only holds the current and next element in memory, so the above example would work for a piece of JSON larger than the available memory.
