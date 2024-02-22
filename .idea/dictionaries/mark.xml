@@ -10,12 +10,14 @@
       <w>cofax</w>
       <w>cofaxutil</w>
       <w>conns</w>
+      <w>deref</w>
       <w>errorprone</w>
       <w>flakey</w>
       <w>hidetake</w>
       <w>jdom</w>
       <w>ncss</w>
       <w>nocount</w>
+      <w>nopmd</w>
       <w>ossrh</w>
       <w>prevalidated</w>
       <w>pushback</w>
