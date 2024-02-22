@@ -3,6 +3,4 @@ module net.sourceforge.argo {
     exports argo.jdom;
     exports argo.saj;
     exports argo.staj;
-
-    requires java.base;
 }
