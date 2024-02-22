@@ -22,10 +22,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.util.AbstractList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.net.URL;
+import java.util.*;
 
 import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.*;
@@ -119,7 +117,7 @@ final class MainDocumentationExamplesTest {
 
     @Test
     void formatsJson() throws Exception {
-        JsonNode json = SAMPLE_JSON;
+        @SuppressWarnings("UnnecessaryLocalVariable") JsonNode json = SAMPLE_JSON;
         // tag::jsonFormatter[]
         String jsonText = new PrettyJsonFormatter().format(json);
         // end::jsonFormatter[]
@@ -128,7 +126,7 @@ final class MainDocumentationExamplesTest {
 
     @Test
     void parsesJsonAndGetsElementsWithCallToJsonNodeInline() throws Exception {
-        final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
+        final String jsonText = readFileToString(getExampleJsonFile(), UTF_8);
         // tag::jdomPath[]
         String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
         // end::jdomPath[]
@@ -137,7 +135,7 @@ final class MainDocumentationExamplesTest {
 
     @Test
     void parsesJsonAndGetsElementsWithCallToJsonNode() throws Exception {
-        final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
+        final String jsonText = readFileToString(getExampleJsonFile(), UTF_8);
         // tag::jdomParser[]
         JsonNode json = new JdomParser().parse(jsonText);
         // end::jdomParser[]
@@ -153,7 +151,7 @@ final class MainDocumentationExamplesTest {
 
     @Test
     void parsesJsonAndGetsElementsWithJsonNodeSelector() throws Exception {
-        final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
+        final String jsonText = readFileToString(getExampleJsonFile(), UTF_8);
         final JsonNode json = JDOM_PARSER.parse(jsonText);
         // tag::jsonNodeSelectorPath[]
         String secondSingle = JsonNodeSelectors.aStringNode("singles", 1).getValue(json);
@@ -181,7 +179,7 @@ final class MainDocumentationExamplesTest {
 
     @Test
     void parsesUsingSaj() throws Exception {
-        try (Reader jsonReader = newBufferedReader(new File(this.getClass().getResource("SimpleExample.json").getFile()).toPath(), UTF_8)) {
+        try (Reader jsonReader = newBufferedReader(getExampleJsonFile().toPath(), UTF_8)) {
             // tag::jsonThroughEvents[]
             Set<String> fieldNames = new HashSet<>();
             SAJ_PARSER.parse(jsonReader, new JsonListener() {
@@ -241,7 +239,7 @@ final class MainDocumentationExamplesTest {
 
     @Test
     void parsesUsingStaj() throws Exception {
-        try (Reader jsonReader = new InputStreamReader(newInputStream(new File(this.getClass().getResource("SimpleExample.json").getFile()).toPath()), UTF_8)) {
+        try (Reader jsonReader = new InputStreamReader(newInputStream(getExampleJsonFile().toPath()), UTF_8)) {
             // tag::jsonThroughIteration[]
             Set<String> fieldNames = new HashSet<>();
             StajParser stajParser = new StajParser(jsonReader);
@@ -260,6 +258,16 @@ final class MainDocumentationExamplesTest {
             }
             // end::jsonThroughIteration[]
             assertThat(fieldNames, equalTo(new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));
+        }
+    }
+
+    private File getExampleJsonFile() throws FileNotFoundException {
+        final String filename = "SimpleExample.json";
+        final URL resource = this.getClass().getResource(filename);
+        if (resource == null) {
+            throw new FileNotFoundException(filename);
+        } else {
+            return new File(resource.getFile());
         }
     }
 }
