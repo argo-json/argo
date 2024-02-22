@@ -1,0 +1,4 @@
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18993.542 ± 144.185  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  23502.456 ± 654.893  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  24277.001 ± 231.474  ops/s

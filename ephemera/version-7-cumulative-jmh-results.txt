@@ -1,0 +1,824 @@
+read(char[], int, int) does the work
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  16741.213 ± 238.904  ops/s
+
+
+read() does the work
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  19017.462 ± 116.431  ops/s
+
+
+read() does the work; no locks
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  19918.771 ± 122.012  ops/s
+
+
+read() does the work; overridden skip() acquires lock
+
+Benchmark                        Mode  Cnt      Score    Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  16174.993 ± 94.511  ops/s
+
+
+read() does the work; close() acquires the lock
+
+Benchmark                        Mode  Cnt      Score    Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  18297.977 ± 97.590  ops/s
+
+
+read() does the work in both string reader and number reader; no locks in string reader
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  27332.170 ± 122.922  ops/s
+
+
+read() does the work in both string reader and number reader; no locks in either reader
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  27615.099 ± 179.282  ops/s
+
+
+read() does the work in both string reader and number reader; read() acquires lock
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  24425.522 ± 314.309  ops/s
+
+
+read() does the work in both string reader and number reader; straightened number read happy day path
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  23121.597 ± 984.465  ops/s
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  23454.070 ± 942.953  ops/s
+
+Passing open double quotes position into StringReader
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.stajParser  thrpt   25  23722.668 ± 116.128  ops/s
+
+
+Character-wise string building
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15591.244 ± 237.361  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  18675.044 ± 126.986  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  23132.283 ± 137.026  ops/s
+
+
+Readers in SajParser
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15239.183 ± 229.875  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  22297.746 ± 149.306  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  22413.273 ± 159.474  ops/s
+
+
+Slightly simpler method for skipping whitespace
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15688.079 ± 285.975  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  23573.914 ± 229.906  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  23606.989 ± 142.006  ops/s
+
+
+Return from within whitespace skipping loop
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15668.762 ± 376.618  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  23476.509 ± 211.590  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  23918.810 ± 165.486  ops/s
+
+
+Lock reader in close method
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15831.946 ± 211.146  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  22817.698 ± 132.489  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  23063.345 ± 199.715  ops/s
+
+
+Less conversion between checked and runtime exceptions
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  16290.114 ± 140.099  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  24045.782 ± 151.355  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  24210.899 ± 164.786  ops/s
+
+
+First attempt at rewriting PositionTrackingPushbackReader
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  11886.855 ± 145.632  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  16130.457 ± 154.618  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  16253.980 ± 122.984  ops/s
+
+
+Second attempt at rewriting PositionTrackingPushbackReader using char buffer rather than char[]
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15872.201 ± 282.548  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  25033.792 ± 167.221  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  25497.193 ± 295.478  ops/s
+
+
+Third attempt at rewriting PositionTrackingPushbackReader passing unread character back
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  16607.000 ± 269.939  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  25273.540 ± 142.027  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  25567.768 ± 129.842  ops/s
+
+
+With position tracking reenabled and all tests passing
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15690.285 ± 104.190  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  22770.406 ± 185.238  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  23018.783 ± 153.003  ops/s
+
+
+With end of stream position handling broken
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  16150.613 ± 123.585  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  23479.216 ± 157.923  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  23856.814 ± 315.964  ops/s
+
+
+With double-pushback guard removed; all tests pass
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15747.901 ± 150.965  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  22917.203 ± 251.504  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  23135.116 ± 239.970  ops/s
+
+
+Inline uncounted read method
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15745.022 ± 250.999  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  23684.812 ± 171.835  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  23839.901 ± 175.806  ops/s
+
+
+Almost fixed handling of position when pushing back newline & carriage return
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  15103.912 ± 153.959  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  22392.744 ± 174.507  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  22688.841 ± 167.893  ops/s
+
+
+No position tracking
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  16232.213 ± 324.227  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  25539.399 ± 236.310  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  25684.962 ± 283.320  ops/s
+
+
+Call read(char[]) on delegate
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  16454.946 ± 223.182  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  25400.853 ± 243.580  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  25450.700 ± 155.970  ops/s
+
+
+Switch read(char[]) to read(char[], int, int)
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  16015.472 ± 349.323  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  24947.429 ± 190.192  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  25190.367 ± 241.521  ops/s
+
+
+Once char buffer per parse, used everywhere
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25   9255.290 ± 103.506  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  11717.282 ± 148.185  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  12031.565 ± 245.242  ops/s
+
+
+Hard-code buffer offset to 0
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  16184.655 ± 354.769  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  25279.339 ± 221.808  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  25490.001 ± 198.121  ops/s
+
+
+Call read(char[]) from read()
+
+Slow: ~9500 ops/s
+
+
+Collapse pushback buffer and pushback available flag into a single int field
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  17007.846 ± 121.267  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  26254.707 ± 258.957  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  26235.273 ± 426.370  ops/s
+
+
+StringBuilder capacities fudged to closer match sizes of benchmark Strings
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  17290.533 ± 234.151  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  26018.158 ± 270.279  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  26460.303 ± 247.595  ops/s
+
+
+Experiment discarding strings
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  21421.817 ± 142.283  ops/s
+
+
+Experiment without node caching
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19508.684 ± 443.608  ops/s
+
+
+Inline a couple of pointless methods in JsonStreamElementType
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  17894.543 ± 210.778  ops/s
+
+
+Change multi-armed if in JsonStreamElementType to a switch statement
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18262.325 ± 453.084  ops/s
+
+
+Try rewriting switch on JsonStreamElementType enum element as a method on JsonStreamElementType elements (rejected as more complicated, and no faster)
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  17587.038 ± 128.764  ops/s
+
+
+Try rewriting read(char[]) as calls to read() (rejected as slower)
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  17818.928 ± 418.614  ops/s
+
+
+Replace linked list with an array list in built array; eagerly turn field names into JsonStrings
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  17707.258 ± 366.697  ops/s
+
+
+Stop copying the lists behind arrays and objects twice when they're built.
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  17465.227 ± 357.358  ops/s
+
+
+Remove Reader locks (still no position tracking)
+
+Benchmark                        Mode  Cnt      Score      Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  22102.179 ±  291.918  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  34256.135 ±  510.312  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  34243.439 ± 1053.926  ops/s
+
+
+Try wrapping locking Readers in BufferedReaders
+
+Benchmark                        Mode  Cnt     Score    Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  5284.225 ± 32.295  ops/s
+
+
+Remove reader locks and (mostly) correct counting
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19295.167 ± 218.319  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  28949.372 ± 150.748  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  29001.204 ± 201.822  ops/s
+
+
+Fixed position tracking
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18998.190 ± 156.827  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  29216.258 ± 267.820  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  29347.440 ± 228.012  ops/s
+
+
+Try combining readsSinceLastCarriageReturn and endOfStream fields in a single field; rejected as slower and more complicated
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18367.765 ± 619.063  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27592.708 ± 116.160  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27580.882 ± 199.298  ops/s
+
+
+Fix pushback after end of stream
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19056.639 ± 186.813  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  29270.993 ± 292.530  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  29404.760 ± 242.584  ops/s
+
+
+Fix SingleCharacterReader read offset
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19188.566 ± 165.371  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  29505.436 ± 252.807  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  29578.512 ± 330.198  ops/s
+
+
+Tentative implementation of close on single character readers
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19583.401 ± 206.194  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  28244.757 ± 231.106  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28301.649 ± 221.952  ops/s
+
+
+Implement close properly for most single character reader methods
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19714.003 ± 349.390  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  28832.370 ± 194.118  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28874.340 ± 226.212  ops/s
+
+
+Fix position tracking overflow
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19274.115 ± 290.863  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  28171.144 ± 143.559  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28284.056 ± 170.768  ops/s
+
+
+Try extracting a method to placate PMD; rejected as slower
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18397.958 ± 142.934  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27928.816 ± 151.191  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28220.997 ± 171.646  ops/s
+
+
+Start trying to remove uncount(char[]) method
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19469.596 ± 400.204  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  28240.963 ± 273.906  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28455.987 ± 235.549  ops/s
+
+
+Try refactoring overflow fields to use counter fields; rejected as slower and more complicated
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18454.300 ± 273.140  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27313.673 ± 208.408  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27631.913 ± 202.046  ops/s
+
+
+Try implementing read(char[]) as call through to delegate read(char[], int, int)
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19182.569 ± 421.146  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27636.354 ± 189.886  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27874.574 ± 218.869  ops/s
+
+
+Try extracting common count method in position tracking pushback reader
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18827.689 ± 257.679  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  26941.117 ± 549.483  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27444.326 ± 159.852  ops/s
+
+
+Remove some unreachable code
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19024.238 ± 276.192  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27751.986 ± 140.409  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27960.180 ± 208.051  ops/s
+
+
+Tweaked constant parsing
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19140.973 ± 279.122  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27959.573 ± 192.774  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28035.593 ± 257.664  ops/s
+
+
+Implement skip on readers; use skip in implementation of close
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18732.878 ± 154.832  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  26855.770 ± 318.166  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27250.383 ± 175.077  ops/s
+
+
+Lean on the fact that our implementation of skip will only skip fewer bytes than request if the end of the stream is reached
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18760.345 ±  95.937  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27459.785 ± 217.664  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27801.528 ± 241.261  ops/s
+
+
+Don't use skip in implementation of close because it's slower than calling read directly
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18625.160 ± 125.705  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  28035.958 ± 165.095  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28149.408 ± 200.017  ops/s
+
+
+Move PositionTrackingPushbackReader field down to bottom level implementations of Reader
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19306.103 ± 230.387  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27973.319 ± 181.196  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28386.836 ± 149.562  ops/s
+
+
+NEW BASELINE: Consolidate black hole listener on test fixtures implementation
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19149.954 ± 287.021  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27708.913 ± 171.937  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28025.713 ± 169.549  ops/s
+
+
+Try adding an extra state for the end of the last field in an object; rejected as more complicated but no faster
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18928.237 ± 194.286  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27067.498 ± 298.494  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28097.463 ± 266.371  ops/s
+
+
+Try static nested classes for types of JsonStreamElement; rejected as more complicated but no faster (possible CPU fan issues during test)
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19001.125 ± 201.489  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27322.191 ± 178.708  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27759.378 ± 180.045  ops/s
+
+
+Remove read(char[]) from PositionTrackingPushbackReader
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19040.693 ± 360.746  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27770.263 ± 157.088  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28223.019 ± 164.617  ops/s
+
+
+Try combining reads since last carriage return with end of stream flag; rejected as more complicated but no faster
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18961.644 ± 146.924  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27828.151 ± 199.498  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28075.377 ± 318.229  ops/s
+
+
+First attempt at using StajParser directly from JdomParser (note: battery charging)
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18045.728 ± 170.954  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27533.256 ± 211.779  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27939.586 ± 218.353  ops/s
+
+
+Use StajParser directly from JdomParser more refined implementation
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18492.320 ± 422.542  ops/s
+
+
+Inline staj to jdom adaptation
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19081.608 ± 274.786  ops/s
+
+
+Try shortcutting leaf node deduplication for singleton leaves; rejected as no faster, but more complicated (might depend on the nature of the input)
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18287.958 ± 133.300  ops/s
+
+
+Experiment with disabling leaf node deduplication: Shows promise (~7.5% faster); revisit
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  20098.685 ± 432.223  ops/s
+
+
+Linter doesn't always know best
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18697.184 ± 439.246  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27397.238 ± 212.402  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27919.360 ± 238.315  ops/s
+
+
+Experiment with disabling position tracking: Shows promise (~20% faster); revisit
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  21884.982 ± 329.042  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  33504.313 ± 405.096  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  33844.796 ± 601.429  ops/s
+
+
+Checkpoint
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19293.231 ± 498.977  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27490.121 ± 170.534  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28049.443 ± 204.642  ops/s
+
+
+Investigate removing validation of numbers constructed by Jdom parser, since the parser already validated them... give it more thought.
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18432.680 ± 108.757  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27123.315 ± 195.820  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27568.343 ± 206.181  ops/s
+
+
+Extract common number parser
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18052.907 ± 115.499  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  26912.182 ± 236.389  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27490.272 ± 215.369  ops/s
+
+
+Remove position from number parser
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18107.455 ± 130.835  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27035.674 ± 188.217  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27468.205 ± 231.037  ops/s
+
+
+Replace exceptions in number parser with failure states.
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18536.876 ± 262.992  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27175.327 ± 188.835  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27537.574 ± 195.066  ops/s
+
+
+Rerun: Replace exceptions in number parser with failure states. (cold CPU?)
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  19470.791 ± 500.764  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27814.084 ± 261.888  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28127.540 ± 190.419  ops/s
+
+
+Abandon delayed instantiation of JsonField name
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18790.388 ± 255.580  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27252.592 ± 271.970  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  27835.737 ± 206.013  ops/s
+
+
+Abandon separate implementation of FieldBuilder for JsonString and String field names
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18995.446 ± 233.063  ops/s
+
+
+Switch jdom parsing from staj (iterative) to saj (event based)
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18927.568 ± 413.602  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  28279.728 ± 233.902  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28727.449 ± 124.479  ops/s
+
+
+Don't revalidate numbers in jdom parser
+
+Benchmark                        Mode  Cnt      Score     Error  Units
+JdomParserBenchmark.jdomParser  thrpt   25  18758.907 ± 323.819  ops/s
+JdomParserBenchmark.sajParser   thrpt   25  27719.786 ± 724.578  ops/s
+JdomParserBenchmark.stajParser  thrpt   25  28447.912 ± 212.017  ops/s
+
+
+Baseline including writing
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParser             thrpt   25  18709.421 ± 454.799  ops/s
+ParserBenchmark.sajParser              thrpt   25  27737.269 ± 187.338  ops/s
+ParserBenchmark.stajParser             thrpt   25  28067.119 ± 223.240  ops/s
+WriterBenchmark.compactJdomWrite       thrpt   25  43165.831 ± 282.956  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  28351.839 ± 164.379  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  37045.642 ± 840.727  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  25149.408 ± 210.504  ops/s
+
+
+Try full rewrite of writing; rejected as *much* slower (which is a shame because it's also much neater)
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  21490.081 ±  74.061  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  19526.405 ± 212.244  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  19196.260 ± 426.004  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  17850.619 ± 133.280  ops/s
+
+
+Event-based writing
+
+Benchmark                               Mode  Cnt      Score      Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  44545.453 ±  339.762  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  27249.218 ±  169.060  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36650.428 ± 1501.241  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24518.179 ±  159.913  ops/s
+
+
+Try all writing uses Writeable json nodes; rejected as much slower
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  21608.446 ± 135.754  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  18981.838 ± 113.231  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  19287.805 ± 261.994  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  17255.330 ±  90.600  ops/s
+
+
+Implement JsonPrinter
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  44722.972 ± 280.580  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  27860.102 ± 176.380  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36408.334 ± 249.998  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24063.624 ± 103.749  ops/s
+
+
+Fix JsonPrinter exception handling; remove all direct writing from JsonWriter
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  45640.950 ± 357.050  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  28297.067 ± 129.997  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  37402.194 ± 283.835  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24698.032 ± 189.945  ops/s
+
+
+Move runtime exception handling inside JsonPrinter
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  45424.188 ± 225.526  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  27838.773 ± 244.414  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  37001.885 ± 224.719  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24431.833 ± 173.849  ops/s
+
+
+Try making CompactJsonPrinter implement ArrayWriter and Object Writer; rejected as no faster but more complicated.
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  45170.190 ± 264.304  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  27808.442 ± 349.607  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36863.462 ± 278.186  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24380.431 ± 177.704  ops/s
+
+
+Use visitor to convert JsonStreamElements into events
+
+Benchmark                    Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParser  thrpt   25  18635.241 ± 279.535  ops/s
+ParserBenchmark.sajParser   thrpt   25  27437.726 ± 187.918  ops/s
+ParserBenchmark.stajParser  thrpt   25  28163.760 ± 187.837  ops/s
+
+
+Use concrete classes for JsonStreamElements
+
+Benchmark                    Mode  Cnt      Score      Error  Units
+ParserBenchmark.jdomParser  thrpt   25  17920.757 ±  202.162  ops/s
+ParserBenchmark.sajParser   thrpt   25  27007.862 ±  298.860  ops/s
+ParserBenchmark.stajParser  thrpt   25  27620.172 ± 1104.448  ops/s
+
+(rerun)
+
+Benchmark                    Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParser  thrpt   25  18564.296 ± 259.333  ops/s
+ParserBenchmark.sajParser   thrpt   25  27102.133 ± 544.735  ops/s
+ParserBenchmark.stajParser  thrpt   25  28191.063 ± 147.697  ops/s
+
+
+Validate completeness of number on writer close
+
+Benchmark                               Mode  Cnt      Score      Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  46185.976 ± 1091.682  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  28512.321 ±  248.006  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  37578.577 ±  258.049  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24836.239 ±  291.848  ops/s
+
+
+Try extracting a single-character write method; seems a bit slower... some loss of looping optimisations?
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  43533.130 ± 263.401  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  27488.521 ± 182.507  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36095.009 ± 309.120  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24269.538 ± 205.015  ops/s
+
+
+Duplicate character escaping method inline in char buffer writing loop
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  45419.136 ± 344.687  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  27855.738 ± 245.470  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  37202.587 ± 242.325  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24396.144 ± 363.546  ops/s
+
+
+Try reusing a JsonEscapingStringWriter for writing JsonStringNodes; seems slightly slower?
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  44149.012 ± 374.576  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  28195.077 ± 201.603  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36023.679 ± 340.176  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24405.673 ± 150.088  ops/s
+
+
+A reusable char buffer for escaped string writing.
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  45424.573 ± 332.198  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  28253.290 ± 196.013  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  37072.584 ± 344.221  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  24650.016 ± 146.964  ops/s
+
+
+Reuse write buffer between JsonEscapingStringWriters
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  44869.531 ± 367.309  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  37585.129 ± 277.040  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36472.142 ± 334.343  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  30461.845 ± 235.178  ops/s
+
+
+Reuse write buffer between JsonNumberValidatingWriters
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  44850.375 ± 420.746  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  42178.826 ± 410.857  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36734.289 ± 256.671  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  35185.922 ± 258.616  ops/s
+
+
+Extract common shared write buffer instantiation code
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  45252.250 ± 310.811  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  41937.113 ± 348.565  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  37086.273 ± 282.342  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  35355.191 ± 656.758  ops/s
+
+
+Try reading to a reused char buffer; rejected as slower and more complicated - the supplied read should be responsible for its own fast read() method (and where we use StringReader that's already the case)
+
+Benchmark                    Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParser  thrpt   25  11930.720 ± 136.500  ops/s
+ParserBenchmark.sajParser   thrpt   25  15433.684 ± 203.484  ops/s
+ParserBenchmark.stajParser  thrpt   25  15859.062 ± 231.711  ops/s
+
+
+Defer creating position object as it's only used in the event an exception is thrown
+
+Benchmark                    Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParser  thrpt   25  18522.195 ± 326.660  ops/s
+ParserBenchmark.sajParser   thrpt   25  27630.238 ± 276.734  ops/s
+ParserBenchmark.stajParser  thrpt   25  28579.135 ± 264.757  ops/s
+
+
+Try using JsonStringEscapingWriter for writing all strings, for simplicity;
+
+Benchmark                               Mode  Cnt      Score      Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  45223.573 ±  315.993  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  42691.821 ±  584.907  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36516.754 ± 1569.577  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  35143.485 ±  299.733  ops/s
+
+
+Try wrapping strings in WriteableJsonStrings for output
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  44054.539 ± 300.441  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  41217.580 ± 286.257  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36707.229 ± 412.092  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  35572.590 ± 776.403  ops/s
+
+
+Try making compact json printer implement JsonArrayWriter and JsonObjectWriter; rejected as not faster, but more complicated.
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+WriterBenchmark.compactJdomWrite       thrpt   25  44853.033 ± 358.764  ops/s
+WriterBenchmark.compactStreamingWrite  thrpt   25  41809.386 ± 565.641  ops/s
+WriterBenchmark.prettyJdomWrite        thrpt   25  36850.187 ± 359.971  ops/s
+WriterBenchmark.prettyStreamingWrite   thrpt   25  35117.832 ± 535.462  ops/s
