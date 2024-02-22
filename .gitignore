@@ -10,3 +10,5 @@ build/
 /.idea/shelf/
 /.idea/vcs.xml
 /.idea/workspace.xml
+/.idea/uiDesigner.xml
+/.idea/kotlinc.xml
