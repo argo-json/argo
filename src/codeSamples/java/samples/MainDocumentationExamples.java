@@ -11,10 +11,7 @@
 package samples;
 
 import argo.format.*;
-import argo.jdom.JdomParser;
-import argo.jdom.JsonNode;
-import argo.jdom.JsonNodeSelector;
-import argo.jdom.JsonObjectNodeBuilder;
+import argo.jdom.*;
 import argo.saj.JsonListener;
 import argo.saj.SajParser;
 import argo.staj.JsonStreamElement;
@@ -30,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static argo.format.JsonNumberUtils.asBigDecimal;
 import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeSelectors.aStringNode;
@@ -45,8 +41,6 @@ import static org.hamcrest.Matchers.equalTo;
 
 final class MainDocumentationExamples {
 
-    private static final JsonFormatter JSON_FORMATTER = new PrettyJsonFormatter();
-
     private static final JsonNode SAMPLE_JSON = object(
             field("name", string("Black Lace")),
             field("sales", number("110921")),
@@ -58,19 +52,13 @@ final class MainDocumentationExamples {
     );
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
-    private static final JsonNodeSelector<JsonNode, String> SECOND_SINGLE
-            = aStringNode("singles", 1);
 
-    private static final JsonNodeSelector<JsonNode, List<JsonNode>> SINGLES
-            = anArrayNode("singles");
-    private static final JsonNodeSelector<JsonNode, String> SINGLE_NAME
-            = aStringNode();
     private static final SajParser SAJ_PARSER
             = new SajParser();
-    private static final JsonWriter JSON_WRITER = new PrettyJsonWriter();
 
     @Test
     void producesJsonFromFactory() {
+        // tag::jsonNodeFactory[]
         JsonNode json = object(
                 field("name", string("Black Lace")),
                 field("sales", number("110921")),
@@ -80,11 +68,13 @@ final class MainDocumentationExamples {
                         string("Agadoo")
                 ))
         );
+        // end::jsonNodeFactory[]
         assertThat(json, equalTo(SAMPLE_JSON));
     }
 
     @Test
     void producesJsonFromBuilder() {
+        // tag::jsonNodeBuilder[]
         JsonObjectNodeBuilder builder = anObjectBuilder()
                 .withField("name", aStringBuilder("Black Lace"))
                 .withField("sales", aNumberBuilder("110921"))
@@ -94,47 +84,70 @@ final class MainDocumentationExamples {
                         .withElement(aStringBuilder("Agadoo"))
                 );
         JsonNode json = builder.build();
+        // end::jsonNodeBuilder[]
         assertThat(json, equalTo(SAMPLE_JSON));
     }
 
     @Test
     void producesInfiniteSequenceOfJson() throws Exception {
-        final StringWriter stringWriter = new StringWriter();
-        JSON_WRITER.write(stringWriter, (WriteableJsonArray) arrayWriter -> {
+        // tag::unboundedArrayWriting[]
+        StringWriter stringWriter = new StringWriter();
+        new PrettyJsonWriter().write(stringWriter, (WriteableJsonArray) arrayWriter -> {
             for (int i = 0; i < 10_000; i++) {
                 arrayWriter.writeElement(string("I'm Spartacus!"));
             }
         });
         String jsonText = stringWriter.toString();
+        // end::unboundedArrayWriting[]
         assertThat(jsonText, Matchers.startsWith("[\n\t\"I'm Spartacus!"));
     }
 
     @Test
     void producesInfiniteStringOfJson() throws Exception {
-        final StringWriter stringWriter = new StringWriter();
-        JSON_WRITER.write(stringWriter, (WriteableJsonString) writer -> {
+        // tag::unboundedStringWriting[]
+        StringWriter stringWriter = new StringWriter();
+        new PrettyJsonWriter().write(stringWriter, (WriteableJsonString) writer -> {
             writer.write("On");
             for (int i = 0; i < 10_000; i++) {
                 writer.write(" and on");
             }
         });
         String jsonText = stringWriter.toString();
+        // end::unboundedStringWriting[]
         assertThat(jsonText, Matchers.startsWith("\"On and on and on"));
     }
 
     @Test
     void formatsJson() throws Exception {
-        String jsonText = JSON_FORMATTER.format(SAMPLE_JSON);
+        JsonNode json = SAMPLE_JSON;
+        // tag::jsonFormatter[]
+        String jsonText = new PrettyJsonFormatter().format(json);
+        // end::jsonFormatter[]
         assertThat(JDOM_PARSER.parse(jsonText), equalTo(SAMPLE_JSON));
+    }
+
+    @Test
+    void parsesJsonAndGetsElementsWithCallToJsonNodeInline() throws Exception {
+        final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
+        // tag::jdomPath[]
+        String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
+        // end::jdomPath[]
+        assertThat(secondSingle, equalTo("Agadoo"));
     }
 
     @Test
     void parsesJsonAndGetsElementsWithCallToJsonNode() throws Exception {
         final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
-        final JsonNode json = JDOM_PARSER.parse(jsonText);
+        // tag::jdomParser[]
+        JsonNode json = new JdomParser().parse(jsonText);
+        // end::jdomParser[]
+        // tag::jdomPathExpanded[]
         String secondSingle = json.getStringValue("singles", 1);
+        // end::jdomPathExpanded[]
         assertThat(secondSingle, equalTo("Agadoo"));
+        // tag::jdomPathTypeCheck[]
         boolean isString = json.isStringValue("singles", 1);
+        // end::jdomPathTypeCheck[]
         assertThat(isString, equalTo(true));
     }
 
@@ -142,17 +155,25 @@ final class MainDocumentationExamples {
     void parsesJsonAndGetsElementsWithJsonNodeSelector() throws Exception {
         final String jsonText = readFileToString(new File(this.getClass().getResource("SimpleExample.json").getFile()), UTF_8);
         final JsonNode json = JDOM_PARSER.parse(jsonText);
-        String secondSingle = SECOND_SINGLE.getValue(json);
+        // tag::jsonNodeSelectorPath[]
+        String secondSingle = JsonNodeSelectors.aStringNode("singles", 1).getValue(json);
+        // end::jsonNodeSelectorPath[]
+        // tag::jsonNodeSelectorListString[]
+        JsonNodeSelector<JsonNode, List<JsonNode>> singlesSelector = anArrayNode("singles");
+        JsonNodeSelector<JsonNode, String> singleNameSelector = aStringNode();
         List<String> singles = new AbstractList<String>() {
             public String get(int index) {
-                return SINGLE_NAME.getValue(SINGLES.getValue(json).get(index));
+                return singleNameSelector.getValue(singlesSelector.getValue(json).get(index));
             }
 
             public int size() {
-                return SINGLES.getValue(json).size();
+                return singlesSelector.getValue(json).size();
             }
         };
-        BigDecimal totalRoyalties = asBigDecimal(json.getNumberValue("totalRoyalties"));
+        // end::jsonNodeSelectorListString[]
+        // tag::jsonNumberParsing[]
+        BigDecimal totalRoyalties = JsonNumberUtils.asBigDecimal(json.getNumberValue("totalRoyalties"));
+        // end::jsonNumberParsing[]
         assertThat(secondSingle, equalTo("Agadoo"));
         assertThat(singles, equalTo(asList("Superman", "Agadoo")));
         assertThat(totalRoyalties, equalTo(new BigDecimal("10223.82")));
@@ -162,7 +183,8 @@ final class MainDocumentationExamples {
     void parsesUsingSaj() throws Exception {
         final Reader jsonReader = newBufferedReader(new File(this.getClass().getResource("SimpleExample.json").getFile()).toPath(), UTF_8);
         try {
-            final Set<String> fieldNames = new HashSet<>();
+            // tag::jsonThroughEvents[]
+            Set<String> fieldNames = new HashSet<>();
             SAJ_PARSER.parse(jsonReader, new JsonListener() {
                 public void startField(Reader name) {
                     StringBuilder stringBuilder = new StringBuilder();
@@ -177,42 +199,31 @@ final class MainDocumentationExamples {
                     fieldNames.add(stringBuilder.toString());
                 }
 
-                public void startDocument() {
-                }
+                public void startDocument() {}
 
-                public void endDocument() {
-                }
+                public void endDocument() {}
 
-                public void startArray() {
-                }
+                public void startArray() {}
 
-                public void endArray() {
-                }
+                public void endArray() {}
 
-                public void startObject() {
-                }
+                public void startObject() {}
 
-                public void endObject() {
-                }
+                public void endObject() {}
 
-                public void endField() {
-                }
+                public void endField() {}
 
-                public void stringValue(final Reader value) {
-                }
+                public void stringValue(Reader value) {}
 
-                public void numberValue(final Reader value) {
-                }
+                public void numberValue(Reader value) {}
 
-                public void trueValue() {
-                }
+                public void trueValue() {}
 
-                public void falseValue() {
-                }
+                public void falseValue() {}
 
-                public void nullValue() {
-                }
+                public void nullValue() {}
             });
+            // end::jsonThroughEvents[]
             assertThat(fieldNames, equalTo(new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));
         } finally {
             jsonReader.close();
@@ -223,8 +234,9 @@ final class MainDocumentationExamples {
     void parsesUsingStaj() throws Exception {
         final Reader jsonReader = new InputStreamReader(newInputStream(new File(this.getClass().getResource("SimpleExample.json").getFile()).toPath()), UTF_8);
         try {
+            // tag::jsonThroughIteration[]
             Set<String> fieldNames = new HashSet<>();
-            final StajParser stajParser = new StajParser(jsonReader);
+            StajParser stajParser = new StajParser(jsonReader);
             while (stajParser.hasNext()) {
                 JsonStreamElement next = stajParser.next();
                 if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {
@@ -238,6 +250,7 @@ final class MainDocumentationExamples {
                     fieldNames.add(stringBuilder.toString());
                 }
             }
+            // end::jsonThroughIteration[]
             assertThat(fieldNames, equalTo(new HashSet<>(asList("name", "sales", "totalRoyalties", "singles"))));
         } finally {
             jsonReader.close();
