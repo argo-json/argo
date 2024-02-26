@@ -27,7 +27,7 @@ plugins {
     id("me.champeau.jmh") version "0.7.2"
     id("com.github.spotbugs") version "6.0.7"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
-    id("com.gitlab.svg2ico") version "1.0"
+    id("com.gitlab.svg2ico") version "1.1"
     id("org.asciidoctor.jvm.convert") version "4.0.2"
 
     id("release.sourceforge")
@@ -67,6 +67,14 @@ testing {
                 implementation("org.hamcrest:hamcrest:2.2")
             }
         }
+
+        register<JvmTestSuite>("docs") {
+            useJUnitJupiter()
+            dependencies {
+                implementation(project())
+                implementation(testFixtures(project()))
+            }
+        }
     }
 }
 
@@ -79,6 +87,19 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
     }
+}
+
+tasks.named<JavaCompile>("compileDocsJava") {
+    javaCompiler.set(javaToolchains.compilerFor {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    })
+}
+
+tasks.named<Test>("docs") {
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    })
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -189,21 +210,23 @@ pmd {
     ruleSets = emptyList()
 }
 
-tasks.pmdMain {
-    ruleSetFiles = files("tools/pmd-ruleset.xml", "tools/pmd-main-extra-ruleset.xml")
-    ruleSets = emptyList()
-}
+tasks {
+    pmdMain {
+        ruleSetFiles = files("tools/pmd-ruleset.xml", "tools/pmd-main-extra-ruleset.xml")
+        ruleSets = emptyList()
+    }
 
-tasks.spotbugsMain {
-    excludeFilter = file("tools/spotbugs-main-filter.xml")
-}
+    spotbugsMain {
+        excludeFilter = file("tools/spotbugs-main-filter.xml")
+    }
 
-tasks.spotbugsTest {
-    excludeFilter = file("tools/spotbugs-test-filter.xml")
-}
+    spotbugsTest {
+        excludeFilter = file("tools/spotbugs-test-filter.xml")
+    }
 
-tasks.spotbugsTestFixtures {
-    excludeFilter = file("tools/spotbugs-testFixtures-filter.xml")
+    spotbugsTestFixtures {
+        excludeFilter = file("tools/spotbugs-testFixtures-filter.xml")
+    }
 }
 
 artifacts {
@@ -233,7 +256,6 @@ tasks.asciidoctor {
 }
 
 val documentationJar by tasks.registering(Tar::class) {
-    dependsOn("asciidoctor", ico, png)
     from(tasks.asciidoctor)
     from("docs")
     archiveBaseName.set("documentation")
