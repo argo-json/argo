@@ -37,8 +37,6 @@ repositories {
     mavenCentral()
 }
 
-val documentationDirectory = project.layout.buildDirectory.dir("documentation")
-
 sourceSets {
     create("moduleInfo")
 }
@@ -78,28 +76,10 @@ testing {
     }
 }
 
-tasks.named("check") {
-    @Suppress("UnstableApiUsage")
-    dependsOn(testing.suites["codeSamples"])
-}
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
     }
-}
-
-tasks.named<JavaCompile>("compileDocsJava") {
-    javaCompiler.set(javaToolchains.compilerFor {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    })
-}
-
-tasks.named<Test>("docs") {
-    javaLauncher.set(javaToolchains.launcherFor {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    })
-    useJUnitPlatform()
 }
 
 dependencies {
@@ -137,71 +117,14 @@ idea {
     }
 }
 
-tasks.compileJava {
-    sourceCompatibility = "1.5"
-    targetCompatibility = "1.5"
-    options.compilerArgs.add("-Xlint:-options")
-}
-
-val compileTinyJava by tasks.registering(JavaCompile::class) {
-    sourceCompatibility = "1.5"
-    targetCompatibility = "1.5"
-    javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(8)
-    }
-    source = sourceSets["main"].allSource
-    classpath = sourceSets["main"].compileClasspath
-    destinationDirectory.set(project.layout.buildDirectory.dir("tiny-classes/main"))
-    options.compilerArgs = listOf("-g:none", "-Xlint:-options")
-}
-
-tasks.named<JavaCompile>("compileModuleInfoJava") {
-    sourceCompatibility = "9"
-    targetCompatibility = "9"
-    javaCompiler = javaToolchains.compilerFor {
-        languageVersion = JavaLanguageVersion.of(9)
-    }
-    doFirst {
-        classpath += sourceSets["main"].compileClasspath
-
-        options.compilerArgs = listOf(
-                "--module-path", classpath.asPath,
-//                "--add-modules", "ALL-SYSTEM",
-                "-d", sourceSets["main"].output.classesDirs.asPath
-        )
-    }
-}
-
-val myJavadoc by tasks.registering(Javadoc::class) {
-    source = sourceSets["main"].allJava
-    title = "Argo version $version"
-}
-
 val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier = "javadoc"
-    from(myJavadoc)
-}
-
-val tinyJar by tasks.registering(Jar::class) {
-    dependsOn(compileTinyJava)
-    archiveClassifier = "tiny"
-    from(project.layout.buildDirectory.dir("tiny-classes/main"))
+    from(tasks.javadoc)
 }
 
 val sourcesJar by tasks.registering(Jar::class) {
     archiveClassifier = "sources"
     from(sourceSets["main"].allSource)
-}
-
-val combinedJar by tasks.registering(Jar::class) {
-    archiveClassifier = "combined"
-    from(sourceSets["main"].allSource)
-    from(sourceSets["main"].output)
-}
-
-tasks.jar {
-    from(sourceSets["main"].output)
-    from(sourceSets["moduleInfo"].output)
 }
 
 pmd {
@@ -211,6 +134,108 @@ pmd {
 }
 
 tasks {
+    compileJava {
+        sourceCompatibility = "1.5"
+        targetCompatibility = "1.5"
+        options.compilerArgs.add("-Xlint:-options")
+    }
+
+    named<JavaCompile>("compileModuleInfoJava") {
+        sourceCompatibility = "9"
+        targetCompatibility = "9"
+        javaCompiler = project.javaToolchains.compilerFor {
+            languageVersion = JavaLanguageVersion.of(9)
+        }
+        doFirst {
+            classpath += sourceSets["main"].compileClasspath
+
+            options.compilerArgs = listOf(
+                "--module-path", classpath.asPath,
+//                "--add-modules", "ALL-SYSTEM",
+                "-d", sourceSets["main"].output.classesDirs.asPath
+            )
+        }
+    }
+
+    val compileTinyJava by registering(JavaCompile::class) {
+        sourceCompatibility = "1.5"
+        targetCompatibility = "1.5"
+        javaCompiler = project.javaToolchains.compilerFor {
+            languageVersion = JavaLanguageVersion.of(8)
+        }
+        source = sourceSets["main"].allSource
+        classpath = sourceSets["main"].compileClasspath
+        destinationDirectory.set(project.layout.buildDirectory.dir("tiny-classes/main"))
+        options.compilerArgs = listOf("-g:none", "-Xlint:-options")
+    }
+
+    check {
+        @Suppress("UnstableApiUsage")
+        dependsOn(testing.suites["codeSamples"])
+    }
+
+    jar {
+        from(sourceSets["main"].output)
+        from(sourceSets["moduleInfo"].output)
+    }
+
+    val combinedJar by registering(Jar::class) {
+        archiveClassifier = "combined"
+        from(sourceSets["main"].allSource)
+        from(sourceSets["main"].output)
+    }
+
+    val tinyJar by registering(Jar::class) {
+        dependsOn(compileTinyJava)
+        archiveClassifier = "tiny"
+        from(project.layout.buildDirectory.dir("tiny-classes/main"))
+    }
+
+    javadoc {
+        title = "Argo version $version"
+    }
+
+    named<JavaCompile>("compileDocsJava") {
+        javaCompiler.set(project.javaToolchains.compilerFor {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        })
+    }
+
+    named<Test>("docs") {
+        javaLauncher.set(project.javaToolchains.launcherFor {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        })
+        useJUnitPlatform()
+    }
+
+    val ico by registering(com.gitlab.svg2ico.Svg2IcoTask::class) {
+        source {
+            sourcePath = file("resources/favicon.svg")
+        }
+        destination = project.layout.buildDirectory.file("icons/favicon.ico")
+    }
+
+    val png by registering(com.gitlab.svg2ico.Svg2PngTask::class) {
+        source = file("resources/favicon.svg")
+        width = 128
+        height = 128
+        destination = project.layout.buildDirectory.file("icons/favicon.png")
+    }
+
+    asciidoctor {
+        dependsOn(ico, png) // doesn't seem to infer dependencies properly from the resources CopySpec
+        resources {
+            from(ico, png)
+        }
+    }
+
+    val documentationJar by registering(Tar::class) {
+        from(asciidoctor)
+        from("docs")
+        archiveBaseName.set("documentation")
+        compression = Compression.GZIP
+    }
+
     pmdMain {
         ruleSetFiles = files("tools/pmd-ruleset.xml", "tools/pmd-main-extra-ruleset.xml")
         ruleSets = emptyList()
@@ -227,43 +252,39 @@ tasks {
     spotbugsTestFixtures {
         excludeFilter = file("tools/spotbugs-testFixtures-filter.xml")
     }
+
+    getByName("release") {
+        dependsOn(jar, documentationJar, javadocJar, combinedJar, tinyJar)
+    }
+
+    val performRelease by registering {
+        dependsOn(clean, build, "publishToSonatype", png, "closeAndReleaseStagingRepository", "release")
+        doLast {
+            println("Release complete :)")
+        }
+    }
+
+    val incrementVersionNumber by registering {
+        dependsOn(performRelease)
+        doLast {
+            Properties().apply {
+                load(file("version.properties").reader())
+                setProperty("minorVersion", (getProperty("minorVersion").toInt() + 1).toString())
+                file("version.properties").writer().use {
+                    store(it, null)
+                }
+            }
+        }
+    }
+
+    register("deploy") {
+        dependsOn(incrementVersionNumber)
+    }
 }
 
 artifacts {
     archives(javadocJar)
     archives(sourcesJar)
-}
-
-val ico by tasks.registering(com.gitlab.svg2ico.Svg2IcoTask::class) {
-    source {
-        sourcePath = file("resources/favicon.svg")
-    }
-    destination = project.layout.buildDirectory.file("icons/favicon.ico")
-}
-
-val png by tasks.registering(com.gitlab.svg2ico.Svg2PngTask::class) {
-    source = file("resources/favicon.svg")
-    width = 128
-    height = 128
-    destination = project.layout.buildDirectory.file("icons/favicon.png")
-}
-
-tasks.asciidoctor {
-    dependsOn(ico, png) // doesn't seem to infer dependencies properly from the resources CopySpec
-    resources {
-        from(ico, png)
-    }
-}
-
-val documentationJar by tasks.registering(Tar::class) {
-    from(tasks.asciidoctor)
-    from("docs")
-    archiveBaseName.set("documentation")
-    compression = Compression.GZIP
-}
-
-tasks.getByName("release") {
-    dependsOn(tasks.jar, documentationJar, javadocJar, combinedJar, tinyJar)
 }
 
 publishing {
@@ -314,27 +335,3 @@ nexusPublishing {
 val javaComponent = components["java"] as AdhocComponentWithVariants
 javaComponent.withVariantsFromConfiguration(configurations["testFixturesApiElements"]) { skip() }
 javaComponent.withVariantsFromConfiguration(configurations["testFixturesRuntimeElements"]) { skip() }
-
-val performRelease by tasks.registering {
-    dependsOn(tasks.clean, tasks.build, "publishToSonatype", png, "closeAndReleaseStagingRepository", "release")
-    doLast {
-        println("Release complete :)")
-    }
-}
-
-val incrementVersionNumber by tasks.registering {
-    dependsOn(performRelease)
-    doLast {
-        Properties().apply {
-            load(file("version.properties").reader())
-            setProperty("minorVersion", (getProperty("minorVersion").toInt() + 1).toString())
-            file("version.properties").writer().use {
-                store(it, null)
-            }
-        }
-    }
-}
-
-tasks.register("deploy") {
-    dependsOn(incrementVersionNumber)
-}
