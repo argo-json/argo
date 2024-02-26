@@ -33,7 +33,7 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      */
     public StajParser(final Reader in) {
         this.pushbackReader = new PositionTrackingPushbackReader(in);
-    }
+    } // TODO tolerate byte order mark?  See https://datatracker.ietf.org/doc/html/rfc8259#section-8.1
 
     /**
      * Constructs a StajParser reading from the given {@code String}.
