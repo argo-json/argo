@@ -225,10 +225,16 @@ val png by tasks.registering(com.gitlab.svg2ico.Svg2PngTask::class) {
     destination = project.layout.buildDirectory.file("icons/favicon.png")
 }
 
+tasks.asciidoctor {
+    dependsOn(ico, png) // doesn't seem to infer dependencies properly from the resources CopySpec
+    resources {
+        from(ico, png)
+    }
+}
+
 val documentationJar by tasks.registering(Tar::class) {
     dependsOn("asciidoctor", ico, png)
-    from(project.layout.buildDirectory.dir("docs/asciidoc"))
-    from(project.layout.buildDirectory.dir("icons"))
+    from(tasks.asciidoctor)
     from("docs")
     archiveBaseName.set("documentation")
     compression = Compression.GZIP
