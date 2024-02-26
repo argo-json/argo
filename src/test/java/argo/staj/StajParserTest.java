@@ -885,6 +885,8 @@ final class StajParserTest {
         assertThat(new StajParser("\"\\" + input + "\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader(String.valueOf((char)expected))), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
+    // TODO test handling of incomplete UTF-16 byte sequences, e.g. \uDEAD ; see https://datatracker.ietf.org/doc/html/rfc8259#section-8.2
+
     @Test
     void parsesValidStringWithEscapedUnicodeChars() {
         assertThat(new StajParser("\"\\uF001\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader("\uF001")), NonTextJsonStreamElement.END_DOCUMENT));
