@@ -9,7 +9,13 @@
   -  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
   -->
 
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" version="1.1">
-    <circle fill="#008000" cx="32" cy="32" r="30"/>
-    <path fill="white" d="M32,8 l5.5,0 l15,42 l-9,0 l-4,-11 l-15,0 l-4,11 l-9,0 l15,-42 l5.5,0 m0,6 l-6,18 l12,0 Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" version="1.1">
+    <defs>
+        <path id="a" d="M32,2 l8,0 l22,55 l-12,0 l-6,-15 l-24,0 l-6,15 l-12,0 l22,-55 l8,0 m0,10 l-8,20 l16,0 z"/>
+        <mask id="mask">
+            <rect fill="white" stroke="none" x="0" y="0" width="64" height="64"/>
+            <use xlink:href="#a" x="0" y="0" fill="black" stroke="black"/>
+        </mask>
+    </defs>
+    <circle fill="#008000" cx="32" cy="32" r="30" mask="url(#mask)"/>
 </svg>
