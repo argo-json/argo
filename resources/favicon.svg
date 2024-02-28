@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
-  ~ Copyright 2012 Mark Slater
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
-  ~
-  ~ 	http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -  Copyright 2024 Mark Slater
+  -
+  -  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  -
+  -  	http://www.apache.org/licenses/LICENSE-2.0
+  -
+  -  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
   -->
 
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" version="1.0">
-    <g id="layer1">
-        <path style="fill:#008000"
-              d="M 114.46429,27.660715 A 57.142857,27.410715 0 1 1 0.17857361,27.660715 A 57.142857,27.410715 0 1 1 114.46429,27.660715 z"
-              transform="matrix(0.525,0,0,1.0944625,1.9062489,1.7263844)"/>
-        <text xml:space="preserve"
-       style="font-size:59.83205032px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial"
-       x="9.5781879" y="49.736897"
-       transform="scale(1.0096542,0.99043812)">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" version="1.1">
+    <circle fill="#008000" cx="32" cy="32" r="30"/>
+    <text xml:space="preserve"
+          style="font-size:59.83205032px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial"
+          x="9.5781879" y="49.736897"
+          transform="scale(1.0096542,0.99043812)">
             <tspan x="9.5781879" y="49.736897">
                 <tspan x="9.5781879" y="49.736897">A</tspan>
             </tspan>
         </text>
-    </g>
 </svg>
