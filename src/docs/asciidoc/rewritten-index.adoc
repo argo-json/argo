@@ -62,7 +62,7 @@ Let's generate a JSON document to represent a blog entry.
 
 [source,java]
 ----
-include::{docfile}/../../java/ExamplesTest.java[tags=generateSomeJson, indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=generateSomeJson, indent=0]
 ----
 <1> The `PrettyJsonFormatter` generates human-friendly JSON
 <2> Static factory methods in `argo.jdom.JsonNodeFactories` model JSON
@@ -70,13 +70,13 @@ include::{docfile}/../../java/ExamplesTest.java[tags=generateSomeJson, indent=0]
 Our blog entry JSON looks like this:
 [source,json]
 ----
-include::{docfile}/../../java/ExamplesTest.java[tags=generateSomeJsonResult, indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=generateSomeJsonResult, indent=0]
 ----
 
 To retrieve the title from the blog entry JSON we produced, we parse it, and then extract the value of the `title` field.
 [source,java]
 ----
-include::{docfile}/../../java/ExamplesTest.java[tags=parseSomeJson, indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=parseSomeJson, indent=0]
 ----
 
 === Streaming
@@ -84,7 +84,7 @@ Suppose we want to add an array of comments retrieved from a data source to our 
 
 [source,java]
 ----
-include::{docfile}/../../java/ExamplesTest.java[tags=streamOutSomeJson;!streamOutSomeJsonIntermediateResultWrapper, indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamOutSomeJson;!streamOutSomeJsonIntermediateResultWrapper, indent=0]
 ----
 <1> Get a source of comments
 <2> A `StringWriter` for demonstration purposes, but could be any `Writer`
@@ -92,7 +92,7 @@ include::{docfile}/../../java/ExamplesTest.java[tags=streamOutSomeJson;!streamOu
 +
 [source,json]
 ----
-include::{docfile}/../../java/ExamplesTest.java[tags=streamOutSomeJsonIntermediateResult, indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamOutSomeJsonIntermediateResult, indent=0]
 ----
 <4> The `Iterable` of comments can be unbounded; our code only keeps one comment in memory at a time
 
@@ -100,7 +100,7 @@ To retrieve the comments from the JSON we just made without having to hold it al
 
 [source,java]
 ----
-include::{docfile}/../../java/ExamplesTest.java[tags=streamInSomeJson, indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson, indent=0]
 ----
 <1> A `StringReader` for demonstration purposes, but could be any `Reader`
 <2> The stack will keep track of the parents of the current element

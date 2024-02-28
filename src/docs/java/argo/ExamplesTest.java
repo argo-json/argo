@@ -8,7 +8,7 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-import argo.format.*;
+package argo;import argo.format.*;
 import argo.jdom.JdomParser;
 import argo.staj.JsonStreamElement;
 import argo.staj.StajParser;
@@ -109,6 +109,9 @@ class ExamplesTest {
                     if (List.of("comments").equals(List.copyOf(stack))) {
                         commentCount++;
                     }
+                    break;
+                default:
+                    // ignore other element types
             }
         }
         // end::streamInSomeJson[]
