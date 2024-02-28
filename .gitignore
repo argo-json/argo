@@ -12,3 +12,4 @@ build/
 /.idea/workspace.xml
 /.idea/uiDesigner.xml
 /.idea/kotlinc.xml
+/.idea/jarRepositories.xml
