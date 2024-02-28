@@ -166,7 +166,7 @@ tasks {
         from(sourceSets["moduleInfo"].output)
     }
 
-    val tinyJar by registering(Jar::class) {
+    val smallJar by registering(Jar::class) {
         dependsOn(compileTinyJava)
         archiveClassifier = "tiny"
         from(project.layout.buildDirectory.dir("tiny-classes/main"))
@@ -269,7 +269,7 @@ artifacts {
 
 releasing {
     combinedJar = tasks.named<Jar>("combinedJar").get().archiveFile
-    smallJar = tasks.named<Jar>("tinyJar").get().archiveFile
+    smallJar = tasks.named<Jar>("smallJar").get().archiveFile
     documentationTar = tasks.named<Tar>("documentationTar").get().archiveFile
 }
 
