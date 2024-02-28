@@ -8,8 +8,6 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-import java.util.Properties
-
 buildscript {
     repositories {
         mavenCentral()
@@ -98,13 +96,6 @@ dependencies {
 
 group = "net.sourceforge.argo"
 base.archivesName = "argo"
-version = Properties().apply {
-    file("version.properties").reader().use {
-        load(it)
-    }
-}.let {
-    "${it.getProperty("majorVersion")}.${it.getProperty("minorVersion")}"
-}
 description = "Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs."
 
 idea {
@@ -263,19 +254,6 @@ tasks {
         dependsOn(clean, build, "publishToSonatype", png, "closeAndReleaseStagingRepository", "release")
         doLast {
             println("Release complete :)")
-        }
-    }
-
-    val incrementVersionNumber by registering {
-        dependsOn(performRelease)
-        doLast {
-            Properties().apply {
-                load(file("version.properties").reader())
-                setProperty("minorVersion", (getProperty("minorVersion").toInt() + 1).toString())
-                file("version.properties").writer().use {
-                    store(it, null)
-                }
-            }
         }
     }
 

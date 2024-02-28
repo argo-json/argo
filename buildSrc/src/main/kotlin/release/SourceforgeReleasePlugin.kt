@@ -12,9 +12,20 @@ package release
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import java.util.*
 
 class SourceforgeReleasePlugin : Plugin<Project> {
     override fun apply(target: Project) {
+        target.version = Properties().apply {
+            target.layout.projectDirectory.file("version.properties").asFile.reader().use {
+                load(it)
+            }
+        }.let {
+            "${it.getProperty("majorVersion")}.${it.getProperty("minorVersion")}"
+        }
         target.tasks.register("release", SourceforgeReleaseTask::class.java)
+        target.tasks.register("incrementVersionNumber", IncrementVersionNumberTask::class.java) {
+            group = "publishing"
+        }
     }
 }
