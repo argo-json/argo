@@ -11,12 +11,5 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" version="1.1">
     <circle fill="#008000" cx="32" cy="32" r="30"/>
-    <text xml:space="preserve"
-          style="font-size:59.83205032px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial"
-          x="9.5781879" y="49.736897"
-          transform="scale(1.0096542,0.99043812)">
-            <tspan x="9.5781879" y="49.736897">
-                <tspan x="9.5781879" y="49.736897">A</tspan>
-            </tspan>
-        </text>
+    <path fill="white" d="M32,8 l5.5,0 l15,42 l-9,0 l-4,-11 l-15,0 l-4,11 l-9,0 l15,-42 l5.5,0 m0,6 l-6,18 l12,0 Z"/>
 </svg>
