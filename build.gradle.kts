@@ -32,7 +32,6 @@ plugins {
 }
 
 group = "net.sourceforge.argo"
-base.archivesName = "argo"
 description = "Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs."
 
 repositories {
