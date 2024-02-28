@@ -88,7 +88,7 @@ include::{docfile}/../../java/ExamplesTest.java[tags=streamOutSomeJson;!streamOu
 ----
 <1> Get a source of comments
 <2> A `StringWriter` for demonstration purposes, but could be any `Writer`
-<3> At this point, the `StringWriter` contains:
+<3> At this point, the `StringWriter` has already received:
 +
 [source,json]
 ----
