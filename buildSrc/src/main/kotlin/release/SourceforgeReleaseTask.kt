@@ -31,12 +31,11 @@ open class SourceforgeReleaseTask : DefaultTask() {
         }
         retrying { SshClient("web.sourceforge.net", 22, username, password) }.use {
             it.putFile(project.layout.buildDirectory.file("distributions/documentation-${project.version}.tgz").get().asFile, "/home/project-web/argo/")
-            it.putFile(project.layout.buildDirectory.file("libs/argo-${project.version}-javadoc.jar").get().asFile, "/home/project-web/argo/")
             it.putFile(project.layout.buildDirectory.file("libs/argo-${project.version}-combined.jar").get().asFile, "/home/frs/project/argo/argo/${project.version}/argo-${project.version}.jar")
             it.putFile(project.layout.buildDirectory.file("libs/argo-${project.version}-tiny.jar").get().asFile, "/home/frs/project/argo/argo/${project.version}/argo-small-${project.version}.jar")
         }
         retrying { SshClient("shell.sourceforge.net", 22, username, password) }.use {
-            logger.info(it.executeCommand("mkdir -p /home/project-web/argo/${project.version}/javadoc && tar -xvf /home/project-web/argo/documentation-${project.version}.tgz -C /home/project-web/argo/${project.version} && unzip -d /home/project-web/argo/${project.version}/javadoc /home/project-web/argo/argo-${project.version}-javadoc.jar && rm /home/project-web/argo/documentation-${project.version}.tgz && rm /home/project-web/argo/argo-${project.version}-javadoc.jar && rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${project.version} /home/project-web/argo/htdocs"))
+            logger.info(it.executeCommand("mkdir -p /home/project-web/argo/${project.version} && tar -xvf /home/project-web/argo/documentation-${project.version}.tgz -C /home/project-web/argo/${project.version} && rm /home/project-web/argo/documentation-${project.version}.tgz && rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${project.version} /home/project-web/argo/htdocs"))
         }
 
         val response = HttpClient.newHttpClient()

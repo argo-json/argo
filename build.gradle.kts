@@ -223,15 +223,17 @@ tasks {
     }
 
     asciidoctor {
-        dependsOn(ico, png) // doesn't seem to infer dependencies properly from the resources CopySpec
+        dependsOn(ico, png, javadoc) // doesn't seem to infer dependencies properly from the resources CopySpec
         resources {
             from(ico, png)
+            from(javadoc) {
+                into("javadoc")
+            }
         }
     }
 
-    val documentationJar by registering(Tar::class) {
+    val documentationTar by registering(Tar::class) {
         from(asciidoctor)
-        from("docs")
         archiveBaseName.set("documentation")
         compression = Compression.GZIP
     }
@@ -254,7 +256,7 @@ tasks {
     }
 
     getByName("release") {
-        dependsOn(jar, documentationJar, javadocJar, combinedJar, tinyJar)
+        dependsOn(jar, documentationTar, javadocJar, combinedJar, tinyJar)
     }
 
     val performRelease by registering {
