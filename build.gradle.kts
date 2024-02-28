@@ -150,7 +150,7 @@ tasks {
 
     check {
         @Suppress("UnstableApiUsage")
-        dependsOn(testing.suites["codeSamples"])
+        dependsOn(testing.suites["codeSamples"], testing.suites["docs"])
     }
 
     jar {
