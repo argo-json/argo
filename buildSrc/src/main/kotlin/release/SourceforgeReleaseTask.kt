@@ -13,13 +13,24 @@ package release
 import com.sshtools.client.SshClient
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
-open class SourceforgeReleaseTask : DefaultTask() {
+abstract class SourceforgeReleaseTask : DefaultTask() {
+
+    @get:InputFile
+    abstract val combinedJar: RegularFileProperty
+
+    @get:InputFile
+    abstract val smallJar: RegularFileProperty
+
+    @get:InputFile
+    abstract val documentationTar: RegularFileProperty
 
     @TaskAction
     fun release() {
@@ -30,24 +41,26 @@ open class SourceforgeReleaseTask : DefaultTask() {
             logger.info(it.executeCommand("mkdir -p /home/frs/project/argo/argo/${project.version}"))
         }
         retrying { SshClient("web.sourceforge.net", 22, username, password) }.use {
-            it.putFile(project.layout.buildDirectory.file("distributions/documentation-${project.version}.tgz").get().asFile, "/home/project-web/argo/")
-            it.putFile(project.layout.buildDirectory.file("libs/argo-${project.version}-combined.jar").get().asFile, "/home/frs/project/argo/argo/${project.version}/argo-${project.version}.jar")
-            it.putFile(project.layout.buildDirectory.file("libs/argo-${project.version}-tiny.jar").get().asFile, "/home/frs/project/argo/argo/${project.version}/argo-small-${project.version}.jar")
+            it.putFile(documentationTar.get().asFile, "/home/project-web/argo/documentation-${project.version}.tgz")
+            it.putFile(combinedJar.get().asFile, "/home/frs/project/argo/argo/${project.version}/argo-${project.version}.jar")
+            it.putFile(smallJar.get().asFile, "/home/frs/project/argo/argo/${project.version}/argo-small-${project.version}.jar")
         }
         retrying { SshClient("shell.sourceforge.net", 22, username, password) }.use {
             logger.info(it.executeCommand("mkdir -p /home/project-web/argo/${project.version} && tar -xvf /home/project-web/argo/documentation-${project.version}.tgz -C /home/project-web/argo/${project.version} && rm /home/project-web/argo/documentation-${project.version}.tgz && rm /home/project-web/argo/htdocs ; ln -s /home/project-web/argo/${project.version} /home/project-web/argo/htdocs"))
         }
 
+        val defaultDownloadUri =
+            URI.create("https://sourceforge.net/projects/argo/files/argo/${project.version}/argo-${project.version}.jar")
         val response = HttpClient.newHttpClient()
                 .send(
-                        HttpRequest.newBuilder(URI.create("https://sourceforge.net/projects/argo/files/argo/${project.version}//argo-${project.version}.jar"))
+                        HttpRequest.newBuilder(defaultDownloadUri)
                                 .PUT(HttpRequest.BodyPublishers.ofString("default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others&download_label=${project.version}%20with%20source&api_key=${project.property("sourceforgeApiKey")}"))
                                 .setHeader("content-type", "application/x-www-form-urlencoded")
                                 .build(),
                         HttpResponse.BodyHandlers.ofString()
                 )
         if (response.statusCode() < 200 || response.statusCode() >= 400) {
-            throw GradleException("updating SourceForge default download resulted in response code ${response.statusCode()} with body\n${response.body()}")
+            throw GradleException("updating SourceForge default download to {$defaultDownloadUri} resulted in response code ${response.statusCode()} with body\n${response.body()}")
         }
 
     }

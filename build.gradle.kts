@@ -31,12 +31,35 @@ plugins {
     id("release.sourceforge")
 }
 
+group = "net.sourceforge.argo"
+base.archivesName = "argo"
+description = "Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs."
+
 repositories {
     mavenCentral()
 }
 
 sourceSets {
     create("moduleInfo")
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+dependencies {
+    "moduleInfoImplementation"(sourceSets["main"].output)
+
+    testFixturesImplementation(group = "org.apache.commons", name = "commons-lang3", version = "3.12.0")
+    testFixturesImplementation(group = "commons-io", name = "commons-io", version = "2.15.1")
+    testFixturesImplementation(group = "net.sourceforge.ickles", name = "ickles", version = "0.21")
+    testFixturesImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
+
+    spotbugs(group = "com.github.spotbugs", name = "spotbugs", version = "4.8.3")
+
+    jmhImplementation(testFixtures(project))
 }
 
 testing {
@@ -74,30 +97,6 @@ testing {
     }
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
-    }
-}
-
-dependencies {
-    "moduleInfoImplementation"(sourceSets["main"].output)
-
-    testFixturesImplementation(group = "org.apache.commons", name = "commons-lang3", version = "3.12.0")
-    testFixturesImplementation(group = "commons-io", name = "commons-io", version = "2.15.1")
-    testFixturesImplementation(group = "net.sourceforge.ickles", name = "ickles", version = "0.21")
-    testFixturesImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
-
-    spotbugs(group = "com.github.spotbugs", name = "spotbugs", version = "4.8.3")
-
-    jmhImplementation(testFixtures(project))
-}
-
-
-group = "net.sourceforge.argo"
-base.archivesName = "argo"
-description = "Argo is an open source JSON parser and generator written in Java.  It offers document, push, and pull APIs."
-
 idea {
     project {
         jdkName = "1.8"
@@ -106,16 +105,6 @@ idea {
     module {
         jdkName = "11"
     }
-}
-
-val javadocJar by tasks.registering(Jar::class) {
-    archiveClassifier = "javadoc"
-    from(tasks.javadoc)
-}
-
-val sourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier = "sources"
-    from(sourceSets["main"].allSource)
 }
 
 pmd {
@@ -174,12 +163,14 @@ tasks {
         archiveClassifier = "combined"
         from(sourceSets["main"].allSource)
         from(sourceSets["main"].output)
+        from(sourceSets["moduleInfo"].output)
     }
 
     val tinyJar by registering(Jar::class) {
         dependsOn(compileTinyJava)
         archiveClassifier = "tiny"
         from(project.layout.buildDirectory.dir("tiny-classes/main"))
+        from(sourceSets["moduleInfo"].output)
     }
 
     javadoc {
@@ -200,6 +191,7 @@ tasks {
     }
 
     val ico by registering(com.gitlab.svg2ico.Svg2IcoTask::class) {
+        group = "documentation"
         source {
             sourcePath = file("resources/favicon.svg")
         }
@@ -207,6 +199,7 @@ tasks {
     }
 
     val png by registering(com.gitlab.svg2ico.Svg2PngTask::class) {
+        group = "documentation"
         source = file("resources/favicon.svg")
         width = 128
         height = 128
@@ -224,6 +217,7 @@ tasks {
     }
 
     val documentationTar by registering(Tar::class) {
+        group = "documentation"
         from(asciidoctor)
         archiveBaseName.set("documentation")
         compression = Compression.GZIP
@@ -246,20 +240,26 @@ tasks {
         excludeFilter = file("tools/spotbugs-testFixtures-filter.xml")
     }
 
-    getByName("release") {
-        dependsOn(jar, documentationTar, javadocJar, combinedJar, tinyJar)
+    val release by registering {
+        group = "publishing"
+        dependsOn(clean, build, "publishToSonatype", closeAndReleaseStagingRepository, sourceforgeRelease, incrementVersionNumber)
     }
 
-    val performRelease by registering {
-        dependsOn(clean, build, "publishToSonatype", png, "closeAndReleaseStagingRepository", "release")
-        doLast {
-            println("Release complete :)")
-        }
+    incrementVersionNumber {
+        mustRunAfter(closeAndReleaseStagingRepository, sourceforgeRelease)
     }
+}
 
-    register("deploy") {
-        dependsOn(incrementVersionNumber)
-    }
+val javadocJar by tasks.registering(Jar::class) {
+    group = "documentation"
+    archiveClassifier = "javadoc"
+    from(tasks.javadoc)
+}
+
+val sourcesJar by tasks.registering(Jar::class) {
+    group = "documentation"
+    archiveClassifier = "sources"
+    from(sourceSets["main"].allSource)
 }
 
 artifacts {
@@ -267,12 +267,18 @@ artifacts {
     archives(sourcesJar)
 }
 
+releasing {
+    combinedJar = tasks.named<Jar>("combinedJar").get().archiveFile
+    smallJar = tasks.named<Jar>("tinyJar").get().archiveFile
+    documentationTar = tasks.named<Tar>("documentationTar").get().archiveFile
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
+            from(components["java"])
             artifact(sourcesJar)
             artifact(javadocJar)
-            from(components["java"])
             pom {
                 name = "Argo"
                 description = project.description
