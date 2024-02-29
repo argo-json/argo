@@ -64,8 +64,7 @@ Let's generate a JSON document to represent a blog entry.
 ----
 include::{docfile}/../../java/argo/ExamplesTest.java[tags=generateSomeJson, indent=0]
 ----
-<1> The `PrettyJsonFormatter` generates human-friendly JSON
-<2> Static factory methods in `argo.jdom.JsonNodeFactories` model JSON
+<1> Static factory methods in `argo.jdom.JsonNodeFactories` model JSON
 
 Our blog entry JSON looks like this:
 [source,json]

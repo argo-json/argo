@@ -28,13 +28,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ExamplesTest {
 
     @Test
-    void generateSomeJson() throws Exception { // TODO should be JsonWriter?  Maybe the name should be JsonGenerator??
+    void generateSomeJson() throws Exception {
         // tag::generateSomeJson[]
-        String blogEntry = new PrettyJsonFormatter().format( // <1>
-            object( // <2>
-                field("title", string("How to use Argo")),
-                field("version", number(1))
-            )
+        String blogEntry = new JsonGenerator().generate(
+                object( // <1>
+                        field("title", string("How to use Argo")),
+                        field("version", number(1))
+                )
         );
         // end::generateSomeJson[]
         assertEquals(trim("""
@@ -59,7 +59,7 @@ class ExamplesTest {
         // tag::streamOutSomeJson[]
         Iterable<String> comments = queryComments(); // <1>
         StringWriter stringWriter = new StringWriter(); // <2>
-        new PrettyJsonWriter().write(stringWriter, (WriteableJsonObject) objectWriter -> {
+        new JsonGenerator().generate(stringWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("title", string("How to use Argo")); // <3>
             // tag::streamOutSomeJsonIntermediateResultWrapper[]
             assertEquals(trim("""
