@@ -80,6 +80,12 @@ final class JsonEscapedStringTest {
     }
 
     @Test
+    void formatsUnpairedUtf16Surrogate() throws Exception {
+        final String actual = escapeString("\uDEAD");
+        assertThat(actual, equalTo("\uDEAD"));
+    }
+
+    @Test
     void formatsACharArray() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 3);
