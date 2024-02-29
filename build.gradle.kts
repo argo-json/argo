@@ -25,7 +25,7 @@ plugins {
     id("me.champeau.jmh") version "0.7.2"
     id("com.github.spotbugs") version "6.0.7"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
-    id("com.gitlab.svg2ico") version "1.2"
+    id("com.gitlab.svg2ico") version "1.4"
     id("org.asciidoctor.jvm.convert") version "4.0.2"
 
     id("release.sourceforge")
@@ -193,6 +193,15 @@ tasks {
         group = "documentation"
         source {
             sourcePath = file("resources/favicon.svg")
+            output { width = 64; height = 64}
+        }
+        source {
+            sourcePath = file("resources/favicon.svg")
+            userStyleSheet = file("resources/no-outline.css")
+            output { width = 48; height = 48}
+            output { width = 32; height = 32}
+            output { width = 24; height = 24}
+            output { width = 16; height = 16}
         }
         destination = project.layout.buildDirectory.file("icons/favicon.ico")
     }
