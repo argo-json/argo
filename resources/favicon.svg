@@ -10,21 +10,26 @@
   -->
 
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" version="1.1">
+    <style>
+        .outlined {
+            stroke-width: 3;
+        }
+    </style>
     <defs>
         <path id="a" d="M32,-20 l32,80 l-16,0 l-4,-10 l-24,0 l-4,10 l-16,0 l32,-80 m0,40 l-6,15 l12,0 z"/>
         <circle id="circle" cx="32" cy="32" r="30"/>
         <mask id="mask">
             <rect fill="white" stroke="none" x="0" y="0" width="64" height="64"/>
-            <use xlink:href="#a" fill="black" stroke="black" stroke-width="3"/>
+            <use xlink:href="#a" class="outlined" fill="black" stroke="black"/>
         </mask>
         <mask id="outline-mask">
-            <use xlink:href="#circle" fill="white" stroke="white" stroke-width="3"/>
+            <use xlink:href="#circle" class="outlined" fill="white" stroke="white"/>
         </mask>
         <linearGradient id="green-shine" x1="0%" y1="0%" x2="50%" y2="50%" spreadMethod="pad">
             <stop offset="0%"   stop-color="#66ff66" stop-opacity="1"/>
             <stop offset="100%" stop-color="#008000" stop-opacity="1"/>
         </linearGradient>
     </defs>
-    <use xlink:href="#circle" fill="url(#green-shine)" stroke="black" stroke-width="3" mask="url(#mask)"/>
-    <use xlink:href="#a" fill="none" stroke="black" stroke-width="3" mask="url(#outline-mask)"/>
+    <use xlink:href="#circle" class="outlined" fill="url(#green-shine)" stroke="black" mask="url(#mask)"/>
+    <use xlink:href="#a" class="outlined" fill="none" stroke="black" mask="url(#outline-mask)"/>
 </svg>
