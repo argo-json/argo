@@ -25,7 +25,7 @@ import static argo.format.JsonGenerator.JsonGeneratorStyle.PRETTY;
  */
 public final class JsonGenerator {
 
-    private final JsonWriter jsonWriter;
+    private final AbstractJsonWriter jsonWriter;
 
     public JsonGenerator() {
         this(PRETTY);
@@ -176,6 +176,33 @@ public final class JsonGenerator {
         return stringWriter.toString();
     }
 
+    /**
+     * Stream a JSON representation of the given {@code JsonNode} to the given {@code Writer}, outputting fields in lexicographic order.
+     * JSON does not mandate a particular ordering for the fields of an object, but for comparing JSON documents it can be convenient for field order to be consistent.
+     * @param target       the {@code Writer} to output to.
+     * @param jsonNode     the {@code JsonNode} to output.
+     * @throws IOException if there was a problem writing to the {@code Writer}.
+     */
+    public void generateWithFieldSorting(final Writer target, final JsonNode jsonNode) throws IOException { // TODO document and test field deduplication
+        jsonWriter.withFieldSorting(true).write(target, jsonNode);
+    }
+
+    /**
+     * Generate a JSON representation of the given {@code JsonNode} as a {@code String}, outputting fields in lexicographic order.
+     * JSON does not mandate a particular ordering for the fields of an object, but for comparing JSON documents it can be convenient for field order to be consistent.
+     * @param jsonNode the {@code JsonNode} to output.
+     * @return         a JSON representation of the given {@code JsonNode} as a {@code String}
+     */
+    public String generateWithFieldSorting(final JsonNode jsonNode) { // TODO document and test field deduplication
+        final StringWriter stringWriter = new StringWriter();
+        try {
+            generateWithFieldSorting(stringWriter, jsonNode);
+        } catch (final IOException e) {
+            throw new RuntimeException("Coding failure in Argo:  StringWriter threw an IOException", e);
+        }
+        return stringWriter.toString();
+    }
+
     public JsonGenerator style(final JsonGeneratorStyle style) {
         return new JsonGenerator(style);
     }
@@ -183,9 +210,9 @@ public final class JsonGenerator {
     public enum JsonGeneratorStyle {
         PRETTY(new PrettyJsonWriter()), COMPACT(new CompactJsonWriter());
 
-        private final JsonWriter jsonWriter;
+        private final AbstractJsonWriter jsonWriter;
 
-        JsonGeneratorStyle(final JsonWriter jsonWriter) {
+        JsonGeneratorStyle(final AbstractJsonWriter jsonWriter) {
             this.jsonWriter = jsonWriter;
         }
     }
