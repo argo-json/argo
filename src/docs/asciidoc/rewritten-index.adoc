@@ -10,7 +10,7 @@
 Argo is a free, open source JSON parsing and generating library for Java.
 
 
-Argo is compliant with https://datatracker.ietf.org/doc/html/rfc8259[RFC 8259].  It works with Java 5 onwards, and includes JPMS module information for Java 9 onwards.
+Argo is compliant with https://datatracker.ietf.org/doc/html/rfc8259[RFC 8259].  It works with Java 5 onwards, and includes JPMS module information for Java 9 onwards.  Argo has no dependencies.
 
 // TODO document parser limitations, per https://datatracker.ietf.org/doc/html/rfc8259#section-9
 
