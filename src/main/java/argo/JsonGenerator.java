@@ -22,7 +22,7 @@ import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 /**
  * Provides operations create {@code String}s of valid JSON and to stream valid JSON text to a {@code java.io.Writer}.
  * <p>
- * Instances of this class are reusable and thread-safe.
+ * Instances of this class are immutable, reusable, and thread-safe.
  */
 public final class JsonGenerator {
 
