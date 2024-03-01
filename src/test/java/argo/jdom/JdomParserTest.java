@@ -41,7 +41,6 @@ final class JdomParserTest {
                     new JdomParserJsonParserShim.Json(new JsonParser())
             ).map(Arguments::arguments);
         }
-
     }
 
     @ParameterizedTest

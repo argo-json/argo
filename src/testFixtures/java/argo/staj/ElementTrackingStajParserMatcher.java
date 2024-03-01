@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,17 +16,18 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import static argo.staj.JsonStreamElementMatchers.aJsonStreamElementMatching;
 import static java.util.Arrays.asList;
 
-public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMatcher<StajParser> {
+public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMatcher<Iterator<JsonStreamElement>> {
 
     private final Collection<JsonStreamElement> actual = new ArrayList<>();
     private final Collection<JsonStreamElement> expected;
     private final Collection<Matcher<JsonStreamElement>> expectedMatchers;
 
-    public static Matcher<StajParser> generatesElements(final JsonStreamElement... jsonStreamElements) {
+    public static Matcher<Iterator<JsonStreamElement>> generatesElements(final JsonStreamElement... jsonStreamElements) {
         return new ElementTrackingStajParserMatcher(jsonStreamElements);
     }
 
@@ -39,7 +40,7 @@ public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMa
     }
 
     @Override
-    protected boolean matchesSafely(final StajParser item, final Description mismatchDescription) {
+    protected boolean matchesSafely(final Iterator<JsonStreamElement> item, final Description mismatchDescription) {
         boolean matches = true;
         for (Matcher<JsonStreamElement> jsonStreamElementMatcher : expectedMatchers) {
             final boolean hasNextItem = item.hasNext();

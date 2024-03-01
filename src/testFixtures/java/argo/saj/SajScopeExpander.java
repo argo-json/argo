@@ -10,16 +10,17 @@
 
 package argo.saj;
 
-import argo.staj.StajParser;
+import argo.staj.JsonStreamElement;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 public final class SajScopeExpander {
 
     private SajScopeExpander() {
     }
 
-    public static void parse(final SajParser sajParser, final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException, IOException {
+    public static void parse(final SajParser sajParser, final JsonListener jsonListener, final Iterator<JsonStreamElement> stajParser) throws InvalidSyntaxException, IOException {
         sajParser.parse(jsonListener, stajParser);
     }
 

@@ -43,7 +43,6 @@ final class SajParserTest {
                     new SajParserJsonParserShim.Json(new JsonParser())
             ).map(Arguments::arguments);
         }
-
     }
 
     @ParameterizedTest

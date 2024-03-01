@@ -10,6 +10,7 @@
 
 package argo.staj;
 
+import argo.JsonParser;
 import argo.format.PrettyJsonBuilder;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
@@ -18,89 +19,120 @@ import argo.jdom.JsonStringNodeTestingFactories;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BrokenReader;
 import org.apache.commons.io.input.SequenceReader;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.CharBuffer;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestingFactories.aJsonNode;
 import static argo.jdom.JsonNumberNodeTestingFactories.aNumberNode;
-import static argo.jdom.JsonStringNodeTestingFactories.*;
+import static argo.jdom.JsonStringNodeTestingFactories.aNonEmptyString;
+import static argo.jdom.JsonStringNodeTestingFactories.aStringNode;
 import static argo.staj.ElementTrackingStajParserMatcher.generatesElements;
 import static argo.staj.JsonStreamElement.number;
 import static argo.staj.JsonStreamElement.string;
 import static argo.staj.JsonStreamElement.*;
 import static argo.staj.RoundTrippingStajParserMatcher.parsesTo;
-import static argo.staj.StajParserBuilder.stajParser;
+import static argo.staj.StajParserBuilder.readerOf;
+import static argo.staj.StajParserTest.TestCase.testCase;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @SuppressWarnings("PMD.CloseResource")
 final class StajParserTest {
 
-    @Test
-    void parsesFromReader() {
-        assertThat(new StajParser(new StringReader("null")), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
+    static final class ParserArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return shims().map(Arguments::arguments);
+        }
     }
 
-    @Test
-    void parsesFromString() {
-        assertThat(new StajParser("null"), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
+    private static Stream<StajParserJsonParserShim> shims() {
+        return Stream.of(
+                new StajParserJsonParserShim.Staj(),
+                new StajParserJsonParserShim.Json(new JsonParser())
+        );
     }
 
-    @Test
-    void arrayOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(array()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesFromReader(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(new StringReader("null")), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void objectOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(object()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_OBJECT, NonTextJsonStreamElement.END_OBJECT, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesFromString(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse("null"), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void numberOnlyDocumentHasCorrectElements() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void arrayOnlyDocumentHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(array())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void objectOnlyDocumentHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(object())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_OBJECT, NonTextJsonStreamElement.END_OBJECT, NonTextJsonStreamElement.END_DOCUMENT));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void numberOnlyDocumentHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
         final JsonNode numberNode = aNumberNode();
-        assertThat(stajParser(numberNode), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, number(new StringReader(numberNode.getText())), NonTextJsonStreamElement.END_DOCUMENT));
+        assertThat(stajParserJsonParserShim.parse(readerOf(numberNode)), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, number(new StringReader(numberNode.getText())), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void stringOnlyDocumentHasCorrectElements() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void stringOnlyDocumentHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
         final JsonNode stringNode = aStringNode();
-        assertThat(stajParser(stringNode), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader(stringNode.getText())), NonTextJsonStreamElement.END_DOCUMENT));
+        assertThat(stajParserJsonParserShim.parse(readerOf(stringNode)), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader(stringNode.getText())), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void nullOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(nullNode()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void nullOnlyDocumentHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(nullNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void trueOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(trueNode()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.TRUE, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void trueOnlyDocumentHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(trueNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.TRUE, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void falseOnlyDocumentHasCorrectElements() {
-        assertThat(stajParser(falseNode()), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.FALSE, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void falseOnlyDocumentHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(falseNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.FALSE, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void arrayWithChildHasCorrectElements() {
-        assertThat(stajParser(array(array())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void arrayWithChildHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(array(array()))), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void arrayWithChildrenHasCorrectElements() {
-        assertThat(stajParser(array(array(), object())), generatesElements(
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void arrayWithChildrenHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(array(array(), object()))), generatesElements(
                 NonTextJsonStreamElement.START_DOCUMENT,
                 NonTextJsonStreamElement.START_ARRAY,
                 NonTextJsonStreamElement.START_ARRAY,
@@ -112,42 +144,49 @@ final class StajParserTest {
         ));
     }
 
-    @Test
-    void arrayWithNullHasCorrectElements() {
-        assertThat(stajParser(array(nullNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void arrayWithNullHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(array(nullNode()))), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void arrayWithNullsHasCorrectElements() {
-        assertThat(stajParser(array(nullNode(), nullNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void arrayWithNullsHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(array(nullNode(), nullNode()))), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void arrayWithTrueHasCorrectElements() {
-        assertThat(stajParser(array(trueNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.TRUE, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void arrayWithTrueHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(array(trueNode()))), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.TRUE, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void arrayWithFalseHasCorrectElements() {
-        assertThat(stajParser(array(falseNode())), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.FALSE, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void arrayWithFalseHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(array(falseNode()))), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, NonTextJsonStreamElement.FALSE, NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void arrayWithATextNodeHasCorrectElements() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void arrayWithATextNodeHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
         final JsonNode aStringNode = aStringNode();
-        assertThat(stajParser(array(aStringNode)), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, string(new StringReader(aStringNode.getText())), NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
+        assertThat(stajParserJsonParserShim.parse(readerOf(array(aStringNode))), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, string(new StringReader(aStringNode.getText())), NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void arrayWithANumberNodeHasCorrectElements() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void arrayWithANumberNodeHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
         final JsonNode aNumberNode = aNumberNode();
-        assertThat(stajParser(array(aNumberNode)), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, number(new StringReader(aNumberNode.getText())), NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
+        assertThat(stajParserJsonParserShim.parse(readerOf(array(aNumberNode))), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, number(new StringReader(aNumberNode.getText())), NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void objectWithFieldHasCorrectElements() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void objectWithFieldHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
         final JsonStringNode aFieldName = JsonStringNodeTestingFactories.aStringNode();
-        assertThat(stajParser(object(field(aFieldName, array()))), generatesElements(
+        assertThat(stajParserJsonParserShim.parse(readerOf(object(field(aFieldName, array())))), generatesElements(
                 NonTextJsonStreamElement.START_DOCUMENT,
                 NonTextJsonStreamElement.START_OBJECT,
                 startField(new StringReader(aFieldName.getText())),
@@ -159,11 +198,12 @@ final class StajParserTest {
         ));
     }
 
-    @Test
-    void objectWithFieldsHasCorrectElements() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void objectWithFieldsHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
         final JsonStringNode aFieldName = aStringNode();
         final JsonStringNode anotherFieldName = aStringNode();
-        assertThat(stajParser(object(field(aFieldName, array()), field(anotherFieldName, object()))), generatesElements(
+        assertThat(stajParserJsonParserShim.parse(readerOf(object(field(aFieldName, array()), field(anotherFieldName, object())))), generatesElements(
                 NonTextJsonStreamElement.START_DOCUMENT,
                 NonTextJsonStreamElement.START_OBJECT,
                 startField(new StringReader(aFieldName.getText())),
@@ -179,52 +219,59 @@ final class StajParserTest {
         ));
     }
 
-    @Test
-    void aRandomJsonNodeHasCorrectElements() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void aRandomJsonNodeHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
         final JsonNode aJsonNode = aJsonNode();
-        assertThat(stajParser(aJsonNode), parsesTo(aJsonNode));
+        assertThat(stajParserJsonParserShim.parse(readerOf(aJsonNode)), parsesTo(aJsonNode));
     }
 
-    @Test
-    void aRandomJsonNodeFromStringHasCorrectElements() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void aRandomJsonNodeFromStringHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
         final JsonNode jsonNode = aJsonNode();
-        assertThat(new StajParser(PrettyJsonBuilder.json(jsonNode)), parsesTo(jsonNode));
+        assertThat(stajParserJsonParserShim.parse(PrettyJsonBuilder.json(jsonNode)), parsesTo(jsonNode));
     }
 
-    @Test
-    void nextWorksWithoutCallingHasNext() {
-        assertThat(stajParser(array()).next(), equalTo(NonTextJsonStreamElement.START_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void nextWorksWithoutCallingHasNext(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse(readerOf(array())).next(), equalTo(NonTextJsonStreamElement.START_DOCUMENT));
     }
 
-    @Test
-    void toleratesFieldNameTextNotBeingRead() {
-        final StajParser stajParser = stajParser(object(field(aNonEmptyString(), nullNode())));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void toleratesFieldNameTextNotBeingRead(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(readerOf(object(field(aNonEmptyString(), nullNode()))));
         while (stajParser.hasNext()) {
             stajParser.next();
         }
     }
 
-    @Test
-    void toleratesStringTextNotBeingRead() {
-        final StajParser stajParser = stajParser(array(JsonNodeFactories.string(aNonEmptyString())));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void toleratesStringTextNotBeingRead(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(readerOf(array(JsonNodeFactories.string(aNonEmptyString()))));
         while (stajParser.hasNext()) {
             stajParser.next();
         }
     }
 
-    @Test
-    void toleratesNumberTextNotBeingRead() {
-        final StajParser stajParser = stajParser(array(aNumberNode()));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void toleratesNumberTextNotBeingRead(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(readerOf(array(aNumberNode())));
         while (stajParser.hasNext()) {
             stajParser.next();
         }
     }
 
-    @Test
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
     @SuppressWarnings("PMD.UseTryWithResources")
-    void propagatesIoExceptionReadingNumber() throws IOException {
+    void propagatesIoExceptionReadingNumber(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final IOException ioException = new IOException("An IOException");
-        final StajParser stajParser = new StajParser(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("1"),
                 new BrokenReader(ioException)
         ));
@@ -239,10 +286,11 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void propagatesIoExceptionSkippingNumberByGettingNextElement() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void propagatesIoExceptionSkippingNumberByGettingNextElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final StajParser stajParser = new StajParser(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("1"),
                 new BrokenReader(ioException)
         ));
@@ -252,10 +300,11 @@ final class StajParserTest {
         assertThat(actualException.getCause(), sameInstance(ioException));
     }
 
-    @Test
-    void propagatesIoExceptionSkippingNumberByQueryingNextElement() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void propagatesIoExceptionSkippingNumberByQueryingNextElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final StajParser stajParser = new StajParser(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("1"),
                 new BrokenReader(ioException)
         ));
@@ -265,124 +314,138 @@ final class StajParserTest {
         assertThat(actualException.getCause(), sameInstance(ioException));
     }
 
-    @Test
-    void canCloseANumberReader() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canCloseANumberReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         stajParser.next().reader().close();
     }
 
-    @Test
-    void afterClosingANumberReaderCanCallCloseAgain() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderCanCallCloseAgain(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         reader.close();
     }
 
-    @Test
-    void afterClosingANumberReaderMarkThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderMarkThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.mark(0));
     }
 
-    @Test
-    void afterClosingANumberReaderMarkSupportedReturnsFalse() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderMarkSupportedReturnsFalse(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThat(reader.markSupported(), equalTo(false));
     }
 
-    @Test
-    void afterClosingANumberReaderReadingACharacterThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderReadingACharacterThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, reader::read);
     }
 
-    @Test
-    void afterClosingANumberReaderReadingToABufferThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderReadingToABufferThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.read(new char[3]));
     }
 
-    @Test
-    void afterClosingANumberReaderReadingToABufferWithOffsetAndLengthThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderReadingToABufferWithOffsetAndLengthThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.read(new char[3], 0, 1));
     }
 
-    @Test
-    void afterClosingANumberReaderReadingToACharBufferThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderReadingToACharBufferThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.read(CharBuffer.allocate(3)));
     }
 
-    @Test
-    void afterClosingANumberReaderReadyThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderReadyThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, reader::ready);
     }
 
-    @Test
-    void afterClosingANumberReaderResetThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderResetThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, reader::reset);
     }
 
-    @Test
-    void afterClosingANumberReaderSkipThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingANumberReaderSkipThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.skip(0));
     }
 
-    @Test
-    void attemptingToMarkANumberReaderThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToMarkANumberReaderThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IOException.class, () -> reader.mark(0));
         }
     }
 
-    @Test
-    void aNumberReaderDoesNotSupportMark() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void aNumberReaderDoesNotSupportMark(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.markSupported(), equalTo(false));
         }
     }
 
-    @Test
-    void canReadNumberCharacterByCharacter() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canReadNumberCharacterByCharacter(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.read(), equalTo((int) '1'));
@@ -391,9 +454,10 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void canReadNumberToABuffer() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canReadNumberToABuffer(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             final char[] buffer = new char[3];
@@ -403,9 +467,10 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void canReadNumberToABufferWithOffsetAndLength() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canReadNumberToABufferWithOffsetAndLength(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             final char[] buffer = new char[3];
@@ -416,54 +481,60 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetIsNegativeThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetIsNegativeThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], -1, 0));
         }
     }
 
-    @Test
-    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 4, 0));
         }
     }
 
-    @Test
-    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereLengthIsLessThanZeroThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereLengthIsLessThanZeroThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 0, -1));
         }
     }
 
-    @Test
-    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetPlusLengthIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetPlusLengthIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 1, 3));
         }
     }
 
-    @Test
-    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetPlusLengthOverflowsThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadNumberToABufferWithOffsetAndLengthWhereOffsetPlusLengthOverflowsThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 1, Integer.MAX_VALUE));
         }
     }
 
-    @Test
-    void canReadNumberToACharBuffer() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canReadNumberToACharBuffer(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             final CharBuffer charBuffer = CharBuffer.allocate(3);
@@ -473,27 +544,30 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void numberReaderReadyReturnsFalseToBeOnTheSafeSide() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void numberReaderReadyReturnsFalseToBeOnTheSafeSide(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.ready(), equalTo(false));
         }
     }
 
-    @Test
-    void attemptingToResetANumberReaderThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToResetANumberReaderThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IOException.class, reader::reset);
         }
     }
 
-    @Test
-    void canSkipASubsetCharactersInANumberReader() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canSkipASubsetCharactersInANumberReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.skip(1), equalTo(1L));
@@ -502,9 +576,10 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void canSkipPastAllCharactersInANumberReader() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canSkipPastAllCharactersInANumberReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.skip(3), equalTo(2L));
@@ -512,9 +587,10 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void canSkipZeroCharactersInANumberReader() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canSkipZeroCharactersInANumberReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.skip(0), equalTo(0L));
@@ -524,18 +600,20 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void rejectsNegativeSkipValueInANumberReader() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsNegativeSkipValueInANumberReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IllegalArgumentException.class, () -> reader.skip(-1));
         }
     }
 
-    @Test
-    void canSkipAfterEndOfStreamInANumberReader() throws IOException {
-        final StajParser stajParser = new StajParser("12");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canSkipAfterEndOfStreamInANumberReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             IOUtils.consume(reader);
@@ -545,11 +623,12 @@ final class StajParserTest {
         }
     }
 
-    @Test
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
     @SuppressWarnings("PMD.UseTryWithResources")
-    void propagatesIoExceptionReadingString() throws IOException {
+    void propagatesIoExceptionReadingString(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final IOException ioException = new IOException("An IOException");
-        final StajParser stajParser = new StajParser(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("\"F"),
                 new BrokenReader(ioException)
         ));
@@ -564,10 +643,11 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void propagatesIoExceptionSkippingStringByGettingNextElement() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void propagatesIoExceptionSkippingStringByGettingNextElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final StajParser stajParser = new StajParser(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("\"F"),
                 new BrokenReader(ioException)
         ));
@@ -577,10 +657,11 @@ final class StajParserTest {
         assertThat(actualException.getCause(), sameInstance(ioException));
     }
 
-    @Test
-    void propagatesIoExceptionSkippingStringByQueryingNextElement() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void propagatesIoExceptionSkippingStringByQueryingNextElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final StajParser stajParser = new StajParser(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("\"F"),
                 new BrokenReader(ioException)
         ));
@@ -590,124 +671,138 @@ final class StajParserTest {
         assertThat(actualException.getCause(), sameInstance(ioException));
     }
 
-    @Test
-    void canCloseAStringReader() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canCloseAStringReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         stajParser.next().reader().close();
     }
 
-    @Test
-    void afterClosingAStringReaderCanCallCloseAgain() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderCanCallCloseAgain(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         reader.close();
     }
 
-    @Test
-    void afterClosingAStringReaderMarkThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderMarkThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.mark(0));
     }
 
-    @Test
-    void afterClosingAStringReaderMarkSupportedReturnsFalse() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderMarkSupportedReturnsFalse(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThat(reader.markSupported(), equalTo(false));
     }
 
-    @Test
-    void afterClosingAStringReaderReadingACharacterThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderReadingACharacterThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, reader::read);
     }
 
-    @Test
-    void afterClosingAStringReaderReadingToABufferThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderReadingToABufferThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.read(new char[3]));
     }
 
-    @Test
-    void afterClosingAStringReaderReadingToABufferWithOffsetAndLengthThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderReadingToABufferWithOffsetAndLengthThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.read(new char[3], 0, 1));
     }
 
-    @Test
-    void afterClosingAStringReaderReadingToACharBufferThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderReadingToACharBufferThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.read(CharBuffer.allocate(3)));
     }
 
-    @Test
-    void afterClosingAStringReaderReadyThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderReadyThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, reader::ready);
     }
 
-    @Test
-    void afterClosingAStringReaderResetThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderResetThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, reader::reset);
     }
 
-    @Test
-    void afterClosingAStringReaderSkipThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void afterClosingAStringReaderSkipThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         reader.close();
         assertThrows(IOException.class, () -> reader.skip(0));
     }
 
-    @Test
-    void attemptingToMarkAStringReaderThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToMarkAStringReaderThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IOException.class, () -> reader.mark(0));
         }
     }
 
-    @Test
-    void aStringReaderDoesNotSupportMark() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void aStringReaderDoesNotSupportMark(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.markSupported(), equalTo(false));
         }
     }
 
-    @Test
-    void canReadStringCharacterByCharacter() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canReadStringCharacterByCharacter(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.read(), equalTo((int) 'F'));
@@ -716,9 +811,10 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void canReadStringToABuffer() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canReadStringToABuffer(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             final char[] buffer = new char[3];
@@ -728,9 +824,10 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void canReadStringToABufferWithOffsetAndLength() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canReadStringToABufferWithOffsetAndLength(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             final char[] buffer = new char[3];
@@ -741,54 +838,60 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetIsNegativeThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetIsNegativeThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], -1, 0));
         }
     }
 
-    @Test
-    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 4, 0));
         }
     }
 
-    @Test
-    void attemptingToReadStringToABufferWithOffsetAndLengthWhereLengthIsLessThanZeroThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereLengthIsLessThanZeroThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 0, -1));
         }
     }
 
-    @Test
-    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetPlusLengthIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetPlusLengthIsGreaterThanBufferLengthThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 1, 3));
         }
     }
 
-    @Test
-    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetPlusLengthOverflowsThrowsIndexOutOfBoundsException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToReadStringToABufferWithOffsetAndLengthWhereOffsetPlusLengthOverflowsThrowsIndexOutOfBoundsException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IndexOutOfBoundsException.class, () -> reader.read(new char[3], 1, Integer.MAX_VALUE));
         }
     }
 
-    @Test
-    void canReadStringToACharBuffer() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canReadStringToACharBuffer(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             final CharBuffer charBuffer = CharBuffer.allocate(3);
@@ -798,27 +901,30 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void stringReaderReadyReturnsFalseToBeOnTheSafeSide() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void stringReaderReadyReturnsFalseToBeOnTheSafeSide(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.ready(), equalTo(false));
         }
     }
 
-    @Test
-    void attemptingToResetAStringReaderThrowsIOException() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void attemptingToResetAStringReaderThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IOException.class, reader::reset);
         }
     }
 
-    @Test
-    void canSkipASubsetCharactersInAStringReader() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canSkipASubsetCharactersInAStringReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.skip(1), equalTo(1L));
@@ -827,9 +933,10 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void canSkipPastAllCharactersInAStringReader() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canSkipPastAllCharactersInAStringReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.skip(3), equalTo(2L));
@@ -837,9 +944,10 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void canSkipZeroCharactersInAStringReader() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canSkipZeroCharactersInAStringReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThat(reader.skip(0), equalTo(0L));
@@ -849,18 +957,20 @@ final class StajParserTest {
         }
     }
 
-    @Test
-    void rejectsNegativeSkipValueInAStringReader() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsNegativeSkipValueInAStringReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             assertThrows(IllegalArgumentException.class, () -> reader.skip(-1));
         }
     }
 
-    @Test
-    void canSkipAfterEndOfStreamInAStringReader() throws IOException {
-        final StajParser stajParser = new StajParser("\"Fo\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canSkipAfterEndOfStreamInAStringReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
         try (Reader reader = stajParser.next().reader()) {
             IOUtils.consume(reader);
@@ -870,34 +980,51 @@ final class StajParserTest {
         }
     }
 
+    static final class TestCase {
+        final String input;
+        final int expected;
+
+        static TestCase testCase(final String input, final int expected) {
+            return new TestCase(input, expected);
+        }
+
+        TestCase(String input, int expected) {
+            this.input = input;
+            this.expected = expected;
+        }
+    }
+
+    @TestFactory
+    Stream<DynamicTest>parsesValidStringWithEscapedChars() {
+        return Stream.of(
+                testCase("\"", 0x22),
+                testCase("\\", 0x5c),
+                testCase("/", 0x2f),
+                testCase("b", 0x8),
+                testCase("f", 0xc),
+                testCase("n", 0xa),
+                testCase("r", 0xd),
+                testCase("t", 0x9)
+        ).flatMap(testCase -> shims().map(shim -> dynamicTest("\\" + testCase.input + " should be parsed as character " + testCase.expected + " using " + shim, () ->
+                assertThat(shim.parse("\"\\" + testCase.input + "\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader(String.valueOf((char) testCase.expected))), NonTextJsonStreamElement.END_DOCUMENT)))));
+    }
+
     @ParameterizedTest
-    @CsvSource({
-            "\", 0x22",
-            "\\, 0x5c",
-            "/, 0x2f",
-            "b, 0x8",
-            "f, 0xc",
-            "n, 0xa",
-            "r, 0xd",
-            "t, 0x9",
-    })
-    void parsesValidStringWithEscapedChars(final String input, final int expected) {
-        assertThat(new StajParser("\"\\" + input + "\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader(String.valueOf((char)expected))), NonTextJsonStreamElement.END_DOCUMENT));
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesUnpairedUtf16Surrogate(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse("\"\\uDEAD\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader(String.valueOf('\uDEAD'))), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void parsesUnpairedUtf16Surrogate() {
-        assertThat(new StajParser("\"\\uDEAD\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader(String.valueOf('\uDEAD'))), NonTextJsonStreamElement.END_DOCUMENT));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesValidStringWithEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim) {
+        assertThat(stajParserJsonParserShim.parse("\"\\uF001\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader("\uF001")), NonTextJsonStreamElement.END_DOCUMENT));
     }
 
-    @Test
-    void parsesValidStringWithEscapedUnicodeChars() {
-        assertThat(new StajParser("\"\\uF001\""), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, string(new StringReader("\uF001")), NonTextJsonStreamElement.END_DOCUMENT));
-    }
-
-    @Test
-    void rejectsStringWithIncompleteEscapedUnicodeChars() {
-        final StajParser stajParser = new StajParser("\"\\uF0\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsStringWithIncompleteEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\uF0\"");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected 4 hexadecimal digits, but got [F, 0, \"]"));
@@ -905,9 +1032,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsStringWithPrematureEndOfStreamFollowingBackslash() {
-        final StajParser stajParser = new StajParser("\"\\");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsStringWithPrematureEndOfStreamFollowingBackslash(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but reached end of input"));
@@ -915,9 +1043,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsStringWithInvalidCharacterFollowingBackslash() {
-        final StajParser stajParser = new StajParser("\"\\a\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsStringWithInvalidCharacterFollowingBackslash(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\a\"");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but got [a]"));
@@ -925,9 +1054,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsStringWithInvalidUnprintableCharacterFollowingBackslash() {
-        final StajParser stajParser = new StajParser("\"\\\u0000\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsStringWithInvalidUnprintableCharacterFollowingBackslash(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\\u0000\"");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but got [\\u0000]"));
@@ -935,9 +1065,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsStringWithNonHexadecimalEscapedUnicodeChars() {
-        final StajParser stajParser = new StajParser("\"\\uF00L\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsStringWithNonHexadecimalEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\uF00L\"");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Unable to parse escaped character [F, 0, 0, L] as a hexadecimal number"));
@@ -945,9 +1076,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsStringWithNonHexadecimalNonPrintingEscapedUnicodeChars() {
-        final StajParser stajParser = new StajParser("\"\\uF00\u007f\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsStringWithNonHexadecimalNonPrintingEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\uF00\u007f\"");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Unable to parse escaped character [F, 0, 0, \\u007F] as a hexadecimal number"));
@@ -955,28 +1087,31 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void callingNextWhenHasNextReturnsFalseThrowsAnException() {
-        final StajParser stajParser = stajParser(array());
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void callingNextWhenHasNextReturnsFalseThrowsAnException(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(readerOf(array()));
         while (stajParser.hasNext()) {
             stajParser.next();
         }
         assertThrows(NoSuchElementException.class, stajParser::next);
     }
 
-    @Test
-    void handlesIoExceptionDuringParsing() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void handlesIoExceptionDuringParsing(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final StajParser stajParser = new StajParser(new BrokenReader(ioException));
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new BrokenReader(ioException));
         stajParser.next();
         final JsonStreamException jsonStreamException = assertThrows(JsonStreamException.class, stajParser::next);
         assertThat(jsonStreamException.getCause(), equalTo(ioException));
     }
 
-    @Test
-    void handlesIoExceptionSkippingElement() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void handlesIoExceptionSkippingElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final StajParser stajParser = new StajParser(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("["),
                 new BrokenReader(ioException)
         ));
@@ -986,9 +1121,10 @@ final class StajParserTest {
         assertThat(jsonStreamException.getCause(), sameInstance(ioException));
     }
 
-    @Test
-    void handlesRuntimeExceptionDuringParsing() {
-        final StajParser stajParser = new StajParser(new Reader() { // TODO commons-io BrokenReader ought to be made to throw RuntimeExceptions too.
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void handlesRuntimeExceptionDuringParsing(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new Reader() { // TODO commons-io BrokenReader ought to be made to throw RuntimeExceptions too.
             public int read(char[] chars, int offset, int length) {
                 throw new MyTestRuntimeException();
             }
@@ -1003,1464 +1139,1473 @@ final class StajParserTest {
     private static final class MyTestRuntimeException extends RuntimeException {
     }
 
-    @Test
-    void removeThrowsUnsupportedOperationException() {
-        final StajParser stajParser = new StajParser("null");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void removeThrowsUnsupportedOperationException(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("null");
         final UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, stajParser::remove);
         assertThat(exception.getMessage(), equalTo("StajParser cannot remove elements from JSON it has parsed"));
     }
 
+    @TestFactory
+    Stream<DynamicTest> parsesValidNumber() {
+        return Stream.of(
+                "-0",
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "-0",
+                "-0.0",
+                "-0.1",
+                "-0.2",
+                "-0.3",
+                "-0.4",
+                "-0.5",
+                "-0.6",
+                "-0.7",
+                "-0.8",
+                "-0.9",
 
-            "-0.0",
-            "-0.1",
-            "-0.2",
-            "-0.3",
-            "-0.4",
-            "-0.5",
-            "-0.6",
-            "-0.7",
-            "-0.8",
-            "-0.9",
+                "-0.00",
+                "-0.11",
+                "-0.22",
+                "-0.33",
+                "-0.44",
+                "-0.55",
+                "-0.66",
+                "-0.77",
+                "-0.88",
+                "-0.99",
 
-            "-0.00",
-            "-0.11",
-            "-0.22",
-            "-0.33",
-            "-0.44",
-            "-0.55",
-            "-0.66",
-            "-0.77",
-            "-0.88",
-            "-0.99",
+                "-0.0e+0",
+                "-0.1e+1",
+                "-0.2e+2",
+                "-0.3e+3",
+                "-0.4e+4",
+                "-0.5e+5",
+                "-0.6e+6",
+                "-0.7e+7",
+                "-0.8e+8",
+                "-0.9e+9",
+                "-0.0E+0",
+                "-0.1E+1",
+                "-0.2E+2",
+                "-0.3E+3",
+                "-0.4E+4",
+                "-0.5E+5",
+                "-0.6E+6",
+                "-0.7E+7",
+                "-0.8E+8",
+                "-0.9E+9",
+                "-0.0e+00",
+                "-0.1e+11",
+                "-0.2e+22",
+                "-0.3e+33",
+                "-0.4e+44",
+                "-0.5e+55",
+                "-0.6e+66",
+                "-0.7e+77",
+                "-0.8e+88",
+                "-0.9e+99",
+                "-0.0E+0",
+                "-0.1E+1",
+                "-0.2E+2",
+                "-0.3E+3",
+                "-0.4E+4",
+                "-0.5E+5",
+                "-0.6E+6",
+                "-0.7E+7",
+                "-0.8E+8",
+                "-0.9E+9",
 
-            "-0.0e+0",
-            "-0.1e+1",
-            "-0.2e+2",
-            "-0.3e+3",
-            "-0.4e+4",
-            "-0.5e+5",
-            "-0.6e+6",
-            "-0.7e+7",
-            "-0.8e+8",
-            "-0.9e+9",
-            "-0.0E+0",
-            "-0.1E+1",
-            "-0.2E+2",
-            "-0.3E+3",
-            "-0.4E+4",
-            "-0.5E+5",
-            "-0.6E+6",
-            "-0.7E+7",
-            "-0.8E+8",
-            "-0.9E+9",
-            "-0.0e+00",
-            "-0.1e+11",
-            "-0.2e+22",
-            "-0.3e+33",
-            "-0.4e+44",
-            "-0.5e+55",
-            "-0.6e+66",
-            "-0.7e+77",
-            "-0.8e+88",
-            "-0.9e+99",
-            "-0.0E+0",
-            "-0.1E+1",
-            "-0.2E+2",
-            "-0.3E+3",
-            "-0.4E+4",
-            "-0.5E+5",
-            "-0.6E+6",
-            "-0.7E+7",
-            "-0.8E+8",
-            "-0.9E+9",
+                "-0.0e-0",
+                "-0.1e-1",
+                "-0.2e-2",
+                "-0.3e-3",
+                "-0.4e-4",
+                "-0.5e-5",
+                "-0.6e-6",
+                "-0.7e-7",
+                "-0.8e-8",
+                "-0.9e-9",
+                "-0.0e-00",
+                "-0.1e-11",
+                "-0.2e-22",
+                "-0.3e-33",
+                "-0.4e-44",
+                "-0.5e-55",
+                "-0.6e-66",
+                "-0.7e-77",
+                "-0.8e-88",
+                "-0.9e-99",
+                "-0.0E-0",
+                "-0.1E-1",
+                "-0.2E-2",
+                "-0.3E-3",
+                "-0.4E-4",
+                "-0.5E-5",
+                "-0.6E-6",
+                "-0.7E-7",
+                "-0.8E-8",
+                "-0.9E-9",
+                "-0.0E-00",
+                "-0.1E-11",
+                "-0.2E-22",
+                "-0.3E-33",
+                "-0.4E-44",
+                "-0.5E-55",
+                "-0.6E-66",
+                "-0.7E-77",
+                "-0.8E-88",
+                "-0.9E-99",
 
-            "-0.0e-0",
-            "-0.1e-1",
-            "-0.2e-2",
-            "-0.3e-3",
-            "-0.4e-4",
-            "-0.5e-5",
-            "-0.6e-6",
-            "-0.7e-7",
-            "-0.8e-8",
-            "-0.9e-9",
-            "-0.0e-00",
-            "-0.1e-11",
-            "-0.2e-22",
-            "-0.3e-33",
-            "-0.4e-44",
-            "-0.5e-55",
-            "-0.6e-66",
-            "-0.7e-77",
-            "-0.8e-88",
-            "-0.9e-99",
-            "-0.0E-0",
-            "-0.1E-1",
-            "-0.2E-2",
-            "-0.3E-3",
-            "-0.4E-4",
-            "-0.5E-5",
-            "-0.6E-6",
-            "-0.7E-7",
-            "-0.8E-8",
-            "-0.9E-9",
-            "-0.0E-00",
-            "-0.1E-11",
-            "-0.2E-22",
-            "-0.3E-33",
-            "-0.4E-44",
-            "-0.5E-55",
-            "-0.6E-66",
-            "-0.7E-77",
-            "-0.8E-88",
-            "-0.9E-99",
+                "-0.0e0",
+                "-0.1e1",
+                "-0.2e2",
+                "-0.3e3",
+                "-0.4e4",
+                "-0.5e5",
+                "-0.6e6",
+                "-0.7e7",
+                "-0.8e8",
+                "-0.9e9",
+                "-0.0e00",
+                "-0.1e11",
+                "-0.2e22",
+                "-0.3e33",
+                "-0.4e44",
+                "-0.5e55",
+                "-0.6e66",
+                "-0.7e77",
+                "-0.8e88",
+                "-0.9e99",
+                "-0.0E0",
+                "-0.1E1",
+                "-0.2E2",
+                "-0.3E3",
+                "-0.4E4",
+                "-0.5E5",
+                "-0.6E6",
+                "-0.7E7",
+                "-0.8E8",
+                "-0.9E9",
+                "-0.0E00",
+                "-0.1E11",
+                "-0.2E22",
+                "-0.3E33",
+                "-0.4E44",
+                "-0.5E55",
+                "-0.6E66",
+                "-0.7E77",
+                "-0.8E88",
+                "-0.9E99",
 
-            "-0.0e0",
-            "-0.1e1",
-            "-0.2e2",
-            "-0.3e3",
-            "-0.4e4",
-            "-0.5e5",
-            "-0.6e6",
-            "-0.7e7",
-            "-0.8e8",
-            "-0.9e9",
-            "-0.0e00",
-            "-0.1e11",
-            "-0.2e22",
-            "-0.3e33",
-            "-0.4e44",
-            "-0.5e55",
-            "-0.6e66",
-            "-0.7e77",
-            "-0.8e88",
-            "-0.9e99",
-            "-0.0E0",
-            "-0.1E1",
-            "-0.2E2",
-            "-0.3E3",
-            "-0.4E4",
-            "-0.5E5",
-            "-0.6E6",
-            "-0.7E7",
-            "-0.8E8",
-            "-0.9E9",
-            "-0.0E00",
-            "-0.1E11",
-            "-0.2E22",
-            "-0.3E33",
-            "-0.4E44",
-            "-0.5E55",
-            "-0.6E66",
-            "-0.7E77",
-            "-0.8E88",
-            "-0.9E99",
+                "-1.0",
+                "-1.1",
+                "-1.2",
+                "-1.3",
+                "-1.4",
+                "-1.5",
+                "-1.6",
+                "-1.7",
+                "-1.8",
+                "-1.9",
 
-            "-1.0",
-            "-1.1",
-            "-1.2",
-            "-1.3",
-            "-1.4",
-            "-1.5",
-            "-1.6",
-            "-1.7",
-            "-1.8",
-            "-1.9",
+                "-1.00",
+                "-1.11",
+                "-1.22",
+                "-1.33",
+                "-1.44",
+                "-1.55",
+                "-1.66",
+                "-1.77",
+                "-1.88",
+                "-1.99",
 
-            "-1.00",
-            "-1.11",
-            "-1.22",
-            "-1.33",
-            "-1.44",
-            "-1.55",
-            "-1.66",
-            "-1.77",
-            "-1.88",
-            "-1.99",
+                "-1.0e+0",
+                "-1.1e+1",
+                "-1.2e+2",
+                "-1.3e+3",
+                "-1.4e+4",
+                "-1.5e+5",
+                "-1.6e+6",
+                "-1.7e+7",
+                "-1.8e+8",
+                "-1.9e+9",
+                "-1.0E+0",
+                "-1.1E+1",
+                "-1.2E+2",
+                "-1.3E+3",
+                "-1.4E+4",
+                "-1.5E+5",
+                "-1.6E+6",
+                "-1.7E+7",
+                "-1.8E+8",
+                "-1.9E+9",
+                "-1.0e+00",
+                "-1.1e+11",
+                "-1.2e+22",
+                "-1.3e+33",
+                "-1.4e+44",
+                "-1.5e+55",
+                "-1.6e+66",
+                "-1.7e+77",
+                "-1.8e+88",
+                "-1.9e+99",
+                "-1.0E+0",
+                "-1.1E+1",
+                "-1.2E+2",
+                "-1.3E+3",
+                "-1.4E+4",
+                "-1.5E+5",
+                "-1.6E+6",
+                "-1.7E+7",
+                "-1.8E+8",
+                "-1.9E+9",
 
-            "-1.0e+0",
-            "-1.1e+1",
-            "-1.2e+2",
-            "-1.3e+3",
-            "-1.4e+4",
-            "-1.5e+5",
-            "-1.6e+6",
-            "-1.7e+7",
-            "-1.8e+8",
-            "-1.9e+9",
-            "-1.0E+0",
-            "-1.1E+1",
-            "-1.2E+2",
-            "-1.3E+3",
-            "-1.4E+4",
-            "-1.5E+5",
-            "-1.6E+6",
-            "-1.7E+7",
-            "-1.8E+8",
-            "-1.9E+9",
-            "-1.0e+00",
-            "-1.1e+11",
-            "-1.2e+22",
-            "-1.3e+33",
-            "-1.4e+44",
-            "-1.5e+55",
-            "-1.6e+66",
-            "-1.7e+77",
-            "-1.8e+88",
-            "-1.9e+99",
-            "-1.0E+0",
-            "-1.1E+1",
-            "-1.2E+2",
-            "-1.3E+3",
-            "-1.4E+4",
-            "-1.5E+5",
-            "-1.6E+6",
-            "-1.7E+7",
-            "-1.8E+8",
-            "-1.9E+9",
+                "-1.0e-0",
+                "-1.1e-1",
+                "-1.2e-2",
+                "-1.3e-3",
+                "-1.4e-4",
+                "-1.5e-5",
+                "-1.6e-6",
+                "-1.7e-7",
+                "-1.8e-8",
+                "-1.9e-9",
+                "-1.0e-00",
+                "-1.1e-11",
+                "-1.2e-22",
+                "-1.3e-33",
+                "-1.4e-44",
+                "-1.5e-55",
+                "-1.6e-66",
+                "-1.7e-77",
+                "-1.8e-88",
+                "-1.9e-99",
+                "-1.0E-0",
+                "-1.1E-1",
+                "-1.2E-2",
+                "-1.3E-3",
+                "-1.4E-4",
+                "-1.5E-5",
+                "-1.6E-6",
+                "-1.7E-7",
+                "-1.8E-8",
+                "-1.9E-9",
+                "-1.0E-00",
+                "-1.1E-11",
+                "-1.2E-22",
+                "-1.3E-33",
+                "-1.4E-44",
+                "-1.5E-55",
+                "-1.6E-66",
+                "-1.7E-77",
+                "-1.8E-88",
+                "-1.9E-99",
 
-            "-1.0e-0",
-            "-1.1e-1",
-            "-1.2e-2",
-            "-1.3e-3",
-            "-1.4e-4",
-            "-1.5e-5",
-            "-1.6e-6",
-            "-1.7e-7",
-            "-1.8e-8",
-            "-1.9e-9",
-            "-1.0e-00",
-            "-1.1e-11",
-            "-1.2e-22",
-            "-1.3e-33",
-            "-1.4e-44",
-            "-1.5e-55",
-            "-1.6e-66",
-            "-1.7e-77",
-            "-1.8e-88",
-            "-1.9e-99",
-            "-1.0E-0",
-            "-1.1E-1",
-            "-1.2E-2",
-            "-1.3E-3",
-            "-1.4E-4",
-            "-1.5E-5",
-            "-1.6E-6",
-            "-1.7E-7",
-            "-1.8E-8",
-            "-1.9E-9",
-            "-1.0E-00",
-            "-1.1E-11",
-            "-1.2E-22",
-            "-1.3E-33",
-            "-1.4E-44",
-            "-1.5E-55",
-            "-1.6E-66",
-            "-1.7E-77",
-            "-1.8E-88",
-            "-1.9E-99",
+                "-1.0e0",
+                "-1.1e1",
+                "-1.2e2",
+                "-1.3e3",
+                "-1.4e4",
+                "-1.5e5",
+                "-1.6e6",
+                "-1.7e7",
+                "-1.8e8",
+                "-1.9e9",
+                "-1.0e00",
+                "-1.1e11",
+                "-1.2e22",
+                "-1.3e33",
+                "-1.4e44",
+                "-1.5e55",
+                "-1.6e66",
+                "-1.7e77",
+                "-1.8e88",
+                "-1.9e99",
+                "-1.0E0",
+                "-1.1E1",
+                "-1.2E2",
+                "-1.3E3",
+                "-1.4E4",
+                "-1.5E5",
+                "-1.6E6",
+                "-1.7E7",
+                "-1.8E8",
+                "-1.9E9",
+                "-1.0E00",
+                "-1.1E11",
+                "-1.2E22",
+                "-1.3E33",
+                "-1.4E44",
+                "-1.5E55",
+                "-1.6E66",
+                "-1.7E77",
+                "-1.8E88",
+                "-1.9E99",
 
-            "-1.0e0",
-            "-1.1e1",
-            "-1.2e2",
-            "-1.3e3",
-            "-1.4e4",
-            "-1.5e5",
-            "-1.6e6",
-            "-1.7e7",
-            "-1.8e8",
-            "-1.9e9",
-            "-1.0e00",
-            "-1.1e11",
-            "-1.2e22",
-            "-1.3e33",
-            "-1.4e44",
-            "-1.5e55",
-            "-1.6e66",
-            "-1.7e77",
-            "-1.8e88",
-            "-1.9e99",
-            "-1.0E0",
-            "-1.1E1",
-            "-1.2E2",
-            "-1.3E3",
-            "-1.4E4",
-            "-1.5E5",
-            "-1.6E6",
-            "-1.7E7",
-            "-1.8E8",
-            "-1.9E9",
-            "-1.0E00",
-            "-1.1E11",
-            "-1.2E22",
-            "-1.3E33",
-            "-1.4E44",
-            "-1.5E55",
-            "-1.6E66",
-            "-1.7E77",
-            "-1.8E88",
-            "-1.9E99",
+                "-0",
+                "-1",
+                "-2",
+                "-3",
+                "-4",
+                "-5",
+                "-6",
+                "-7",
+                "-8",
+                "-9",
 
-            "-0",
-            "-1",
-            "-2",
-            "-3",
-            "-4",
-            "-5",
-            "-6",
-            "-7",
-            "-8",
-            "-9",
+                "-11",
+                "-22",
+                "-33",
+                "-44",
+                "-55",
+                "-66",
+                "-77",
+                "-88",
+                "-99",
 
-            "-11",
-            "-22",
-            "-33",
-            "-44",
-            "-55",
-            "-66",
-            "-77",
-            "-88",
-            "-99",
+                "-0e+0",
+                "-1e+1",
+                "-2e+2",
+                "-3e+3",
+                "-4e+4",
+                "-5e+5",
+                "-6e+6",
+                "-7e+7",
+                "-8e+8",
+                "-9e+9",
+                "-0E+0",
+                "-1E+1",
+                "-2E+2",
+                "-3E+3",
+                "-4E+4",
+                "-5E+5",
+                "-6E+6",
+                "-7E+7",
+                "-8E+8",
+                "-9E+9",
+                "-0e+00",
+                "-1e+11",
+                "-2e+22",
+                "-3e+33",
+                "-4e+44",
+                "-5e+55",
+                "-6e+66",
+                "-7e+77",
+                "-8e+88",
+                "-9e+99",
+                "-0E+0",
+                "-1E+1",
+                "-2E+2",
+                "-3E+3",
+                "-4E+4",
+                "-5E+5",
+                "-6E+6",
+                "-7E+7",
+                "-8E+8",
+                "-9E+9",
 
-            "-0e+0",
-            "-1e+1",
-            "-2e+2",
-            "-3e+3",
-            "-4e+4",
-            "-5e+5",
-            "-6e+6",
-            "-7e+7",
-            "-8e+8",
-            "-9e+9",
-            "-0E+0",
-            "-1E+1",
-            "-2E+2",
-            "-3E+3",
-            "-4E+4",
-            "-5E+5",
-            "-6E+6",
-            "-7E+7",
-            "-8E+8",
-            "-9E+9",
-            "-0e+00",
-            "-1e+11",
-            "-2e+22",
-            "-3e+33",
-            "-4e+44",
-            "-5e+55",
-            "-6e+66",
-            "-7e+77",
-            "-8e+88",
-            "-9e+99",
-            "-0E+0",
-            "-1E+1",
-            "-2E+2",
-            "-3E+3",
-            "-4E+4",
-            "-5E+5",
-            "-6E+6",
-            "-7E+7",
-            "-8E+8",
-            "-9E+9",
+                "-0e-0",
+                "-1e-1",
+                "-2e-2",
+                "-3e-3",
+                "-4e-4",
+                "-5e-5",
+                "-6e-6",
+                "-7e-7",
+                "-8e-8",
+                "-9e-9",
+                "-0e-00",
+                "-1e-11",
+                "-2e-22",
+                "-3e-33",
+                "-4e-44",
+                "-5e-55",
+                "-6e-66",
+                "-7e-77",
+                "-8e-88",
+                "-9e-99",
+                "-0E-0",
+                "-1E-1",
+                "-2E-2",
+                "-3E-3",
+                "-4E-4",
+                "-5E-5",
+                "-6E-6",
+                "-7E-7",
+                "-8E-8",
+                "-9E-9",
+                "-0E-00",
+                "-1E-11",
+                "-2E-22",
+                "-3E-33",
+                "-4E-44",
+                "-5E-55",
+                "-6E-66",
+                "-7E-77",
+                "-8E-88",
+                "-9E-99",
 
-            "-0e-0",
-            "-1e-1",
-            "-2e-2",
-            "-3e-3",
-            "-4e-4",
-            "-5e-5",
-            "-6e-6",
-            "-7e-7",
-            "-8e-8",
-            "-9e-9",
-            "-0e-00",
-            "-1e-11",
-            "-2e-22",
-            "-3e-33",
-            "-4e-44",
-            "-5e-55",
-            "-6e-66",
-            "-7e-77",
-            "-8e-88",
-            "-9e-99",
-            "-0E-0",
-            "-1E-1",
-            "-2E-2",
-            "-3E-3",
-            "-4E-4",
-            "-5E-5",
-            "-6E-6",
-            "-7E-7",
-            "-8E-8",
-            "-9E-9",
-            "-0E-00",
-            "-1E-11",
-            "-2E-22",
-            "-3E-33",
-            "-4E-44",
-            "-5E-55",
-            "-6E-66",
-            "-7E-77",
-            "-8E-88",
-            "-9E-99",
+                "-0e0",
+                "-1e1",
+                "-2e2",
+                "-3e3",
+                "-4e4",
+                "-5e5",
+                "-6e6",
+                "-7e7",
+                "-8e8",
+                "-9e9",
+                "-0e00",
+                "-1e11",
+                "-2e22",
+                "-3e33",
+                "-4e44",
+                "-5e55",
+                "-6e66",
+                "-7e77",
+                "-8e88",
+                "-9e99",
+                "-0E0",
+                "-1E1",
+                "-2E2",
+                "-3E3",
+                "-4E4",
+                "-5E5",
+                "-6E6",
+                "-7E7",
+                "-8E8",
+                "-9E9",
+                "-0E00",
+                "-1E11",
+                "-2E22",
+                "-3E33",
+                "-4E44",
+                "-5E55",
+                "-6E66",
+                "-7E77",
+                "-8E88",
+                "-9E99",
 
-            "-0e0",
-            "-1e1",
-            "-2e2",
-            "-3e3",
-            "-4e4",
-            "-5e5",
-            "-6e6",
-            "-7e7",
-            "-8e8",
-            "-9e9",
-            "-0e00",
-            "-1e11",
-            "-2e22",
-            "-3e33",
-            "-4e44",
-            "-5e55",
-            "-6e66",
-            "-7e77",
-            "-8e88",
-            "-9e99",
-            "-0E0",
-            "-1E1",
-            "-2E2",
-            "-3E3",
-            "-4E4",
-            "-5E5",
-            "-6E6",
-            "-7E7",
-            "-8E8",
-            "-9E9",
-            "-0E00",
-            "-1E11",
-            "-2E22",
-            "-3E33",
-            "-4E44",
-            "-5E55",
-            "-6E66",
-            "-7E77",
-            "-8E88",
-            "-9E99",
+                "0",
 
-            "0",
+                "0.0",
+                "0.1",
+                "0.2",
+                "0.3",
+                "0.4",
+                "0.5",
+                "0.6",
+                "0.7",
+                "0.8",
+                "0.9",
 
-            "0.0",
-            "0.1",
-            "0.2",
-            "0.3",
-            "0.4",
-            "0.5",
-            "0.6",
-            "0.7",
-            "0.8",
-            "0.9",
+                "0.00",
+                "0.11",
+                "0.22",
+                "0.33",
+                "0.44",
+                "0.55",
+                "0.66",
+                "0.77",
+                "0.88",
+                "0.99",
 
-            "0.00",
-            "0.11",
-            "0.22",
-            "0.33",
-            "0.44",
-            "0.55",
-            "0.66",
-            "0.77",
-            "0.88",
-            "0.99",
+                "0.0e+0",
+                "0.1e+1",
+                "0.2e+2",
+                "0.3e+3",
+                "0.4e+4",
+                "0.5e+5",
+                "0.6e+6",
+                "0.7e+7",
+                "0.8e+8",
+                "0.9e+9",
+                "0.0E+0",
+                "0.1E+1",
+                "0.2E+2",
+                "0.3E+3",
+                "0.4E+4",
+                "0.5E+5",
+                "0.6E+6",
+                "0.7E+7",
+                "0.8E+8",
+                "0.9E+9",
+                "0.0e+00",
+                "0.1e+11",
+                "0.2e+22",
+                "0.3e+33",
+                "0.4e+44",
+                "0.5e+55",
+                "0.6e+66",
+                "0.7e+77",
+                "0.8e+88",
+                "0.9e+99",
+                "0.0E+0",
+                "0.1E+1",
+                "0.2E+2",
+                "0.3E+3",
+                "0.4E+4",
+                "0.5E+5",
+                "0.6E+6",
+                "0.7E+7",
+                "0.8E+8",
+                "0.9E+9",
 
-            "0.0e+0",
-            "0.1e+1",
-            "0.2e+2",
-            "0.3e+3",
-            "0.4e+4",
-            "0.5e+5",
-            "0.6e+6",
-            "0.7e+7",
-            "0.8e+8",
-            "0.9e+9",
-            "0.0E+0",
-            "0.1E+1",
-            "0.2E+2",
-            "0.3E+3",
-            "0.4E+4",
-            "0.5E+5",
-            "0.6E+6",
-            "0.7E+7",
-            "0.8E+8",
-            "0.9E+9",
-            "0.0e+00",
-            "0.1e+11",
-            "0.2e+22",
-            "0.3e+33",
-            "0.4e+44",
-            "0.5e+55",
-            "0.6e+66",
-            "0.7e+77",
-            "0.8e+88",
-            "0.9e+99",
-            "0.0E+0",
-            "0.1E+1",
-            "0.2E+2",
-            "0.3E+3",
-            "0.4E+4",
-            "0.5E+5",
-            "0.6E+6",
-            "0.7E+7",
-            "0.8E+8",
-            "0.9E+9",
+                "0.0e-0",
+                "0.1e-1",
+                "0.2e-2",
+                "0.3e-3",
+                "0.4e-4",
+                "0.5e-5",
+                "0.6e-6",
+                "0.7e-7",
+                "0.8e-8",
+                "0.9e-9",
+                "0.0e-00",
+                "0.1e-11",
+                "0.2e-22",
+                "0.3e-33",
+                "0.4e-44",
+                "0.5e-55",
+                "0.6e-66",
+                "0.7e-77",
+                "0.8e-88",
+                "0.9e-99",
+                "0.0E-0",
+                "0.1E-1",
+                "0.2E-2",
+                "0.3E-3",
+                "0.4E-4",
+                "0.5E-5",
+                "0.6E-6",
+                "0.7E-7",
+                "0.8E-8",
+                "0.9E-9",
+                "0.0E-00",
+                "0.1E-11",
+                "0.2E-22",
+                "0.3E-33",
+                "0.4E-44",
+                "0.5E-55",
+                "0.6E-66",
+                "0.7E-77",
+                "0.8E-88",
+                "0.9E-99",
 
-            "0.0e-0",
-            "0.1e-1",
-            "0.2e-2",
-            "0.3e-3",
-            "0.4e-4",
-            "0.5e-5",
-            "0.6e-6",
-            "0.7e-7",
-            "0.8e-8",
-            "0.9e-9",
-            "0.0e-00",
-            "0.1e-11",
-            "0.2e-22",
-            "0.3e-33",
-            "0.4e-44",
-            "0.5e-55",
-            "0.6e-66",
-            "0.7e-77",
-            "0.8e-88",
-            "0.9e-99",
-            "0.0E-0",
-            "0.1E-1",
-            "0.2E-2",
-            "0.3E-3",
-            "0.4E-4",
-            "0.5E-5",
-            "0.6E-6",
-            "0.7E-7",
-            "0.8E-8",
-            "0.9E-9",
-            "0.0E-00",
-            "0.1E-11",
-            "0.2E-22",
-            "0.3E-33",
-            "0.4E-44",
-            "0.5E-55",
-            "0.6E-66",
-            "0.7E-77",
-            "0.8E-88",
-            "0.9E-99",
+                "0.0e0",
+                "0.1e1",
+                "0.2e2",
+                "0.3e3",
+                "0.4e4",
+                "0.5e5",
+                "0.6e6",
+                "0.7e7",
+                "0.8e8",
+                "0.9e9",
+                "0.0e00",
+                "0.1e11",
+                "0.2e22",
+                "0.3e33",
+                "0.4e44",
+                "0.5e55",
+                "0.6e66",
+                "0.7e77",
+                "0.8e88",
+                "0.9e99",
+                "0.0E0",
+                "0.1E1",
+                "0.2E2",
+                "0.3E3",
+                "0.4E4",
+                "0.5E5",
+                "0.6E6",
+                "0.7E7",
+                "0.8E8",
+                "0.9E9",
+                "0.0E00",
+                "0.1E11",
+                "0.2E22",
+                "0.3E33",
+                "0.4E44",
+                "0.5E55",
+                "0.6E66",
+                "0.7E77",
+                "0.8E88",
+                "0.9E99",
 
-            "0.0e0",
-            "0.1e1",
-            "0.2e2",
-            "0.3e3",
-            "0.4e4",
-            "0.5e5",
-            "0.6e6",
-            "0.7e7",
-            "0.8e8",
-            "0.9e9",
-            "0.0e00",
-            "0.1e11",
-            "0.2e22",
-            "0.3e33",
-            "0.4e44",
-            "0.5e55",
-            "0.6e66",
-            "0.7e77",
-            "0.8e88",
-            "0.9e99",
-            "0.0E0",
-            "0.1E1",
-            "0.2E2",
-            "0.3E3",
-            "0.4E4",
-            "0.5E5",
-            "0.6E6",
-            "0.7E7",
-            "0.8E8",
-            "0.9E9",
-            "0.0E00",
-            "0.1E11",
-            "0.2E22",
-            "0.3E33",
-            "0.4E44",
-            "0.5E55",
-            "0.6E66",
-            "0.7E77",
-            "0.8E88",
-            "0.9E99",
+                "1.0",
+                "1.1",
+                "1.2",
+                "1.3",
+                "1.4",
+                "1.5",
+                "1.6",
+                "1.7",
+                "1.8",
+                "1.9",
 
-            "1.0",
-            "1.1",
-            "1.2",
-            "1.3",
-            "1.4",
-            "1.5",
-            "1.6",
-            "1.7",
-            "1.8",
-            "1.9",
+                "1.00",
+                "1.11",
+                "1.22",
+                "1.33",
+                "1.44",
+                "1.55",
+                "1.66",
+                "1.77",
+                "1.88",
+                "1.99",
 
-            "1.00",
-            "1.11",
-            "1.22",
-            "1.33",
-            "1.44",
-            "1.55",
-            "1.66",
-            "1.77",
-            "1.88",
-            "1.99",
+                "1.0e+0",
+                "1.1e+1",
+                "1.2e+2",
+                "1.3e+3",
+                "1.4e+4",
+                "1.5e+5",
+                "1.6e+6",
+                "1.7e+7",
+                "1.8e+8",
+                "1.9e+9",
+                "1.0E+0",
+                "1.1E+1",
+                "1.2E+2",
+                "1.3E+3",
+                "1.4E+4",
+                "1.5E+5",
+                "1.6E+6",
+                "1.7E+7",
+                "1.8E+8",
+                "1.9E+9",
+                "1.0e+00",
+                "1.1e+11",
+                "1.2e+22",
+                "1.3e+33",
+                "1.4e+44",
+                "1.5e+55",
+                "1.6e+66",
+                "1.7e+77",
+                "1.8e+88",
+                "1.9e+99",
+                "1.0E+0",
+                "1.1E+1",
+                "1.2E+2",
+                "1.3E+3",
+                "1.4E+4",
+                "1.5E+5",
+                "1.6E+6",
+                "1.7E+7",
+                "1.8E+8",
+                "1.9E+9",
 
-            "1.0e+0",
-            "1.1e+1",
-            "1.2e+2",
-            "1.3e+3",
-            "1.4e+4",
-            "1.5e+5",
-            "1.6e+6",
-            "1.7e+7",
-            "1.8e+8",
-            "1.9e+9",
-            "1.0E+0",
-            "1.1E+1",
-            "1.2E+2",
-            "1.3E+3",
-            "1.4E+4",
-            "1.5E+5",
-            "1.6E+6",
-            "1.7E+7",
-            "1.8E+8",
-            "1.9E+9",
-            "1.0e+00",
-            "1.1e+11",
-            "1.2e+22",
-            "1.3e+33",
-            "1.4e+44",
-            "1.5e+55",
-            "1.6e+66",
-            "1.7e+77",
-            "1.8e+88",
-            "1.9e+99",
-            "1.0E+0",
-            "1.1E+1",
-            "1.2E+2",
-            "1.3E+3",
-            "1.4E+4",
-            "1.5E+5",
-            "1.6E+6",
-            "1.7E+7",
-            "1.8E+8",
-            "1.9E+9",
+                "1.0e-0",
+                "1.1e-1",
+                "1.2e-2",
+                "1.3e-3",
+                "1.4e-4",
+                "1.5e-5",
+                "1.6e-6",
+                "1.7e-7",
+                "1.8e-8",
+                "1.9e-9",
+                "1.0e-00",
+                "1.1e-11",
+                "1.2e-22",
+                "1.3e-33",
+                "1.4e-44",
+                "1.5e-55",
+                "1.6e-66",
+                "1.7e-77",
+                "1.8e-88",
+                "1.9e-99",
+                "1.0E-0",
+                "1.1E-1",
+                "1.2E-2",
+                "1.3E-3",
+                "1.4E-4",
+                "1.5E-5",
+                "1.6E-6",
+                "1.7E-7",
+                "1.8E-8",
+                "1.9E-9",
+                "1.0E-00",
+                "1.1E-11",
+                "1.2E-22",
+                "1.3E-33",
+                "1.4E-44",
+                "1.5E-55",
+                "1.6E-66",
+                "1.7E-77",
+                "1.8E-88",
+                "1.9E-99",
 
-            "1.0e-0",
-            "1.1e-1",
-            "1.2e-2",
-            "1.3e-3",
-            "1.4e-4",
-            "1.5e-5",
-            "1.6e-6",
-            "1.7e-7",
-            "1.8e-8",
-            "1.9e-9",
-            "1.0e-00",
-            "1.1e-11",
-            "1.2e-22",
-            "1.3e-33",
-            "1.4e-44",
-            "1.5e-55",
-            "1.6e-66",
-            "1.7e-77",
-            "1.8e-88",
-            "1.9e-99",
-            "1.0E-0",
-            "1.1E-1",
-            "1.2E-2",
-            "1.3E-3",
-            "1.4E-4",
-            "1.5E-5",
-            "1.6E-6",
-            "1.7E-7",
-            "1.8E-8",
-            "1.9E-9",
-            "1.0E-00",
-            "1.1E-11",
-            "1.2E-22",
-            "1.3E-33",
-            "1.4E-44",
-            "1.5E-55",
-            "1.6E-66",
-            "1.7E-77",
-            "1.8E-88",
-            "1.9E-99",
+                "1.0e0",
+                "1.1e1",
+                "1.2e2",
+                "1.3e3",
+                "1.4e4",
+                "1.5e5",
+                "1.6e6",
+                "1.7e7",
+                "1.8e8",
+                "1.9e9",
+                "1.0e00",
+                "1.1e11",
+                "1.2e22",
+                "1.3e33",
+                "1.4e44",
+                "1.5e55",
+                "1.6e66",
+                "1.7e77",
+                "1.8e88",
+                "1.9e99",
+                "1.0E0",
+                "1.1E1",
+                "1.2E2",
+                "1.3E3",
+                "1.4E4",
+                "1.5E5",
+                "1.6E6",
+                "1.7E7",
+                "1.8E8",
+                "1.9E9",
+                "1.0E00",
+                "1.1E11",
+                "1.2E22",
+                "1.3E33",
+                "1.4E44",
+                "1.5E55",
+                "1.6E66",
+                "1.7E77",
+                "1.8E88",
+                "1.9E99",
 
-            "1.0e0",
-            "1.1e1",
-            "1.2e2",
-            "1.3e3",
-            "1.4e4",
-            "1.5e5",
-            "1.6e6",
-            "1.7e7",
-            "1.8e8",
-            "1.9e9",
-            "1.0e00",
-            "1.1e11",
-            "1.2e22",
-            "1.3e33",
-            "1.4e44",
-            "1.5e55",
-            "1.6e66",
-            "1.7e77",
-            "1.8e88",
-            "1.9e99",
-            "1.0E0",
-            "1.1E1",
-            "1.2E2",
-            "1.3E3",
-            "1.4E4",
-            "1.5E5",
-            "1.6E6",
-            "1.7E7",
-            "1.8E8",
-            "1.9E9",
-            "1.0E00",
-            "1.1E11",
-            "1.2E22",
-            "1.3E33",
-            "1.4E44",
-            "1.5E55",
-            "1.6E66",
-            "1.7E77",
-            "1.8E88",
-            "1.9E99",
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
 
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
+                "11",
+                "22",
+                "33",
+                "44",
+                "55",
+                "66",
+                "77",
+                "88",
+                "99",
 
-            "11",
-            "22",
-            "33",
-            "44",
-            "55",
-            "66",
-            "77",
-            "88",
-            "99",
+                "0e+0",
+                "1e+1",
+                "2e+2",
+                "3e+3",
+                "4e+4",
+                "5e+5",
+                "6e+6",
+                "7e+7",
+                "8e+8",
+                "9e+9",
+                "0E+0",
+                "1E+1",
+                "2E+2",
+                "3E+3",
+                "4E+4",
+                "5E+5",
+                "6E+6",
+                "7E+7",
+                "8E+8",
+                "9E+9",
+                "0e+00",
+                "1e+11",
+                "2e+22",
+                "3e+33",
+                "4e+44",
+                "5e+55",
+                "6e+66",
+                "7e+77",
+                "8e+88",
+                "9e+99",
+                "0E+0",
+                "1E+1",
+                "2E+2",
+                "3E+3",
+                "4E+4",
+                "5E+5",
+                "6E+6",
+                "7E+7",
+                "8E+8",
+                "9E+9",
 
-            "0e+0",
-            "1e+1",
-            "2e+2",
-            "3e+3",
-            "4e+4",
-            "5e+5",
-            "6e+6",
-            "7e+7",
-            "8e+8",
-            "9e+9",
-            "0E+0",
-            "1E+1",
-            "2E+2",
-            "3E+3",
-            "4E+4",
-            "5E+5",
-            "6E+6",
-            "7E+7",
-            "8E+8",
-            "9E+9",
-            "0e+00",
-            "1e+11",
-            "2e+22",
-            "3e+33",
-            "4e+44",
-            "5e+55",
-            "6e+66",
-            "7e+77",
-            "8e+88",
-            "9e+99",
-            "0E+0",
-            "1E+1",
-            "2E+2",
-            "3E+3",
-            "4E+4",
-            "5E+5",
-            "6E+6",
-            "7E+7",
-            "8E+8",
-            "9E+9",
+                "0e-0",
+                "1e-1",
+                "2e-2",
+                "3e-3",
+                "4e-4",
+                "5e-5",
+                "6e-6",
+                "7e-7",
+                "8e-8",
+                "9e-9",
+                "0e-00",
+                "1e-11",
+                "2e-22",
+                "3e-33",
+                "4e-44",
+                "5e-55",
+                "6e-66",
+                "7e-77",
+                "8e-88",
+                "9e-99",
+                "0E-0",
+                "1E-1",
+                "2E-2",
+                "3E-3",
+                "4E-4",
+                "5E-5",
+                "6E-6",
+                "7E-7",
+                "8E-8",
+                "9E-9",
+                "0E-00",
+                "1E-11",
+                "2E-22",
+                "3E-33",
+                "4E-44",
+                "5E-55",
+                "6E-66",
+                "7E-77",
+                "8E-88",
+                "9E-99",
 
-            "0e-0",
-            "1e-1",
-            "2e-2",
-            "3e-3",
-            "4e-4",
-            "5e-5",
-            "6e-6",
-            "7e-7",
-            "8e-8",
-            "9e-9",
-            "0e-00",
-            "1e-11",
-            "2e-22",
-            "3e-33",
-            "4e-44",
-            "5e-55",
-            "6e-66",
-            "7e-77",
-            "8e-88",
-            "9e-99",
-            "0E-0",
-            "1E-1",
-            "2E-2",
-            "3E-3",
-            "4E-4",
-            "5E-5",
-            "6E-6",
-            "7E-7",
-            "8E-8",
-            "9E-9",
-            "0E-00",
-            "1E-11",
-            "2E-22",
-            "3E-33",
-            "4E-44",
-            "5E-55",
-            "6E-66",
-            "7E-77",
-            "8E-88",
-            "9E-99",
-
-            "0e0",
-            "1e1",
-            "2e2",
-            "3e3",
-            "4e4",
-            "5e5",
-            "6e6",
-            "7e7",
-            "8e8",
-            "9e9",
-            "0e00",
-            "1e11",
-            "2e22",
-            "3e33",
-            "4e44",
-            "5e55",
-            "6e66",
-            "7e77",
-            "8e88",
-            "9e99",
-            "0E0",
-            "1E1",
-            "2E2",
-            "3E3",
-            "4E4",
-            "5E5",
-            "6E6",
-            "7E7",
-            "8E8",
-            "9E9",
-            "0E00",
-            "1E11",
-            "2E22",
-            "3E33",
-            "4E44",
-            "5E55",
-            "6E66",
-            "7E77",
-            "8E88",
-            "9E99",
-    })
-    void parsesValidNumber(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        assertThat(stajParser, generatesElements(NonTextJsonStreamElement.START_DOCUMENT, number(new StringReader(numberString)), NonTextJsonStreamElement.END_DOCUMENT));
+                "0e0",
+                "1e1",
+                "2e2",
+                "3e3",
+                "4e4",
+                "5e5",
+                "6e6",
+                "7e7",
+                "8e8",
+                "9e9",
+                "0e00",
+                "1e11",
+                "2e22",
+                "3e33",
+                "4e44",
+                "5e55",
+                "6e66",
+                "7e77",
+                "8e88",
+                "9e99",
+                "0E0",
+                "1E1",
+                "2E2",
+                "3E3",
+                "4E4",
+                "5E5",
+                "6E6",
+                "7E7",
+                "8E8",
+                "9E9",
+                "0E00",
+                "1E11",
+                "2E22",
+                "3E33",
+                "4E44",
+                "5E55",
+                "6E66",
+                "7E77",
+                "8E88",
+                "9E99"
+        ).flatMap(numberString -> shims().map(shim -> dynamicTest(numberString + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(numberString);
+            assertThat(stajParser, generatesElements(NonTextJsonStreamElement.START_DOCUMENT, number(new StringReader(numberString)), NonTextJsonStreamElement.END_DOCUMENT));
+        })));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "-0.0e+",
-            "-0.1e+",
-            "-0.2e+",
-            "-0.3e+",
-            "-0.4e+",
-            "-0.5e+",
-            "-0.6e+",
-            "-0.7e+",
-            "-0.8e+",
-            "-0.9e+",
-            "-0.0E+",
-            "-0.1E+",
-            "-0.2E+",
-            "-0.3E+",
-            "-0.4E+",
-            "-0.5E+",
-            "-0.6E+",
-            "-0.7E+",
-            "-0.8E+",
-            "-0.9E+",
+    @TestFactory
+    Stream<DynamicTest> rejectsIncompleteNumberWhenDigitIsExpected() {
+        return Stream.of(
+                "-0.0e+",
+                "-0.1e+",
+                "-0.2e+",
+                "-0.3e+",
+                "-0.4e+",
+                "-0.5e+",
+                "-0.6e+",
+                "-0.7e+",
+                "-0.8e+",
+                "-0.9e+",
+                "-0.0E+",
+                "-0.1E+",
+                "-0.2E+",
+                "-0.3E+",
+                "-0.4E+",
+                "-0.5E+",
+                "-0.6E+",
+                "-0.7E+",
+                "-0.8E+",
+                "-0.9E+",
 
-            "-0.0e-",
-            "-0.1e-",
-            "-0.2e-",
-            "-0.3e-",
-            "-0.4e-",
-            "-0.5e-",
-            "-0.6e-",
-            "-0.7e-",
-            "-0.8e-",
-            "-0.9e-",
-            "-0.0E-",
-            "-0.1E-",
-            "-0.2E-",
-            "-0.3E-",
-            "-0.4E-",
-            "-0.5E-",
-            "-0.6E-",
-            "-0.7E-",
-            "-0.8E-",
-            "-0.9E-",
+                "-0.0e-",
+                "-0.1e-",
+                "-0.2e-",
+                "-0.3e-",
+                "-0.4e-",
+                "-0.5e-",
+                "-0.6e-",
+                "-0.7e-",
+                "-0.8e-",
+                "-0.9e-",
+                "-0.0E-",
+                "-0.1E-",
+                "-0.2E-",
+                "-0.3E-",
+                "-0.4E-",
+                "-0.5E-",
+                "-0.6E-",
+                "-0.7E-",
+                "-0.8E-",
+                "-0.9E-",
 
-            "-0.",
+                "-0.",
 
-            "-1.0e+",
-            "-1.1e+",
-            "-1.2e+",
-            "-1.3e+",
-            "-1.4e+",
-            "-1.5e+",
-            "-1.6e+",
-            "-1.7e+",
-            "-1.8e+",
-            "-1.9e+",
-            "-1.0E+",
-            "-1.1E+",
-            "-1.2E+",
-            "-1.3E+",
-            "-1.4E+",
-            "-1.5E+",
-            "-1.6E+",
-            "-1.7E+",
-            "-1.8E+",
-            "-1.9E+",
+                "-1.0e+",
+                "-1.1e+",
+                "-1.2e+",
+                "-1.3e+",
+                "-1.4e+",
+                "-1.5e+",
+                "-1.6e+",
+                "-1.7e+",
+                "-1.8e+",
+                "-1.9e+",
+                "-1.0E+",
+                "-1.1E+",
+                "-1.2E+",
+                "-1.3E+",
+                "-1.4E+",
+                "-1.5E+",
+                "-1.6E+",
+                "-1.7E+",
+                "-1.8E+",
+                "-1.9E+",
 
-            "-1.0e-",
-            "-1.1e-",
-            "-1.2e-",
-            "-1.3e-",
-            "-1.4e-",
-            "-1.5e-",
-            "-1.6e-",
-            "-1.7e-",
-            "-1.8e-",
-            "-1.9e-",
-            "-1.0E-",
-            "-1.1E-",
-            "-1.2E-",
-            "-1.3E-",
-            "-1.4E-",
-            "-1.5E-",
-            "-1.6E-",
-            "-1.7E-",
-            "-1.8E-",
-            "-1.9E-",
+                "-1.0e-",
+                "-1.1e-",
+                "-1.2e-",
+                "-1.3e-",
+                "-1.4e-",
+                "-1.5e-",
+                "-1.6e-",
+                "-1.7e-",
+                "-1.8e-",
+                "-1.9e-",
+                "-1.0E-",
+                "-1.1E-",
+                "-1.2E-",
+                "-1.3E-",
+                "-1.4E-",
+                "-1.5E-",
+                "-1.6E-",
+                "-1.7E-",
+                "-1.8E-",
+                "-1.9E-",
 
-            "-1.",
+                "-1.",
 
-            "-0e+",
-            "-1e+",
-            "-2e+",
-            "-3e+",
-            "-4e+",
-            "-5e+",
-            "-6e+",
-            "-7e+",
-            "-8e+",
-            "-9e+",
-            "-0E+",
-            "-1E+",
-            "-2E+",
-            "-3E+",
-            "-4E+",
-            "-5E+",
-            "-6E+",
-            "-7E+",
-            "-8E+",
-            "-9E+",
+                "-0e+",
+                "-1e+",
+                "-2e+",
+                "-3e+",
+                "-4e+",
+                "-5e+",
+                "-6e+",
+                "-7e+",
+                "-8e+",
+                "-9e+",
+                "-0E+",
+                "-1E+",
+                "-2E+",
+                "-3E+",
+                "-4E+",
+                "-5E+",
+                "-6E+",
+                "-7E+",
+                "-8E+",
+                "-9E+",
 
-            "-0e-",
-            "-1e-",
-            "-2e-",
-            "-3e-",
-            "-4e-",
-            "-5e-",
-            "-6e-",
-            "-7e-",
-            "-8e-",
-            "-9e-",
-            "-0E-",
-            "-1E-",
-            "-2E-",
-            "-3E-",
-            "-4E-",
-            "-5E-",
-            "-6E-",
-            "-7E-",
-            "-8E-",
-            "-9E-",
+                "-0e-",
+                "-1e-",
+                "-2e-",
+                "-3e-",
+                "-4e-",
+                "-5e-",
+                "-6e-",
+                "-7e-",
+                "-8e-",
+                "-9e-",
+                "-0E-",
+                "-1E-",
+                "-2E-",
+                "-3E-",
+                "-4E-",
+                "-5E-",
+                "-6E-",
+                "-7E-",
+                "-8E-",
+                "-9E-",
 
-            "-",
+                "-",
 
-            "0.0e+",
-            "0.1e+",
-            "0.2e+",
-            "0.3e+",
-            "0.4e+",
-            "0.5e+",
-            "0.6e+",
-            "0.7e+",
-            "0.8e+",
-            "0.9e+",
-            "0.0E+",
-            "0.1E+",
-            "0.2E+",
-            "0.3E+",
-            "0.4E+",
-            "0.5E+",
-            "0.6E+",
-            "0.7E+",
-            "0.8E+",
-            "0.9E+",
+                "0.0e+",
+                "0.1e+",
+                "0.2e+",
+                "0.3e+",
+                "0.4e+",
+                "0.5e+",
+                "0.6e+",
+                "0.7e+",
+                "0.8e+",
+                "0.9e+",
+                "0.0E+",
+                "0.1E+",
+                "0.2E+",
+                "0.3E+",
+                "0.4E+",
+                "0.5E+",
+                "0.6E+",
+                "0.7E+",
+                "0.8E+",
+                "0.9E+",
 
-            "0.0e-",
-            "0.1e-",
-            "0.2e-",
-            "0.3e-",
-            "0.4e-",
-            "0.5e-",
-            "0.6e-",
-            "0.7e-",
-            "0.8e-",
-            "0.9e-",
-            "0.0E-",
-            "0.1E-",
-            "0.2E-",
-            "0.3E-",
-            "0.4E-",
-            "0.5E-",
-            "0.6E-",
-            "0.7E-",
-            "0.8E-",
-            "0.9E-",
+                "0.0e-",
+                "0.1e-",
+                "0.2e-",
+                "0.3e-",
+                "0.4e-",
+                "0.5e-",
+                "0.6e-",
+                "0.7e-",
+                "0.8e-",
+                "0.9e-",
+                "0.0E-",
+                "0.1E-",
+                "0.2E-",
+                "0.3E-",
+                "0.4E-",
+                "0.5E-",
+                "0.6E-",
+                "0.7E-",
+                "0.8E-",
+                "0.9E-",
 
-            "0.",
+                "0.",
 
-            "1.0e+",
-            "1.1e+",
-            "1.2e+",
-            "1.3e+",
-            "1.4e+",
-            "1.5e+",
-            "1.6e+",
-            "1.7e+",
-            "1.8e+",
-            "1.9e+",
-            "1.0E+",
-            "1.1E+",
-            "1.2E+",
-            "1.3E+",
-            "1.4E+",
-            "1.5E+",
-            "1.6E+",
-            "1.7E+",
-            "1.8E+",
-            "1.9E+",
+                "1.0e+",
+                "1.1e+",
+                "1.2e+",
+                "1.3e+",
+                "1.4e+",
+                "1.5e+",
+                "1.6e+",
+                "1.7e+",
+                "1.8e+",
+                "1.9e+",
+                "1.0E+",
+                "1.1E+",
+                "1.2E+",
+                "1.3E+",
+                "1.4E+",
+                "1.5E+",
+                "1.6E+",
+                "1.7E+",
+                "1.8E+",
+                "1.9E+",
 
-            "1.0e-",
-            "1.1e-",
-            "1.2e-",
-            "1.3e-",
-            "1.4e-",
-            "1.5e-",
-            "1.6e-",
-            "1.7e-",
-            "1.8e-",
-            "1.9e-",
-            "1.0E-",
-            "1.1E-",
-            "1.2E-",
-            "1.3E-",
-            "1.4E-",
-            "1.5E-",
-            "1.6E-",
-            "1.7E-",
-            "1.8E-",
-            "1.9E-",
+                "1.0e-",
+                "1.1e-",
+                "1.2e-",
+                "1.3e-",
+                "1.4e-",
+                "1.5e-",
+                "1.6e-",
+                "1.7e-",
+                "1.8e-",
+                "1.9e-",
+                "1.0E-",
+                "1.1E-",
+                "1.2E-",
+                "1.3E-",
+                "1.4E-",
+                "1.5E-",
+                "1.6E-",
+                "1.7E-",
+                "1.8E-",
+                "1.9E-",
 
-            "1.",
+                "1.",
 
-            "0e+",
-            "1e+",
-            "2e+",
-            "3e+",
-            "4e+",
-            "5e+",
-            "6e+",
-            "7e+",
-            "8e+",
-            "9e+",
-            "0E+",
-            "1E+",
-            "2E+",
-            "3E+",
-            "4E+",
-            "5E+",
-            "6E+",
-            "7E+",
-            "8E+",
-            "9E+",
+                "0e+",
+                "1e+",
+                "2e+",
+                "3e+",
+                "4e+",
+                "5e+",
+                "6e+",
+                "7e+",
+                "8e+",
+                "9e+",
+                "0E+",
+                "1E+",
+                "2E+",
+                "3E+",
+                "4E+",
+                "5E+",
+                "6E+",
+                "7E+",
+                "8E+",
+                "9E+",
 
-            "0e-",
-            "1e-",
-            "2e-",
-            "3e-",
-            "4e-",
-            "5e-",
-            "6e-",
-            "7e-",
-            "8e-",
-            "9e-",
-            "0E-",
-            "1E-",
-            "2E-",
-            "3E-",
-            "4E-",
-            "5E-",
-            "6E-",
-            "7E-",
-            "8E-",
-            "9E-",
-    })
-    void rejectsIncompleteNumberWhenDigitIsExpected(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
+                "0e-",
+                "1e-",
+                "2e-",
+                "3e-",
+                "4e-",
+                "5e-",
+                "6e-",
+                "7e-",
+                "8e-",
+                "9e-",
+                "0E-",
+                "1E-",
+                "2E-",
+                "3E-",
+                "4E-",
+                "5E-",
+                "6E-",
+                "7E-",
+                "8E-",
+                "9E-"
+        ).flatMap(numberString -> shims().map(shim -> dynamicTest(numberString + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(numberString);
             stajParser.next();
-        });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected a digit 0 - 9 but reached end of input"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+                IOUtils.consume(stajParser.next().reader());
+                stajParser.next();
+            });
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected a digit 0 - 9 but reached end of input"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> rejectsIncompleteNumberWhenDigitOrSignIsExpected() {
+        return Stream.of(
+                "-0.0e",
+                "-0.1e",
+                "-0.2e",
+                "-0.3e",
+                "-0.4e",
+                "-0.5e",
+                "-0.6e",
+                "-0.7e",
+                "-0.8e",
+                "-0.9e",
+                "-0.0E",
+                "-0.1E",
+                "-0.2E",
+                "-0.3E",
+                "-0.4E",
+                "-0.5E",
+                "-0.6E",
+                "-0.7E",
+                "-0.8E",
+                "-0.9E",
+
+                "-1.0e",
+                "-1.1e",
+                "-1.2e",
+                "-1.3e",
+                "-1.4e",
+                "-1.5e",
+                "-1.6e",
+                "-1.7e",
+                "-1.8e",
+                "-1.9e",
+                "-1.0E",
+                "-1.1E",
+                "-1.2E",
+                "-1.3E",
+                "-1.4E",
+                "-1.5E",
+                "-1.6E",
+                "-1.7E",
+                "-1.8E",
+                "-1.9E",
+
+                "-0e",
+                "-1e",
+                "-2e",
+                "-3e",
+                "-4e",
+                "-5e",
+                "-6e",
+                "-7e",
+                "-8e",
+                "-9e",
+                "-0E",
+                "-1E",
+                "-2E",
+                "-3E",
+                "-4E",
+                "-5E",
+                "-6E",
+                "-7E",
+                "-8E",
+                "-9E",
+
+                "0.0e",
+                "0.1e",
+                "0.2e",
+                "0.3e",
+                "0.4e",
+                "0.5e",
+                "0.6e",
+                "0.7e",
+                "0.8e",
+                "0.9e",
+                "0.0E",
+                "0.1E",
+                "0.2E",
+                "0.3E",
+                "0.4E",
+                "0.5E",
+                "0.6E",
+                "0.7E",
+                "0.8E",
+                "0.9E",
+
+                "1.0e",
+                "1.1e",
+                "1.2e",
+                "1.3e",
+                "1.4e",
+                "1.5e",
+                "1.6e",
+                "1.7e",
+                "1.8e",
+                "1.9e",
+                "1.0E",
+                "1.1E",
+                "1.2E",
+                "1.3E",
+                "1.4E",
+                "1.5E",
+                "1.6E",
+                "1.7E",
+                "1.8E",
+                "1.9E",
+
+                "0e",
+                "1e",
+                "2e",
+                "3e",
+                "4e",
+                "5e",
+                "6e",
+                "7e",
+                "8e",
+                "9e",
+                "0E",
+                "1E",
+                "2E",
+                "3E",
+                "4E",
+                "5E",
+                "6E",
+                "7E",
+                "8E",
+                "9E"
+        ).flatMap(numberString -> shims().map(shim -> dynamicTest(numberString + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(numberString);
+            stajParser.next();
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+                IOUtils.consume(stajParser.next().reader());
+                stajParser.next();
+            });
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected '+' or '-' or a digit 0 - 9 but reached end of input"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> rejectsInvalidCharacterInNumberWhenDigitIsExpected() {
+        return Stream.of(
+                "-0.0e+.",
+                "-0.0E+.",
+
+                "-0.0e-.",
+                "-0.0E-.",
+
+                "-0..",
+                "-0.e",
+
+                "-1.0e+.",
+                "-1.0E+.",
+
+                "-1.0e-.",
+                "-1.0E-.",
+
+                "-0e+.",
+                "-0E+.",
+
+                "-0e-.",
+                "-0E-.",
+
+                "-1..",
+                "-1.e",
+
+                "-.",
+                "-e",
+
+                "0.0e+.",
+                "0.0E+.",
+
+                "0.0e-.",
+                "0.0E-.",
+
+                "0..",
+                "0.e",
+
+                "1.0e+.",
+                "1.0E+.",
+
+                "1.0e-.",
+                "1.0E-.",
+
+                "1..",
+                "1.e",
+
+                "0e+.",
+                "0E+.",
+
+                "0e-.",
+                "0E-."
+        ).flatMap(numberString -> shims().map(shim -> dynamicTest(numberString + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(numberString);
+            stajParser.next();
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+                IOUtils.consume(stajParser.next().reader());
+                stajParser.next();
+            });
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9 but got [" + numberString.charAt(numberString.length() - 1) + "]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> rejectsInvalidUnprintableCharacterInNumberWhenDigitIsExpected() {
+        return Stream.of(
+                "0.\u0000",
+                "0.\u007f",
+                "0.\ud800"
+        ).flatMap(numberString -> shims().map(shim -> dynamicTest(numberString + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(numberString);
+            stajParser.next();
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+                IOUtils.consume(stajParser.next().reader());
+                stajParser.next();
+            });
+            final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9 but got [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> rejectsInvalidCharacterInNumberWhenDigitOrSignIsExpected() {
+        return Stream.of(
+                "-0.0e.",
+                "-0.0E.",
+
+                "-1.0e.",
+                "-1.0E.",
+
+                "-0e.",
+                "-0E.",
+
+                "0.0e.",
+                "0.0E.",
+
+                "1.0e.",
+                "1.0E.",
+
+                "0e.",
+                "0E."
+        ).flatMap(numberString -> shims().map(shim -> dynamicTest(numberString + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(numberString);
+            stajParser.next();
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+                IOUtils.consume(stajParser.next().reader());
+                stajParser.next();
+            });
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + numberString.charAt(numberString.length() -1) + "]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> rejectsInvalidUnprintableCharacterInNumberWhenDigitOrSignIsExpected() {
+        return Stream.of(
+                "0e\u0000",
+                "0e\u007f",
+                "0e\ud800"
+        ).flatMap(numberString -> shims().map(shim -> dynamicTest(numberString + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(numberString);
+            stajParser.next();
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+                IOUtils.consume(stajParser.next().reader());
+                stajParser.next();
+            });
+            final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> rejectsSuperfluousCharactersAfterNumber() {
+        return Stream.of(
+                "-00",
+                "00"
+        ).flatMap(numberString -> shims().map(shim -> dynamicTest(numberString + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(numberString);
+            stajParser.next();
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+                IOUtils.consume(stajParser.next().reader());
+                stajParser.next();
+            });
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected end of stream or whitespace but got [" + numberString.charAt(numberString.length() - 1) + "]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "-0.0e",
-            "-0.1e",
-            "-0.2e",
-            "-0.3e",
-            "-0.4e",
-            "-0.5e",
-            "-0.6e",
-            "-0.7e",
-            "-0.8e",
-            "-0.9e",
-            "-0.0E",
-            "-0.1E",
-            "-0.2E",
-            "-0.3E",
-            "-0.4E",
-            "-0.5E",
-            "-0.6E",
-            "-0.7E",
-            "-0.8E",
-            "-0.9E",
-
-            "-1.0e",
-            "-1.1e",
-            "-1.2e",
-            "-1.3e",
-            "-1.4e",
-            "-1.5e",
-            "-1.6e",
-            "-1.7e",
-            "-1.8e",
-            "-1.9e",
-            "-1.0E",
-            "-1.1E",
-            "-1.2E",
-            "-1.3E",
-            "-1.4E",
-            "-1.5E",
-            "-1.6E",
-            "-1.7E",
-            "-1.8E",
-            "-1.9E",
-
-            "-0e",
-            "-1e",
-            "-2e",
-            "-3e",
-            "-4e",
-            "-5e",
-            "-6e",
-            "-7e",
-            "-8e",
-            "-9e",
-            "-0E",
-            "-1E",
-            "-2E",
-            "-3E",
-            "-4E",
-            "-5E",
-            "-6E",
-            "-7E",
-            "-8E",
-            "-9E",
-
-            "0.0e",
-            "0.1e",
-            "0.2e",
-            "0.3e",
-            "0.4e",
-            "0.5e",
-            "0.6e",
-            "0.7e",
-            "0.8e",
-            "0.9e",
-            "0.0E",
-            "0.1E",
-            "0.2E",
-            "0.3E",
-            "0.4E",
-            "0.5E",
-            "0.6E",
-            "0.7E",
-            "0.8E",
-            "0.9E",
-
-            "1.0e",
-            "1.1e",
-            "1.2e",
-            "1.3e",
-            "1.4e",
-            "1.5e",
-            "1.6e",
-            "1.7e",
-            "1.8e",
-            "1.9e",
-            "1.0E",
-            "1.1E",
-            "1.2E",
-            "1.3E",
-            "1.4E",
-            "1.5E",
-            "1.6E",
-            "1.7E",
-            "1.8E",
-            "1.9E",
-
-            "0e",
-            "1e",
-            "2e",
-            "3e",
-            "4e",
-            "5e",
-            "6e",
-            "7e",
-            "8e",
-            "9e",
-            "0E",
-            "1E",
-            "2E",
-            "3E",
-            "4E",
-            "5E",
-            "6E",
-            "7E",
-            "8E",
-            "9E",
-    })
-    void rejectsIncompleteNumberWhenDigitOrSignIsExpected(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length() + 1) + ":  Expected '+' or '-' or a digit 0 - 9 but reached end of input"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length() + 1));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "-0.0e+.",
-            "-0.0E+.",
-
-            "-0.0e-.",
-            "-0.0E-.",
-
-            "-0..",
-            "-0.e",
-
-            "-1.0e+.",
-            "-1.0E+.",
-
-            "-1.0e-.",
-            "-1.0E-.",
-
-            "-0e+.",
-            "-0E+.",
-
-            "-0e-.",
-            "-0E-.",
-
-            "-1..",
-            "-1.e",
-
-            "-.",
-            "-e",
-
-            "0.0e+.",
-            "0.0E+.",
-
-            "0.0e-.",
-            "0.0E-.",
-
-            "0..",
-            "0.e",
-
-            "1.0e+.",
-            "1.0E+.",
-
-            "1.0e-.",
-            "1.0E-.",
-
-            "1..",
-            "1.e",
-
-            "0e+.",
-            "0E+.",
-
-            "0e-.",
-            "0E-.",
-    })
-    void rejectsInvalidCharacterInNumberWhenDigitIsExpected(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9 but got [" + numberString.charAt(numberString.length() - 1) + "]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "0.\u0000",
-            "0.\u007f",
-            "0.\ud800",
-    })
-    void rejectsInvalidUnprintableCharacterInNumberWhenDigitIsExpected(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
-        final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9 but got [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "-0.0e.",
-            "-0.0E.",
-
-            "-1.0e.",
-            "-1.0E.",
-
-            "-0e.",
-            "-0E.",
-
-            "0.0e.",
-            "0.0E.",
-
-            "1.0e.",
-            "1.0E.",
-
-            "0e.",
-            "0E.",
-    })
-    void rejectsInvalidCharacterInNumberWhenDigitOrSignIsExpected(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + numberString.charAt(numberString.length() -1) + "]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "0e\u0000",
-            "0e\u007f",
-            "0e\ud800",
-    })
-    void rejectsInvalidUnprintableCharacterInNumberWhenDigitOrSignIsExpected(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
-        final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "-00",
-            "00",
-    })
-    void rejectsSuperfluousCharactersAfterNumber(final String numberString) {
-        final StajParser stajParser = new StajParser(numberString);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected end of stream or whitespace but got [" + numberString.charAt(numberString.length() - 1) + "]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
-    }
-
-    @Test
-    void rejectsPrematureEndOfStreamDuringArray() {
-        final StajParser stajParser = new StajParser("[");
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamDuringArray(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("[");
         stajParser.next();
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
@@ -2469,9 +2614,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamDuringArrayValue() {
-        final StajParser stajParser = new StajParser("[1");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamDuringArrayValue(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("[1");
         stajParser.next();
         stajParser.next();
         stajParser.next();
@@ -2481,9 +2627,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamDuringObject() {
-        final StajParser stajParser = new StajParser("{");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamDuringObject(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("{");
         stajParser.next();
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
@@ -2492,9 +2639,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamDuringFieldName() {
-        final StajParser stajParser = new StajParser("{\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamDuringFieldName(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("{\"");
         stajParser.next();
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
@@ -2503,9 +2651,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamAwaitingFieldSeparator() {
-        final StajParser stajParser = new StajParser("{\"a\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamAwaitingFieldSeparator(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("{\"a\"");
         stajParser.next();
         stajParser.next();
         stajParser.next();
@@ -2515,9 +2664,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamAwaitingFieldValue() {
-        final StajParser stajParser = new StajParser("{\"a\":");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamAwaitingFieldValue(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("{\"a\":");
         stajParser.next();
         stajParser.next();
         stajParser.next();
@@ -2527,9 +2677,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsMissingFieldValue() {
-        final StajParser stajParser = new StajParser("{\"a\":}");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsMissingFieldValue(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("{\"a\":}");
         stajParser.next();
         stajParser.next();
         stajParser.next();
@@ -2539,9 +2690,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamAwaitingObjectClose() {
-        final StajParser stajParser = new StajParser("{\"a\":1");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamAwaitingObjectClose(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("{\"a\":1");
         stajParser.next();
         stajParser.next();
         stajParser.next();
@@ -2552,9 +2704,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamDuringString() {
-        final StajParser stajParser = new StajParser("\"");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamDuringString(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 1:  Got opening [\"] without matching closing [\"]"));
@@ -2562,9 +2715,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamDuringHexCharacter() {
-        final StajParser stajParser = new StajParser("\"\\uab");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamDuringHexCharacter(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\uab");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 6:  Expected 4 hexadecimal digits, but got [a, b]"));
@@ -2572,9 +2726,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamDuringTrueValue() {
-        final StajParser stajParser = new StajParser("tru");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamDuringTrueValue(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("tru");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 't' to be followed by [r, u, e], but got [r, u]"));
@@ -2582,9 +2737,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsInvalidCharacterInTrueValue() {
-        final StajParser stajParser = new StajParser("trug");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsInvalidCharacterInTrueValue(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("trug");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 't' to be followed by [r, u, e], but got [r, u, g]"));
@@ -2592,9 +2748,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamDuringFalseValue() {
-        final StajParser stajParser = new StajParser("fal");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamDuringFalseValue(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("fal");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 'f' to be followed by [a, l, s, e], but got [a, l]"));
@@ -2602,9 +2759,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsInvalidCharacterInFalseValue() {
-        final StajParser stajParser = new StajParser("farce");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsInvalidCharacterInFalseValue(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("farce");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected 'f' to be followed by [a, l, s, e], but got [a, r]"));
@@ -2612,9 +2770,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsPrematureEndOfStreamDuringNullValue() {
-        final StajParser stajParser = new StajParser("nul");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsPrematureEndOfStreamDuringNullValue(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("nul");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 4:  Expected 'n' to be followed by [u, l, l], but got [u, l]"));
@@ -2622,9 +2781,10 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rejectsInvalidCharacterInNullValue() {
-        final StajParser stajParser = new StajParser("numb");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsInvalidCharacterInNullValue(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("numb");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 3:  Expected 'n' to be followed by [u, l, l], but got [u, m]"));
@@ -2632,37 +2792,40 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @ParameterizedTest
-    @ValueSource(chars = {' ', '\n', '\r', '\t'})
-    void permitsWhitespaceAtStartOfDocument(final char whitespaceCharacter) {
-        assertThat(new StajParser(whitespaceCharacter + "null"), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
+    @TestFactory
+    Stream<DynamicTest> permitsWhitespaceAtStartOfDocument() {
+        return Stream.of(' ', '\n', '\r', '\t').flatMap(whitespaceCharacter -> shims().map(shim -> dynamicTest(whitespaceCharacter + " using " + shim, () ->
+                assertThat(shim.parse(whitespaceCharacter + "null"), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT)))));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> permitsWhitespaceAtEndOfDocument() {
+        return Stream.of(' ', '\n', '\r', '\t').flatMap(whitespaceCharacter -> shims().map(shim -> dynamicTest(whitespaceCharacter + " using " + shim, () ->
+                assertThat(shim.parse("null" + whitespaceCharacter), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT)))));
     }
 
     @ParameterizedTest
-    @ValueSource(chars = {' ', '\n', '\r', '\t'})
-    void permitsWhitespaceAtEndOfDocument(final char whitespaceCharacter) {
-        assertThat(new StajParser("null" + whitespaceCharacter), generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.NULL, NonTextJsonStreamElement.END_DOCUMENT));
-    }
-
-    @Test
-    void parsesJsonObjectWithWhitespace() {
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesJsonObjectWithWhitespace(final StajParserJsonParserShim stajParserJsonParserShim) {
         assertThat(
-                new StajParser("{\"hello\": \"world\"}"),
+                stajParserJsonParserShim.parse("{\"hello\": \"world\"}"),
                 generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_OBJECT, startField(new StringReader("hello")), string(new StringReader("world")), endField(), NonTextJsonStreamElement.END_OBJECT, NonTextJsonStreamElement.END_DOCUMENT)
         );
     }
 
-    @Test
-    void parsesMultiElementArrayWithWhitespace() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesMultiElementArrayWithWhitespace(final StajParserJsonParserShim stajParserJsonParserShim) {
         assertThat(
-                new StajParser("[ 1, 2 ]"),
+                stajParserJsonParserShim.parse("[ 1, 2 ]"),
                 generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_ARRAY, number(new StringReader("1")), number(new StringReader("2")), NonTextJsonStreamElement.END_ARRAY, NonTextJsonStreamElement.END_DOCUMENT)
         );
     }
 
-    @Test
-    void rejectsEmptyDocument() {
-        final StajParser stajParser = new StajParser("");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rejectsEmptyDocument(final StajParserJsonParserShim stajParserJsonParserShim) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("");
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
             IOUtils.consume(stajParser.next().reader());
@@ -2673,73 +2836,76 @@ final class StajParserTest {
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "a",
-            ".",
-            "e",
-    })
-    void rejectsInvalidCharacterAtStartOfDocument(final String text) {
-        final StajParser stajParser = new StajParser(text);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
+    @TestFactory
+    Stream<DynamicTest> rejectsInvalidCharacterAtStartOfDocument() {
+        return Stream.of(
+                "a",
+                ".",
+                "e"
+        ).flatMap(text -> shims().map(shim -> dynamicTest(text + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(text);
             stajParser.next();
-        });
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (text.length()) + ":  Invalid character [" + text.charAt(0) + "] at start of value"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(text.length()));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+                IOUtils.consume(stajParser.next().reader());
+                stajParser.next();
+            });
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (text.length()) + ":  Invalid character [" + text.charAt(0) + "] at start of value"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(text.length()));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "\u0000",
-            "\u007f",
-            "\ud800",
-    })
-    void rejectsInvalidUnprintableCharacterAtStartOfDocument(final String text) {
-        final StajParser stajParser = new StajParser(text);
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
+    @TestFactory
+    Stream<DynamicTest> rejectsInvalidUnprintableCharacterAtStartOfDocument() {
+        return Stream.of(
+                "\u0000",
+                "\u007f",
+                "\ud800"
+        ).flatMap(text -> shims().map(shim -> dynamicTest(text + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse(text);
             stajParser.next();
-        });
-        final char expectedInvalidCharacter = text.charAt(0);
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (text.length()) + ":  Invalid character [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "] at start of value"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(text.length()));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
+                IOUtils.consume(stajParser.next().reader());
+                stajParser.next();
+            });
+            final char expectedInvalidCharacter = text.charAt(0);
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (text.length()) + ":  Invalid character [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "] at start of value"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(text.length()));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
     }
 
-    @ParameterizedTest
-    @ValueSource(chars = {
-            'a',
-            '.',
-            'e',
-    })
-    void rejectsInvalidCharacterAtEndOfDocument(final char superfluousCharacter) {
-        final StajParser stajParser = new StajParser("\"foo\" " + superfluousCharacter);
-        stajParser.next();
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected end of stream or whitespace but got [" + superfluousCharacter + "]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    @TestFactory
+    Stream<DynamicTest> rejectsInvalidCharacterAtEndOfDocument() {
+        return Stream.of(
+                "a",
+                ".",
+                "e"
+        ).flatMap(superfluousCharacter -> shims().map(shim -> dynamicTest(superfluousCharacter + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse("\"foo\" " + superfluousCharacter);
+            stajParser.next();
+            stajParser.next();
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected end of stream or whitespace but got [" + superfluousCharacter + "]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
     }
 
-    @ParameterizedTest
-    @ValueSource(chars = {
-            '\u0000',
-            '\u007f',
-            '\ud800',
-    })
-    void rejectsInvalidUnprintableCharacterAtEndOfDocument(final char superfluousCharacter) {
-        final StajParser stajParser = new StajParser("\"foo\" " + superfluousCharacter);
-        stajParser.next();
-        stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected end of stream or whitespace but got [" + String.format("\\u%04X", (int) superfluousCharacter) + "]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+    @TestFactory
+    Stream<DynamicTest> rejectsInvalidUnprintableCharacterAtEndOfDocument() {
+        return Stream.of(
+                '\u0000',
+                '\u007f',
+                '\ud800'
+        ).flatMap(superfluousCharacter -> shims().map(shim -> dynamicTest(superfluousCharacter + " using " + shim, () -> {
+            final Iterator<JsonStreamElement> stajParser = shim.parse("\"foo\" " + superfluousCharacter);
+            stajParser.next();
+            stajParser.next();
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column 7:  Expected end of stream or whitespace but got [" + String.format("\\u%04X", (int) superfluousCharacter) + "]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
+        })));
     }
-
 }

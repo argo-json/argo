@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -16,8 +16,8 @@ import argo.jdom.JsonNode;
 import java.io.StringReader;
 
 public final class StajParserBuilder {
-    public static StajParser stajParser(final JsonNode jsonNode) {
-        return new StajParser(new StringReader(PrettyJsonBuilder.json(jsonNode)));
+    public static StringReader readerOf(final JsonNode jsonNode) {
+        return new StringReader(PrettyJsonBuilder.json(jsonNode));
     }
 
     private StajParserBuilder() {

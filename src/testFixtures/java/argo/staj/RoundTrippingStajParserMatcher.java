@@ -22,10 +22,11 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
-public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatcher<StajParser> {
+public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatcher<Iterator<JsonStreamElement>> {
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
 
@@ -39,12 +40,12 @@ public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatc
         parseResult = null;
     }
 
-    public static Matcher<StajParser> parsesTo(final JsonNode jsonNode) {
+    public static Matcher<Iterator<JsonStreamElement>> parsesTo(final JsonNode jsonNode) {
         return new RoundTrippingStajParserMatcher(jsonNode);
     }
 
     @Override
-    protected boolean matchesSafely(final StajParser item, final Description mismatchDescription) {
+    protected boolean matchesSafely(final Iterator<JsonStreamElement> item, final Description mismatchDescription) {
         if (parseResult == null) {
             try {
                 parseResult = JdomScopeExpander.parse(JDOM_PARSER, jsonListener -> SajScopeExpander.parse(new SajParser(), jsonListener, item));

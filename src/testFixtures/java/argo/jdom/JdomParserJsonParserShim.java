@@ -24,7 +24,7 @@ interface JdomParserJsonParserShim {
     final class Jdom implements JdomParserJsonParserShim {
         private final JdomParser jdomParser;
 
-        public Jdom(final JdomParser jdomParser) {
+        Jdom(final JdomParser jdomParser) {
             this.jdomParser = jdomParser;
         }
 
@@ -42,7 +42,7 @@ interface JdomParserJsonParserShim {
     final class Json implements JdomParserJsonParserShim {
         private final JsonParser jsonParser;
 
-        public Json(final JsonParser jsonParser) {
+        Json(final JsonParser jsonParser) {
             this.jsonParser = jsonParser;
         }
 

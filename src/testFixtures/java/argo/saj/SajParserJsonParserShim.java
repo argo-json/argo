@@ -23,7 +23,7 @@ interface SajParserJsonParserShim {
     final class Saj implements SajParserJsonParserShim {
         private final SajParser sajParser;
 
-        public Saj(final SajParser sajParser) {
+        Saj(final SajParser sajParser) {
             this.sajParser = sajParser;
         }
 
@@ -41,7 +41,7 @@ interface SajParserJsonParserShim {
     final class Json implements SajParserJsonParserShim {
         private final JsonParser jsonParser;
 
-        public Json(final JsonParser jsonParser) {
+        Json(final JsonParser jsonParser) {
             this.jsonParser = jsonParser;
         }
 

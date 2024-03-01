@@ -15,6 +15,7 @@ import argo.staj.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Iterator;
 
 /**
  * Converts a character stream into calls to a {@code JsonListener}.
@@ -50,7 +51,7 @@ public final class SajParser {
         parse(jsonListener, new StajParser(in));
     }
 
-    void parse(final JsonListener jsonListener, final StajParser stajParser) throws InvalidSyntaxException, IOException {
+    void parse(final JsonListener jsonListener, final Iterator<JsonStreamElement> stajParser) throws InvalidSyntaxException, IOException {
         try {
             while (stajParser.hasNext()) {
                 stajParser.next().visit(jsonListener);
