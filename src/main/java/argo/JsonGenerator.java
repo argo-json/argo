@@ -55,7 +55,7 @@ public final class JsonGenerator {
      * @throws IOException       propagated from {@link WriteableJsonArray#writeTo(ArrayWriter)}.
      */
     public String generate(final WriteableJsonArray writeableJsonArray) throws IOException {
-        final StringWriter stringWriter = new StringWriter();
+        final StringWriter stringWriter = new StringWriter(); // TODO this should be based on a StringBuilder
         try {
             generate(stringWriter, writeableJsonArray);
         } finally {
