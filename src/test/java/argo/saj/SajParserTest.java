@@ -10,11 +10,17 @@
 
 package argo.saj;
 
+import argo.JsonParser;
 import org.apache.commons.io.input.BrokenReader;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.stream.Stream;
 
 import static argo.saj.BlackHoleJsonListener.BLACK_HOLE_JSON_LISTENER;
 import static argo.saj.RecordingJsonListener.*;
@@ -29,10 +35,22 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class SajParserTest {
 
-    @Test
-    void tokenizesFromReader() throws Exception {
+    static final class ParserArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    new SajParserJsonParserShim.Saj(new SajParser()),
+                    new SajParserJsonParserShim.Json(new JsonParser())
+            ).map(Arguments::arguments);
+        }
+
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void tokenizesFromReader(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
         RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse(new StringReader("null"), recordingJsonListener);
+        sajParserJsonParserShim.parse(new StringReader("null"), recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,
                 NULL_VALUE,
@@ -40,10 +58,11 @@ final class SajParserTest {
         ));
     }
 
-    @Test
-    void tokenizesFromString() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void tokenizesFromString(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
         final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("null", recordingJsonListener);
+        sajParserJsonParserShim.parse("null", recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,
                 NULL_VALUE,
@@ -51,10 +70,11 @@ final class SajParserTest {
         ));
     }
 
-    @Test
-    void tokenizesNumber() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void tokenizesNumber(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
         final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("1", recordingJsonListener);
+        sajParserJsonParserShim.parse("1", recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,
                 numberValue("1"),
@@ -62,10 +82,11 @@ final class SajParserTest {
         ));
     }
 
-    @Test
-    void tokenizesString() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void tokenizesString(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
         final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("\"hello world\"", recordingJsonListener);
+        sajParserJsonParserShim.parse("\"hello world\"", recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,
                 stringValue("hello world"),
@@ -73,10 +94,11 @@ final class SajParserTest {
         ));
     }
 
-    @Test
-    void tokenizesJsonNull() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void tokenizesJsonNull(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
         final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("null", recordingJsonListener);
+        sajParserJsonParserShim.parse("null", recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,
                 NULL_VALUE,
@@ -84,10 +106,11 @@ final class SajParserTest {
         ));
     }
 
-    @Test
-    void tokenizesJsonTrue() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void tokenizesJsonTrue(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
         final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("true", recordingJsonListener);
+        sajParserJsonParserShim.parse("true", recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,
                 TRUE_VALUE,
@@ -95,10 +118,11 @@ final class SajParserTest {
         ));
     }
 
-    @Test
-    void tokenizesJsonFalse() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void tokenizesJsonFalse(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
         final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("false", recordingJsonListener);
+        sajParserJsonParserShim.parse("false", recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,
                 FALSE_VALUE,
@@ -106,10 +130,11 @@ final class SajParserTest {
         ));
     }
 
-    @Test
-    void tokenizesArray() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void tokenizesArray(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
         final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("[]", recordingJsonListener);
+        sajParserJsonParserShim.parse("[]", recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,
                 START_ARRAY,
@@ -118,10 +143,11 @@ final class SajParserTest {
         ));
     }
 
-    @Test
-    void tokenizesObject() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void tokenizesObject(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
         final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
-        new SajParser().parse("{\"hello\": \"world\"}", recordingJsonListener);
+        sajParserJsonParserShim.parse("{\"hello\": \"world\"}", recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,
                 START_OBJECT,
@@ -133,19 +159,21 @@ final class SajParserTest {
         ));
     }
 
-    @Test
-    void throwsOnInvalidInput() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void throwsOnInvalidInput(final SajParserJsonParserShim sajParserJsonParserShim) {
         final String inputString = "oops";
-        final InvalidSyntaxException invalidSyntaxException = assertThrows(InvalidSyntaxException.class, () -> new SajParser().parse(inputString, BLACK_HOLE_JSON_LISTENER));
+        final InvalidSyntaxException invalidSyntaxException = assertThrows(InvalidSyntaxException.class, () -> sajParserJsonParserShim.parse(inputString, BLACK_HOLE_JSON_LISTENER));
         assertThat(invalidSyntaxException.getMessage(), equalTo("At line 1, column 1:  Invalid character [o] at start of value"));
         assertThat(invalidSyntaxException.getColumn(), equalTo(1));
         assertThat(invalidSyntaxException.getLine(), equalTo(1));
     }
 
-    @Test
-    void rethrowsIOExceptionFromReader() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rethrowsIOExceptionFromReader(final SajParserJsonParserShim sajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final IOException actualException = assertThrows(IOException.class, () -> new SajParser().parse(new BrokenReader(ioException), BLACK_HOLE_JSON_LISTENER));
+        final IOException actualException = assertThrows(IOException.class, () -> sajParserJsonParserShim.parse(new BrokenReader(ioException), BLACK_HOLE_JSON_LISTENER));
         assertThat(actualException, sameInstance(ioException));
     }
 
