@@ -10,6 +10,7 @@
 
 package argo.format;
 
+import argo.JsonGenerator;
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
 import org.junit.jupiter.api.Nested;
@@ -21,6 +22,8 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.stream.Stream;
 
+import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestingFactories.anArrayNode;
 import static argo.jdom.JsonNodeTestingFactories.anObjectNode;
@@ -36,7 +39,10 @@ class JsonFormatterTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
                     CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter(),
-                    PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter()
+                    PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter(),
+                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator().style(COMPACT)),
+                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator()),
+                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator().style(PRETTY))
             ).map(Arguments::arguments);
         }
     }

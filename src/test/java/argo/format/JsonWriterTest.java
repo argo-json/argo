@@ -10,6 +10,7 @@
 
 package argo.format;
 
+import argo.JsonGenerator;
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
 import org.apache.commons.io.output.BrokenWriter;
@@ -24,6 +25,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.stream.Stream;
 
+import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 import static argo.TestingFactories.*;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeTestingFactories.*;
@@ -41,7 +44,10 @@ class JsonWriterTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
                     new CompactJsonWriter(),
-                    new PrettyJsonWriter()
+                    new PrettyJsonWriter(),
+                    new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(COMPACT)),
+                    new JsonGeneratorJsonWriterAdapter(new JsonGenerator()),
+                    new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(PRETTY))
             ).map(Arguments::arguments);
         }
     }

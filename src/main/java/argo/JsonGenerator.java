@@ -228,7 +228,7 @@ public final class JsonGenerator {
         /**
          * Excludes all optional whitespace to produce the briefest valid JSON.
          */
-        COMPACT(new CompactJsonWriter(), CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter());
+        COMPACT(new CompactJsonWriter(), CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter());
 
         private final JsonWriter jsonWriter;
         private final JsonFormatter fieldSortingJsonFormatter;

@@ -10,12 +10,19 @@
 
 package argo.format;
 
+import argo.JsonGenerator;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.StringWriter;
+import java.util.stream.Stream;
 
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
 import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,25 +30,41 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PrettyJsonWriterTest {
-    @Test
-    void canWriteEmptyArray() throws Exception {
+
+    static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    new PrettyJsonWriter(),
+                    new JsonGeneratorJsonWriterAdapter(new JsonGenerator()),
+                    new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(PRETTY))
+            ).map(Arguments::arguments);
+        }
+
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteEmptyArray(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, array());
+        jsonWriter.write(stringBuilderWriter, array());
         assertThat(stringBuilderWriter.toString(), equalTo("[]"));
     }
 
-    @Test
-    void canWritesEmptyWriteableJsonArray() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWritesEmptyWriteableJsonArray(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> {
         });
         assertThat(stringBuilderWriter.toString(), equalTo("[]"));
     }
 
-    @Test
-    void canWritesArrayOfArrays() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWritesArrayOfArrays(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonArray) arrayWriter1 -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonArray) arrayWriter1 -> {
         }));
         assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()
                 .printLine("[")
@@ -50,10 +73,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWritesArrayOfAllElements() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWritesArrayOfAllElements(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> {
             arrayWriter.writeElement(array());
             arrayWriter.writeElement(object());
             arrayWriter.writeElement(string("foo"));
@@ -75,10 +99,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteAnArrayOfObjects() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteAnArrayOfObjects(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonObject) objectWriter -> {
 
         }));
         assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()
@@ -88,25 +113,28 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteEmptyObject() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteEmptyObject(final JsonWriter jsonWriter) throws Exception {
         final StringWriter stringWriter = new StringWriter();
-        new PrettyJsonWriter().write(stringWriter, object());
+        jsonWriter.write(stringWriter, object());
         assertThat(stringWriter.toString(), equalTo("{}"));
     }
 
-    @Test
-    void canWriteEmptyWriteableJsonObject() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteEmptyWriteableJsonObject(final JsonWriter jsonWriter) throws Exception {
         final StringWriter stringWriter = new StringWriter();
-        new PrettyJsonWriter().write(stringWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringWriter, (WriteableJsonObject) objectWriter -> {
         });
         assertThat(stringWriter.toString(), equalTo("{}"));
     }
 
-    @Test
-    void canWriteObjectOfStringKeyedObjects() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfStringKeyedObjects(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonObject) objectWriter1 -> {
             });
             objectWriter.writeField("Bar", (WriteableJsonObject) objectWriter1 -> {
@@ -120,10 +148,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfJsonStringKeyedObjects() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfJsonStringKeyedObjects(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(string("Foo"), (WriteableJsonObject) objectWriter1 -> {
             });
             objectWriter.writeField(string("Bar"), (WriteableJsonObject) objectWriter1 -> {
@@ -137,10 +166,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfJsonFieldObjects() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfJsonFieldObjects(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(field("Foo", object()));
             objectWriter.writeField(field("Bar", object()));
         });
@@ -152,10 +182,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfStringKeyedStrings() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfStringKeyedStrings(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", string("Bar"));
             objectWriter.writeField("Baz", string("Qux"));
         });
@@ -167,10 +198,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfStringKeyedWriteableJsonArrays() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfStringKeyedWriteableJsonArrays(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonArray) arrayWriter1 -> {
             });
             objectWriter.writeField("Bar", (WriteableJsonArray) arrayWriter1 -> {
@@ -184,10 +216,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfStringKeyedWriteableJsonStrings() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfStringKeyedWriteableJsonStrings(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonString) writer -> {
             });
             objectWriter.writeField("Bar", (WriteableJsonString) writer -> {
@@ -201,10 +234,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfJsonStringKeyedWriteableJsonStrings() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfJsonStringKeyedWriteableJsonStrings(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(string("Foo"), (WriteableJsonString) writer -> {
             });
             objectWriter.writeField(string("Bar"), (WriteableJsonString) writer -> {
@@ -218,17 +252,19 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteWriteableJsonString() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteWriteableJsonString(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonString) writer -> writer.write("\"Foo\""));
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonString) writer -> writer.write("\"Foo\""));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("\"\\\"Foo\\\"\""));
     }
 
-    @Test
-    void canWriteAnArrayOfWriteableJsonString() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteAnArrayOfWriteableJsonString(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonString) writer -> writer.write("\"Foo\"")));
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonString) writer -> writer.write("\"Foo\"")));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()
                 .printLine("[")
                 .printLine("\t\"\\\"Foo\\\"\"")
@@ -236,10 +272,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonObjects() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonObjects(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonObject) objectWriter1 -> {
             });
             objectWriter.writeField(writer -> writer.write("Bar"), (WriteableJsonObject) objectWriter1 -> {
@@ -253,10 +290,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonArrays() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonArrays(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonArray) writeableJsonArray -> {
             });
             objectWriter.writeField(writer -> writer.write("Bar"), (WriteableJsonArray) writeableJsonArray -> {
@@ -270,10 +308,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonStrings() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonStrings(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), (WriteableJsonString) writer -> {
             });
             objectWriter.writeField(writer -> writer.write("Bar"), (WriteableJsonString) writer -> {
@@ -287,10 +326,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfWriteableJsonStringKeyedJsonNodes() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfWriteableJsonStringKeyedJsonNodes(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> {
             objectWriter.writeField(writer -> writer.write("Foo"), trueNode());
             objectWriter.writeField(writer -> writer.write("Bar"), falseNode());
         });
@@ -302,27 +342,31 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteWriteableJsonNumber() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteWriteableJsonNumber(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonNumber) writer -> writer.write("1234.56e+10"));
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonNumber) writer -> writer.write("1234.56e+10"));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo("1234.56e+10"));
     }
 
-    @Test
-    void rejectsNonIntegerNumberWithNothingBeforeTheDecimalPoint() {
-        assertThrows(IllegalArgumentException.class, () -> new PrettyJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write(".1")));
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void rejectsNonIntegerNumberWithNothingBeforeTheDecimalPoint(final JsonWriter jsonWriter) {
+        assertThrows(IllegalArgumentException.class, () -> jsonWriter.write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write(".1")));
     }
 
-    @Test
-    void rejectsNumberWithDecimalPointButNothingAfter() {
-        assertThrows(IllegalStateException.class, () -> new PrettyJsonWriter().write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1.")));
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void rejectsNumberWithDecimalPointButNothingAfter(final JsonWriter jsonWriter) {
+        assertThrows(IllegalStateException.class, () -> jsonWriter.write(new StringBuilderWriter(), (WriteableJsonNumber) writer -> writer.write("1.")));
     }
 
-    @Test
-    void canWriteAnArrayOfWriteableJsonNumber() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteAnArrayOfWriteableJsonNumber(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonNumber) writer -> writer.write("-123.456E+789")));
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonArray) arrayWriter -> arrayWriter.writeElement((WriteableJsonNumber) writer -> writer.write("-123.456E+789")));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()
                 .printLine("[")
                 .printLine("\t-123.456E+789")
@@ -330,10 +374,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfStringKeyedWriteableJsonNumberFields() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfStringKeyedWriteableJsonNumberFields(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 "Foo", (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
         ));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()
@@ -343,10 +388,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfJsonStringKeyedWriteableJsonNumberFields() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfJsonStringKeyedWriteableJsonNumberFields(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 string("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
         ));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()
@@ -356,10 +402,11 @@ class PrettyJsonWriterTest {
                 .build()));
     }
 
-    @Test
-    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonNumberFields() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfWriteableJsonStringKeyedWriteableJsonNumberFields(final JsonWriter jsonWriter) throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        new PrettyJsonWriter().write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
+        jsonWriter.write(stringBuilderWriter, (WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 writer -> writer.write("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
         ));
         MatcherAssert.assertThat(stringBuilderWriter.toString(), equalTo(aJsonStringResultBuilder()

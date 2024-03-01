@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,11 +10,19 @@
 
 package argo.format;
 
+import argo.JsonGenerator;
 import argo.jdom.JsonNode;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.util.stream.Stream;
+
+import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
 import static argo.format.CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter;
-import static argo.format.CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter;
 import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
 import static argo.jdom.JsonNodeFactories.*;
 import static java.util.Arrays.asList;
@@ -23,33 +31,57 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 final class CompactJsonFormatterTest {
-    @Test
-    void formatsAJsonObject() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(asList(
+    static final class FieldOrderPreservingCompactJsonFormatterArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter(),
+                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator().style(COMPACT))
+            ).map(Arguments::arguments);
+        }
+    }
+
+    static final class FieldOrderNormalisingCompactJsonFormatterArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter(),
+                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator().style(COMPACT))
+            ).map(Arguments::arguments);
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsAJsonObject(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(object(asList(
                 field(string("Foo"), string("Bar")),
                 field(string("Hello"), string("World"))
         ))), equalTo("{\"Foo\":\"Bar\",\"Hello\":\"World\"}"));
     }
 
-    @Test
-    void formatsAJsonNumber() {
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsAJsonNumber(final JsonFormatter jsonFormatter) {
         assertThat(
-                fieldOrderPreservingCompactJsonFormatter().format(object(field("S", number("7")))),
+                jsonFormatter.format(object(field("S", number("7")))),
                 equalTo("{\"S\":7}")
         );
     }
 
-    @Test
-    void formatsAJsonArray() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsAJsonArray(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(asList(
                 number("12")
                 , string("tie")
         ))), equalTo("[12,\"tie\"]"));
     }
 
-    @Test
-    void formatsTheJsonConstants() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(asList(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsTheJsonConstants(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(asList(
                 nullNode()
                 , trueNode()
                 , falseNode()
@@ -57,9 +89,10 @@ final class CompactJsonFormatterTest {
     }
 
 
-    @Test
-    void formatsAString() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(string("foo")), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsAString(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(string("foo")), equalTo(
                 aJsonStringResultBuilder()
                         .print("\"foo\"")
                         .build()
@@ -67,9 +100,10 @@ final class CompactJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsANumber() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(number("123.456E789")), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsANumber(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(number("123.456E789")), equalTo(
                 aJsonStringResultBuilder()
                         .print("123.456E789")
                         .build()
@@ -77,9 +111,10 @@ final class CompactJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsANull() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(nullNode()), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsANull(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(nullNode()), equalTo(
                 aJsonStringResultBuilder()
                         .print("null")
                         .build()
@@ -87,9 +122,10 @@ final class CompactJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsATrue() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(trueNode()), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsATrue(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(trueNode()), equalTo(
                 aJsonStringResultBuilder()
                         .print("true")
                         .build()
@@ -97,9 +133,10 @@ final class CompactJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsAFalse() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(falseNode()), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsAFalse(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(falseNode()), equalTo(
                 aJsonStringResultBuilder()
                         .print("false")
                         .build()
@@ -107,25 +144,29 @@ final class CompactJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsAJsonStringWithEscapedCharacters() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(singletonList(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsAJsonStringWithEscapedCharacters(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(singletonList(
                 (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo("[\"\\\" \\\\ \\b \\f \\n \\r \\t\"]"));
     }
 
-    @Test
-    void formatsAStringWithinAString() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(array(singletonList(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void formatsAStringWithinAString(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(singletonList(
                 (JsonNode) string("\"\\\"A String\\\" within a String\"")))), equalTo("[\"\\\"\\\\\\\"A String\\\\\\\" within a String\\\"\"]"));
     }
 
-    @Test
-    void orderPreservingFormatterPreservesFieldOrder() {
-        assertThat(fieldOrderPreservingCompactJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo("{\"b\":\"A String\",\"a\":\"A String\"}"));
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
+    void orderPreservingFormatterPreservesFieldOrder(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(object(field("b", string("A String")), field("a", string("A String")))), equalTo("{\"b\":\"A String\",\"a\":\"A String\"}"));
     }
 
-    @Test
-    void orderNormalisingFormatterNormalisesFieldOrder() {
-        assertThat(fieldOrderNormalisingCompactJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo("{\"a\":\"A String\",\"b\":\"A String\"}"));
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderNormalisingCompactJsonFormatterArgumentsProvider.class)
+    void orderNormalisingFormatterNormalisesFieldOrder(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(object(field("b", string("A String")), field("a", string("A String")))), equalTo("{\"a\":\"A String\",\"b\":\"A String\"}"));
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,16 +10,21 @@
 
 package argo.format;
 
+import argo.JsonGenerator;
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.File;
+import java.util.stream.Stream;
 
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
-import static argo.format.PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter;
-import static argo.format.PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter;
 import static argo.jdom.JsonNodeFactories.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
@@ -30,9 +35,32 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 final class PrettyJsonFormatterTest {
-    @Test
-    void formatsAJsonObject() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(asList(
+    static final class FieldOrderPreservingPrettyJsonFormatterArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter(),
+                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator()),
+                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator().style(PRETTY))
+            ).map(Arguments::arguments);
+        }
+    }
+
+    static final class FieldOrderNormalisingPrettyJsonFormatterArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter(),
+                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator()),
+                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator().style(PRETTY))
+            ).map(Arguments::arguments);
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsAJsonObject(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(object(asList(
                 field(string("Hello"), string("World")),
                 field(string("Foo"), string("Bar"))
         ))), equalTo(
@@ -45,10 +73,11 @@ final class PrettyJsonFormatterTest {
         ));
     }
 
-    @Test
-    void formatsAnEmptyJsonObject() {
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsAnEmptyJsonObject(final JsonFormatter jsonFormatter) {
         assertThat(
-                fieldOrderPreservingPrettyJsonFormatter().format(object(field("Hello", object()))),
+                jsonFormatter.format(object(field("Hello", object()))),
                 equalTo(aJsonStringResultBuilder()
                         .printLine("{")
                         .printLine("\t\"Hello\": {}")
@@ -57,9 +86,10 @@ final class PrettyJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsAJsonArray() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(asList(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsAJsonArray(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(asList(
                 string("BobBob")
                 , number("23")
         ))), equalTo(
@@ -73,9 +103,10 @@ final class PrettyJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsAnEmptyJsonArray() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(emptyList())), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsAnEmptyJsonArray(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(emptyList())), equalTo(
                 aJsonStringResultBuilder()
                         .print("[]")
                         .build()
@@ -83,9 +114,10 @@ final class PrettyJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsAString() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(string("foo")), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsAString(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(string("foo")), equalTo(
                 aJsonStringResultBuilder()
                         .print("\"foo\"")
                         .build()
@@ -93,9 +125,10 @@ final class PrettyJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsANumber() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(number("123.456E789")), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsANumber(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(number("123.456E789")), equalTo(
                 aJsonStringResultBuilder()
                         .print("123.456E789")
                         .build()
@@ -103,9 +136,10 @@ final class PrettyJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsANull() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(nullNode()), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsANull(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(nullNode()), equalTo(
                 aJsonStringResultBuilder()
                         .print("null")
                         .build()
@@ -113,9 +147,10 @@ final class PrettyJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsATrue() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(trueNode()), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsATrue(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(trueNode()), equalTo(
                 aJsonStringResultBuilder()
                         .print("true")
                         .build()
@@ -123,9 +158,10 @@ final class PrettyJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsAFalse() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(falseNode()), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsAFalse(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(falseNode()), equalTo(
                 aJsonStringResultBuilder()
                         .print("false")
                         .build()
@@ -133,9 +169,10 @@ final class PrettyJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsAJsonStringWithEscapedCharacters() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsAJsonStringWithEscapedCharacters(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(singletonList(
                 (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
@@ -146,9 +183,10 @@ final class PrettyJsonFormatterTest {
         );
     }
 
-    @Test
-    void formatsAStringWithinAString() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsAStringWithinAString(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(singletonList(
                 (JsonNode) string("\"\\\"A String\\\" within a String\"")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
@@ -158,20 +196,21 @@ final class PrettyJsonFormatterTest {
         ));
     }
 
-    @Test
-    void testRoundTrip() throws Exception {
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void testRoundTrip(final JsonFormatter jsonFormatter) throws Exception {
         final File longJsonExample = new File(this.getClass().getResource("Sample.json").getFile());
         final String json = readFileToString(longJsonExample, UTF_8);
         final JdomParser jdomParser = new JdomParser();
         final JsonNode node = jdomParser.parse(json);
-        final JsonFormatter jsonFormatter = fieldOrderPreservingPrettyJsonFormatter();
         final String expected = jsonFormatter.format(node);
         assertThat(jdomParser.parse(expected), Matchers.equalTo(node));
     }
 
-    @Test
-    void orderPreservingFormatterPreservesFieldOrder() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void orderPreservingFormatterPreservesFieldOrder(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(object(field("b", string("A String")), field("a", string("A String")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("{")
                         .printLine("\t\"b\": \"A String\",")
@@ -181,9 +220,10 @@ final class PrettyJsonFormatterTest {
         ));
     }
 
-    @Test
-    void orderNormalisingFormatterNormalisesFieldOrder() {
-        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(object(field("b", string("A String")), field("a", string("A String")))), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderNormalisingPrettyJsonFormatterArgumentsProvider.class)
+    void orderNormalisingFormatterNormalisesFieldOrder(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(object(field("b", string("A String")), field("a", string("A String")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("{")
                         .printLine("\t\"a\": \"A String\",")
@@ -193,9 +233,10 @@ final class PrettyJsonFormatterTest {
         ));
     }
 
-    @Test
-    void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinArray() {
-        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(array(object(field("b", string("A String")), field("a", string("A String"))))), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderNormalisingPrettyJsonFormatterArgumentsProvider.class)
+    void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinArray(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(object(field("b", string("A String")), field("a", string("A String"))))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
                         .printLine("\t{")
@@ -207,9 +248,10 @@ final class PrettyJsonFormatterTest {
         ));
     }
 
-    @Test
-    void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinObject() {
-        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(object(field("Foo", object(field("b", string("A String")), field("a", string("A String")))))), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderNormalisingPrettyJsonFormatterArgumentsProvider.class)
+    void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinObject(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(object(field("Foo", object(field("b", string("A String")), field("a", string("A String")))))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("{")
                         .printLine("\t\"Foo\": {")
@@ -221,9 +263,10 @@ final class PrettyJsonFormatterTest {
         ));
     }
 
-    @Test
-    void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinArrayWithinObject() {
-        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(object(field("Foo", array(object(field("b", string("A String")), field("a", string("A String"))))))), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderNormalisingPrettyJsonFormatterArgumentsProvider.class)
+    void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinArrayWithinObject(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(object(field("Foo", array(object(field("b", string("A String")), field("a", string("A String"))))))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("{")
                         .printLine("\t\"Foo\": [")
@@ -237,9 +280,10 @@ final class PrettyJsonFormatterTest {
         ));
     }
 
-    @Test
-    void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinObjectWithinArray() {
-        assertThat(fieldOrderNormalisingPrettyJsonFormatter().format(array(object(field("Foo", object(field("b", string("A String")), field("a", string("A String"))))))), equalTo(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderNormalisingPrettyJsonFormatterArgumentsProvider.class)
+    void orderNormalisingFormatterNormalisesFieldOrderOfObjectWithinObjectWithinArray(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(object(field("Foo", object(field("b", string("A String")), field("a", string("A String"))))))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
                         .printLine("\t{")
@@ -253,9 +297,10 @@ final class PrettyJsonFormatterTest {
         ));
     }
 
-    @Test
-    void formatsEcmaSurrogatePairExamples() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsEcmaSurrogatePairExamples(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(singletonList(
                 (JsonNode) string("\ud834\udd1e")))), equalTo(
                 aJsonStringResultBuilder()
                         .printLine("[")
@@ -267,9 +312,10 @@ final class PrettyJsonFormatterTest {
     }
 
 
-    @Test
-    void formatsControlCharacters() {
-        assertThat(fieldOrderPreservingPrettyJsonFormatter().format(array(singletonList(
+    @ParameterizedTest
+    @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
+    void formatsControlCharacters(final JsonFormatter jsonFormatter) {
+        assertThat(jsonFormatter.format(array(singletonList(
                         (JsonNode) string("\u0000")))), equalTo(
                         aJsonStringResultBuilder()
                                 .printLine("[")
