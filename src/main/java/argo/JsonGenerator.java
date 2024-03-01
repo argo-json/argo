@@ -8,15 +8,16 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.format;
+package argo;
 
+import argo.format.*;
 import argo.jdom.JsonNode;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import static argo.format.JsonGenerator.JsonGeneratorStyle.PRETTY;
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 
 /**
  * Provides operations create {@code String}s of valid JSON and to stream valid JSON text to a {@code java.io.Writer}.
@@ -25,14 +26,14 @@ import static argo.format.JsonGenerator.JsonGeneratorStyle.PRETTY;
  */
 public final class JsonGenerator {
 
-    private final AbstractJsonWriter jsonWriter;
+    private final JsonGeneratorStyle jsonGeneratorStyle;
 
     public JsonGenerator() {
         this(PRETTY);
     }
 
     private JsonGenerator(final JsonGeneratorStyle jsonGeneratorStyle) {
-        this.jsonWriter = jsonGeneratorStyle.jsonWriter;
+        this.jsonGeneratorStyle = jsonGeneratorStyle;
     }
 
     /**
@@ -43,7 +44,7 @@ public final class JsonGenerator {
      * @throws IOException       if there was a problem writing to the {@code Writer}.
      */
     public void generate(final Writer target, final WriteableJsonArray writeableJsonArray) throws IOException {
-        jsonWriter.write(target, writeableJsonArray);
+        jsonGeneratorStyle.jsonWriter.write(target, writeableJsonArray);
     }
 
     /**
@@ -71,7 +72,7 @@ public final class JsonGenerator {
      * @throws IOException        if there was a problem writing to the {@code Writer}.
      */
     public void generate(final Writer target, final WriteableJsonObject writeableJsonObject) throws IOException {
-        jsonWriter.write(target, writeableJsonObject);
+        jsonGeneratorStyle.jsonWriter.write(target, writeableJsonObject);
     }
 
     /**
@@ -99,7 +100,7 @@ public final class JsonGenerator {
      * @throws IOException        if there was a problem writing to the {@code Writer}.
      */
     public void generate(final Writer target, final WriteableJsonString writeableJsonString) throws IOException {
-        jsonWriter.write(target, writeableJsonString);
+        jsonGeneratorStyle.jsonWriter.write(target, writeableJsonString);
     }
 
     /**
@@ -128,7 +129,7 @@ public final class JsonGenerator {
      * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} don't constitute a complete JSON number.
      */
     public void generate(final Writer target, final WriteableJsonNumber writeableJsonNumber) throws IOException {
-        jsonWriter.write(target, writeableJsonNumber);
+        jsonGeneratorStyle.jsonWriter.write(target, writeableJsonNumber);
     }
 
     /**
@@ -157,7 +158,7 @@ public final class JsonGenerator {
      * @throws IOException if there was a problem writing to the {@code Writer}.
      */
     public void generate(final Writer target, final JsonNode jsonNode) throws IOException {
-        jsonWriter.write(target, jsonNode);
+        jsonGeneratorStyle.jsonWriter.write(target, jsonNode);
     }
 
     /**
@@ -184,7 +185,7 @@ public final class JsonGenerator {
      * @throws IOException if there was a problem writing to the {@code Writer}.
      */
     public void generateWithFieldSorting(final Writer target, final JsonNode jsonNode) throws IOException { // TODO document and test field deduplication
-        jsonWriter.withFieldSorting(true).write(target, jsonNode);
+        jsonGeneratorStyle.fieldSortingJsonFormatter.format(jsonNode, target);
     }
 
     /**
@@ -208,12 +209,15 @@ public final class JsonGenerator {
     }
 
     public enum JsonGeneratorStyle {
-        PRETTY(new PrettyJsonWriter()), COMPACT(new CompactJsonWriter());
+        PRETTY(new PrettyJsonWriter(), PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter()),
+        COMPACT(new CompactJsonWriter(), CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter());
 
-        private final AbstractJsonWriter jsonWriter;
+        private final JsonWriter jsonWriter;
+        private final JsonFormatter fieldSortingJsonFormatter;
 
-        JsonGeneratorStyle(final AbstractJsonWriter jsonWriter) {
+        JsonGeneratorStyle(final JsonWriter jsonWriter, final JsonFormatter fieldSortingJsonFormatter) {
             this.jsonWriter = jsonWriter;
+            this.fieldSortingJsonFormatter = fieldSortingJsonFormatter;
         }
     }
 }
