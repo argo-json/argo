@@ -11,13 +11,19 @@
 package argo.jdom;
 
 import argo.ChoppingReader;
+import argo.JsonParser;
 import argo.saj.InvalidSyntaxException;
 import org.apache.commons.io.input.BrokenReader;
 import org.apache.commons.io.input.SequenceReader;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.stream.Stream;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,149 +33,185 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JdomParserTest {
 
-    @Test
-    void parsesANumber() throws Exception {
-        assertThat(new JdomParser().parse("42"), equalTo(number(42)));
+    static final class ParserArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    new JdomParserJsonParserShim.Jdom(new JdomParser()),
+                    new JdomParserJsonParserShim.Json(new JsonParser())
+            ).map(Arguments::arguments);
+        }
+
     }
 
-    @Test
-    void parsesAString() throws Exception {
-        assertThat(new JdomParser().parse("\"Foo\""), equalTo(string("Foo")));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesANumber(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("42"), equalTo(number(42)));
     }
 
-    @Test
-    void parsesASingletonNumberZero() throws Exception {
-        assertThat(new JdomParser().parse("0"), sameInstance(number(0)));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesAString(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("\"Foo\""), equalTo(string("Foo")));
     }
 
-    @Test
-    void parsesASingletonNumberOne() throws Exception {
-        assertThat(new JdomParser().parse("1"), sameInstance(number(1)));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesASingletonNumberZero(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("0"), sameInstance(number(0)));
     }
 
-    @Test
-    void parsesASingletonEmptyString() throws Exception {
-        assertThat(new JdomParser().parse("\"\""), sameInstance(string("")));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesASingletonNumberOne(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("1"), sameInstance(number(1)));
     }
 
-    @Test
-    void parsesANull() throws Exception {
-        assertThat(new JdomParser().parse("null"), equalTo(nullNode()));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesASingletonEmptyString(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("\"\""), sameInstance(string("")));
     }
 
-    @Test
-    void parsesATrue() throws Exception {
-        assertThat(new JdomParser().parse("true"), equalTo(trueNode()));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesANull(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("null"), equalTo(nullNode()));
     }
 
-    @Test
-    void parsesAFalse() throws Exception {
-        assertThat(new JdomParser().parse("false"), equalTo(falseNode()));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesATrue(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("true"), equalTo(trueNode()));
     }
 
-    @Test
-    void parsesAnArray() throws Exception {
-        assertThat(new JdomParser().parse("[]"), equalTo(array()));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesAFalse(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("false"), equalTo(falseNode()));
     }
 
-    @Test
-    void parsesAnObject() throws Exception {
-        assertThat(new JdomParser().parse("{\"foo\": \"bar\"}"), equalTo(object(field("foo", string("bar")))));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesAnArray(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("[]"), equalTo(array()));
     }
 
-    @Test
-    void parsesNumberBetweenZeroAndOne() throws Exception {
-        new JdomParser().parse("{\"value\": 0.6}");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesAnObject(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("{\"foo\": \"bar\"}"), equalTo(object(field("foo", string("bar")))));
     }
 
-    @Test
-    void parsesNumberWithALowerCaseExponent() throws Exception {
-        assertThat(new JdomParser().parse("{ \"PI\":3.141e-10}").getNumberValue("PI"), equalTo("3.141e-10"));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesNumberBetweenZeroAndOne(final JdomParserJsonParserShim parser) throws Exception {
+        parser.parse("{\"value\": 0.6}");
     }
 
-    @Test
-    void parsesAnUnescapedForwardsSlash() throws Exception {
-        assertThat(new JdomParser().parse("{ \"a\":\"hp://foo\"}").getStringValue("a"), equalTo("hp://foo"));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesNumberWithALowerCaseExponent(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("{ \"PI\":3.141e-10}").getNumberValue("PI"), equalTo("3.141e-10"));
     }
 
-    @Test
-    void parsesSomeUnicodeStuff() throws Exception {
-        assertThat(new JdomParser().parse("{ \"v\":\"\\u2000\\u20ff\"}").getStringValue("v"), equalTo("\u2000\u20ff"));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesAnUnescapedForwardsSlash(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("{ \"a\":\"hp://foo\"}").getStringValue("a"), equalTo("hp://foo"));
     }
 
-    @Test
-    void parsesEscapedStuff() throws Exception {
-        assertThat(new JdomParser().parse("{ \"v\":\"\\\" \\\\ \\b \\t \\n \\r \\f\"}").getStringValue("v"), equalTo("\" \\ \b \t \n \r \f"));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesSomeUnicodeStuff(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("{ \"v\":\"\\u2000\\u20ff\"}").getStringValue("v"), equalTo("\u2000\u20ff"));
     }
 
-    @Test
-    void parsesEcmaForwardSlashExamples() throws Exception {
-        assertThat(new JdomParser().parse("[\"\\u002F\"]").getStringValue(0), equalTo("/"));
-        assertThat(new JdomParser().parse("[\"\\u002f\"]").getStringValue(0), equalTo("/"));
-        assertThat(new JdomParser().parse("[\"\\/\"]").getStringValue(0), equalTo("/"));
-        assertThat(new JdomParser().parse("[\"/\"]").getStringValue(0), equalTo("/"));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesEscapedStuff(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("{ \"v\":\"\\\" \\\\ \\b \\t \\n \\r \\f\"}").getStringValue("v"), equalTo("\" \\ \b \t \n \r \f"));
     }
 
-    @Test
-    void parsesEcmaUtf16SurrogatePairExample() throws Exception {
-        assertThat(new JdomParser().parse("[\"\\uD834\\uDD1E\"]").getStringValue(0), equalTo("\ud834\udd1e"));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesEcmaForwardSlashExamples(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("[\"\\u002F\"]").getStringValue(0), equalTo("/"));
+        assertThat(parser.parse("[\"\\u002f\"]").getStringValue(0), equalTo("/"));
+        assertThat(parser.parse("[\"\\/\"]").getStringValue(0), equalTo("/"));
+        assertThat(parser.parse("[\"/\"]").getStringValue(0), equalTo("/"));
     }
 
-    @Test
-    void parsesMismatchedDoubleQuotesInAnArray() {
-        assertThrows(InvalidSyntaxException.class, () -> new JdomParser().parse("{\"}"));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesEcmaUtf16SurrogatePairExample(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("[\"\\uD834\\uDD1E\"]").getStringValue(0), equalTo("\ud834\udd1e"));
     }
 
-    @Test
-    void parsesMismatchedDoubleQuotesInAnObject() {
-        assertThrows(InvalidSyntaxException.class, () -> new JdomParser().parse("{\"a\":\"b}"));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesMismatchedDoubleQuotesInAnArray(final JdomParserJsonParserShim parser) {
+        assertThrows(InvalidSyntaxException.class, () -> parser.parse("{\"}"));
     }
 
-    @Test
-    void rethrowsIOExceptionFromReader() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsesMismatchedDoubleQuotesInAnObject(final JdomParserJsonParserShim parser) {
+        assertThrows(InvalidSyntaxException.class, () -> parser.parse("{\"a\":\"b}"));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rethrowsIOExceptionFromReader(final JdomParserJsonParserShim parser) {
         final IOException ioException = new IOException("An IOException");
-        final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new BrokenReader(ioException)));
+        final IOException actualException = assertThrows(IOException.class, () -> parser.parse(new BrokenReader(ioException)));
         assertThat(actualException, sameInstance(ioException));
     }
 
-    @Test
-    void rethrowsIOExceptionFromPartWayThroughFieldName() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rethrowsIOExceptionFromPartWayThroughFieldName(final JdomParserJsonParserShim parser) {
         final IOException ioException = new IOException("An IOException");
-        final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new SequenceReader(
+        final IOException actualException = assertThrows(IOException.class, () -> parser.parse(new SequenceReader(
                 new StringReader("{\"He"),
                 new BrokenReader(ioException)
         )));
         assertThat(actualException, sameInstance(ioException));
     }
 
-    @Test
-    void rethrowsIOExceptionFromPartWayThroughString() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rethrowsIOExceptionFromPartWayThroughString(final JdomParserJsonParserShim parser) {
         final IOException ioException = new IOException("An IOException");
-        final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new SequenceReader(
+        final IOException actualException = assertThrows(IOException.class, () -> parser.parse(new SequenceReader(
                 new StringReader("\"He"),
                 new BrokenReader(ioException)
         )));
         assertThat(actualException, sameInstance(ioException));
     }
 
-    @Test
-    void rethrowsIOExceptionFromPartWayThroughNumber() {
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void rethrowsIOExceptionFromPartWayThroughNumber(final JdomParserJsonParserShim parser) {
         final IOException ioException = new IOException("An IOException");
-        final IOException actualException = assertThrows(IOException.class, () -> new JdomParser().parse(new SequenceReader(
+        final IOException actualException = assertThrows(IOException.class, () -> parser.parse(new SequenceReader(
                 new StringReader("1."),
                 new BrokenReader(ioException)
         )));
         assertThat(actualException, sameInstance(ioException));
     }
 
-    @Test
-    void canParseCharacterZero() throws Exception {
-        assertThat(new JdomParser().parse("[\"\u0000\"]").getStringValue(0), equalTo("\u0000"));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canParseCharacterZero(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("[\"\u0000\"]").getStringValue(0), equalTo("\u0000"));
     }
 
-    @Test
-    void canParseCharacterMinusOne() throws Exception {
-        assertThat(new JdomParser().parse("[\"" + ((char) -1) + "\"]").getStringValue(0), equalTo(String.valueOf((char) -1)));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void canParseCharacterMinusOne(final JdomParserJsonParserShim parser) throws Exception {
+        assertThat(parser.parse("[\"" + ((char) -1) + "\"]").getStringValue(0), equalTo(String.valueOf((char) -1)));
     }
 
     /**
@@ -182,29 +224,33 @@ final class JdomParserTest {
      *
      * @author Henrik Sjöstrand
      */
-    @Test
-    void whenReaderReturnsSomeThenReadMore() throws Exception {
-        final JsonNode jsonNode = new JdomParser().parse(new ChoppingReader(new StringReader("{\"nullField\":null}")));
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void whenReaderReturnsSomeThenReadMore(final JdomParserJsonParserShim parser) throws Exception {
+        final JsonNode jsonNode = parser.parse(new ChoppingReader(new StringReader("{\"nullField\":null}")));
         final String result = JsonNodeSelectors.aNullableStringNode("nullField").getValue(jsonNode);
         assertThat(result, equalTo(null));
     }
 
-    @Test
-    void equalKeysInTheSameDocumentReferToTheSameObject() throws Exception {
-        final JsonNode jsonNode = new JdomParser().parse("[{\"value\": 0.6}, {\"value\": 0.6}]");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void equalKeysInTheSameDocumentReferToTheSameObject(final JdomParserJsonParserShim parser) throws Exception {
+        final JsonNode jsonNode = parser.parse("[{\"value\": 0.6}, {\"value\": 0.6}]");
         assertThat(jsonNode.getNode(0).getFieldList().get(0).getName(), sameInstance(jsonNode.getNode(1).getFieldList().get(0).getName()));
     }
 
 
-    @Test
-    void equalStringsInTheSameDocumentReferToTheSameObject() throws Exception {
-        final JsonNode jsonNode = new JdomParser().parse("[\"foo\", \"foo\"]");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void equalStringsInTheSameDocumentReferToTheSameObject(final JdomParserJsonParserShim parser) throws Exception {
+        final JsonNode jsonNode = parser.parse("[\"foo\", \"foo\"]");
         assertThat(jsonNode.getNode(0), sameInstance(jsonNode.getNode(1)));
     }
 
-    @Test
-    void equalNumbersInTheSameDocumentReferToTheSameObject() throws Exception {
-        final JsonNode jsonNode = new JdomParser().parse("[123, 123]");
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void equalNumbersInTheSameDocumentReferToTheSameObject(final JdomParserJsonParserShim parser) throws Exception {
+        final JsonNode jsonNode = parser.parse("[123, 123]");
         assertThat(jsonNode.getNode(0), sameInstance(jsonNode.getNode(1)));
     }
 
