@@ -14,7 +14,6 @@ import argo.JsonGenerator;
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
 import org.apache.commons.io.output.BrokenWriter;
-import org.apache.commons.io.output.NullWriter;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,7 +21,6 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.stream.Stream;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
@@ -39,26 +37,40 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JsonWriterTest {
 
+    private static Stream<JsonWriter> jsonWritersAndShimmedJsonGenerators() {
+        return Stream.of(
+                new CompactJsonWriter(),
+                new PrettyJsonWriter(),
+                new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(COMPACT)),
+                new JsonGeneratorJsonWriterAdapter(new JsonGenerator()),
+                new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(PRETTY))
+        );
+    }
+
+    static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.concat(
+                    jsonWritersAndShimmedJsonGenerators().map(WriterJsonGeneratorJsonWriterTestCase::new),
+                    Stream.of(
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator()),
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY))
+                    )).map(Arguments::arguments);
+        }
+
+    }
+
     static final class JsonWriterArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(
-                    new CompactJsonWriter(),
-                    new PrettyJsonWriter(),
-                    new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(COMPACT)),
-                    new JsonGeneratorJsonWriterAdapter(new JsonGenerator()),
-                    new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(PRETTY))
-            ).map(Arguments::arguments);
+            return jsonWritersAndShimmedJsonGenerators().map(Arguments::arguments);
         }
     }
 
     static final class JsonNodeJsonWriterCartesianProductArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(
-                    new CompactJsonWriter(),
-                    new PrettyJsonWriter()
-            ).flatMap(jsonWriter ->
+            return jsonWritersAndShimmedJsonGenerators().flatMap(jsonWriter ->
                     Stream.of(
                             nullNode(),
                             trueNode(),
@@ -74,7 +86,7 @@ class JsonWriterTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(JsonWriterTest.JsonNodeJsonWriterCartesianProductArgumentsProvider.class)
+    @ArgumentsSource(JsonNodeJsonWriterCartesianProductArgumentsProvider.class)
     void propagatesIOExceptionFromTargetWriter(final JsonWriter jsonWriter, final JsonNode jsonNode) {
         final IOException ioException = new IOException();
         final IOException actualIoException = assertThrows(IOException.class, () -> jsonWriter.write(new BrokenWriter(() -> ioException), jsonNode));
@@ -82,25 +94,23 @@ class JsonWriterTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
-    void writesTwoStringsToReuseWriteBuffer(final JsonWriter jsonWriter) throws Exception {
-        final StringWriter stringWriter = new StringWriter();
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void writesTwoStringsToReuseWriteBuffer(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) throws Exception {
         final JsonNode jsonNode = array(aStringNode(), aStringNode());
-        jsonWriter.write(stringWriter, jsonNode);
-        assertThat(new JdomParser().parse(stringWriter.toString()), equalTo(jsonNode));
+        final String jsonText = jsonGeneratorJsonWriterTestCase.write(jsonNode);
+        assertThat(new JdomParser().parse(jsonText), equalTo(jsonNode));
     }
 
     @ParameterizedTest
-    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
-    void writesTwoWriteableJsonStringsToReuseWriteBuffer(final JsonWriter jsonWriter) throws Exception {
-        final StringWriter stringWriter = new StringWriter();
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void writesTwoWriteableJsonStringsToReuseWriteBuffer(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) throws Exception {
         final String firstString = aString();
         final String secondString = aString();
-        jsonWriter.write(stringWriter, (WriteableJsonArray) arrayWriter -> {
+        final String jsonText = jsonGeneratorJsonWriterTestCase.write((WriteableJsonArray) arrayWriter -> {
             arrayWriter.writeElement((WriteableJsonString) writer -> writer.write(firstString));
             arrayWriter.writeElement((WriteableJsonString) writer -> writer.write(secondString));
         });
-        assertThat(new JdomParser().parse(stringWriter.toString()), equalTo(array(string(firstString), string(secondString))));
+        assertThat(new JdomParser().parse(jsonText), equalTo(array(string(firstString), string(secondString))));
     }
 
     @ParameterizedTest
@@ -136,15 +146,15 @@ class JsonWriterTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
-    void rejectsIncompleteNumber(final JsonWriter jsonWriter) {
-        assertThrows(IllegalStateException.class, () -> jsonWriter.write(NullWriter.INSTANCE, (WriteableJsonNumber) numberWriter -> numberWriter.write("1.")));
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void rejectsIncompleteNumber(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) {
+        assertThrows(IllegalStateException.class, () -> jsonGeneratorJsonWriterTestCase.write((WriteableJsonNumber) numberWriter -> numberWriter.write("1.")));
     }
 
     @ParameterizedTest
-    @ArgumentsSource(JsonWriterTest.JsonWriterArgumentsProvider.class)
-    void correctExceptionIsPropagatedThroughJsonWriter(final JsonWriter jsonWriter) {
-        assertThrows(IndexOutOfBoundsException.class, () -> jsonWriter.write(NullWriter.INSTANCE, (WriteableJsonNumber) numberWriter -> numberWriter.write(new char[] {'1', '.'}, 1, 3)));
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void correctExceptionIsPropagatedThroughJsonWriter(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) {
+        assertThrows(IndexOutOfBoundsException.class, () -> jsonGeneratorJsonWriterTestCase.write((WriteableJsonNumber) numberWriter -> numberWriter.write(new char[] {'1', '.'}, 1, 3)));
     }
 
 }
