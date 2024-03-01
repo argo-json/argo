@@ -34,7 +34,7 @@ public final class JdomParser {
     private static final SajParser SAJ_PARSER = new SajParser();
 
     /**
-     * Parse the specified JSON {@code String} into a {@code JsonNode} object.
+     * Parses the specified JSON {@code String} into a {@code JsonNode} object.
      *
      * @param json the {@code String} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code String}.
@@ -46,7 +46,7 @@ public final class JdomParser {
     }
 
     /**
-     * Parse the character stream from the specified {@code Reader} into a {@code JsonNode} object.
+     * Parses the character stream from the specified {@code Reader} into a {@code JsonNode} object.
      *
      * @param reader the {@code Reader} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code Reader}.

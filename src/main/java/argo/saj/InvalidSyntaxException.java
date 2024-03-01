@@ -15,7 +15,7 @@ import argo.staj.InvalidSyntaxRuntimeException;
 /**
  * Thrown to indicate a given character stream is not valid JSON.
  */
-public final class InvalidSyntaxException extends Exception {
+public final class InvalidSyntaxException extends Exception { // TODO should be in parent package?
 
     private final int column;
     private final int line;

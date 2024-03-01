@@ -10,19 +10,15 @@
 
 package argo;
 
-import argo.format.*;
-import argo.jdom.JdomParser;
+import argo.format.WriteableJsonArray;
+import argo.format.WriteableJsonObject;
 import argo.staj.JsonStreamElement;
-import argo.staj.StajParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 import static argo.jdom.JsonNodeFactories.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,7 +46,7 @@ class ExamplesTest {
                 , blogEntry);
 
         // tag::parseSomeJson[]
-        String title = new JdomParser().parse(blogEntry).getStringValue("title");
+        String title = new JsonParser().parse(blogEntry).getStringValue("title");
         // end::parseSomeJson[]
 
         assertEquals("How to use Argo", title);
@@ -92,10 +88,10 @@ class ExamplesTest {
         // tag::streamInSomeJson[]
         int commentCount = 0;
         StringReader stringReader = new StringReader(stringWriter.toString()); // <1>
-        StajParser stajParser = new StajParser(stringReader);
         Deque<String> stack = new ArrayDeque<>(); // <2>
-        while (stajParser.hasNext()) {
-            JsonStreamElement next = stajParser.next();
+        Iterator<JsonStreamElement> jsonIterator = new JsonParser().parseStreaming(stringReader);
+        while (jsonIterator.hasNext()) {
+            JsonStreamElement next = jsonIterator.next();
             switch (next.jsonStreamElementType()) {
                 case START_FIELD:
                     StringWriter fieldNameWriter = new StringWriter();
