@@ -37,7 +37,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Stream a JSON representation of the given {@code WriteableJsonArray} to the given {@code Writer}.
+     * Streams a JSON representation of the given {@code WriteableJsonArray} to the given {@code Writer}.
      *
      * @param target             the {@code Writer} to output to.
      * @param writeableJsonArray the {@code WriteableJsonArray} to output.
@@ -48,7 +48,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Generate a JSON representation of the given {@code WriteableJsonArray} as a {@code String}.
+     * Generates a JSON representation of the given {@code WriteableJsonArray} as a {@code String}.
      *
      * @param writeableJsonArray the {@code WriteableJsonArray} to output.
      * @return                   a JSON representation of the given {@code WriteableJsonArray} as a {@code String}
@@ -65,7 +65,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Stream a JSON representation of the given {@code WriteableJsonObject} to the given {@code Writer}.
+     * Streams a JSON representation of the given {@code WriteableJsonObject} to the given {@code Writer}.
      *
      * @param target              the {@code Writer} to output to.
      * @param writeableJsonObject the {@code WriteableJsonObject} to output.
@@ -76,7 +76,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Generate a JSON representation of the given {@code WriteableJsonObject} as a {@code String}.
+     * Generates a JSON representation of the given {@code WriteableJsonObject} as a {@code String}.
      *
      * @param writeableJsonObject the {@code WriteableJsonObject} to output.
      * @return                    a JSON representation of the given {@code WriteableJsonObject} as a {@code String}
@@ -93,7 +93,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Stream a JSON representation of the given {@code WriteableJsonString} to the given {@code Writer}.
+     * Streams a JSON representation of the given {@code WriteableJsonString} to the given {@code Writer}.
      *
      * @param target              the {@code Writer} to output to.
      * @param writeableJsonString the {@code WriteableJsonString} to output.
@@ -104,7 +104,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Generate a JSON representation of the given {@code WriteableJsonString} as a {@code String}.
+     * Generates a JSON representation of the given {@code WriteableJsonString} as a {@code String}.
      *
      * @param writeableJsonString the {@code WriteableJsonString} to output.
      * @return                    a JSON representation of the given {@code WriteableJsonString} as a {@code String}
@@ -121,7 +121,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Stream a JSON representation of the given {@code WriteableJsonNumber} to the given {@code Writer}.
+     * Streams a JSON representation of the given {@code WriteableJsonNumber} to the given {@code Writer}.
      *
      * @param target                    the {@code Writer} to output to.
      * @param writeableJsonNumber       the {@code WriteableJsonNumber} to output.
@@ -133,7 +133,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Generate a JSON representation of the given {@code WriteableJsonNumber} as a {@code String}.
+     * Generates a JSON representation of the given {@code WriteableJsonNumber} as a {@code String}.
      *
      * @param writeableJsonNumber       the {@code WriteableJsonNumber} to output.
      * @return                          a JSON representation of the given {@code WriteableJsonNumber} as a {@code String}
@@ -151,7 +151,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Stream a JSON representation of the given {@code JsonNode} to the given {@code Writer}.
+     * Streams a JSON representation of the given {@code JsonNode} to the given {@code Writer}.
      *
      * @param target       the {@code Writer} to output to.
      * @param jsonNode     the {@code JsonNode} to output.
@@ -162,7 +162,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Generate a JSON representation of the given {@code JsonNode} as a {@code String}.
+     * Generates a JSON representation of the given {@code JsonNode} as a {@code String}.
      *
      * @param jsonNode the {@code JsonNode} to output.
      * @return         a JSON representation of the given {@code JsonNode} as a {@code String}
@@ -178,7 +178,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Stream a JSON representation of the given {@code JsonNode} to the given {@code Writer}, outputting fields in lexicographic order.
+     * Streams a JSON representation of the given {@code JsonNode} to the given {@code Writer}, outputting fields in lexicographic order.
      * JSON does not mandate a particular ordering for the fields of an object, but for comparing JSON documents it can be convenient for field order to be consistent.
      * @param target       the {@code Writer} to output to.
      * @param jsonNode     the {@code JsonNode} to output.
@@ -189,7 +189,7 @@ public final class JsonGenerator {
     }
 
     /**
-     * Generate a JSON representation of the given {@code JsonNode} as a {@code String}, outputting fields in lexicographic order.
+     * Generates a JSON representation of the given {@code JsonNode} as a {@code String}, outputting fields in lexicographic order.
      * JSON does not mandate a particular ordering for the fields of an object, but for comparing JSON documents it can be convenient for field order to be consistent.
      * @param jsonNode the {@code JsonNode} to output.
      * @return         a JSON representation of the given {@code JsonNode} as a {@code String}
@@ -204,12 +204,30 @@ public final class JsonGenerator {
         return stringWriter.toString();
     }
 
+    /**
+     * Returns a {@code JsonGenerator} with the given output style.
+     * Defaults to {@link JsonGeneratorStyle#PRETTY}.
+     *
+     * @param style the style of output to produce.
+     * @return a {@code JsonGenerator} with the given output style.
+     */
     public JsonGenerator style(final JsonGeneratorStyle style) {
         return new JsonGenerator(style);
     }
 
+    /**
+     * Styles of output a {@code JsonGenerator} can produce.
+     */
     public enum JsonGeneratorStyle {
+
+        /**
+         * Includes newlines, tabs, and spaces to improve readability.
+         */
         PRETTY(new PrettyJsonWriter(), PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter()),
+
+        /**
+         * Excludes all optional whitespace to produce the briefest valid JSON.
+         */
         COMPACT(new CompactJsonWriter(), CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter());
 
         private final JsonWriter jsonWriter;
