@@ -58,7 +58,7 @@ public final class JsonParser {
      * Parses the character stream from the given {@code Reader} into an {@code Iterator} of {@code JsonStreamElement}s.
      *
      * @param reader the {@code Reader} to parse.
-     * @return a StajParser reading from the given {@code Reader}.
+     * @return an {@code Iterator} of {@code JsonStreamElement}s reading from the given {@code Reader}.
      */
     public Iterator<JsonStreamElement> parseStreaming(final Reader reader) {
         return new StajParser(reader);
@@ -68,6 +68,7 @@ public final class JsonParser {
      * Parses the given JSON {@code String} into an {@code Iterator} of {@code JsonStreamElement}s.
      *
      * @param json the {@code String} to parse.
+     * @return an {@code Iterator} of {@code JsonStreamElement}s reading from the given {@code Reader}.
      */
     public Iterator<JsonStreamElement> parseStreaming(final String json) {
         return parseStreaming(new StringReader(json));
