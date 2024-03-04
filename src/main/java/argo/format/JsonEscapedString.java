@@ -26,109 +26,109 @@ final class JsonEscapedString {
             for (int i = offset; i < offset + length; i++) {
                 switch (cbuf[i]) {
                     case '\u0000':
-                        writer.append("\\u0000");
+                        writer.write("\\u0000");
                         break;
                     case '\u0001':
-                        writer.append("\\u0001");
+                        writer.write("\\u0001");
                         break;
                     case '\u0002':
-                        writer.append("\\u0002");
+                        writer.write("\\u0002");
                         break;
                     case '\u0003':
-                        writer.append("\\u0003");
+                        writer.write("\\u0003");
                         break;
                     case '\u0004':
-                        writer.append("\\u0004");
+                        writer.write("\\u0004");
                         break;
                     case '\u0005':
-                        writer.append("\\u0005");
+                        writer.write("\\u0005");
                         break;
                     case '\u0006':
-                        writer.append("\\u0006");
+                        writer.write("\\u0006");
                         break;
                     case '\u0007':
-                        writer.append("\\u0007");
+                        writer.write("\\u0007");
                         break;
                     case '\u0008':
-                        writer.append("\\b");
+                        writer.write("\\b");
                         break;
                     case '\t':
-                        writer.append("\\t");
+                        writer.write("\\t");
                         break;
                     case '\n':
-                        writer.append("\\n");
+                        writer.write("\\n");
                         break;
                     case '\u000b':
-                        writer.append("\\u000b");
+                        writer.write("\\u000b");
                         break;
                     case '\u000c':
-                        writer.append("\\f");
+                        writer.write("\\f");
                         break;
                     case '\r':
-                        writer.append("\\r");
+                        writer.write("\\r");
                         break;
                     case '\u000e':
-                        writer.append("\\u000e");
+                        writer.write("\\u000e");
                         break;
                     case '\u000f':
-                        writer.append("\\u000f");
+                        writer.write("\\u000f");
                         break;
                     case '\u0010':
-                        writer.append("\\u0010");
+                        writer.write("\\u0010");
                         break;
                     case '\u0011':
-                        writer.append("\\u0011");
+                        writer.write("\\u0011");
                         break;
                     case '\u0012':
-                        writer.append("\\u0012");
+                        writer.write("\\u0012");
                         break;
                     case '\u0013':
-                        writer.append("\\u0013");
+                        writer.write("\\u0013");
                         break;
                     case '\u0014':
-                        writer.append("\\u0014");
+                        writer.write("\\u0014");
                         break;
                     case '\u0015':
-                        writer.append("\\u0015");
+                        writer.write("\\u0015");
                         break;
                     case '\u0016':
-                        writer.append("\\u0016");
+                        writer.write("\\u0016");
                         break;
                     case '\u0017':
-                        writer.append("\\u0017");
+                        writer.write("\\u0017");
                         break;
                     case '\u0018':
-                        writer.append("\\u0018");
+                        writer.write("\\u0018");
                         break;
                     case '\u0019':
-                        writer.append("\\u0019");
+                        writer.write("\\u0019");
                         break;
                     case '\u001a':
-                        writer.append("\\u001a");
+                        writer.write("\\u001a");
                         break;
                     case '\u001b':
-                        writer.append("\\u001b");
+                        writer.write("\\u001b");
                         break;
                     case '\u001c':
-                        writer.append("\\u001c");
+                        writer.write("\\u001c");
                         break;
                     case '\u001d':
-                        writer.append("\\u001d");
+                        writer.write("\\u001d");
                         break;
                     case '\u001e':
-                        writer.append("\\u001e");
+                        writer.write("\\u001e");
                         break;
                     case '\u001f':
-                        writer.append("\\u001f");
+                        writer.write("\\u001f");
                         break;
                     case '\\':
-                        writer.append("\\\\");
+                        writer.write("\\\\");
                         break;
                     case '\"':
-                        writer.append("\\\"");
+                        writer.write("\\\"");
                         break;
                     default:
-                        writer.append(cbuf[i]);
+                        writer.write(cbuf[i]);
                 }
             }
         }
