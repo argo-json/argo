@@ -180,21 +180,23 @@ public final class JsonGenerator {
     /**
      * Streams a JSON representation of the given {@code JsonNode} to the given {@code Writer}, outputting fields in lexicographic order.
      * JSON does not mandate a particular ordering for the fields of an object, but for comparing JSON documents it can be convenient for field order to be consistent.
+     * In the event that more than one field with the same name exists in an object, the relative order of those fields is preserved.
      * @param target       the {@code Writer} to output to.
      * @param jsonNode     the {@code JsonNode} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
      */
-    public void generateWithFieldSorting(final Writer target, final JsonNode jsonNode) throws IOException { // TODO document and test field deduplication
+    public void generateWithFieldSorting(final Writer target, final JsonNode jsonNode) throws IOException {
         jsonGeneratorStyle.fieldSortingJsonFormatter.format(jsonNode, target);
     }
 
     /**
      * Generates a JSON representation of the given {@code JsonNode} as a {@code String}, outputting fields in lexicographic order.
      * JSON does not mandate a particular ordering for the fields of an object, but for comparing JSON documents it can be convenient for field order to be consistent.
+     * In the event that more than one field with the same name exists in an object, the relative order of those fields is preserved.
      * @param jsonNode the {@code JsonNode} to output.
      * @return         a JSON representation of the given {@code JsonNode} as a {@code String}
      */
-    public String generateWithFieldSorting(final JsonNode jsonNode) { // TODO document and test field deduplication
+    public String generateWithFieldSorting(final JsonNode jsonNode) {
         final StringWriter stringWriter = new StringWriter();
         try {
             generateWithFieldSorting(stringWriter, jsonNode);

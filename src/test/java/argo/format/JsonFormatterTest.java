@@ -52,7 +52,10 @@ class JsonFormatterTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
                     CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter(),
-                    PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter()
+                    PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter(),
+                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator().style(COMPACT)),
+                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator()),
+                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator().style(PRETTY))
             ).map(Arguments::arguments);
         }
     }
@@ -176,6 +179,20 @@ class JsonFormatterTest {
                         field("c", string("c"))
                 )));
             }
+
+            @ParameterizedTest
+            @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
+            void maintainsOrderOfFieldsWithEqualNames(final JsonFormatter jsonFormatter) throws Exception {
+                assertThat(new JdomParser().parse(jsonFormatter.format(object(
+                        field("b", string("1")),
+                        field("a", string("2")),
+                        field("b", string("3"))
+                ))), equalTo(object(
+                        field("a", string("2")),
+                        field("b", string("1")),
+                        field("b", string("3"))
+                )));
+            }
         }
 
         @Nested
@@ -242,6 +259,20 @@ class JsonFormatterTest {
                         field("c", string("c"))
                 ))));
             }
+
+            @ParameterizedTest
+            @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
+            void maintainsOrderOfFieldsWithEqualNames(final JsonFormatter jsonFormatter) throws Exception {
+                assertThat(new JdomParser().parse(jsonFormatter.format(array(object(
+                        field("b", string("1")),
+                        field("a", string("2")),
+                        field("b", string("3"))
+                )))), equalTo(array(object(
+                        field("a", string("2")),
+                        field("b", string("1")),
+                        field("b", string("3"))
+                ))));
+            }
         }
 
         @Nested
@@ -306,6 +337,20 @@ class JsonFormatterTest {
                         field("a", string("a")),
                         field("b", string("b")),
                         field("c", string("c"))
+                )))));
+            }
+
+            @ParameterizedTest
+            @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
+            void maintainsOrderOfFieldsWithEqualNames(final JsonFormatter jsonFormatter) throws Exception {
+                assertThat(new JdomParser().parse(jsonFormatter.format(object(field("foo", object(
+                        field("b", string("1")),
+                        field("a", string("2")),
+                        field("b", string("3"))
+                ))))), equalTo(object(field("foo", object(
+                        field("a", string("2")),
+                        field("b", string("1")),
+                        field("b", string("3"))
                 )))));
             }
         }

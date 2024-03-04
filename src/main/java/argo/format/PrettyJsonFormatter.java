@@ -47,6 +47,7 @@ public final class PrettyJsonFormatter extends AbstractJsonFormatter {
 
     /**
      * Gets a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in alphabetic order.
+     * In the event that more than one field with the same name exists in an object, the relative order of those fields is preserved.
      *
      * @return a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in alphabetic order.
      */
