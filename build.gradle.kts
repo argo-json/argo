@@ -174,6 +174,7 @@ tasks {
 
     javadoc {
         title = "Argo version $version"
+        exclude("argo/internal")
     }
 
     named<JavaCompile>("compileDocsJava") {
