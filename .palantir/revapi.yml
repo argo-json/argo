@@ -1,0 +1,90 @@
+acceptedBreaks:
+  "6.5":
+    net.sourceforge.argo:argo:
+    - code: "java.class.nowFinal"
+      old: "class argo.staj.InvalidSyntaxRuntimeException"
+      new: "class argo.staj.InvalidSyntaxRuntimeException"
+      justification: "Documented: Erroneously extensible"
+    - code: "java.class.removed"
+      old: "class argo.jdom.JsonNumberValidator"
+      justification: "Documented: Removal of an internal class appropriate to major\
+        \ release"
+    - code: "java.method.abstractMethodAdded"
+      new: "method java.io.Reader argo.staj.JsonStreamElement::reader()"
+      justification: "Addition of an abstract method to a class with only a private\
+        \ constructor"
+    - code: "java.method.abstractMethodAdded"
+      new: "method void argo.jdom.JsonNode::visit(argo.jdom.JsonNodeVisitor)"
+      justification: "Documented: Additional method on class with package-private\
+        \ constructor only"
+    - code: "java.method.abstractMethodAdded"
+      new: "method void argo.staj.JsonStreamElement::visit(argo.saj.JsonListener)"
+      justification: "Addition of an abstract method to a class with only a private\
+        \ constructor"
+    - code: "java.method.exception.checkedAdded"
+      old: "method argo.jdom.JsonNode argo.jdom.JdomParser::parse(java.io.Reader)\
+        \ throws argo.saj.InvalidSyntaxException"
+      new: "method argo.jdom.JsonNode argo.jdom.JdomParser::parse(java.io.Reader)\
+        \ throws argo.saj.InvalidSyntaxException, java.io.IOException"
+      justification: "Documented: Now propagates IOException from Reader"
+    - code: "java.method.exception.checkedAdded"
+      old: "method void argo.saj.SajParser::parse(java.io.Reader, argo.saj.JsonListener)\
+        \ throws argo.saj.InvalidSyntaxException"
+      new: "method void argo.saj.SajParser::parse(java.io.Reader, argo.saj.JsonListener)\
+        \ throws argo.saj.InvalidSyntaxException, java.io.IOException"
+      justification: "Documented: Now propagates IOException from Reader"
+    - code: "java.method.inheritedMovedToClass"
+      old: "method java.lang.Throwable java.lang.Throwable::getCause() @ argo.staj.JsonStreamException"
+      new: "method java.io.IOException argo.staj.JsonStreamException::getCause()"
+      justification: "Non-breaking change"
+    - code: "java.method.parameterTypeChanged"
+      old: "parameter void argo.saj.JsonListener::numberValue(===java.lang.String===)"
+      new: "parameter void argo.saj.JsonListener::numberValue(===java.io.Reader===)"
+      justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.parameterTypeChanged"
+      old: "parameter void argo.saj.JsonListener::startField(===java.lang.String===)"
+      new: "parameter void argo.saj.JsonListener::startField(===java.io.Reader===)"
+      justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.parameterTypeChanged"
+      old: "parameter void argo.saj.JsonListener::stringValue(===java.lang.String===)"
+      new: "parameter void argo.saj.JsonListener::stringValue(===java.io.Reader===)"
+      justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.removed"
+      old: "method argo.jdom.JsonNode argo.jdom.JsonNodeFactories::lazyArray(java.util.List<?\
+        \ extends argo.jdom.JsonNode>)"
+      justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.removed"
+      old: "method argo.jdom.JsonNode argo.jdom.JsonNodeFactories::lazyObject(java.util.List<argo.jdom.JsonField>)"
+      justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.removed"
+      old: "method argo.jdom.JsonNode argo.jdom.JsonNodeFactories::nullableLazyArray(java.util.List<?\
+        \ extends argo.jdom.JsonNode>)"
+      justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.removed"
+      old: "method argo.jdom.JsonNode argo.jdom.JsonNodeFactories::nullableLazyObject(java.util.List<argo.jdom.JsonField>)"
+      justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.removed"
+      old: "method argo.saj.InvalidSyntaxException argo.staj.InvalidSyntaxRuntimeException::asInvalidSyntaxException()"
+      justification: "Documented: Erroneously exposed internal method"
+    - code: "java.method.removed"
+      old: "method java.lang.String argo.staj.JsonStreamElement::text()"
+      justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.removed"
+      old: "method void argo.saj.InvalidSyntaxException::<init>(java.lang.String,\
+        \ int, int)"
+      justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.returnTypeChangedCovariantly"
+      old: "method java.lang.Throwable java.lang.Throwable::getCause() @ argo.staj.JsonStreamException"
+      new: "method java.io.IOException argo.staj.JsonStreamException::getCause()"
+      justification: "ABI breaking change appropriate to major release"
+    - code: "java.method.visibilityReduced"
+      old: "method argo.jdom.JsonObjectNodeBuilder argo.jdom.JsonObjectNodeBuilder::withFieldBuilder(argo.jdom.JsonFieldBuilder)"
+      new: "method argo.jdom.JsonObjectNodeBuilder argo.jdom.JsonObjectNodeBuilder::withFieldBuilder(argo.jdom.NamedJsonFieldBuilder)"
+      justification: "Signature change to a package-private method, appropriate to\
+        \ major release"
+    - code: "java.method.visibilityReduced"
+      old: "method void argo.saj.InvalidSyntaxException::<init>(java.lang.String,\
+        \ java.lang.Throwable, int, int)"
+      new: "method void argo.saj.InvalidSyntaxException::<init>(java.lang.String,\
+        \ java.lang.Throwable, int, int)"
+      justification: "Documented: Breaking change appropriate to major release"

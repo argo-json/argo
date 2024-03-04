@@ -33,10 +33,13 @@ public final class SajParser {
      * @param json         the {@code String} to parse.
      * @param jsonListener the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
-     * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
-    public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
-        parse(jsonListener, new StajParser(new StringReader(json)));
+    public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
+        try {
+            parse(jsonListener, new StajParser(new StringReader(json)));
+        } catch (final IOException e) {
+            throw new RuntimeException("Coding failure in Argo:  StringReader threw an IOException");
+        }
     }
 
     /**

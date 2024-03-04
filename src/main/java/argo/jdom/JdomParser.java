@@ -39,10 +39,13 @@ public final class JdomParser {
      * @param json the {@code String} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code String}.
      * @throws InvalidSyntaxException if the characters streamed from the specified {@code String} does not represent valid JSON.
-     * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
-    public JsonNode parse(final String json) throws InvalidSyntaxException, IOException {
-        return parse(new StringReader(json));
+    public JsonNode parse(final String json) throws InvalidSyntaxException {
+        try {
+            return parse(new StringReader(json));
+        } catch (final IOException e) {
+            throw new RuntimeException("Coding failure in Argo:  StringReader threw an IOException");
+        }
     }
 
     /**

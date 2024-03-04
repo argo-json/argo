@@ -48,10 +48,13 @@ public final class JsonParser {
      * @param json the {@code String} to parse.
      * @return a {@code JsonNode} representing the JSON read from the given {@code String}.
      * @throws InvalidSyntaxException if the characters streamed from the given {@code String} do not represent valid JSON.
-     * @throws IOException rethrown when reading characters from the given {@code Reader} throws {@code IOException}.
      */
-    public JsonNode parse(final String json) throws InvalidSyntaxException, IOException { // TODO can this actually throw IOException?
-        return parse(new StringReader(json));
+    public JsonNode parse(final String json) throws InvalidSyntaxException {
+        try {
+            return parse(new StringReader(json));
+        } catch (final IOException e) {
+            throw new RuntimeException("Coding failure in Argo:  StringReader threw an IOException");
+        }
     }
 
     /**
@@ -92,10 +95,13 @@ public final class JsonParser {
      * @param json                    the {@code String} to parse.
      * @param jsonListener            the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException if the characters streamed from the given {@code String} do not represent valid JSON.
-     * @throws IOException rethrown when reading characters from the given {@code Reader} throws {@code IOException}.
      */
-    public void parseStreaming(final String json, final JsonListener jsonListener) throws InvalidSyntaxException, IOException { // TODO can this actually throw IOException?
-        parseStreaming(new StringReader(json), jsonListener);
+    public void parseStreaming(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
+        try {
+            parseStreaming(new StringReader(json), jsonListener);
+        } catch (final IOException e) {
+            throw new RuntimeException("Coding failure in Argo:  StringReader threw an IOException");
+        }
     }
 
 }
