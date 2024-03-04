@@ -251,14 +251,32 @@ public class GeneratorBenchmark {
 
     @Benchmark
     public void compactStreamingGenerate(final Blackhole blackhole) throws IOException {
-        compactJsonGenerator.generate(new BlackholeWriter(blackhole), WRITEABLE_JSON
-        );
+        compactJsonGenerator.generate(new BlackholeWriter(blackhole), WRITEABLE_JSON);
     }
 
     @Benchmark
     public void prettyStreamingGenerate(final Blackhole blackhole) throws IOException {
-        prettyJsonGenerator.generate(new BlackholeWriter(blackhole), WRITEABLE_JSON
-        );
+        prettyJsonGenerator.generate(new BlackholeWriter(blackhole), WRITEABLE_JSON);
+    }
+
+    @Benchmark
+    public void compactJdomGenerateString(final Blackhole blackhole) throws IOException {
+        blackhole.consume(compactJsonGenerator.generate(JSON_NODE));
+    }
+
+    @Benchmark
+    public void prettyJdomGenerateString(final Blackhole blackhole) throws IOException {
+        blackhole.consume(prettyJsonGenerator.generate(JSON_NODE));
+    }
+
+    @Benchmark
+    public void compactStreamingGenerateString(final Blackhole blackhole) throws IOException {
+        blackhole.consume(compactJsonGenerator.generate(WRITEABLE_JSON));
+    }
+
+    @Benchmark
+    public void prettyStreamingGenerateString(final Blackhole blackhole) throws IOException {
+        blackhole.consume(prettyJsonGenerator.generate(WRITEABLE_JSON));
     }
 
     private static final class BlackholeWriter extends Writer {
