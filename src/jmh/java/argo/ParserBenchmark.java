@@ -10,11 +10,9 @@
 
 package argo;
 
-import argo.jdom.JdomParser;
 import argo.saj.BlackHoleJsonListener;
 import argo.saj.InvalidSyntaxException;
-import argo.saj.SajParser;
-import argo.staj.StajParser;
+import argo.staj.JsonStreamElement;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -22,6 +20,7 @@ import org.openjdk.jmh.infra.Blackhole;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Iterator;
 
 @State(Scope.Benchmark)
 public class ParserBenchmark {
@@ -115,25 +114,24 @@ public class ParserBenchmark {
             "        \"taglib-uri\": \"cofax.tld\",\n" +
             "        \"taglib-location\": \"/WEB-INF/tlds/cofax.tld\"}}}";
 
-    private final JdomParser jdomParser = new JdomParser();
-    private final SajParser sajParser = new SajParser();
+    private final JsonParser jsonParser = new JsonParser();
 
     @Benchmark
-    public void jdomParser(final Blackhole blackhole) throws InvalidSyntaxException, IOException {
-        blackhole.consume(jdomParser.parse(JSON_STRING));
+    public void jdomParse(final Blackhole blackhole) throws InvalidSyntaxException, IOException {
+        blackhole.consume(jsonParser.parse(JSON_STRING));
     }
 
     @Benchmark
-    public void stajParser(final Blackhole blackhole) {
-        final StajParser stajParser = new StajParser(new StringReader(JSON_STRING));
-        while (stajParser.hasNext()) {
-            blackhole.consume(stajParser.next());
+    public void streamingIteratorParse(final Blackhole blackhole) {
+        final Iterator<JsonStreamElement> jsonStreamElementIterator = jsonParser.parseStreaming(new StringReader(JSON_STRING));
+        while (jsonStreamElementIterator.hasNext()) {
+            blackhole.consume(jsonStreamElementIterator.next());
         }
     }
 
     @Benchmark
-    public void sajParser(final Blackhole blackhole) throws InvalidSyntaxException, IOException {
-        sajParser.parse(new StringReader(JSON_STRING), new BlackHoleJsonListener(blackhole::consume));
+    public void streamingEventParse(final Blackhole blackhole) throws InvalidSyntaxException, IOException {
+        jsonParser.parseStreaming(new StringReader(JSON_STRING), new BlackHoleJsonListener(blackhole::consume));
     }
 
 }

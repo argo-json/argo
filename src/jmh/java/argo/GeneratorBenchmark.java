@@ -20,10 +20,12 @@ import org.openjdk.jmh.infra.Blackhole;
 import java.io.IOException;
 import java.io.Writer;
 
+import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 import static argo.jdom.JsonNodeFactories.*;
 
 @State(Scope.Benchmark)
-public class WriterBenchmark {
+public class GeneratorBenchmark {
 
     private static final JsonNode JSON_NODE = object(
             field("web-app", object(
@@ -234,28 +236,28 @@ public class WriterBenchmark {
                     }
             );
 
-    private final CompactJsonWriter compactJsonWriter = new CompactJsonWriter();
-    private final PrettyJsonWriter prettyJsonWriter = new PrettyJsonWriter();
+    private final JsonGenerator compactJsonGenerator = new JsonGenerator().style(COMPACT);
+    private final JsonGenerator prettyJsonGenerator = new JsonGenerator().style(PRETTY);
 
     @Benchmark
-    public void compactJdomWrite(final Blackhole blackhole) throws IOException {
-        compactJsonWriter.write(new BlackholeWriter(blackhole), JSON_NODE);
+    public void compactJdomGenerate(final Blackhole blackhole) throws IOException {
+        compactJsonGenerator.generate(new BlackholeWriter(blackhole), JSON_NODE);
     }
 
     @Benchmark
-    public void prettyJdomWrite(final Blackhole blackhole) throws IOException {
-        prettyJsonWriter.write(new BlackholeWriter(blackhole), JSON_NODE);
+    public void prettyJdomGenerate(final Blackhole blackhole) throws IOException {
+        prettyJsonGenerator.generate(new BlackholeWriter(blackhole), JSON_NODE);
     }
 
     @Benchmark
-    public void compactStreamingWrite(final Blackhole blackhole) throws IOException {
-        compactJsonWriter.write(new BlackholeWriter(blackhole), WRITEABLE_JSON
+    public void compactStreamingGenerate(final Blackhole blackhole) throws IOException {
+        compactJsonGenerator.generate(new BlackholeWriter(blackhole), WRITEABLE_JSON
         );
     }
 
     @Benchmark
-    public void prettyStreamingWrite(final Blackhole blackhole) throws IOException {
-        prettyJsonWriter.write(new BlackholeWriter(blackhole), WRITEABLE_JSON
+    public void prettyStreamingGenerate(final Blackhole blackhole) throws IOException {
+        prettyJsonGenerator.generate(new BlackholeWriter(blackhole), WRITEABLE_JSON
         );
     }
 
