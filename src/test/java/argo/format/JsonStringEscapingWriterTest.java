@@ -21,7 +21,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -45,30 +45,30 @@ class JsonStringEscapingWriterTest {
 
     @Test
     void writesStringToDelegate() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder())) {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
             jsonStringEscapingWriter.write("a");
         }
-        assertThat(stringWriter.toString(), equalTo("a"));
+        assertThat(stringBuilderWriter.toString(), equalTo("a"));
     }
 
     @Test
     void writesLongStringToDelegate() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         char[] charArray = new char[2048];
         Arrays.fill(charArray, 'a');
         String value = new String(charArray);
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder())) {
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
             jsonStringEscapingWriter.write(value);
         }
-        assertThat(stringWriter.toString(), equalTo(value));
+        assertThat(stringBuilderWriter.toString(), equalTo(value));
     }
 
     @Test
     void writingStringToDelegateUsesReusableWriteBuffer() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, writeBufferHolder)) {
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, writeBufferHolder)) {
             jsonStringEscapingWriter.write("a");
         }
         assertThat(writeBufferHolder.writeBuffer()[0], equalTo('a'));
@@ -76,12 +76,12 @@ class JsonStringEscapingWriterTest {
 
     @Test
     void writingLongJsonStringDoesNotUseReusableWriteBuffer() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         char[] charArray = new char[2048];
         Arrays.fill(charArray, 'a');
         String value = new String(charArray);
         final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, writeBufferHolder)) {
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, writeBufferHolder)) {
             jsonStringEscapingWriter.write(value);
         }
         assertThat(writeBufferHolder.writeBuffer()[0], equalTo((char) 0));
@@ -89,32 +89,32 @@ class JsonStringEscapingWriterTest {
 
     @Test
     void writesCharacterToDelegate() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder())) {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
             jsonStringEscapingWriter.write('a');
         }
-        assertThat(stringWriter.toString(), equalTo("a"));
+        assertThat(stringBuilderWriter.toString(), equalTo("a"));
     }
 
     @Test
     void writesSubstringsImmediately() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder())) {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
             jsonStringEscapingWriter.write("a");
-            assertThat(stringWriter.toString(), equalTo("a"));
+            assertThat(stringBuilderWriter.toString(), equalTo("a"));
             jsonStringEscapingWriter.write("b");
-            assertThat(stringWriter.toString(), equalTo("ab"));
+            assertThat(stringBuilderWriter.toString(), equalTo("ab"));
         }
     }
 
     @Test
     void writesCharactersImmediately() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder())) {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
             jsonStringEscapingWriter.write('a');
-            assertThat(stringWriter.toString(), equalTo("a"));
+            assertThat(stringBuilderWriter.toString(), equalTo("a"));
             jsonStringEscapingWriter.write('b');
-            assertThat(stringWriter.toString(), equalTo("ab"));
+            assertThat(stringBuilderWriter.toString(), equalTo("ab"));
         }
     }
 
@@ -277,8 +277,8 @@ class JsonStringEscapingWriterTest {
     @Test
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingCanCallCloseAgain() throws IOException {
-        try (CloseCountingWriter closeCountingWriter = new CloseCountingWriter()) {
-            final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(closeCountingWriter, new WriteBufferHolder());
+        try (Writer delegate = NullWriter.INSTANCE) {
+            final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(delegate, new WriteBufferHolder());
             jsonStringEscapingWriter.write("a");
             jsonStringEscapingWriter.close();
             jsonStringEscapingWriter.close();
@@ -287,32 +287,32 @@ class JsonStringEscapingWriterTest {
 
     @Test
     void afterClosingWritingASubstringThrowsIOException() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
-        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder());
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder());
         jsonStringEscapingWriter.write("a");
         jsonStringEscapingWriter.close();
         assertThrows(IOException.class, () -> jsonStringEscapingWriter.write("b"));
-        assertThat(stringWriter.toString(), equalTo("a"));
+        assertThat(stringBuilderWriter.toString(), equalTo("a"));
     }
 
     @Test
     void afterClosingWritingACharacterThrowsIOException() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
-        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder());
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder());
         jsonStringEscapingWriter.write('a');
         jsonStringEscapingWriter.close();
         assertThrows(IOException.class, () -> jsonStringEscapingWriter.write('b'));
-        assertThat(stringWriter.toString(), equalTo("a"));
+        assertThat(stringBuilderWriter.toString(), equalTo("a"));
     }
 
     @Test
     void afterClosingFlushThrowsIOException() throws IOException {
-        final StringWriter stringWriter = new StringWriter();
-        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder());
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder());
         jsonStringEscapingWriter.write("a");
         jsonStringEscapingWriter.close();
         assertThrows(IOException.class, jsonStringEscapingWriter::flush);
-        assertThat(stringWriter.toString(), equalTo("a"));
+        assertThat(stringBuilderWriter.toString(), equalTo("a"));
     }
 
     static TypeSafeDiagnosingMatcher<String> writtenAs(final String expected) {
@@ -320,17 +320,17 @@ class JsonStringEscapingWriterTest {
         return new TypeSafeDiagnosingMatcher<String>() {
             @Override
             protected boolean matchesSafely(String item, Description mismatchDescription) {
-                final StringWriter stringWriter = new StringWriter();
-                try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringWriter, new WriteBufferHolder())) {
+                final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+                try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
                     try {
                         jsonStringEscapingWriter.write(item);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                final boolean matches = stringMatcher.matches(stringWriter.toString());
+                final boolean matches = stringMatcher.matches(stringBuilderWriter.toString());
                 if (!matches) {
-                    stringMatcher.describeMismatch(stringWriter.toString(), mismatchDescription);
+                    stringMatcher.describeMismatch(stringBuilderWriter.toString(), mismatchDescription);
                 }
                 return matches;
             }

@@ -20,6 +20,7 @@
     </description>
 
     <rule ref="category/java/bestpractices.xml">
+        <exclude name="AvoidStringBufferField"/>
         <exclude name="JUnitAssertionsShouldIncludeMessage"/>
         <exclude name="JUnitTestContainsTooManyAsserts"/>
         <exclude name="JUnitTestsShouldIncludeAssert"/>

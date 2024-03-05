@@ -10,13 +10,14 @@
 
 package argo.format;
 
+import org.apache.commons.io.output.StringBuilderWriter;
+
 import java.io.PrintWriter;
-import java.io.StringWriter;
 
 final class JsonStringResultBuilder {
 
-    private final StringWriter stringWriter = new StringWriter();
-    private final PrintWriter printWriter = new PrintWriter(stringWriter);
+    private final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+    private final PrintWriter printWriter = new PrintWriter(stringBuilderWriter);
 
     static JsonStringResultBuilder aJsonStringResultBuilder() {
         return new JsonStringResultBuilder();
@@ -37,6 +38,6 @@ final class JsonStringResultBuilder {
 
     String build() {
         printWriter.close();
-        return stringWriter.toString();
+        return stringBuilderWriter.toString();
     }
 }

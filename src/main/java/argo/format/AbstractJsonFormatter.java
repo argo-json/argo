@@ -10,19 +10,21 @@
 
 package argo.format;
 
+import argo.internal.StringBuilderWriter;
 import argo.jdom.JsonNode;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 abstract class AbstractJsonFormatter implements JsonFormatter {
     public final String format(final JsonNode jsonNode) {
-        final StringWriter stringWriter = new StringWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            format(jsonNode, stringWriter);
+            format(jsonNode, stringBuilderWriter);
         } catch (final IOException e) {
-            throw new RuntimeException("Coding failure in Argo:  StringWriter threw an IOException", e);
+            throw new RuntimeException("Coding failure in Argo:  StringBuilderWriter threw an IOException", e);
+        } finally {
+            stringBuilderWriter.close();
         }
-        return stringWriter.toString();
+        return stringBuilderWriter.toString();
     }
 }

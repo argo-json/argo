@@ -11,10 +11,10 @@
 package argo;
 
 import argo.format.*;
+import argo.internal.StringBuilderWriter;
 import argo.jdom.JsonNode;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
@@ -55,13 +55,13 @@ public final class JsonGenerator {
      * @throws IOException       propagated from {@link WriteableJsonArray#writeTo(ArrayWriter)}.
      */
     public String generate(final WriteableJsonArray writeableJsonArray) throws IOException {
-        final StringWriter stringWriter = new StringWriter(); // TODO this should be based on a StringBuilder
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            generate(stringWriter, writeableJsonArray);
+            generate(stringBuilderWriter, writeableJsonArray);
         } finally {
-            stringWriter.close();
+            stringBuilderWriter.close();
         }
-        return stringWriter.toString();
+        return stringBuilderWriter.toString();
     }
 
     /**
@@ -83,13 +83,13 @@ public final class JsonGenerator {
      * @throws IOException        propagated from {@link WriteableJsonObject#writeTo(ObjectWriter)}.
      */
     public String generate(final WriteableJsonObject writeableJsonObject) throws IOException {
-        final StringWriter stringWriter = new StringWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            generate(stringWriter, writeableJsonObject);
+            generate(stringBuilderWriter, writeableJsonObject);
         } finally {
-            stringWriter.close();
+            stringBuilderWriter.close();
         }
-        return stringWriter.toString();
+        return stringBuilderWriter.toString();
     }
 
     /**
@@ -111,13 +111,13 @@ public final class JsonGenerator {
      * @throws IOException        propagated from {@link WriteableJsonString#writeTo(Writer)}.
      */
     public String generate(final WriteableJsonString writeableJsonString) throws IOException {
-        final StringWriter stringWriter = new StringWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            generate(stringWriter, writeableJsonString);
+            generate(stringBuilderWriter, writeableJsonString);
         } finally {
-            stringWriter.close();
+            stringBuilderWriter.close();
         }
-        return stringWriter.toString();
+        return stringBuilderWriter.toString();
     }
 
     /**
@@ -141,13 +141,13 @@ public final class JsonGenerator {
      * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} don't constitute a complete JSON number.
      */
     public String generate(final WriteableJsonNumber writeableJsonNumber) throws IOException {
-        final StringWriter stringWriter = new StringWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            generate(stringWriter, writeableJsonNumber);
+            generate(stringBuilderWriter, writeableJsonNumber);
         } finally {
-            stringWriter.close();
+            stringBuilderWriter.close();
         }
-        return stringWriter.toString();
+        return stringBuilderWriter.toString();
     }
 
     /**
@@ -168,13 +168,15 @@ public final class JsonGenerator {
      * @return         a JSON representation of the given {@code JsonNode} as a {@code String}
      */
     public String generate(final JsonNode jsonNode) {
-        final StringWriter stringWriter = new StringWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            generate(stringWriter, jsonNode);
+            generate(stringBuilderWriter, jsonNode);
         } catch (final IOException e) {
-            throw new RuntimeException("Coding failure in Argo:  StringWriter threw an IOException", e);
+            throw new RuntimeException("Coding failure in Argo:  StringBuilderWriter threw an IOException", e);
+        } finally {
+            stringBuilderWriter.close();
         }
-        return stringWriter.toString();
+        return stringBuilderWriter.toString();
     }
 
     /**
@@ -197,13 +199,15 @@ public final class JsonGenerator {
      * @return         a JSON representation of the given {@code JsonNode} as a {@code String}
      */
     public String generateWithFieldSorting(final JsonNode jsonNode) {
-        final StringWriter stringWriter = new StringWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            generateWithFieldSorting(stringWriter, jsonNode);
+            generateWithFieldSorting(stringBuilderWriter, jsonNode);
         } catch (final IOException e) {
-            throw new RuntimeException("Coding failure in Argo:  StringWriter threw an IOException", e);
+            throw new RuntimeException("Coding failure in Argo:  StringBuilderWriter threw an IOException", e);
+        } finally {
+            stringBuilderWriter.close();
         }
-        return stringWriter.toString();
+        return stringBuilderWriter.toString();
     }
 
     /**
