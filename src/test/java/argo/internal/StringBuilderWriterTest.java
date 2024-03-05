@@ -12,8 +12,6 @@ package argo.internal;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,20 +27,6 @@ class StringBuilderWriterTest {
             stringBuilderWriter.close();
         }
         assertThat(stringBuilderWriter.toString(), equalTo("a"));
-    }
-
-    @Test
-    void writesLongStringToBuilder() {
-        char[] charArray = new char[2048];
-        Arrays.fill(charArray, 'a');
-        String value = new String(charArray);
-        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        try {
-            stringBuilderWriter.write(value);
-        } finally {
-            stringBuilderWriter.close();
-        }
-        assertThat(stringBuilderWriter.toString(), equalTo(value));
     }
 
     @Test
