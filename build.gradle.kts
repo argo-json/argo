@@ -107,6 +107,10 @@ idea {
     }
 }
 
+jmh {
+    includes = listOf("GeneratorBenchmark")
+}
+
 revapi {
     setOldVersion("6.5")
 }

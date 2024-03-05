@@ -22,6 +22,8 @@ final class JsonEscapedString {
     static void escapeCharBufferTo(final Writer writer, final char[] cbuf, final int offset, final int length) throws IOException {
         if (offset < 0 || offset > cbuf.length || length < 0 || offset + length > cbuf.length || offset + length < 0) {
             throw new IndexOutOfBoundsException();
+        } else if (writer == null) {
+            throw new NullPointerException("writer");
         } else if (length != 0) {
             for (int i = offset; i < offset + length; i++) {
                 switch (cbuf[i]) {

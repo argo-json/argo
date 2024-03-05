@@ -59,7 +59,7 @@ final class JsonStringEscapingWriter extends Writer {
     }
 
     @Override
-    public void write(final char[] cbuf, final int offset, final int length) throws IOException {
+    public void write(@SuppressWarnings("NullableProblems") final char[] cbuf, final int offset, final int length) throws IOException {
         validateArguments(cbuf, offset, length);
         ensureOpen();
         escapeCharBufferTo(out, cbuf, offset, length);

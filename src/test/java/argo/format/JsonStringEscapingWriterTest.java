@@ -44,6 +44,37 @@ class JsonStringEscapingWriterTest {
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
+    void rejectsWriteOfNullString() {
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(NullWriter.INSTANCE, new WriteBufferHolder())) {
+            assertThrows(NullPointerException.class, () -> jsonStringEscapingWriter.write((String) null));
+        }
+    }
+
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    void rejectsWriteOfNullCharArray() {
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(NullWriter.INSTANCE, new WriteBufferHolder())) {
+            assertThrows(NullPointerException.class, () -> jsonStringEscapingWriter.write((char[]) null));
+        }
+    }
+
+    @Test
+    @SuppressWarnings("DataFlowIssue")
+    void rejectsWriteOfNullStringWithOffsetAndLength() {
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(NullWriter.INSTANCE, new WriteBufferHolder())) {
+            assertThrows(NullPointerException.class, () -> jsonStringEscapingWriter.write((String) null, 0, 0));
+        }
+    }
+
+    @Test
+    void rejectsWriteOfNullCharArrayWithOffsetAndLength() {
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(NullWriter.INSTANCE, new WriteBufferHolder())) {
+            assertThrows(NullPointerException.class, () -> jsonStringEscapingWriter.write((char[]) null, 0, 0));
+        }
+    }
+
+    @Test
     void writesStringToDelegate() throws IOException {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {

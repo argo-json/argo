@@ -25,6 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 final class JsonEscapedStringTest {
 
     @Test
+    void rejectsNullWriter() {
+        assertThrows(NullPointerException.class, () -> JsonEscapedString.escapeCharBufferTo(null, new char[] {}, 0, 0));
+    }
+
+    @Test
+    void rejectsNullCharArray() {
+        assertThrows(NullPointerException.class, () -> JsonEscapedString.escapeCharBufferTo(NullWriter.INSTANCE, null, 0, 0));
+    }
+
+    @Test
     void passesThroughUncontentiousCharactersVerbatim() throws Exception {
         final String uncontentiousCharacters = "abcdefghijklmnopqrstuvwxyz";
         assertThat(escapeString(uncontentiousCharacters), equalTo(uncontentiousCharacters));

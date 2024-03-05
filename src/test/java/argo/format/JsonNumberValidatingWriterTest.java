@@ -38,6 +38,34 @@ class JsonNumberValidatingWriterTest {
     }
 
     @Test
+    @SuppressWarnings({"PMD.CloseResource", "DataFlowIssue"})
+    void rejectsWriteOfNullString() {
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE, new WriteBufferHolder());
+        assertThrows(NullPointerException.class, () -> jsonNumberValidatingWriter.write((String) null));
+    }
+
+    @Test
+    @SuppressWarnings({"PMD.CloseResource", "DataFlowIssue"})
+    void rejectsWriteOfNullCharArray() {
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE, new WriteBufferHolder());
+        assertThrows(NullPointerException.class, () -> jsonNumberValidatingWriter.write((char[]) null));
+    }
+
+    @Test
+    @SuppressWarnings({"PMD.CloseResource", "DataFlowIssue"})
+    void rejectsWriteOfNullStringWithOffsetAndLength() {
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE, new WriteBufferHolder());
+        assertThrows(NullPointerException.class, () -> jsonNumberValidatingWriter.write((String) null, 0, 0));
+    }
+
+    @Test
+    @SuppressWarnings("PMD.CloseResource")
+    void rejectsWriteOfNullCharArrayWithOffsetAndLength() {
+        final JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(NullWriter.INSTANCE, new WriteBufferHolder());
+        assertThrows(NullPointerException.class, () -> jsonNumberValidatingWriter.write((char[]) null, 0, 0));
+    }
+
+    @Test
     void writesValidNumberToDelegate() throws IOException {
         try (StringBuilderWriter stringBuilderWriter = new StringBuilderWriter()) {
             try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringBuilderWriter, new WriteBufferHolder())) {
@@ -64,8 +92,8 @@ class JsonNumberValidatingWriterTest {
     void writingValidNumberToDelegateUsesReusableWriteBuffer() throws IOException {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, writeBufferHolder)) {
-            jsonStringEscapingWriter.write("0");
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringBuilderWriter, writeBufferHolder)) {
+            jsonNumberValidatingWriter.write("0");
         }
         assertThat(writeBufferHolder.writeBuffer()[0], equalTo('0'));
     }
@@ -77,8 +105,8 @@ class JsonNumberValidatingWriterTest {
             Arrays.fill(charArray, '1');
             String value = new String(charArray);
             final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
-            try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, writeBufferHolder)) {
-                jsonStringEscapingWriter.write(value);
+            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringBuilderWriter, writeBufferHolder)) {
+                jsonNumberValidatingWriter.write(value);
             }
             assertThat(writeBufferHolder.writeBuffer()[0], equalTo((char) 0));
         }
