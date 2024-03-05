@@ -125,12 +125,12 @@ class JsonStringEscapingWriterTest {
     }
 
     @Test
-    void formatsReverseSolidusAsEscapedReverseSolidus() {
+    void writesReverseSolidusAsEscapedReverseSolidus() {
         assertThat("\\", is(writtenAs("\\\\")));
     }
 
     @Test
-    void formatsDoubleQuoteAsEscapedDoubleQuote() {
+    void writesDoubleQuoteAsEscapedDoubleQuote() {
         assertThat("\"", is(writtenAs("\\\"")));
     }
 
@@ -169,35 +169,43 @@ class JsonStringEscapingWriterTest {
             "0x001e,\\u001e",
             "0x001f,\\u001f",
     })
-    void formatsControlCharactersAsEscapedUnicodeCharacters(final int character, final String expectedRepresentation) {
+    void writesControlCharactersAsEscapedUnicodeCharacters(final int character, final String expectedRepresentation) {
         assertThat(String.valueOf((char) character), is(writtenAs(expectedRepresentation)));
     }
 
     @Test
-    void formatsACharArray() throws Exception {
+    void writesACharArray() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 3);
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
+            jsonStringEscapingWriter.write(new char[]{'a', 'b', 'c'}, 0, 3);
+        }
         assertThat(stringBuilderWriter.toString(), equalTo("abc"));
     }
 
     @Test
-    void formatsACharArrayWithOffset() throws Exception {
+    void writesACharArrayWithOffset() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 2);
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
+            jsonStringEscapingWriter.write(new char[] {'a', 'b', 'c'}, 1, 2);
+        }
         assertThat(stringBuilderWriter.toString(), equalTo("bc"));
     }
 
     @Test
-    void formatsACharArrayWithLength() throws Exception {
+    void writesACharArrayWithLength() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 0, 2);
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
+            jsonStringEscapingWriter.write(new char[] {'a', 'b', 'c'}, 0, 2);
+        }
         assertThat(stringBuilderWriter.toString(), equalTo("ab"));
     }
 
     @Test
-    void formatsACharArrayWithOffsetAndLength() throws Exception {
+    void writesACharArrayWithOffsetAndLength() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[] {'a', 'b', 'c'}, 1, 1);
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
+            jsonStringEscapingWriter.write(new char[] {'a', 'b', 'c'}, 1, 1);
+        }
         assertThat(stringBuilderWriter.toString(), equalTo("b"));
     }
 
