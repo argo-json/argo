@@ -316,7 +316,7 @@ public enum JsonStreamElementType {
             }
         }
 
-        public final int read(final char[] cbuf, final int offset, final int length) throws IOException {
+        public final int read(@SuppressWarnings("NullableProblems") final char[] cbuf, final int offset, final int length) throws IOException {
             validateArguments(cbuf, offset, length);
             int n = 0;
             int nextChar;

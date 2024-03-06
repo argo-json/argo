@@ -66,7 +66,7 @@ final class JsonNumberValidatingWriter extends Writer {
         write(cbuf, 0, len);
     }
 
-    public void write(final char[] cbuf, final int offset, final int length) throws IOException {
+    public void write(@SuppressWarnings("NullableProblems") final char[] cbuf, final int offset, final int length) throws IOException {
         validateArguments(cbuf, offset, length);
         ensureOpen();
         for (int i = offset; i < length; i++) {
