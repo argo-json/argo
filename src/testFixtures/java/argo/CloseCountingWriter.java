@@ -17,7 +17,7 @@ class CloseCountingWriter extends Writer {
     private int closeCount = 0;
 
     @Override
-    public void write(char[] cbuf, int off, int len) {
+    public void write(@SuppressWarnings("NullableProblems") char[] cbuf, int off, int len) {
     }
 
     @Override
