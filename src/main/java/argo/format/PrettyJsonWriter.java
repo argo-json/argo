@@ -11,14 +11,26 @@
 package argo.format;
 
 import argo.JsonGenerator;
+import argo.jdom.JsonNode;
+
+import java.io.Writer;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 
 /**
  * JsonWriter that writes JSON in a human-readable form.  Instances of this class can safely be shared between threads.
+ *
+ * @deprecated Replaced by {@link JsonGenerator}.
  */
-@Deprecated public final class PrettyJsonWriter extends AbstractJsonWriter { // TODO document deprecation
+@Deprecated public final class PrettyJsonWriter extends AbstractJsonWriter {
 
+    /**
+     * @deprecated Replaced by {@link JsonGenerator#generate(Writer, JsonNode)} and other similar {@link JsonGenerator} methods.
+     *   For example, use
+     *     {@code new JsonGenerator().style(PRETTY).generate(Writer, JsonNode) }
+     *   or
+     *     {@code new JsonGenerator().style(PRETTY).generate(Writer, WriteableJsonObject) }
+     */
     public PrettyJsonWriter() {
         super(new JsonGenerator().style(PRETTY));
     }

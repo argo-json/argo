@@ -11,14 +11,26 @@
 package argo.format;
 
 import argo.JsonGenerator;
+import argo.jdom.JsonNode;
+
+import java.io.Writer;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
 
 /**
  * JsonWriter that writes JSON as compactly as possible.  Instances of this class can safely be shared between threads.
+ *
+ * @deprecated Replaced by {@link JsonGenerator}.
  */
-@Deprecated public final class CompactJsonWriter extends AbstractJsonWriter { // TODO document deprecation
+@Deprecated public final class CompactJsonWriter extends AbstractJsonWriter {
 
+    /**
+     * @deprecated Replaced by {@link JsonGenerator#generate(Writer, JsonNode)} and other similar {@link JsonGenerator} methods.
+     *   For example, use
+     *     {@code new JsonGenerator().style(COMPACT).generate(Writer, JsonNode) }
+     *   or
+     *     {@code new JsonGenerator().style(COMPACT).generate(Writer, WriteableJsonObject) }
+     */
     public CompactJsonWriter() {
         super(new JsonGenerator().style(COMPACT));
     }
