@@ -158,6 +158,17 @@ class CompactJsonWriterTest {
 
     @ParameterizedTest
     @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteObjectOfJsonStringKeyedWriteableJsonArrays(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) throws Exception {
+        assertThat(jsonGeneratorJsonWriterTestCase.write((WriteableJsonObject) objectWriter -> {
+            objectWriter.writeField(string("Foo"), (WriteableJsonArray) arrayWriter1 -> {
+            });
+            objectWriter.writeField(string("Bar"), (WriteableJsonArray) arrayWriter1 -> {
+            });
+        }), equalTo("{\"Foo\":[],\"Bar\":[]}"));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
     void canWriteObjectOfStringKeyedWriteableJsonStrings(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) throws Exception {
         assertThat(jsonGeneratorJsonWriterTestCase.write((WriteableJsonObject) objectWriter -> {
             objectWriter.writeField("Foo", (WriteableJsonString) writer -> {
