@@ -8,24 +8,20 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.format;
+package argo.jdom;
 
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static argo.format.JsonNumberUtils.asBigDecimal;
-import static argo.format.JsonNumberUtils.asBigInteger;
-import static argo.format.JsonNumberUtils.asDouble;
-import static argo.format.JsonNumberUtils.asInteger;
+import static argo.jdom.JsonNumberUtils.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SuppressWarnings("deprecation")
 final class JsonNumberUtilsTest {
 
     @Test

@@ -8,17 +8,15 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.format;
+package argo.jdom;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
  * Helper methods for converting JSON number {@code String}s into Java numeric objects.
- *
- * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils}.
  */
-@Deprecated public final class JsonNumberUtils {
+public final class JsonNumberUtils {
 
     private JsonNumberUtils() {
     }
@@ -29,12 +27,9 @@ import java.math.BigInteger;
      * @param jsonNumberString a {@code String} representation of a JSON number.
      * @return a {@code BigDecimal} representing the given JSON number {@code String}.
      * @throws NumberFormatException if the given {@code String} is not a valid JSON number.
-     *
-     * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils#asBigDecimal(String)}
      */
-    @SuppressWarnings("DeprecatedIsStillUsed")
     public static BigDecimal asBigDecimal(final String jsonNumberString) {
-        return argo.jdom.JsonNumberUtils.asBigDecimal(jsonNumberString);
+        return jsonNumberString == null ? null : new BigDecimal(jsonNumberString);
     }
 
     /**
@@ -43,12 +38,13 @@ import java.math.BigInteger;
      * @param jsonNumberString a {@code String} representation of an integer JSON number.
      * @return a {@code BigInteger} representing the given JSON number {@code String}.
      * @throws NumberFormatException if the given {@code String} is not a valid JSON number or is not an integer.
-     *
-     * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils#asBigInteger(String)}
      */
-    @SuppressWarnings("DeprecatedIsStillUsed")
     public static BigInteger asBigInteger(final String jsonNumberString) {
-        return argo.jdom.JsonNumberUtils.asBigInteger(jsonNumberString);
+        try {
+            return jsonNumberString == null ? null : asBigDecimal(jsonNumberString).toBigIntegerExact();
+        } catch (final ArithmeticException e) {
+            throw new NumberFormatException("Given String [" + jsonNumberString + "] was non-integer");
+        }
     }
 
     /**
@@ -59,12 +55,9 @@ import java.math.BigInteger;
      * @param jsonNumberString a {@code String} representation of an integer JSON number.
      * @return a {@code Double} representing the given JSON number {@code String}.
      * @throws NumberFormatException if the given {@code String} is not a valid JSON number.
-     *
-     * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils#asDouble(String)}
      */
-    @SuppressWarnings("DeprecatedIsStillUsed")
     public static Double asDouble(final String jsonNumberString) {
-        return argo.jdom.JsonNumberUtils.asDouble(jsonNumberString);
+        return jsonNumberString == null ? null : asBigDecimal(jsonNumberString).doubleValue();
     }
 
     /**
@@ -75,11 +68,9 @@ import java.math.BigInteger;
      * @param jsonNumberString a {@code String} representation of an integer JSON number.
      * @return a {@code Integer} representing the given JSON number {@code String}.
      * @throws NumberFormatException if the given {@code String} is not a valid JSON number or is not an integer.
-     *
-     * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils#asInteger(String)}
      */
-    @SuppressWarnings("DeprecatedIsStillUsed")
     public static Integer asInteger(final String jsonNumberString) {
-        return argo.jdom.JsonNumberUtils.asInteger(jsonNumberString);
+        final BigInteger bigInteger = asBigInteger(jsonNumberString);
+        return bigInteger == null ? null : bigInteger.intValue();
     }
 }
