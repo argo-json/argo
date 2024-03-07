@@ -161,10 +161,6 @@ public abstract class JsonStreamElement {
         return new TextJsonStreamElement.StartFieldJsonStreamElement(reader);
     }
 
-    static JsonStreamElement endField() {
-        return NonTextJsonStreamElement.END_FIELD;
-    }
-
     static JsonStreamElement string(final Reader reader) {
         return new TextJsonStreamElement.StringJsonStreamElement(reader);
     }

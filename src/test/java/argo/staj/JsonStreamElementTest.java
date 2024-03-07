@@ -62,7 +62,7 @@ class JsonStreamElementTest {
 
     @Test
     void endFieldHasCorrectAttributes() {
-        assertThat(endField(), aNonTextJsonStreamElementWithType(END_FIELD));
+        assertThat(NonTextJsonStreamElement.END_FIELD, aNonTextJsonStreamElementWithType(END_FIELD));
     }
 
     @Test
@@ -130,7 +130,7 @@ class JsonStreamElementTest {
 
     @Test
     void endFieldHasCorrectToString() {
-        assertThat(endField().toString(), equalTo("JsonStreamElement jsonStreamElementType: END_FIELD"));
+        assertThat(NonTextJsonStreamElement.END_FIELD.toString(), equalTo("JsonStreamElement jsonStreamElementType: END_FIELD"));
     }
 
     @Test

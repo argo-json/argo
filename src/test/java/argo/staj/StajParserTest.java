@@ -192,7 +192,7 @@ final class StajParserTest {
                 startField(new StringReader(aFieldName.getText())),
                 NonTextJsonStreamElement.START_ARRAY,
                 NonTextJsonStreamElement.END_ARRAY,
-                endField(),
+                NonTextJsonStreamElement.END_FIELD,
                 NonTextJsonStreamElement.END_OBJECT,
                 NonTextJsonStreamElement.END_DOCUMENT
         ));
@@ -209,11 +209,11 @@ final class StajParserTest {
                 startField(new StringReader(aFieldName.getText())),
                 NonTextJsonStreamElement.START_ARRAY,
                 NonTextJsonStreamElement.END_ARRAY,
-                endField(),
+                NonTextJsonStreamElement.END_FIELD,
                 startField(new StringReader(anotherFieldName.getText())),
                 NonTextJsonStreamElement.START_OBJECT,
                 NonTextJsonStreamElement.END_OBJECT,
-                endField(),
+                NonTextJsonStreamElement.END_FIELD,
                 NonTextJsonStreamElement.END_OBJECT,
                 NonTextJsonStreamElement.END_DOCUMENT
         ));
@@ -2809,7 +2809,7 @@ final class StajParserTest {
     void parsesJsonObjectWithWhitespace(final StajParserJsonParserShim stajParserJsonParserShim) {
         assertThat(
                 stajParserJsonParserShim.parse("{\"hello\": \"world\"}"),
-                generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_OBJECT, startField(new StringReader("hello")), string(new StringReader("world")), endField(), NonTextJsonStreamElement.END_OBJECT, NonTextJsonStreamElement.END_DOCUMENT)
+                generatesElements(NonTextJsonStreamElement.START_DOCUMENT, NonTextJsonStreamElement.START_OBJECT, startField(new StringReader("hello")), string(new StringReader("world")), NonTextJsonStreamElement.END_FIELD, NonTextJsonStreamElement.END_OBJECT, NonTextJsonStreamElement.END_DOCUMENT)
         );
     }
 

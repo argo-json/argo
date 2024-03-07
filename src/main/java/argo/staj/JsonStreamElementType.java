@@ -157,11 +157,11 @@ public enum JsonStreamElementType {
                 switch (nextChar) {
                     case ',':
                         stack.pop();
-                        return endField();
+                        return NonTextJsonStreamElement.END_FIELD;
                     case '}':
                         stack.pop();
                         pushbackReader.unread(nextChar);
-                        return endField();
+                        return NonTextJsonStreamElement.END_FIELD;
                     default:
                         throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
                 }
