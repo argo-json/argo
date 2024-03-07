@@ -10,8 +10,6 @@
 
 package samples;
 
-import argo.format.PrettyJsonFormatter;
-import argo.format.PrettyJsonWriter;
 import argo.format.WriteableJsonArray;
 import argo.format.WriteableJsonString;
 import argo.jdom.*;
@@ -99,7 +97,7 @@ final class MainDocumentationExamplesTest {
     void producesInfiniteSequenceOfJson() throws Exception {
         // tag::unboundedArrayWriting[]
         StringWriter stringWriter = new StringWriter();
-        new PrettyJsonWriter().write(stringWriter, (WriteableJsonArray) arrayWriter -> {
+        new argo.format.PrettyJsonWriter().write(stringWriter, (WriteableJsonArray) arrayWriter -> {
             for (int i = 0; i < 10_000; i++) {
                 arrayWriter.writeElement(string("I'm Spartacus!"));
             }
@@ -114,7 +112,7 @@ final class MainDocumentationExamplesTest {
     void producesInfiniteStringOfJson() throws Exception {
         // tag::unboundedStringWriting[]
         StringWriter stringWriter = new StringWriter();
-        new PrettyJsonWriter().write(stringWriter, (WriteableJsonString) writer -> {
+        new argo.format.PrettyJsonWriter().write(stringWriter, (WriteableJsonString) writer -> {
             writer.write("On");
             for (int i = 0; i < 10_000; i++) {
                 writer.write(" and on");
@@ -130,7 +128,7 @@ final class MainDocumentationExamplesTest {
     void formatsJson() throws Exception {
         @SuppressWarnings("UnnecessaryLocalVariable") JsonNode json = SAMPLE_JSON;
         // tag::jsonFormatter[]
-        String jsonText = new PrettyJsonFormatter().format(json);
+        String jsonText = new argo.format.PrettyJsonFormatter().format(json);
         // end::jsonFormatter[]
         assertThat(JDOM_PARSER.parse(jsonText), equalTo(SAMPLE_JSON));
     }
