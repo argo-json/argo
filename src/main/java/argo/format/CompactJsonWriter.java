@@ -18,8 +18,7 @@ import static argo.format.CompactJsonPrinter.fieldSortingCompactJsonPrinter;
 /**
  * JsonWriter that writes JSON as compactly as possible.  Instances of this class can safely be shared between threads.
  */
-public final class CompactJsonWriter extends AbstractJsonWriter {
-
+@Deprecated public final class CompactJsonWriter extends AbstractJsonWriter { // TODO document deprecation
     private final boolean sortFields;
 
     public CompactJsonWriter() {

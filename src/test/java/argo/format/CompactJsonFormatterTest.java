@@ -28,6 +28,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@SuppressWarnings("deprecation")
 final class CompactJsonFormatterTest {
     static final class FieldOrderPreservingCompactJsonFormatterArgumentsProvider implements ArgumentsProvider {
         @Override

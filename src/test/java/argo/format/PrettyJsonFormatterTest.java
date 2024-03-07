@@ -34,6 +34,7 @@ import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@SuppressWarnings("deprecation")
 final class PrettyJsonFormatterTest {
     static final class FieldOrderPreservingPrettyJsonFormatterArgumentsProvider implements ArgumentsProvider {
         @Override

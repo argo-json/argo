@@ -15,6 +15,7 @@ import argo.jdom.JsonNode;
 
 import java.io.IOException;
 
+@SuppressWarnings("deprecation")
 abstract class AbstractJsonFormatter implements JsonFormatter {
     public final String format(final JsonNode jsonNode) {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();

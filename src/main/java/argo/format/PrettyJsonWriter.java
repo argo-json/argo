@@ -18,7 +18,7 @@ import static argo.format.PrettyJsonPrinter.prettyJsonPrinter;
 /**
  * JsonWriter that writes JSON in a human-readable form.  Instances of this class can safely be shared between threads.
  */
-public final class PrettyJsonWriter extends AbstractJsonWriter {
+@Deprecated public final class PrettyJsonWriter extends AbstractJsonWriter { // TODO document deprecation
 
     private final String lineSeparator;
     private final boolean sortFields;

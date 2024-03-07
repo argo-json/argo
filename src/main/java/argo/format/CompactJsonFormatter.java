@@ -18,7 +18,8 @@ import java.io.Writer;
 /**
  * JsonFormat that formats JSON as compactly as possible.  Instances of this class can safely be shared between threads.
  */
-public final class CompactJsonFormatter extends AbstractJsonFormatter {
+@SuppressWarnings("deprecation")
+@Deprecated public final class CompactJsonFormatter extends AbstractJsonFormatter { // TODO document deprecation
 
     private static final AbstractJsonWriter COMPACT_JSON_WRITER = new CompactJsonWriter();
     private static final JsonWriter FIELD_SORTING_COMPACT_JSON_WRITER = COMPACT_JSON_WRITER.withFieldSorting(true);

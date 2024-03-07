@@ -34,6 +34,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 class JsonFormatterTest {
 
+    @SuppressWarnings("deprecation")
     static final class FieldOrderPreservingJsonFormatterArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
@@ -47,6 +48,7 @@ class JsonFormatterTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     static final class FieldOrderNormalisingJsonFormatterArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
@@ -60,6 +62,7 @@ class JsonFormatterTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Nested
     class FieldOrderPreservingJsonFormatter {
         @ParameterizedTest
@@ -115,6 +118,7 @@ class JsonFormatterTest {
     @Nested
     class FieldOrderNormalisingJsonFormatter {
 
+        @SuppressWarnings("deprecation")
         @Nested
         class Root {
             @ParameterizedTest
@@ -195,6 +199,7 @@ class JsonFormatterTest {
             }
         }
 
+        @SuppressWarnings("deprecation")
         @Nested
         class InsideArray {
             @ParameterizedTest
@@ -275,6 +280,7 @@ class JsonFormatterTest {
             }
         }
 
+        @SuppressWarnings("deprecation")
         @Nested
         class InsideObject {
             @ParameterizedTest

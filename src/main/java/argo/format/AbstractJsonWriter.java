@@ -15,6 +15,7 @@ import argo.jdom.JsonNode;
 import java.io.IOException;
 import java.io.Writer;
 
+@SuppressWarnings("deprecation")
 abstract class AbstractJsonWriter implements JsonWriter {
 
     abstract JsonWriter withFieldSorting(final boolean fieldSorting);

@@ -10,14 +10,14 @@
 
 package argo.jdom;
 
-import argo.format.CompactJsonFormatter;
-import argo.format.JsonFormatter;
+import argo.JsonGenerator;
 
+import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
 import static argo.jdom.JsonNodeDoesNotMatchChainedJsonNodeSelectorException.getShortFormFailPath;
 
 final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMatchJsonNodeSelectorException {
 
-    private static final JsonFormatter JSON_FORMATTER = CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter();
+    private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(COMPACT);
 
     static JsonNodeDoesNotMatchPathElementsException jsonNodeDoesNotMatchPathElementsException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonNode jsonNode) {
         return new JsonNodeDoesNotMatchPathElementsException(delegate, pathElements, jsonNode);
@@ -29,8 +29,8 @@ final class JsonNodeDoesNotMatchPathElementsException extends JsonNodeDoesNotMat
 
     private static String formatMessage(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException delegate, final Object[] pathElements, final JsonNode jsonNode) {
         return delegate.failPath.size() == 1 && pathElements.length == 1
-                ? "Failed to find " + delegate.failedNode.toString() + " while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(jsonNode)
-                : "Failed to find " + delegate.failedNode.toString() + " at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_FORMATTER.format(jsonNode);
+                ? "Failed to find " + delegate.failedNode.toString() + " while resolving [" + commaSeparate(pathElements) + "] in " + JSON_GENERATOR. generate(jsonNode)
+                : "Failed to find " + delegate.failedNode.toString() + " at [" + getShortFormFailPath(delegate.failPath) + "] while resolving [" + commaSeparate(pathElements) + "] in " + JSON_GENERATOR.generate(jsonNode);
     }
 
     private static String commaSeparate(final Object[] pathElements) {

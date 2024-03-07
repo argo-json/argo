@@ -18,7 +18,8 @@ import java.io.Writer;
 /**
  * JsonFormat that formats JSON in a human-readable form.  Instances of this class can safely be shared between threads.
  */
-public final class PrettyJsonFormatter extends AbstractJsonFormatter {
+@SuppressWarnings("deprecation")
+@Deprecated public final class PrettyJsonFormatter extends AbstractJsonFormatter { // TODO document deprecation
 
     private static final AbstractJsonWriter PRETTY_JSON_WRITER = new PrettyJsonWriter();
     private static final JsonWriter FIELD_SORTING_PRETTY_JSON_WRITER = PRETTY_JSON_WRITER.withFieldSorting(true);

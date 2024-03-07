@@ -17,14 +17,18 @@ import java.io.Writer;
 
 /**
  * A {@code JsonFormatter} provides operations to turn {@code JsonNode}s into valid JSON text.
- */ // TODO deprecate?
-public interface JsonFormatter {
+ *
+ * @deprecated Replaced by {@link argo.JsonGenerator}.
+ */
+@Deprecated public interface JsonFormatter {
 
     /**
      * Returns the specified {@code JsonNode} formatted as a String.
      *
      * @param jsonNode the {@code JsonNode} to format.
      * @return the specified {@code JsonNode} formatted as a String.
+     *
+     * @deprecated Replaced by {@link argo.JsonGenerator#generate(JsonNode)}.
      */
     String format(JsonNode jsonNode);
 
@@ -34,6 +38,8 @@ public interface JsonFormatter {
      * @param jsonNode the {@code JsonNode} to format.
      * @param writer       the {@code Writer} to stream the formatted {@code JsonNode} to.
      * @throws IOException if there was a problem writing to the {@code Writer}.
+     *
+     * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, JsonNode)}.
      */
     void format(JsonNode jsonNode, Writer writer) throws IOException;
 

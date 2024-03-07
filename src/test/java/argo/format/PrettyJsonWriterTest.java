@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PrettyJsonWriterTest {
 
+    @SuppressWarnings("deprecation")
     static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {

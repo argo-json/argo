@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,14 +10,17 @@
 
 package argo.format;
 
+import argo.JsonGenerator;
 import argo.jdom.JsonNode;
+
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 
 public final class PrettyJsonBuilder {
 
-    private static final JsonFormatter JSON_FORMATTER = PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter();
+    private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(PRETTY);
 
     public static String json(final JsonNode jsonNode) {
-        return JSON_FORMATTER.format(jsonNode);
+        return JSON_GENERATOR.generate(jsonNode);
     }
 
     private PrettyJsonBuilder() {

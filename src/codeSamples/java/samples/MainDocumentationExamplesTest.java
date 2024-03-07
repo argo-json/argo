@@ -85,6 +85,7 @@ final class MainDocumentationExamplesTest {
         assertThat(json, equalTo(SAMPLE_JSON));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     void producesInfiniteSequenceOfJson() throws Exception {
         // tag::unboundedArrayWriting[]
@@ -99,6 +100,7 @@ final class MainDocumentationExamplesTest {
         assertThat(jsonText, Matchers.startsWith("[\n\t\"I'm Spartacus!"));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     void producesInfiniteStringOfJson() throws Exception {
         // tag::unboundedStringWriting[]
@@ -114,6 +116,7 @@ final class MainDocumentationExamplesTest {
         assertThat(jsonText, Matchers.startsWith("\"On and on and on"));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     void formatsJson() throws Exception {
         @SuppressWarnings("UnnecessaryLocalVariable") JsonNode json = SAMPLE_JSON;

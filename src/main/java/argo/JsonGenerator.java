@@ -43,6 +43,7 @@ public final class JsonGenerator {
      * @param writeableJsonArray the {@code WriteableJsonArray} to output.
      * @throws IOException       if there was a problem writing to the {@code Writer}.
      */
+    @SuppressWarnings("deprecation")
     public void generate(final Writer target, final WriteableJsonArray writeableJsonArray) throws IOException {
         jsonGeneratorStyle.jsonWriter.write(target, writeableJsonArray);
     }
@@ -71,6 +72,7 @@ public final class JsonGenerator {
      * @param writeableJsonObject the {@code WriteableJsonObject} to output.
      * @throws IOException        if there was a problem writing to the {@code Writer}.
      */
+    @SuppressWarnings("deprecation")
     public void generate(final Writer target, final WriteableJsonObject writeableJsonObject) throws IOException {
         jsonGeneratorStyle.jsonWriter.write(target, writeableJsonObject);
     }
@@ -99,6 +101,7 @@ public final class JsonGenerator {
      * @param writeableJsonString the {@code WriteableJsonString} to output.
      * @throws IOException        if there was a problem writing to the {@code Writer}.
      */
+    @SuppressWarnings("deprecation")
     public void generate(final Writer target, final WriteableJsonString writeableJsonString) throws IOException {
         jsonGeneratorStyle.jsonWriter.write(target, writeableJsonString);
     }
@@ -128,6 +131,7 @@ public final class JsonGenerator {
      * @throws IOException              if there was a problem writing to the {@code Writer}.
      * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} don't constitute a complete JSON number.
      */
+    @SuppressWarnings("deprecation")
     public void generate(final Writer target, final WriteableJsonNumber writeableJsonNumber) throws IOException {
         jsonGeneratorStyle.jsonWriter.write(target, writeableJsonNumber);
     }
@@ -157,6 +161,7 @@ public final class JsonGenerator {
      * @param jsonNode     the {@code JsonNode} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
      */
+    @SuppressWarnings("deprecation")
     public void generate(final Writer target, final JsonNode jsonNode) throws IOException {
         jsonGeneratorStyle.jsonWriter.write(target, jsonNode);
     }
@@ -187,6 +192,7 @@ public final class JsonGenerator {
      * @param jsonNode     the {@code JsonNode} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
      */
+    @SuppressWarnings("deprecation")
     public void generateWithFieldSorting(final Writer target, final JsonNode jsonNode) throws IOException {
         jsonGeneratorStyle.fieldSortingJsonFormatter.format(jsonNode, target);
     }
@@ -229,17 +235,19 @@ public final class JsonGenerator {
         /**
          * Includes newlines, tabs, and spaces to improve readability.
          */
-        PRETTY(new PrettyJsonWriter(), PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter()),
+        @SuppressWarnings("deprecation") PRETTY(new PrettyJsonWriter(), PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter()),
 
         /**
          * Excludes all optional whitespace to produce the briefest valid JSON.
          */
-        COMPACT(new CompactJsonWriter(), CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter());
+        @SuppressWarnings("deprecation") COMPACT(new CompactJsonWriter(), CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter());
 
+        @SuppressWarnings("deprecation")
         private final JsonWriter jsonWriter;
+        @SuppressWarnings("deprecation")
         private final JsonFormatter fieldSortingJsonFormatter;
 
-        JsonGeneratorStyle(final JsonWriter jsonWriter, final JsonFormatter fieldSortingJsonFormatter) {
+        JsonGeneratorStyle(@SuppressWarnings("deprecation") final JsonWriter jsonWriter, @SuppressWarnings("deprecation") final JsonFormatter fieldSortingJsonFormatter) {
             this.jsonWriter = jsonWriter;
             this.fieldSortingJsonFormatter = fieldSortingJsonFormatter;
         }

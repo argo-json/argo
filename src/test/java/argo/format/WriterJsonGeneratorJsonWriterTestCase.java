@@ -15,6 +15,7 @@ import org.apache.commons.io.output.StringBuilderWriter;
 
 import java.io.IOException;
 
+@SuppressWarnings("deprecation")
 final class WriterJsonGeneratorJsonWriterTestCase implements JsonGeneratorJsonWriterTestCase {
     private final JsonWriter jsonWriter;
 

@@ -35,6 +35,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SuppressWarnings("deprecation")
 class JsonWriterTest {
 
     private static Stream<JsonWriter> jsonWritersAndShimmedJsonGenerators() {

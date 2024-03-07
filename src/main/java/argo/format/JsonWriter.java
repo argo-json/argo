@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -17,8 +17,10 @@ import java.io.Writer;
 
 /**
  * A {@code JsonWriter} provides operations to stream valid JSON text to a {@code java.io.Writer}.
+ *
+ * @deprecated Replaced by {@link argo.JsonGenerator}.
  */
-public interface JsonWriter {
+@Deprecated public interface JsonWriter {
 
     /**
      * Streams the specified {@code WriteableJsonArray} formatted to the specified {@code Writer}.
@@ -26,6 +28,8 @@ public interface JsonWriter {
      * @param writer             the {@code Writer} to output to.
      * @param writeableJsonArray the {@code WriteableJsonArray} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
+     *
+     * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, WriteableJsonArray)}.
      */
     void write(Writer writer, WriteableJsonArray writeableJsonArray) throws IOException;
 
@@ -35,6 +39,8 @@ public interface JsonWriter {
      * @param writer              the {@code Writer} to output to.
      * @param writeableJsonObject the {@code WriteableJsonObject} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
+     *
+     * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, WriteableJsonObject)}.
      */
     void write(Writer writer, WriteableJsonObject writeableJsonObject) throws IOException;
 
@@ -44,6 +50,8 @@ public interface JsonWriter {
      * @param writer              the {@code Writer} to output to.
      * @param writeableJsonString the {@code WriteableJsonString} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
+     *
+     * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, WriteableJsonString)}.
      */
     void write(Writer writer, WriteableJsonString writeableJsonString) throws IOException;
 
@@ -54,6 +62,8 @@ public interface JsonWriter {
      * @param writeableJsonNumber the {@code WriteableJsonNumber} to output.
      * @throws IOException              if there was a problem writing to the {@code Writer}.
      * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} didn't constitute a complete JSON number.
+     *
+     * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, WriteableJsonNumber)}.
      */
     void write(Writer writer, WriteableJsonNumber writeableJsonNumber) throws IOException;
 
@@ -63,6 +73,8 @@ public interface JsonWriter {
      * @param writer the {@code Writer} to output to.
      * @param jsonNode the {@code JsonNode} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
+     *
+     * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, JsonNode)}.
      */
     void write(Writer writer, JsonNode jsonNode) throws IOException;
 }

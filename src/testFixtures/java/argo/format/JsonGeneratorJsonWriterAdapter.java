@@ -16,6 +16,7 @@ import argo.jdom.JsonNode;
 import java.io.IOException;
 import java.io.Writer;
 
+@SuppressWarnings("deprecation")
 final class JsonGeneratorJsonWriterAdapter implements JsonWriter {
     private final JsonGenerator jsonGenerator;
 
