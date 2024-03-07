@@ -20,6 +20,8 @@ import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 
 /**
  * JsonFormat that formats JSON in a human-readable form.  Instances of this class can safely be shared between threads.
+ *
+ * @deprecated Replaced by {@link JsonGenerator}.
  */
 @SuppressWarnings("deprecation")
 @Deprecated public final class PrettyJsonFormatter extends AbstractJsonFormatter {
