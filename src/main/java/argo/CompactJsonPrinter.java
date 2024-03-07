@@ -8,8 +8,9 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.format;
+package argo;
 
+import argo.format.*;
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
@@ -21,50 +22,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class PrettyJsonPrinter extends AbstractJsonPrinter {
+class CompactJsonPrinter extends JsonPrinter {
 
-    private final String lineSeparator;
-    private int depth = 0;
-
-    private PrettyJsonPrinter(final Writer writer, final String lineSeparator) {
+    private CompactJsonPrinter(final Writer writer) {
         super(writer);
-        this.lineSeparator = lineSeparator;
     }
 
-    static PrettyJsonPrinter prettyJsonPrinter(final Writer writer, final String lineSeparator) {
-        return new PrettyJsonPrinter(writer, lineSeparator);
+    static CompactJsonPrinter compactJsonPrinter(final Writer writer) {
+        return new CompactJsonPrinter(writer);
     }
 
-    static PrettyJsonPrinter fieldSortingPrettyJsonPrinter(final Writer writer, final String lineSeparator) {
-        return new FieldSortingPrettyJsonPrinter(writer, lineSeparator);
-    }
-
-    private void addTabs() throws IOException {
-        for (int i = 0; i < depth; i++) {
-            writer.write('\t');
-        }
+    static CompactJsonPrinter fieldSortingCompactJsonPrinter(final Writer writer) {
+        return new FieldSortingCompactJsonPrinter(writer);
     }
 
     @Override
     void throwingObject(final List<JsonField> fields) throws IOException {
         boolean first = true;
         writer.write('{');
-        depth++;
         for (final JsonField field : fields) {
             if (!first) {
                 writer.write(',');
             }
             first = false;
-            writer.write(lineSeparator);
-            addTabs();
             write(field.getName());
-            writer.write(": ");
+            writer.write(':');
             write(field.getValue());
-        }
-        depth--;
-        if (!first) {
-            writer.write(lineSeparator);
-            addTabs();
         }
         writer.write('}');
     }
@@ -73,20 +56,12 @@ class PrettyJsonPrinter extends AbstractJsonPrinter {
     final void throwingArray(final List<JsonNode> elements) throws IOException {
         boolean first = true;
         writer.write('[');
-        depth++;
         for (final JsonNode element : elements) {
             if (!first) {
                 writer.write(',');
             }
             first = false;
-            writer.write(lineSeparator);
-            addTabs();
             write(element);
-        }
-        depth--;
-        if (!first) {
-            writer.write(lineSeparator);
-            addTabs();
         }
         writer.write(']');
     }
@@ -94,59 +69,50 @@ class PrettyJsonPrinter extends AbstractJsonPrinter {
     @Override
     final void write(final WriteableJsonArray writeableJsonArray) throws IOException {
         writer.write('[');
-        depth++;
-        final boolean[] isFirst = {true};
         writeableJsonArray.writeTo(new ArrayWriter() {
+            private boolean isFirst = true;
 
             public void writeElement(final WriteableJsonObject element) throws IOException {
-                writePreamble();
+                writeCommaIfRequired();
                 write(element);
             }
 
             public void writeElement(final WriteableJsonArray element) throws IOException {
-                writePreamble();
+                writeCommaIfRequired();
                 write(element);
             }
 
             public void writeElement(final WriteableJsonString element) throws IOException {
-                writePreamble();
+                writeCommaIfRequired();
                 write(element);
             }
 
             public void writeElement(final WriteableJsonNumber element) throws IOException {
-                writePreamble();
+                writeCommaIfRequired();
                 write(element);
             }
 
             public void writeElement(final JsonNode element) throws IOException {
-                writePreamble();
+                writeCommaIfRequired();
                 write(element);
             }
 
-            private void writePreamble() throws IOException {
-                if (!isFirst[0]) {
+            private void writeCommaIfRequired() throws IOException {
+                if (!isFirst) {
                     writer.write(',');
                 }
-                isFirst[0] = false;
-                writer.write(lineSeparator);
-                addTabs();
+                isFirst = false;
             }
-
         });
-        depth--;
-        if (!isFirst[0]) {
-            writer.write(lineSeparator);
-            addTabs();
-        }
         writer.write(']');
     }
 
     @Override
     final void write(final WriteableJsonObject writeableJsonObject) throws IOException {
         writer.write('{');
-        depth++;
-        final boolean[] isFirst = {true};
         writeableJsonObject.writeTo(new ObjectWriter() {
+            private boolean isFirst = true;
+
             public void writeField(final String name, final WriteableJsonObject value) throws IOException {
                 writeField(JsonNodeFactories.string(name), value);
             }
@@ -193,9 +159,9 @@ class PrettyJsonPrinter extends AbstractJsonPrinter {
             }
 
             private void writeName(final JsonStringNode name) throws IOException {
-                writePreamble();
+                writeCommaIfRequired();
                 write(name);
-                writer.write(": ");
+                writer.write(':');
             }
 
             public void writeField(final WriteableJsonString name, final WriteableJsonObject value) throws IOException {
@@ -224,35 +190,28 @@ class PrettyJsonPrinter extends AbstractJsonPrinter {
             }
 
             private void writeName(final WriteableJsonString name) throws IOException {
-                writePreamble();
+                writeCommaIfRequired();
                 write(name);
-                writer.write(": ");
+                writer.write(':');
             }
 
             public void writeField(final JsonField jsonField) throws IOException {
                 writeField(jsonField.getName(), jsonField.getValue());
             }
 
-            private void writePreamble() throws IOException {
-                if (!isFirst[0]) {
+            private void writeCommaIfRequired() throws IOException {
+                if (!isFirst) {
                     writer.write(',');
                 }
-                isFirst[0] = false;
-                writer.write(lineSeparator);
-                addTabs();
+                isFirst = false;
             }
         });
-        depth--;
-        if (!isFirst[0]) {
-            writer.write(lineSeparator);
-            addTabs();
-        }
         writer.write('}');
     }
 
-    private static final class FieldSortingPrettyJsonPrinter extends PrettyJsonPrinter {
-        FieldSortingPrettyJsonPrinter(final Writer writer, final String lineSeparator) {
-            super(writer, lineSeparator);
+    private static final class FieldSortingCompactJsonPrinter extends CompactJsonPrinter {
+        FieldSortingCompactJsonPrinter(final Writer writer) {
+            super(writer);
         }
 
         @Override

@@ -8,27 +8,28 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.format;
+package argo;
 
 import java.io.Writer;
 
-class CloseCountingWriter extends Writer {
+class FlushCountingWriter extends Writer {
 
-    private int closeCount = 0;
+    private int flushCount = 0;
 
     @Override
     public void write(char[] cbuf, int off, int len) {
     }
 
     @Override
-    public void flush() {}
+    public void flush() {
+        flushCount++;
+    }
 
     @Override
     public void close() {
-        closeCount++;
     }
 
-    int closeCount() {
-        return closeCount;
+    int flushCount() {
+        return flushCount;
     }
 }

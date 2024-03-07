@@ -10,10 +10,13 @@
 
 package argo.format;
 
+import argo.JsonGenerator;
 import argo.jdom.JsonNode;
 
 import java.io.IOException;
 import java.io.Writer;
+
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 
 /**
  * JsonFormat that formats JSON in a human-readable form.  Instances of this class can safely be shared between threads.
@@ -21,20 +24,19 @@ import java.io.Writer;
 @SuppressWarnings("deprecation")
 @Deprecated public final class PrettyJsonFormatter extends AbstractJsonFormatter { // TODO document deprecation
 
-    private static final AbstractJsonWriter PRETTY_JSON_WRITER = new PrettyJsonWriter();
-    private static final JsonWriter FIELD_SORTING_PRETTY_JSON_WRITER = PRETTY_JSON_WRITER.withFieldSorting(true);
+    private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(PRETTY);
 
-    private final JsonWriter jsonWriter;
+    private final boolean fieldOrderNormalising;
 
     /**
      * Constructs a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in the order they were defined.
      */
     public PrettyJsonFormatter() {
-        this(PRETTY_JSON_WRITER);
+        this(false);
     }
 
-    private PrettyJsonFormatter(final JsonWriter jsonWriter) {
-        this.jsonWriter = jsonWriter;
+    private PrettyJsonFormatter(final boolean fieldOrderNormalising) {
+        this.fieldOrderNormalising = fieldOrderNormalising;
     }
 
     /**
@@ -53,11 +55,15 @@ import java.io.Writer;
      * @return a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in alphabetic order.
      */
     public static PrettyJsonFormatter fieldOrderNormalisingPrettyJsonFormatter() {
-        return new PrettyJsonFormatter(FIELD_SORTING_PRETTY_JSON_WRITER);
+        return new PrettyJsonFormatter(true);
     }
 
     public void format(final JsonNode jsonNode, final Writer writer) throws IOException {
-        jsonWriter.write(writer, jsonNode);
+        if (fieldOrderNormalising) {
+            JSON_GENERATOR.generateWithFieldSorting(writer, jsonNode);
+        } else {
+            JSON_GENERATOR.generate(writer, jsonNode);
+        }
     }
 
 }

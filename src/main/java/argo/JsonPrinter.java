@@ -8,8 +8,12 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.format;
+package argo;
 
+import argo.format.WriteableJsonArray;
+import argo.format.WriteableJsonNumber;
+import argo.format.WriteableJsonObject;
+import argo.format.WriteableJsonString;
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeVisitor;
@@ -19,9 +23,9 @@ import java.io.Writer;
 import java.util.Comparator;
 import java.util.List;
 
-import static argo.format.JsonEscapedString.escapeCharBufferTo;
+import static argo.JsonEscapedString.escapeCharBufferTo;
 
-abstract class AbstractJsonPrinter implements JsonNodeVisitor {
+abstract class JsonPrinter implements JsonNodeVisitor {
 
     static final Comparator<JsonField> JSON_FIELD_COMPARATOR = new Comparator<JsonField>() {
         public int compare(final JsonField left, final JsonField right) {
@@ -31,7 +35,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     final Writer writer;
     private final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
 
-    AbstractJsonPrinter(final Writer writer) {
+    JsonPrinter(final Writer writer) {
         this.writer = writer;
     }
 
@@ -66,7 +70,7 @@ abstract class AbstractJsonPrinter implements JsonNodeVisitor {
     final void write(final JsonNode jsonNode) throws IOException {
         try {
             jsonNode.visit(this);
-        } catch (final AbstractJsonPrinter.IORuntimeException e) {
+        } catch (final JsonPrinter.IORuntimeException e) {
             throw e.getCause();
         }
     }

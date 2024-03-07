@@ -10,6 +10,7 @@
 
 package argo.format;
 
+import argo.JsonGenerator;
 import argo.jdom.JsonNode;
 
 import java.io.IOException;
@@ -18,28 +19,30 @@ import java.io.Writer;
 @SuppressWarnings("deprecation")
 abstract class AbstractJsonWriter implements JsonWriter {
 
-    abstract JsonWriter withFieldSorting(final boolean fieldSorting);
+    private final JsonGenerator jsonGenerator;
+
+    AbstractJsonWriter(final JsonGenerator jsonGenerator) {
+        this.jsonGenerator = jsonGenerator;
+    }
 
     public final void write(final Writer writer, final WriteableJsonArray writeableJsonArray) throws IOException {
-        newJsonPrinter(writer).write(writeableJsonArray);
+        jsonGenerator.generate(writer, writeableJsonArray);
     }
 
     public final void write(final Writer writer, final WriteableJsonObject writeableJsonObject) throws IOException {
-        newJsonPrinter(writer).write(writeableJsonObject);
+        jsonGenerator.generate(writer, writeableJsonObject);
     }
 
     public final void write(final Writer writer, final WriteableJsonString writeableJsonString) throws IOException {
-        newJsonPrinter(writer).write(writeableJsonString);
+        jsonGenerator.generate(writer, writeableJsonString);
     }
 
     public final void write(final Writer writer, final WriteableJsonNumber writeableJsonNumber) throws IOException {
-        newJsonPrinter(writer).write(writeableJsonNumber);
+        jsonGenerator.generate(writer, writeableJsonNumber);
     }
 
     public final void write(final Writer writer, final JsonNode jsonNode) throws IOException {
-        newJsonPrinter(writer).write(jsonNode);
+        jsonGenerator.generate(writer, jsonNode);
     }
-
-    abstract AbstractJsonPrinter newJsonPrinter(Writer writer);
 
 }
