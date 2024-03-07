@@ -20,6 +20,7 @@ import java.io.Writer;
  *
  * @deprecated Replaced by {@link argo.JsonGenerator}.
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated public interface JsonWriter {
 
     /**

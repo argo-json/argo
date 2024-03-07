@@ -22,6 +22,7 @@ import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
  *
  * @deprecated Replaced by {@link JsonGenerator}.
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated public final class CompactJsonWriter extends AbstractJsonWriter {
 
     /**

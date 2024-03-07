@@ -23,7 +23,7 @@ import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
  *
  * @deprecated Replaced by {@link JsonGenerator}.
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "DeprecatedIsStillUsed"})
 @Deprecated public final class PrettyJsonFormatter extends AbstractJsonFormatter {
 
     private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(PRETTY);
