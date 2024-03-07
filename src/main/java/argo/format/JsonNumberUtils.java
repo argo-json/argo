@@ -70,6 +70,7 @@ public final class JsonNumberUtils {
      * @throws NumberFormatException if the given {@code String} is not a valid JSON number or is not an integer.
      */
     public static Integer asInteger(final String jsonNumberString) {
-        return jsonNumberString == null ? null : asBigInteger(jsonNumberString).intValue();
+        final BigInteger bigInteger = asBigInteger(jsonNumberString);
+        return bigInteger == null ? null : bigInteger.intValue();
     }
 }
