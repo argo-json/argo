@@ -18,6 +18,7 @@ import java.math.BigInteger;
  *
  * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils}.
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated public final class JsonNumberUtils {
 
     private JsonNumberUtils() {
