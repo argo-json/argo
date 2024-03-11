@@ -15,13 +15,13 @@ import argo.jdom.JsonNode;
 import java.io.IOException;
 
 interface JsonGeneratorJsonWriterTestCase {
-    String write(final WriteableJsonArray writeableJsonArray) throws IOException;
+    String write(WriteableJsonArray writeableJsonArray) throws IOException;
 
-    String write(final WriteableJsonObject writeableJsonObject) throws IOException;
+    String write(WriteableJsonObject writeableJsonObject) throws IOException;
 
-    String write(final WriteableJsonString writeableJsonString) throws IOException;
+    String write(WriteableJsonString writeableJsonString) throws IOException;
 
-    String write(final WriteableJsonNumber writeableJsonNumber) throws IOException;
+    String write(WriteableJsonNumber writeableJsonNumber) throws IOException;
 
-    String write(final JsonNode jsonNode) throws IOException;
+    String write(JsonNode jsonNode) throws IOException;
 }

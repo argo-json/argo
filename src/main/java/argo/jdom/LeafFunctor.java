@@ -1,5 +1,5 @@
 /*
- *  Copyright  2020 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -19,5 +19,5 @@ abstract class LeafFunctor<T, V> implements Functor<T, V> {
         }
     }
 
-    protected abstract V typeSafeApplyTo(final T jsonNode);
+    protected abstract V typeSafeApplyTo(T jsonNode);
 }

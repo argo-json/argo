@@ -116,7 +116,7 @@ revapi {
 }
 
 pmd {
-    toolVersion = "6.29.0"
+    toolVersion = "6.55.0"
     ruleSetFiles = files("tools/pmd-ruleset.xml")
     ruleSets = emptyList()
 }

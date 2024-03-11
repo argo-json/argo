@@ -29,9 +29,4 @@
         <exclude name="UncommentedEmptyMethodBody"/>
     </rule>
 
-    <rule ref="category/java/design.xml/ExcessiveClassLength">
-        <properties>
-            <property name="minimum" value="1000"/> <!-- reset the overridden value for this property in tests to the default -->
-        </properties>
-    </rule>
 </ruleset>

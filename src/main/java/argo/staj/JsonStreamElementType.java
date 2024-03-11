@@ -125,7 +125,7 @@ public enum JsonStreamElementType {
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
 
-    abstract JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException;
+    abstract JsonStreamElement parseNext(PositionTrackingPushbackReader pushbackReader, Stack<JsonStreamElementType> stack) throws IOException;
 
     private static JsonStreamElement parseFieldOrObjectEnd(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
@@ -384,7 +384,7 @@ public enum JsonStreamElementType {
             return n;
         }
 
-        @SuppressWarnings({"PMD.EmptyWhileStmt", "StatementWithEmptyBody"})
+        @SuppressWarnings({"PMD.EmptyControlStatement", "StatementWithEmptyBody"})
         public void close() throws IOException {
             if (in != null) {
                 while (read() != -1) {
@@ -457,7 +457,7 @@ public enum JsonStreamElementType {
         }
 
         @Override
-        @SuppressWarnings({"PMD.EmptyWhileStmt", "StatementWithEmptyBody"})
+        @SuppressWarnings({"PMD.EmptyControlStatement", "StatementWithEmptyBody"})
         public void close() throws IOException {
             if (in != null) {
                 while (read() != -1) {

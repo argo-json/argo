@@ -19,7 +19,7 @@ import static argo.jdom.JsonFieldNodeBuilder.aJsonFieldBuilder;
 /**
  * Builder for {@code JsonNode}s representing JSON objects.
  */
-@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass") // TODO fixed in PMD 6.51.0?
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
 public abstract class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
     private JsonObjectNodeBuilder() {
@@ -47,7 +47,7 @@ public abstract class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode>
         return withFieldBuilder(aJsonFieldBuilder(name, value));
     }
 
-    abstract JsonObjectNodeBuilder withFieldBuilder(final NamedJsonFieldBuilder jsonFieldBuilder);
+    abstract JsonObjectNodeBuilder withFieldBuilder(NamedJsonFieldBuilder jsonFieldBuilder);
 
     static final class DuplicateFieldNamePermittingJsonObjectNodeBuilder extends JsonObjectNodeBuilder {
 

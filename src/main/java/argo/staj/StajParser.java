@@ -16,6 +16,8 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.Stack;
 
+import static argo.staj.JsonStreamElement.NonTextJsonStreamElement.END_DOCUMENT;
+
 /**
  * Parses a JSON character stream into an {@code Iterator} of {@code JsonStreamElement}s.
  */
@@ -52,7 +54,7 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * @throws JsonStreamException           if the underlying character stream failed.
      */
     public boolean hasNext() {
-        if (current != null && current == JsonStreamElement.NonTextJsonStreamElement.END_DOCUMENT) {
+        if (current != null && current == END_DOCUMENT) {
             return false;
         } else if (next == null) {
             next = getNextElement();

@@ -39,9 +39,9 @@ abstract class JsonPrinter implements JsonNodeVisitor {
         this.writer = writer;
     }
 
-    abstract void write(final WriteableJsonArray writeableJsonArray) throws IOException;
+    abstract void write(WriteableJsonArray writeableJsonArray) throws IOException;
 
-    abstract void write(final WriteableJsonObject writeableJsonObject) throws IOException;
+    abstract void write(WriteableJsonObject writeableJsonObject) throws IOException;
 
     final void write(final WriteableJsonString writeableJsonString) throws IOException {
         writer.write('"');
@@ -83,7 +83,7 @@ abstract class JsonPrinter implements JsonNodeVisitor {
         }
     }
 
-    abstract void throwingObject(final List<JsonField> fields) throws IOException;
+    abstract void throwingObject(List<JsonField> fields) throws IOException;
 
     public final void array(final List<JsonNode> elements) {
         try {
@@ -93,7 +93,7 @@ abstract class JsonPrinter implements JsonNodeVisitor {
         }
     }
 
-    abstract void throwingArray(final List<JsonNode> elements) throws IOException;
+    abstract void throwingArray(List<JsonNode> elements) throws IOException;
 
     public final void string(final String value) {
         final int length = value.length();

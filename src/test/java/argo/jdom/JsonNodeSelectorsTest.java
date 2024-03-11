@@ -29,9 +29,9 @@ import static argo.TestingFactories.aSmallNonNegativeInt;
 import static argo.TestingFactories.aString;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNodeSelectors.*;
-import static argo.jdom.JsonNodeSelectorsTest.TreeTestSpec.TestSpec.expectCandidateTestSpec;
-import static argo.jdom.JsonNodeSelectorsTest.TreeTestSpec.TestSpec.mismatchTestSpec;
-import static argo.jdom.JsonNodeSelectorsTest.TreeTestSpec.TestSpec.testSpec;
+import static argo.jdom.JsonNodeSelectorsTest.TreeTestCase.TestCase.expectCandidateTestCase;
+import static argo.jdom.JsonNodeSelectorsTest.TreeTestCase.TestCase.mismatchTestCase;
+import static argo.jdom.JsonNodeSelectorsTest.TreeTestCase.TestCase.testCase;
 import static argo.jdom.JsonNodeTestingFactories.aJsonNode;
 import static argo.jdom.JsonStringNodeTestingFactories.aStringNodeDifferentTo;
 import static java.util.stream.Collectors.toList;
@@ -42,29 +42,29 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JsonNodeSelectorsTest {
 
-    static class TreeTestSpec {
+    static class TreeTestCase {
 
-        static final class TestSpec {
+        static final class TestCase {
             final JsonNode candidate;
             final boolean expectedMatch;
             final Object expectedValue;
 
-            private TestSpec(final JsonNode candidate, boolean expectedMatch, final Object expectedValue) {
+            private TestCase(final JsonNode candidate, boolean expectedMatch, final Object expectedValue) {
                 this.candidate = candidate;
                 this.expectedMatch = expectedMatch;
                 this.expectedValue = expectedValue;
             }
 
-            static TestSpec testSpec(final JsonNode candidate, final Object expected) {
-                return new TestSpec(candidate, true, expected);
+            static TestCase testCase(final JsonNode candidate, final Object expected) {
+                return new TestCase(candidate, true, expected);
             }
 
-            static TestSpec mismatchTestSpec(final JsonNode candidate) {
-                return new TestSpec(candidate, false, null);
+            static TestCase mismatchTestCase(final JsonNode candidate) {
+                return new TestCase(candidate, false, null);
             }
 
-            static TestSpec expectCandidateTestSpec(final JsonNode candidate) {
-                return new TestSpec(candidate, true, candidate);
+            static TestCase expectCandidateTestCase(final JsonNode candidate) {
+                return new TestCase(candidate, true, candidate);
             }
         }
 
@@ -72,13 +72,13 @@ final class JsonNodeSelectorsTest {
             @Override
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 return nestedPermutations(
-                        expectCandidateTestSpec(nullNode()),
-                        expectCandidateTestSpec(trueNode()),
-                        expectCandidateTestSpec(falseNode()),
-                        expectCandidateTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        expectCandidateTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        expectCandidateTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        expectCandidateTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        expectCandidateTestCase(nullNode()),
+                        expectCandidateTestCase(trueNode()),
+                        expectCandidateTestCase(falseNode()),
+                        expectCandidateTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        expectCandidateTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        expectCandidateTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        expectCandidateTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
@@ -88,13 +88,13 @@ final class JsonNodeSelectorsTest {
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 final JsonStringNode jsonStringNode = JsonStringNodeTestingFactories.aStringNode();
                 return nestedPermutations(
-                        mismatchTestSpec(nullNode()),
-                        mismatchTestSpec(trueNode()),
-                        mismatchTestSpec(falseNode()),
-                        mismatchTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        testSpec(jsonStringNode, jsonStringNode.getText()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        mismatchTestCase(nullNode()),
+                        mismatchTestCase(trueNode()),
+                        mismatchTestCase(falseNode()),
+                        mismatchTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        testCase(jsonStringNode, jsonStringNode.getText()),
+                        mismatchTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
@@ -104,13 +104,13 @@ final class JsonNodeSelectorsTest {
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 final JsonStringNode jsonStringNode = JsonStringNodeTestingFactories.aStringNode();
                 return nestedPermutations(
-                        testSpec(nullNode(), null),
-                        mismatchTestSpec(trueNode()),
-                        mismatchTestSpec(falseNode()),
-                        mismatchTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        testSpec(jsonStringNode, jsonStringNode.getText()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        testCase(nullNode(), null),
+                        mismatchTestCase(trueNode()),
+                        mismatchTestCase(falseNode()),
+                        mismatchTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        testCase(jsonStringNode, jsonStringNode.getText()),
+                        mismatchTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
@@ -120,13 +120,13 @@ final class JsonNodeSelectorsTest {
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 final JsonNode jsonNode = JsonNumberNodeTestingFactories.aNumberNode();
                 return nestedPermutations(
-                        mismatchTestSpec(nullNode()),
-                        mismatchTestSpec(trueNode()),
-                        mismatchTestSpec(falseNode()),
-                        testSpec(jsonNode, jsonNode.getText()),
-                        mismatchTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        mismatchTestCase(nullNode()),
+                        mismatchTestCase(trueNode()),
+                        mismatchTestCase(falseNode()),
+                        testCase(jsonNode, jsonNode.getText()),
+                        mismatchTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
@@ -136,13 +136,13 @@ final class JsonNodeSelectorsTest {
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 final JsonNode jsonNode = JsonNumberNodeTestingFactories.aNumberNode();
                 return nestedPermutations(
-                        testSpec(nullNode(), null),
-                        mismatchTestSpec(trueNode()),
-                        mismatchTestSpec(falseNode()),
-                        testSpec(jsonNode, jsonNode.getText()),
-                        mismatchTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        testCase(nullNode(), null),
+                        mismatchTestCase(trueNode()),
+                        mismatchTestCase(falseNode()),
+                        testCase(jsonNode, jsonNode.getText()),
+                        mismatchTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
@@ -151,13 +151,13 @@ final class JsonNodeSelectorsTest {
             @Override
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 return nestedPermutations(
-                        mismatchTestSpec(nullNode()),
-                        testSpec(trueNode(), true),
-                        testSpec(falseNode(), false),
-                        mismatchTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        mismatchTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        mismatchTestCase(nullNode()),
+                        testCase(trueNode(), true),
+                        testCase(falseNode(), false),
+                        mismatchTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        mismatchTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
@@ -166,13 +166,13 @@ final class JsonNodeSelectorsTest {
             @Override
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 return nestedPermutations(
-                        testSpec(nullNode(), null),
-                        testSpec(trueNode(), true),
-                        testSpec(falseNode(), false),
-                        mismatchTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        mismatchTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        testCase(nullNode(), null),
+                        testCase(trueNode(), true),
+                        testCase(falseNode(), false),
+                        mismatchTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        mismatchTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
@@ -181,13 +181,13 @@ final class JsonNodeSelectorsTest {
             @Override
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 return nestedPermutations(
-                        expectCandidateTestSpec(nullNode()),
-                        mismatchTestSpec(trueNode()),
-                        mismatchTestSpec(falseNode()),
-                        mismatchTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        mismatchTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        expectCandidateTestCase(nullNode()),
+                        mismatchTestCase(trueNode()),
+                        mismatchTestCase(falseNode()),
+                        mismatchTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        mismatchTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
@@ -197,13 +197,13 @@ final class JsonNodeSelectorsTest {
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 final JsonNode jsonNode = JsonNodeTestingFactories.anArrayNode();
                 return nestedPermutations(
-                        mismatchTestSpec(nullNode()),
-                        mismatchTestSpec(trueNode()),
-                        mismatchTestSpec(falseNode()),
-                        mismatchTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        mismatchTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        testSpec(jsonNode, jsonNode.getElements())
+                        mismatchTestCase(nullNode()),
+                        mismatchTestCase(trueNode()),
+                        mismatchTestCase(falseNode()),
+                        mismatchTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        mismatchTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        testCase(jsonNode, jsonNode.getElements())
                 );
             }
         }
@@ -213,13 +213,13 @@ final class JsonNodeSelectorsTest {
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 final JsonNode jsonNode = JsonNodeTestingFactories.anArrayNode();
                 return nestedPermutations(
-                        testSpec(nullNode(), null),
-                        mismatchTestSpec(trueNode()),
-                        mismatchTestSpec(falseNode()),
-                        mismatchTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        mismatchTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anObjectNode()),
-                        testSpec(jsonNode, jsonNode.getElements())
+                        testCase(nullNode(), null),
+                        mismatchTestCase(trueNode()),
+                        mismatchTestCase(falseNode()),
+                        mismatchTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        mismatchTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        mismatchTestCase(JsonNodeTestingFactories.anObjectNode()),
+                        testCase(jsonNode, jsonNode.getElements())
                 );
             }
         }
@@ -229,13 +229,13 @@ final class JsonNodeSelectorsTest {
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 final JsonNode jsonNode = JsonNodeTestingFactories.anObjectNode();
                 return nestedPermutations(
-                        mismatchTestSpec(nullNode()),
-                        mismatchTestSpec(trueNode()),
-                        mismatchTestSpec(falseNode()),
-                        mismatchTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        mismatchTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        testSpec(jsonNode, jsonNode.getFields()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        mismatchTestCase(nullNode()),
+                        mismatchTestCase(trueNode()),
+                        mismatchTestCase(falseNode()),
+                        mismatchTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        mismatchTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        testCase(jsonNode, jsonNode.getFields()),
+                        mismatchTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
@@ -245,27 +245,27 @@ final class JsonNodeSelectorsTest {
             public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
                 final JsonNode jsonNode = JsonNodeTestingFactories.anObjectNode();
                 return nestedPermutations(
-                        testSpec(nullNode(), null),
-                        mismatchTestSpec(trueNode()),
-                        mismatchTestSpec(falseNode()),
-                        mismatchTestSpec(JsonNumberNodeTestingFactories.aNumberNode()),
-                        mismatchTestSpec(JsonStringNodeTestingFactories.aStringNode()),
-                        testSpec(jsonNode, jsonNode.getFields()),
-                        mismatchTestSpec(JsonNodeTestingFactories.anArrayNode())
+                        testCase(nullNode(), null),
+                        mismatchTestCase(trueNode()),
+                        mismatchTestCase(falseNode()),
+                        mismatchTestCase(JsonNumberNodeTestingFactories.aNumberNode()),
+                        mismatchTestCase(JsonStringNodeTestingFactories.aStringNode()),
+                        testCase(jsonNode, jsonNode.getFields()),
+                        mismatchTestCase(JsonNodeTestingFactories.anArrayNode())
                 );
             }
         }
 
-        private static Stream<? extends Arguments> nestedPermutations(final TestSpec... testSpecs) {
-            return Arrays.stream(testSpecs).flatMap(testSpec -> Stream.of(
-                    Arguments.arguments(testSpec.candidate, new Object[] {}, testSpec.expectedMatch, testSpec.expectedValue),
-                    Arguments.arguments(array(testSpec.candidate), new Object[] {0}, testSpec.expectedMatch, testSpec.expectedValue),
-                    Arguments.arguments(object(field("foo", testSpec.candidate)), new Object[] {"foo"}, testSpec.expectedMatch, testSpec.expectedValue)
+        private static Stream<? extends Arguments> nestedPermutations(final TestCase... testCases) {
+            return Arrays.stream(testCases).flatMap(testCase -> Stream.of(
+                    Arguments.arguments(testCase.candidate, new Object[] {}, testCase.expectedMatch, testCase.expectedValue),
+                    Arguments.arguments(array(testCase.candidate), new Object[] {0}, testCase.expectedMatch, testCase.expectedValue),
+                    Arguments.arguments(object(field("foo", testCase.candidate)), new Object[] {"foo"}, testCase.expectedMatch, testCase.expectedValue)
             ));
         }
     }
 
-    static class NodeTestSpec {
+    static class NodeTestCase {
 
         static final class FieldByStringArgumentsProvider implements ArgumentsProvider {
             @Override
@@ -340,13 +340,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class AnyNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.anyNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean ignored, final JsonNode expected) {
             assertThat(JsonNodeSelectors.anyNode(path).getValue(candidateMatch), equalTo(expected));
         }
@@ -370,13 +370,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class AStringNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonStringNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonStringNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.aStringNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonStringNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonStringNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final String expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.aStringNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -420,13 +420,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class ANullableStringNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonStringNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonStringNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.aNullableStringNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonStringNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonStringNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final String expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.aNullableStringNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -470,13 +470,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class ANumberNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonNumberNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonNumberNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.aNumberNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonNumberNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonNumberNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final String expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.aNumberNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -520,13 +520,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class ANullableNumberNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonNumberNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonNumberNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.aNullableNumberNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonNumberNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonNumberNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final String expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.aNullableNumberNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -570,13 +570,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class ABooleanNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonBooleanNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonBooleanNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.aBooleanNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonBooleanNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonBooleanNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final Boolean expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.aBooleanNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -620,13 +620,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class ANullableBooleanNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonBooleanNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonBooleanNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.aNullableBooleanNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonBooleanNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonBooleanNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final Boolean expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.aNullableBooleanNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -670,13 +670,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class ANullNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonNullNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonNullNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.aNullNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonNullNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonNullNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final JsonNode expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.aNullNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -720,13 +720,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class AnArrayNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonArrayNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonArrayNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.anArrayNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonArrayNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonArrayNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final List<JsonNode> expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.anArrayNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -770,13 +770,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class ANullableArrayNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonArrayNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonArrayNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.aNullableArrayNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonArrayNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonArrayNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final List<JsonNode> expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.aNullableArrayNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -820,13 +820,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class AnObjectNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonObjectNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonObjectNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.anObjectNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.JsonObjectNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.JsonObjectNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final Map<JsonStringNode, JsonNode> expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.anObjectNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -870,13 +870,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class ANullableObjectNode {
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonObjectNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonObjectNodeArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.aNullableObjectNode(path).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(TreeTestSpec.NullableJsonObjectNodeArgumentsProvider.class)
+        @ArgumentsSource(TreeTestCase.NullableJsonObjectNodeArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final Object[] path, final boolean expectedMatch, final Map<JsonStringNode, JsonNode> expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.aNullableObjectNode(path).getValue(candidateMatch), equalTo(expectedValue));
@@ -1045,13 +1045,13 @@ final class JsonNodeSelectorsTest {
         @Nested
         final class ByString {
             @ParameterizedTest
-            @ArgumentsSource(NodeTestSpec.FieldByStringArgumentsProvider.class)
+            @ArgumentsSource(NodeTestCase.FieldByStringArgumentsProvider.class)
             void matches(final JsonNode candidateMatch, final String fieldName, final boolean expectedMatch) {
                 assertThat(JsonNodeSelectors.anObjectNodeWithField(fieldName).matches(candidateMatch), equalTo(expectedMatch));
             }
 
             @ParameterizedTest
-            @ArgumentsSource(NodeTestSpec.FieldByStringArgumentsProvider.class)
+            @ArgumentsSource(NodeTestCase.FieldByStringArgumentsProvider.class)
             void getValue(final JsonNode candidateMatch, final String fieldName, final boolean expectedMatch, final JsonNode expectedValue) {
                 if (expectedMatch) {
                     assertThat(JsonNodeSelectors.anObjectNodeWithField(fieldName).getValue(candidateMatch), equalTo(expectedValue));
@@ -1085,13 +1085,13 @@ final class JsonNodeSelectorsTest {
         @Nested
         final class ByJsonStringNode {
             @ParameterizedTest
-            @ArgumentsSource(NodeTestSpec.FieldByJsonStringNodeArgumentsProvider.class)
+            @ArgumentsSource(NodeTestCase.FieldByJsonStringNodeArgumentsProvider.class)
             void matches(final JsonNode candidateMatch, final JsonStringNode fieldName, final boolean expectedMatch) {
                 assertThat(JsonNodeSelectors.anObjectNodeWithField(fieldName).matches(candidateMatch), equalTo(expectedMatch));
             }
 
             @ParameterizedTest
-            @ArgumentsSource(NodeTestSpec.FieldByJsonStringNodeArgumentsProvider.class)
+            @ArgumentsSource(NodeTestCase.FieldByJsonStringNodeArgumentsProvider.class)
             void getValue(final JsonNode candidateMatch, final JsonStringNode fieldName, final boolean expectedMatch, final JsonNode expectedValue) {
                 if (expectedMatch) {
                     assertThat(JsonNodeSelectors.anObjectNodeWithField(fieldName).getValue(candidateMatch), equalTo(expectedValue));
@@ -1192,13 +1192,13 @@ final class JsonNodeSelectorsTest {
     @Nested
     final class AnArrayNodeWithElement {
         @ParameterizedTest
-        @ArgumentsSource(NodeTestSpec.ArrayElementByIndexArgumentsProvider.class)
+        @ArgumentsSource(NodeTestCase.ArrayElementByIndexArgumentsProvider.class)
         void matches(final JsonNode candidateMatch, final int index, final boolean expectedMatch) {
             assertThat(JsonNodeSelectors.anArrayNodeWithElement(index).matches(candidateMatch), equalTo(expectedMatch));
         }
 
         @ParameterizedTest
-        @ArgumentsSource(NodeTestSpec.ArrayElementByIndexArgumentsProvider.class)
+        @ArgumentsSource(NodeTestCase.ArrayElementByIndexArgumentsProvider.class)
         void getValue(final JsonNode candidateMatch, final int index, final boolean expectedMatch, final JsonNode expectedValue) {
             if (expectedMatch) {
                 assertThat(JsonNodeSelectors.anArrayNodeWithElement(index).getValue(candidateMatch), equalTo(expectedValue));

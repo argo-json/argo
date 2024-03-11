@@ -26,6 +26,7 @@
         <exclude name="JUnitTestsShouldIncludeAssert"/>
         <exclude name="MissingOverride"/> <!-- Unfortunately, this rule triggers on methods that implement an interface, which can't be annotated until Java 6 -->
         <exclude name="PreserveStackTrace"/> <!-- This is good advice... unless you catch an exception which doesn't add meaningful stacktrace -->
+        <exclude name="UseTryWithResources"/> <!-- Doesn't apply when targeting Java 5 -->
         <exclude name="UseVarargs"/> <!-- Too much false positive -->
     </rule>
 
@@ -82,6 +83,7 @@
         <exclude name="AvoidThrowingNullPointerException"/>
         <exclude name="AvoidThrowingRawExceptionTypes"/> <!-- All well and good... except sometimes throwing RuntimeException is OK -->
         <exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
+        <exclude name="CognitiveComplexity"/> <!-- configured later -->
         <exclude name="CouplingBetweenObjects"/> <!-- configured later -->
         <exclude name="CyclomaticComplexity"/> <!-- configured later -->
         <exclude name="ExcessiveImports"/>
@@ -94,6 +96,11 @@
         <exclude name="NcssCount"/> <!-- configured later -->
         <exclude name="TooManyMethods"/>
     </rule>
+    <rule ref="category/java/design.xml/CognitiveComplexity">
+        <properties>
+            <property name="reportLevel" value="32" />
+        </properties>
+    </rule>
     <rule ref="category/java/design.xml/CouplingBetweenObjects">
         <properties>
             <property name="threshold" value="30"/>
@@ -103,11 +110,6 @@
         <properties>
             <property name="methodReportLevel" value="16"/>
             <property name="classReportLevel" value="200"/>
-        </properties>
-    </rule>
-    <rule ref="category/java/design.xml/ExcessiveClassLength">
-        <properties>
-            <property name="minimum" value="3000"/>
         </properties>
     </rule>
     <rule ref="category/java/design.xml/NcssCount">
@@ -130,11 +132,12 @@
         <exclude name="AvoidDuplicateLiterals"/>
         <exclude name="AvoidFieldNameMatchingMethodName"/>
         <exclude name="AvoidLiteralsInIfCondition"/>
-        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="NonSerializableClass"/>
         <exclude name="CloseResource"/> <!-- configured later -->
         <exclude name="DataflowAnomalyAnalysis"/>
-        <exclude name="MissingBreakInSwitch"/> <!-- Just doesn't work -->
+        <exclude name="ImplicitSwitchFallThrough"/> <!-- Just doesn't work -->
         <exclude name="MissingSerialVersionUID"/>
+        <exclude name="TestClassWithoutTestCases"/> <!-- Just doesn't work -->
     </rule>
     <rule ref="category/java/errorprone.xml/AssignmentInOperand">
         <properties>
