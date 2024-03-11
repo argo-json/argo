@@ -26,10 +26,6 @@ final class JsonObject extends JsonNode {
         return jsonObject(immutableListOf(fields));
     }
 
-    static JsonObject jsonObject(final Iterator<JsonField> fields, final int size) {
-        return jsonObject(immutableListOf(fields, size));
-    }
-
     static JsonObject jsonObject(final Iterable<JsonField> fields) {
         return jsonObject(immutableListOf(fields));
     }

@@ -17,9 +17,7 @@ import argo.saj.SajParser;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.field;
@@ -167,7 +165,7 @@ public final class JdomParser {
 
         void addNode(JsonNodeBuilder<?> jsonNodeBuilder);
 
-        void addField(JsonFieldBuilder jsonFieldBuilder);
+        void addField(Builder<JsonField> jsonFieldBuilder);
 
     }
 
@@ -183,7 +181,7 @@ public final class JdomParser {
             }
         }
 
-        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+        public void addField(final Builder<JsonField> jsonFieldBuilder) {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a field as root node");
         }
 
@@ -203,7 +201,7 @@ public final class JdomParser {
             arrayBuilder.withElement(jsonNodeBuilder);
         }
 
-        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+        public void addField(final Builder<JsonField> jsonFieldBuilder) {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array");
         }
 
@@ -213,22 +211,22 @@ public final class JdomParser {
     }
 
     private static final class ObjectNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
-        private final JsonFieldIteratorBuilder<JsonFieldBuilder> jsonFieldIteratorBuilder = new DuplicateKeyPermittingJsonFieldIteratorBuilder<JsonFieldBuilder>();
+        private final JsonFieldCollectionBuilder<Builder<JsonField>> jsonFieldCollectionBuilder = new DuplicateFieldNamePermittingJsonFieldCollectionBuilder();
 
         public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object");
         }
 
-        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
-            jsonFieldIteratorBuilder.add(jsonFieldBuilder);
+        public void addField(final Builder<JsonField> jsonFieldBuilder) {
+            jsonFieldCollectionBuilder.add(jsonFieldBuilder);
         }
 
         public JsonNode build() {
-            return JsonObject.jsonObject(jsonFieldIteratorBuilder.build(), jsonFieldIteratorBuilder.size());
+            return JsonObject.jsonObject(jsonFieldCollectionBuilder.build());
         }
     }
 
-    private static final class FieldNodeContainer implements NodeContainer, JsonFieldBuilder {
+    private static final class FieldNodeContainer implements NodeContainer, Builder<JsonField> {
         private final JsonStringNode name;
         private JsonNodeBuilder<?> valueBuilder;
 
@@ -240,7 +238,7 @@ public final class JdomParser {
             valueBuilder = jsonNodeBuilder;
         }
 
-        public void addField(final JsonFieldBuilder jsonFieldBuilder) {
+        public void addField(final Builder<JsonField> jsonFieldBuilder) {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field");
         }
 

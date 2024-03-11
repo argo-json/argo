@@ -29,11 +29,6 @@ final class JsonArrayTest {
     }
 
     @Test
-    void factoryRejectsNullIteratorWithSize() {
-        assertThrows(NullPointerException.class, () -> JsonArray.jsonArray(null, 1));
-    }
-
-    @Test
     void factoryRejectsNullIterable() {
         assertThrows(NullPointerException.class, () -> JsonArray.jsonArray((Iterable<? extends JsonNode>) null));
     }
@@ -44,11 +39,6 @@ final class JsonArrayTest {
     }
 
     @Test
-    void factoryRejectsIteratorContainingNullMemberWithSize() {
-        assertThrows(NullPointerException.class, () -> JsonArray.jsonArray(Collections.<JsonNode>singletonList(null).iterator(), 1));
-    }
-
-    @Test
     void factoryRejectsIterableContainingNullMember() {
         assertThrows(NullPointerException.class, () -> JsonArray.jsonArray(singletonList(null)));
     }
@@ -56,7 +46,6 @@ final class JsonArrayTest {
     @Test
     void emptyArraysAreAlwaysTheSameInstance() {
         assertThat(JsonArray.jsonArray(emptyList()), sameInstance(JsonArray.jsonArray(emptyIterator())));
-        assertThat(JsonArray.jsonArray(emptyIterator()), sameInstance(JsonArray.jsonArray(emptyIterator(), 32)));
     }
 
     @Test

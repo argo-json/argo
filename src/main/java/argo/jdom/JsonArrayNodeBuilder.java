@@ -17,7 +17,7 @@ import java.util.*;
  */
 public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
-    private final Queue<JsonNodeBuilder<?>> elementBuilders = new LinkedList<JsonNodeBuilder<?>>();
+    private final Queue<Builder<? extends JsonNode>> elementBuilders = new LinkedList<Builder<? extends JsonNode>>();
 
     JsonArrayNodeBuilder() {
     }
@@ -34,15 +34,6 @@ public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
     }
 
     public JsonNode build() {
-        final Iterator<JsonNodeBuilder<?>> delegate = elementBuilders.iterator();
-        return JsonArray.jsonArray(new UnmodifiableIterator<JsonNode>() {
-            public boolean hasNext() {
-                return delegate.hasNext();
-            }
-
-            public JsonNode next() {
-                return delegate.next().build();
-            }
-        }, elementBuilders.size());
+        return JsonArray.jsonArray(new BuildingCollection<JsonNode>(elementBuilders));
     }
 }

@@ -27,10 +27,6 @@ final class JsonArray extends JsonNode {
         return jsonArray(immutableListOf(elements));
     }
 
-    static JsonArray jsonArray(final Iterator<? extends JsonNode> elements, final int size) {
-        return jsonArray(immutableListOf(elements, size));
-    }
-
     static JsonArray jsonArray(final Iterable<? extends JsonNode> elements) {
         return jsonArray(immutableListOf(elements));
     }

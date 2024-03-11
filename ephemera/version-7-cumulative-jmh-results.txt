@@ -861,3 +861,19 @@ GeneratorBenchmark.prettyJdomGenerate              thrpt   25  38891.357 ±  311
 GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  64144.557 ±  781.420  ops/s
 GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  36567.987 ±  379.940  ops/s
 GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  58735.254 ± 1207.977  ops/s
+
+
+Replace iterator and size with BuildingCollection
+
+Benchmark                                Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse               thrpt   25  18454.751 ± 182.009  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25  27512.751 ± 262.689  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25  28115.405 ± 212.576  ops/s
+
+
+Try excluding BuildingCollection from null element checks in ImmutableListFactories because it guarantees non-null elements; rejected as not actually faster but more complicated
+
+Benchmark                                Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse               thrpt   25  18062.461 ± 274.287  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25  27191.412 ± 165.421  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25  27963.632 ± 228.077  ops/s

@@ -46,15 +46,4 @@ final class ImmutableListFactories {
         return unmodifiableList(copy);
     }
 
-    static <T> List<T> immutableListOf(final Iterator<? extends T> elements, final int size) {
-        final List<T> copy = new ArrayList<T>(size);
-        while (elements.hasNext()) {
-            final T next = elements.next();
-            if (next == null) {
-                throw new NullPointerException();
-            }
-            copy.add(next);
-        }
-        return unmodifiableList(copy);
-    }
 }

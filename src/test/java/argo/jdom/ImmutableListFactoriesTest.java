@@ -45,11 +45,6 @@ final class ImmutableListFactoriesTest {
     }
 
     @Test
-    void handlesEmptyIteratorWithIncorrectSizeParameter() {
-        assertThat(ImmutableListFactories.immutableListOf(emptyIterator(), 32), is(emptyList()));
-    }
-
-    @Test
     void rejectsNullList() {
         assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Collection<JsonNode>)null));
     }
@@ -65,11 +60,6 @@ final class ImmutableListFactoriesTest {
         assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Iterator<JsonNode>) null));
     }
 
-    @Test
-    @SuppressWarnings("DataFlowIssue")
-    void rejectsNullIteratorWithSizeParameter() {
-        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(null, 32));
-    }
     @Test
     void rejectsListContainingNull() {
         assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(Collections.singletonList(null)));
@@ -87,10 +77,6 @@ final class ImmutableListFactoriesTest {
     }
 
     @Test
-    void rejectsIteratorWithSizeParameterContainingNull() {
-        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(Collections.<JsonNode>singletonList(null).iterator(), 32));
-    }
-    @Test
     void returnedListIsEqualToSourceList() {
         final List<Object> sourceList = aList();
         assertThat(ImmutableListFactories.immutableListOf(sourceList), equalTo(sourceList));
@@ -107,12 +93,6 @@ final class ImmutableListFactoriesTest {
     void returnedListIsEqualToSourceIterator() {
         final List<Object> sourceList = aList();
         assertThat(ImmutableListFactories.immutableListOf(sourceList.iterator()), equalTo(sourceList));
-    }
-
-    @Test
-    void returnedListIsEqualToSourceIteratorWithSize() {
-        final List<Object> sourceList = aList();
-        assertThat(ImmutableListFactories.immutableListOf(sourceList.iterator(), sourceList.size()), equalTo(sourceList));
     }
 
     @Test
@@ -141,16 +121,6 @@ final class ImmutableListFactoriesTest {
         final List<Object> originalSourceList = aList();
         final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
         final List<Object> immutableList = ImmutableListFactories.immutableListOf(mutableSourceList.iterator());
-        mutableSourceList.add(new Object());
-        assertThat(immutableList, equalTo(originalSourceList));
-        assertThat(immutableList, not(equalTo(mutableSourceList)));
-    }
-
-    @Test
-    void returnedListFromIteratorWithSizeIsImmutable() {
-        final List<Object> originalSourceList = aList();
-        final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
-        final List<Object> immutableList = ImmutableListFactories.immutableListOf(mutableSourceList.iterator(), mutableSourceList.size());
         mutableSourceList.add(new Object());
         assertThat(immutableList, equalTo(originalSourceList));
         assertThat(immutableList, not(equalTo(mutableSourceList)));

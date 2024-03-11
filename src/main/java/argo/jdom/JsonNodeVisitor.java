@@ -12,7 +12,7 @@ package argo.jdom;
 
 import java.util.List;
 
-public interface JsonNodeVisitor {
+public interface JsonNodeVisitor { // TODO document or make package-private
     void object(List<JsonField> fields);
     void array(List<JsonNode> elements);
     void string(String value);

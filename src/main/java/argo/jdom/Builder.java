@@ -10,6 +10,6 @@
 
 package argo.jdom;
 
-interface JsonFieldBuilder {
-    JsonField build();
+interface Builder<T> {
+    T build();
 }

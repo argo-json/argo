@@ -10,13 +10,8 @@
 
 package argo.jdom;
 
-import java.util.Iterator;
+import java.util.Collection;
 
-interface JsonFieldIteratorBuilder<T extends JsonFieldBuilder> {
+interface JsonFieldCollectionBuilder<T extends Builder<JsonField>> extends Builder<Collection<JsonField>> {
     void add(T jsonFieldBuilder);
-
-    int size();
-
-    Iterator<JsonField> build();
-
 }

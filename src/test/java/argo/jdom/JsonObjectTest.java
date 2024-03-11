@@ -33,11 +33,6 @@ final class JsonObjectTest {
     }
 
     @Test
-    void factoryRejectsNullIteratorWithSize() {
-        assertThrows(NullPointerException.class, () -> JsonObject.jsonObject(null, 1));
-    }
-
-    @Test
     void factoryRejectsNullIterable() {
         assertThrows(NullPointerException.class, () -> JsonObject.jsonObject((Iterable<JsonField>) null));
     }
@@ -48,11 +43,6 @@ final class JsonObjectTest {
     }
 
     @Test
-    void factoryRejectsIteratorContainingNullMemberWithSize() {
-        assertThrows(NullPointerException.class, () -> JsonObject.jsonObject(Collections.<JsonField>singletonList(null).iterator(), 1));
-    }
-
-    @Test
     void factoryRejectsIterableContainingNullMember() {
         assertThrows(NullPointerException.class, () -> JsonObject.jsonObject(singletonList(null)));
     }
@@ -60,7 +50,6 @@ final class JsonObjectTest {
     @Test
     void emptyObjectsAreAlwaysTheSameInstance() {
         assertThat(JsonObject.jsonObject(emptyList()), sameInstance(JsonObject.jsonObject(emptyIterator())));
-        assertThat(JsonObject.jsonObject(emptyIterator()), sameInstance(JsonObject.jsonObject(emptyIterator(), 32)));
     }
 
     @Test

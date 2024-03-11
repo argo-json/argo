@@ -10,6 +10,18 @@
 
 package argo.jdom;
 
-interface NamedJsonFieldBuilder extends Builder<JsonField> {
-    String name();
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+final class DuplicateFieldNamePermittingJsonFieldCollectionBuilder implements JsonFieldCollectionBuilder<Builder<JsonField>> {
+    private final List<Builder<? extends JsonField>> fieldBuilders = new LinkedList<Builder<? extends JsonField>>();
+
+    public void add(final Builder<JsonField> jsonFieldBuilder) {
+        fieldBuilders.add(jsonFieldBuilder);
+    }
+
+    public Collection<JsonField> build() {
+        return new BuildingCollection<JsonField>(fieldBuilders);
+    }
 }
