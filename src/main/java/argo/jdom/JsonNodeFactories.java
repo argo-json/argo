@@ -10,6 +10,8 @@
 
 package argo.jdom;
 
+import argo.JsonParser;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -126,6 +128,13 @@ public final class JsonNodeFactories {
      */
     public static JsonNode nullableNumber(final Long value) {
         return value == null ? nullNode() : JsonNumberNode.jsonNumberNode(Long.toString(value));
+    }
+
+    /**
+     * Internal method.
+     */
+    public static JsonNodeBuilder<JsonNode> prevalidatedNumberBuilder(final JsonParser.PrevalidatedNumber prevalidatedNumber) {
+        return JsonNumberNode.prevalidatedJsonNumberNode(prevalidatedNumber.value);
     }
 
     /**

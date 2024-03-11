@@ -10,9 +10,8 @@
 
 package argo.staj;
 
+import argo.JsonParserScopeExpander;
 import argo.format.PrettyJsonBuilder;
-import argo.jdom.JdomParser;
-import argo.jdom.JdomScopeExpander;
 import argo.jdom.JsonNode;
 import argo.saj.InvalidSyntaxException;
 import argo.saj.SajParser;
@@ -27,8 +26,6 @@ import java.util.Iterator;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatcher<Iterator<JsonStreamElement>> {
-
-    private static final JdomParser JDOM_PARSER = new JdomParser();
 
     private final Matcher<String> stringMatcher;
     private final JsonNode jsonNode;
@@ -48,7 +45,7 @@ public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatc
     protected boolean matchesSafely(final Iterator<JsonStreamElement> item, final Description mismatchDescription) {
         if (parseResult == null) {
             try {
-                parseResult = JdomScopeExpander.parse(JDOM_PARSER, jsonListener -> SajScopeExpander.parse(new SajParser(), jsonListener, item));
+                parseResult = JsonParserScopeExpander.parse(jsonListener -> SajScopeExpander.parse(new SajParser(), jsonListener, item));
             } catch (final InvalidSyntaxException | IOException e) {
                 throw new RuntimeException("Caught exception matching", e);
             }

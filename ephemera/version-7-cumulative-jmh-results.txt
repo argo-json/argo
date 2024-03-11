@@ -899,3 +899,9 @@ ParserBenchmark.jdomParse  thrpt   25  17830.535 ± 406.137  ops/s
 
 Benchmark                   Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse  thrpt   25  18101.542 ± 287.521  ops/s
+
+Implement JdomParser in terms of JsonParser
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  18331.974 ± 176.335  ops/s
+
