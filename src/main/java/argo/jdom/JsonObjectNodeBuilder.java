@@ -10,26 +10,19 @@
 
 package argo.jdom;
 
+import java.util.*;
+
+import static argo.jdom.JsonNodeFactories.object;
 import static argo.jdom.JsonNodeFactories.string;
 import static argo.jdom.JsonFieldNodeBuilder.aJsonFieldBuilder;
 
 /**
  * Builder for {@code JsonNode}s representing JSON objects.
  */
-public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass") // TODO fixed in PMD 6.51.0?
+public abstract class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
-    private final JsonFieldCollectionBuilder<? super NamedJsonFieldBuilder> jsonFieldCollectionBuilder;
-
-    private JsonObjectNodeBuilder(final JsonFieldCollectionBuilder<? super NamedJsonFieldBuilder> jsonFieldCollectionBuilder) {
-        this.jsonFieldCollectionBuilder = jsonFieldCollectionBuilder;
-    }
-
-    static JsonObjectNodeBuilder duplicateFieldNamePermittingJsonObjectNodeBuilder() {
-        return new JsonObjectNodeBuilder(new DuplicateFieldNamePermittingJsonFieldCollectionBuilder());
-    }
-
-    static JsonObjectNodeBuilder duplicateFieldNameRejectingJsonObjectNodeBuilder() {
-        return new JsonObjectNodeBuilder(new DuplicateFieldNameRejectingJsonFieldCollectionBuilder());
+    private JsonObjectNodeBuilder() {
     }
 
     /**
@@ -39,28 +32,53 @@ public final class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
      * @param value a builder for the value of the field.
      * @return the modified object builder.
      */
-    public JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder<?> value) {
+    public final JsonObjectNodeBuilder withField(final String name, final JsonNodeBuilder<?> value) {
         return withField(name == null ? null : string(name), value);
     }
 
     /**
      * Adds a field to the object that will be built.
      *
-     * @param name  a builder for the name of the field
+     * @param name  the name of the field
      * @param value a builder for the value of the field.
      * @return the modified object builder.
      */
-    public JsonObjectNodeBuilder withField(final JsonStringNode name, final JsonNodeBuilder<?> value) {
+    public final JsonObjectNodeBuilder withField(final JsonStringNode name, final JsonNodeBuilder<?> value) {
         return withFieldBuilder(aJsonFieldBuilder(name, value));
     }
 
-    JsonObjectNodeBuilder withFieldBuilder(final NamedJsonFieldBuilder jsonFieldBuilder) {
-        jsonFieldCollectionBuilder.add(jsonFieldBuilder);
-        return this;
+    abstract JsonObjectNodeBuilder withFieldBuilder(final NamedJsonFieldBuilder jsonFieldBuilder);
+
+    static final class DuplicateFieldNamePermittingJsonObjectNodeBuilder extends JsonObjectNodeBuilder {
+
+        private final List<Builder<? extends JsonField>> fieldBuilders = new LinkedList<Builder<? extends JsonField>>(); // TODO or ArrayList?
+
+        JsonObjectNodeBuilder withFieldBuilder(final NamedJsonFieldBuilder jsonFieldBuilder) {
+            fieldBuilders.add(jsonFieldBuilder);
+            return this;
+        }
+
+        public JsonNode build() {
+            return object(new BuildingCollection<JsonField>(fieldBuilders));
+        }
     }
 
-    public JsonNode build() {
-        return JsonObject.jsonObject(jsonFieldCollectionBuilder.build());
-    }
+    static final class DuplicateFieldNameRejectingJsonObjectNodeBuilder extends JsonObjectNodeBuilder {
 
+        private final Map<String, Builder<? extends JsonField>> fieldBuilders = new LinkedHashMap<String, Builder<? extends JsonField>>();
+
+        JsonObjectNodeBuilder withFieldBuilder(final NamedJsonFieldBuilder jsonFieldBuilder) {
+            final String key = jsonFieldBuilder.name();
+            if (fieldBuilders.containsKey(key)) {
+                throw new IllegalArgumentException("Attempt to add a field with pre-existing key [" + string(key) + "]");
+            } else {
+                fieldBuilders.put(key, jsonFieldBuilder);
+            }
+            return this;
+        }
+
+        public JsonNode build() {
+            return object(new BuildingCollection<JsonField>(fieldBuilders.values()));
+        }
+    }
 }

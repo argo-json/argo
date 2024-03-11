@@ -877,3 +877,25 @@ Benchmark                                Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse               thrpt   25  18062.461 ± 274.287  ops/s
 ParserBenchmark.streamingEventParse     thrpt   25  27191.412 ± 165.421  ops/s
 ParserBenchmark.streamingIteratorParse  thrpt   25  27963.632 ± 228.077  ops/s
+
+
+Use JsonObjectNodeBuilder in JdomParser rather than a private reimplementation of it
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  17903.301 ± 319.922  ops/s
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  17848.576 ± 277.386  ops/s
+
+(reverted)
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  18155.033 ± 385.458  ops/s
+
+Strip out a layer of indirection in JsonObjectNodeBuilder
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  17830.535 ± 406.137  ops/s
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  18101.542 ± 287.521  ops/s

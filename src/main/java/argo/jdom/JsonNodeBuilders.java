@@ -60,7 +60,7 @@ public final class JsonNodeBuilders {
      * @return a builder for a {@code JsonNode} representing an object.
      */
     public static JsonObjectNodeBuilder anObjectBuilder() {
-        return JsonObjectNodeBuilder.duplicateFieldNamePermittingJsonObjectNodeBuilder();
+        return new JsonObjectNodeBuilder.DuplicateFieldNamePermittingJsonObjectNodeBuilder();
     }
 
     /**
@@ -70,7 +70,7 @@ public final class JsonNodeBuilders {
      * @return a builder for a {@code JsonNode} representing an object.
      */
     public static JsonObjectNodeBuilder aUniqueFieldNameObjectBuilder() {
-        return JsonObjectNodeBuilder.duplicateFieldNameRejectingJsonObjectNodeBuilder();
+        return new JsonObjectNodeBuilder.DuplicateFieldNameRejectingJsonObjectNodeBuilder();
     }
 
     /**
