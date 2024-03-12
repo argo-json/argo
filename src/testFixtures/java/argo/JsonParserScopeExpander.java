@@ -13,8 +13,10 @@ package argo;
 import argo.jdom.JsonNode;
 import argo.saj.InvalidSyntaxException;
 import argo.saj.JsonListener;
+import argo.staj.JsonStreamElement;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 public final class JsonParserScopeExpander {
 
@@ -25,6 +27,10 @@ public final class JsonParserScopeExpander {
 
     public static JsonNode parse(final ScopeExpandedParseExecutor scopeExpandedParseExecutor) throws InvalidSyntaxException, IOException {
         return JSON_PARSER.parse(scopeExpandedParseExecutor::parseUsing);
+    }
+
+    public static void parse(final JsonListener jsonListener, final Iterator<JsonStreamElement> stajParser) throws InvalidSyntaxException, IOException {
+        JSON_PARSER.parseStreaming(stajParser, jsonListener);
     }
 
     @FunctionalInterface

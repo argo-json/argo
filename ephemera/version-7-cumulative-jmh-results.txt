@@ -905,3 +905,9 @@ Implement JdomParser in terms of JsonParser
 Benchmark                   Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse  thrpt   25  18331.974 ± 176.335  ops/s
 
+Implement SajParser in terms of JsonParser
+
+Benchmark                                Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse               thrpt   25  18396.677 ± 213.029  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25  27631.006 ± 257.731  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25  28488.863 ± 316.368  ops/s

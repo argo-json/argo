@@ -108,7 +108,7 @@ idea {
 }
 
 jmh {
-    includes = listOf("GeneratorBenchmark")
+    includes = listOf("[streamingEvent|jdom]Parse")
 }
 
 revapi {

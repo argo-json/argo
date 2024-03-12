@@ -13,8 +13,9 @@ package argo;
 import argo.jdom.*;
 import argo.saj.InvalidSyntaxException;
 import argo.saj.JsonListener;
-import argo.saj.SajParser;
+import argo.staj.InvalidSyntaxRuntimeException;
 import argo.staj.JsonStreamElement;
+import argo.staj.JsonStreamException;
 import argo.staj.StajParser;
 
 import java.io.IOException;
@@ -82,7 +83,7 @@ public final class JsonParser {
      * @param json the {@code String} to parse.
      * @return an {@code Iterator} of {@code JsonStreamElement}s reading from the given {@code Reader}.
      */
-    public Iterator<JsonStreamElement> parseStreaming(final String json) {
+    public Iterator<JsonStreamElement> parseStreaming(final String json) { // TODO maybe introduce a sub-interface of Iterator<JsonStreamElement> to facilitate documentation of runtime exceptions
         return parseStreaming(new StringReader(json));
     }
 
@@ -95,7 +96,7 @@ public final class JsonParser {
      * @throws IOException rethrown when reading characters from the given {@code Reader} throws {@code IOException}.
      */
     public void parseStreaming(final Reader reader, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
-        new SajParser().parse(reader, jsonListener);
+        parseStreaming(parseStreaming(reader), jsonListener);
     }
 
     /**
@@ -105,11 +106,23 @@ public final class JsonParser {
      * @param jsonListener            the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException if the characters streamed from the given {@code String} do not represent valid JSON.
      */
-    public void parseStreaming(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
+    public void parseStreaming(final String json, final JsonListener jsonListener) throws InvalidSyntaxException { // TODO move JsonListener?
         try {
             parseStreaming(new StringReader(json), jsonListener);
         } catch (final IOException e) {
             throw new RuntimeException("Coding failure in Argo:  StringReader threw an IOException");
+        }
+    }
+
+    void parseStreaming(final Iterator<JsonStreamElement> stajParser, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
+        try {
+            while (stajParser.hasNext()) {
+                stajParser.next().visit(jsonListener);
+            }
+        } catch (final InvalidSyntaxRuntimeException e) {
+            throw InvalidSyntaxException.from(e);
+        } catch (final JsonStreamException e) {
+            throw e.getCause();
         }
     }
 

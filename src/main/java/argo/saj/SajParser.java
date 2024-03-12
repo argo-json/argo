@@ -10,12 +10,10 @@
 
 package argo.saj;
 
-import argo.staj.*;
+import argo.JsonParser;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
-import java.util.Iterator;
 
 /**
  * Converts a character stream into calls to a {@code JsonListener}.
@@ -27,6 +25,8 @@ import java.util.Iterator;
  */
 public final class SajParser {
 
+    private static final JsonParser JSON_PARSER = new JsonParser();
+
     /**
      * Parses the given JSON {@code String} into calls to the given JsonListener.
      *
@@ -35,11 +35,7 @@ public final class SajParser {
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
      */
     public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
-        try {
-            parse(jsonListener, new StajParser(new StringReader(json)));
-        } catch (final IOException e) {
-            throw new RuntimeException("Coding failure in Argo:  StringReader threw an IOException");
-        }
+        JSON_PARSER.parseStreaming(json, jsonListener);
     }
 
     /**
@@ -51,19 +47,7 @@ public final class SajParser {
      * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
     public void parse(final Reader in, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
-        parse(jsonListener, new StajParser(in));
-    }
-
-    void parse(final JsonListener jsonListener, final Iterator<JsonStreamElement> stajParser) throws InvalidSyntaxException, IOException {
-        try {
-            while (stajParser.hasNext()) {
-                stajParser.next().visit(jsonListener);
-            }
-        } catch (final InvalidSyntaxRuntimeException e) {
-            throw InvalidSyntaxException.from(e);
-        } catch (final JsonStreamException e) {
-            throw e.getCause();
-        }
+        JSON_PARSER.parseStreaming(in, jsonListener);
     }
 
 }
