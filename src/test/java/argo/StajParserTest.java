@@ -45,7 +45,7 @@ import static argo.jdom.JsonNodeTestingFactories.aJsonNode;
 import static argo.jdom.JsonNumberNodeTestingFactories.aNumberNode;
 import static argo.jdom.JsonStringNodeTestingFactories.aNonEmptyString;
 import static argo.jdom.JsonStringNodeTestingFactories.aStringNode;
-import static argo.staj.StajParserBuilder.readerOf;
+import static argo.JsonReaderFactory.readerOf;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

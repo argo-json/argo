@@ -8,18 +8,23 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.staj;
+package argo;
 
-import argo.format.PrettyJsonBuilder;
 import argo.jdom.JsonNode;
 
+import java.io.Reader;
 import java.io.StringReader;
 
-public final class StajParserBuilder {
-    public static StringReader readerOf(final JsonNode jsonNode) {
-        return new StringReader(PrettyJsonBuilder.json(jsonNode));
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
+
+public final class JsonReaderFactory {
+
+    private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(PRETTY);
+
+    public static Reader readerOf(final JsonNode jsonNode) {
+        return new StringReader(JSON_GENERATOR.generate(jsonNode));
     }
 
-    private StajParserBuilder() {
+    private JsonReaderFactory() {
     }
 }
