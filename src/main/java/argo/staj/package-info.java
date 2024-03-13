@@ -11,5 +11,7 @@
 /**
  * Provides classes extracting elements from a JSON character stream, in other words, a pull parser, analogous to StAX for
  * XML.
+ *
+ * @deprecated Classes in this package have been replaced by {@link argo.JsonParser}.
  */
 package argo.staj;

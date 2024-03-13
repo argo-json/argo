@@ -11,5 +11,7 @@
 /**
  * Provides classes for parsing a JSON character stream into an event stream, in other words, a push parser, analogous to
  * SAX for XML.
+ *
+ * @deprecated Classes in this package have been replaced by {@link argo.JsonParser}.
  */
 package argo.saj;
