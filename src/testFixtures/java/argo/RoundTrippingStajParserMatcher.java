@@ -10,7 +10,6 @@
 
 package argo;
 
-import argo.format.PrettyJsonBuilder;
 import argo.jdom.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -19,9 +18,12 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 import java.io.IOException;
 import java.util.Iterator;
 
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatcher<Iterator<JsonStreamElement>> {
+
+    private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(PRETTY);
 
     private final Matcher<String> stringMatcher;
     private final JsonNode jsonNode;
@@ -29,7 +31,7 @@ public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatc
 
     private RoundTrippingStajParserMatcher(final JsonNode jsonNode) {
         this.jsonNode = jsonNode;
-        stringMatcher = equalTo(PrettyJsonBuilder.json(jsonNode));
+        stringMatcher = equalTo(JSON_GENERATOR.generate(jsonNode));
         parseResult = null;
     }
 
@@ -46,14 +48,14 @@ public final class RoundTrippingStajParserMatcher extends TypeSafeDiagnosingMatc
                 throw new RuntimeException("Caught exception matching", e);
             }
         }
-        final boolean result = stringMatcher.matches(PrettyJsonBuilder.json(parseResult));
+        final boolean result = stringMatcher.matches(JSON_GENERATOR.generate(parseResult));
         if (!result) {
-            stringMatcher.describeMismatch(PrettyJsonBuilder.json(parseResult), mismatchDescription);
+            stringMatcher.describeMismatch(JSON_GENERATOR.generate(parseResult), mismatchDescription);
         }
         return result;
     }
 
     public void describeTo(final Description description) {
-        description.appendText("StajParser that generates JSON equal to ").appendValue(PrettyJsonBuilder.json(jsonNode));
+        description.appendText("StajParser that generates JSON equal to ").appendValue(JSON_GENERATOR.generate(jsonNode));
     }
 }

@@ -10,7 +10,6 @@
 
 package argo;
 
-import argo.format.PrettyJsonBuilder;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonStringNode;
@@ -35,6 +34,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import static argo.ElementTrackingStajParserMatcher.generatesElements;
+import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 import static argo.JsonStreamElement.number;
 import static argo.JsonStreamElement.string;
 import static argo.JsonStreamElement.*;
@@ -231,7 +231,7 @@ final class StajParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void aRandomJsonNodeFromStringHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
         final JsonNode jsonNode = aJsonNode();
-        assertThat(stajParserJsonParserShim.parse(PrettyJsonBuilder.json(jsonNode)), parsesTo(jsonNode));
+        assertThat(stajParserJsonParserShim.parse(new JsonGenerator().style(PRETTY).generate(jsonNode)), parsesTo(jsonNode));
     }
 
     @ParameterizedTest
