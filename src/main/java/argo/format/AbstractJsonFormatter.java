@@ -10,22 +10,36 @@
 
 package argo.format;
 
-import argo.internal.StringBuilderWriter;
+import argo.JsonGenerator;
 import argo.jdom.JsonNode;
 
 import java.io.IOException;
+import java.io.Writer;
 
 @SuppressWarnings("deprecation")
 abstract class AbstractJsonFormatter implements JsonFormatter {
+
+    private final JsonGenerator jsonGenerator;
+    private final boolean fieldOrderNormalising;
+
+    AbstractJsonFormatter(final JsonGenerator jsonGenerator, final boolean fieldOrderNormalising) {
+        this.jsonGenerator = jsonGenerator;
+        this.fieldOrderNormalising = fieldOrderNormalising;
+    }
+
     public final String format(final JsonNode jsonNode) {
-        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        try {
-            format(jsonNode, stringBuilderWriter);
-        } catch (final IOException e) {
-            throw new RuntimeException("Coding failure in Argo:  StringBuilderWriter threw an IOException", e);
-        } finally {
-            stringBuilderWriter.close();
+        if (fieldOrderNormalising) {
+            return jsonGenerator.generateWithFieldSorting(jsonNode);
+        } else {
+            return jsonGenerator.generate(jsonNode);
         }
-        return stringBuilderWriter.toString();
+    }
+
+    public final void format(final JsonNode jsonNode, final Writer writer) throws IOException {
+        if (fieldOrderNormalising) {
+            jsonGenerator.generateWithFieldSorting(writer, jsonNode);
+        } else {
+            jsonGenerator.generate(writer, jsonNode);
+        }
     }
 }

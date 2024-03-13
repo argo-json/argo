@@ -13,7 +13,6 @@ package argo.format;
 import argo.JsonGenerator;
 import argo.jdom.JsonNode;
 
-import java.io.IOException;
 import java.io.Writer;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
@@ -23,12 +22,10 @@ import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
  *
  * @deprecated Replaced by {@link JsonGenerator}.
  */
-@SuppressWarnings({"deprecation", "DeprecatedIsStillUsed"})
+@SuppressWarnings({"DeprecatedIsStillUsed"})
 @Deprecated public final class CompactJsonFormatter extends AbstractJsonFormatter {
 
     private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(COMPACT);
-
-    private final boolean fieldOrderNormalising;
 
     /**
      * Constructs a {@code JsonFormatter} that formats JSON as compactly as possible.
@@ -44,7 +41,7 @@ import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
     }
 
     private CompactJsonFormatter(final boolean fieldOrderNormalising) {
-        this.fieldOrderNormalising = fieldOrderNormalising;
+        super(JSON_GENERATOR, fieldOrderNormalising);
     }
 
     /**
@@ -76,14 +73,6 @@ import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
      */
     public static CompactJsonFormatter fieldOrderNormalisingCompactJsonFormatter() {
         return new CompactJsonFormatter(true);
-    }
-
-    public void format(final JsonNode jsonNode, final Writer writer) throws IOException {
-        if (fieldOrderNormalising) {
-            JSON_GENERATOR.generateWithFieldSorting(writer, jsonNode);
-        } else {
-            JSON_GENERATOR.generate(writer, jsonNode);
-        }
     }
 
 }

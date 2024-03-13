@@ -13,6 +13,7 @@ package argo.format;
 import argo.JsonGenerator;
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -113,6 +114,16 @@ class JsonFormatterTest {
             final JsonNode objectNode = anObjectNode();
             assertThat(new JdomParser().parse(jsonFormatter.format(objectNode)), equalTo(objectNode));
         }
+
+        @ParameterizedTest
+        @ArgumentsSource(FieldOrderPreservingJsonFormatterArgumentsProvider.class)
+        void outputsObjectToAWriterUnmolested(final JsonFormatter jsonFormatter) throws Exception {
+            final JsonNode objectNode = anObjectNode();
+            try (StringBuilderWriter stringBuilderWriter = new StringBuilderWriter()) {
+                jsonFormatter.format(objectNode, stringBuilderWriter);
+                assertThat(new JdomParser().parse(stringBuilderWriter.toString()), equalTo(objectNode));
+            }
+        }
     }
 
     @Nested
@@ -182,6 +193,23 @@ class JsonFormatterTest {
                         field("b", string("b")),
                         field("c", string("c"))
                 )));
+            }
+
+            @ParameterizedTest
+            @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
+            void sortsObjectFieldsLexicographicallyToAWriter(final JsonFormatter jsonFormatter) throws Exception {
+                try (StringBuilderWriter stringBuilderWriter = new StringBuilderWriter()) {
+                    jsonFormatter.format(object(
+                            field("c", string("c")),
+                            field("b", string("b")),
+                            field("a", string("a"))
+                    ), stringBuilderWriter);
+                    assertThat(new JdomParser().parse(stringBuilderWriter.toString()), equalTo(object(
+                            field("a", string("a")),
+                            field("b", string("b")),
+                            field("c", string("c"))
+                    )));
+                }
             }
 
             @ParameterizedTest

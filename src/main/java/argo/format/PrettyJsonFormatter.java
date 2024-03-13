@@ -13,7 +13,6 @@ package argo.format;
 import argo.JsonGenerator;
 import argo.jdom.JsonNode;
 
-import java.io.IOException;
 import java.io.Writer;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
@@ -23,12 +22,10 @@ import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
  *
  * @deprecated Replaced by {@link JsonGenerator}.
  */
-@SuppressWarnings({"deprecation", "DeprecatedIsStillUsed"})
+@SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated public final class PrettyJsonFormatter extends AbstractJsonFormatter {
 
     private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(PRETTY);
-
-    private final boolean fieldOrderNormalising;
 
     /**
      * Constructs a {@code JsonFormatter} that formats JSON in a human-readable form, outputting the fields of objects in the order they were defined.
@@ -44,7 +41,7 @@ import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
     }
 
     private PrettyJsonFormatter(final boolean fieldOrderNormalising) {
-        this.fieldOrderNormalising = fieldOrderNormalising;
+        super(JSON_GENERATOR, fieldOrderNormalising);
     }
 
     /**
@@ -76,14 +73,6 @@ import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
      */
     public static PrettyJsonFormatter fieldOrderNormalisingPrettyJsonFormatter() {
         return new PrettyJsonFormatter(true);
-    }
-
-    public void format(final JsonNode jsonNode, final Writer writer) throws IOException {
-        if (fieldOrderNormalising) {
-            JSON_GENERATOR.generateWithFieldSorting(writer, jsonNode);
-        } else {
-            JSON_GENERATOR.generate(writer, jsonNode);
-        }
     }
 
 }
