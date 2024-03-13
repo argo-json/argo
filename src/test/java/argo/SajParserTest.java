@@ -8,9 +8,10 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.saj;
+package argo;
 
-import argo.JsonParser;
+import argo.saj.RecordingJsonListener;
+import argo.saj.SajParser;
 import org.apache.commons.io.input.BrokenReader;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -174,6 +175,13 @@ final class SajParserTest {
         final IOException ioException = new IOException("An IOException");
         final IOException actualException = assertThrows(IOException.class, () -> sajParserJsonParserShim.parse(new BrokenReader(ioException), BLACK_HOLE_JSON_LISTENER));
         assertThat(actualException, sameInstance(ioException));
+    }
+
+
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void parsingInvalidJsonThrowsInvalidSyntaxExceptionFromReader(final SajParserJsonParserShim sajParserJsonParserShim) {
+        assertThrows(InvalidSyntaxException.class, () -> sajParserJsonParserShim.parse(new StringReader("not json"), BLACK_HOLE_JSON_LISTENER));
     }
 
 }

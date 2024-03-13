@@ -11,9 +11,7 @@
 package argo;
 
 import argo.jdom.JsonNode;
-import argo.saj.InvalidSyntaxException;
 import argo.saj.JsonListener;
-import argo.staj.JsonStreamElement;
 
 import java.io.IOException;
 import java.util.Iterator;

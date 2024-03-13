@@ -27,7 +27,7 @@
         <Bug pattern="OS_OPEN_STREAM"/>
     </Match>
     <Match>
-        <Class name="argo.staj.StajParserTest"/>
+        <Class name="argo.StajParserTest"/>
         <Bug pattern="RANGE_ARRAY_OFFSET,RANGE_ARRAY_LENGTH,RR_NOT_CHECKED,SR_NOT_CHECKED"/>
     </Match>
     <Match>
@@ -39,7 +39,7 @@
         <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
     </Match>
     <Match>
-        <Class name="argo.staj.JsonStreamExceptionTest"/>
+        <Class name="argo.JsonStreamExceptionTest"/>
         <Bug pattern="RV_EXCEPTION_NOT_THROWN"/>
     </Match>
 </FindBugsFilter>

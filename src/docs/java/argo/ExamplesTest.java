@@ -12,7 +12,6 @@ package argo;
 
 import argo.format.WriteableJsonArray;
 import argo.format.WriteableJsonObject;
-import argo.staj.JsonStreamElement;
 import org.junit.jupiter.api.Test;
 
 import java.io.Reader;

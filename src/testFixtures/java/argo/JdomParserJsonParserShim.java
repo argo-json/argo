@@ -8,10 +8,10 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.jdom;
+package argo;
 
-import argo.JsonParser;
-import argo.saj.InvalidSyntaxException;
+import argo.jdom.JdomParser;
+import argo.jdom.JsonNode;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -30,12 +30,20 @@ interface JdomParserJsonParserShim {
 
         @Override
         public JsonNode parse(final Reader reader) throws IOException, InvalidSyntaxException {
-            return jdomParser.parse(reader);
+            try {
+                return jdomParser.parse(reader);
+            } catch (final argo.saj.InvalidSyntaxException e) {
+                throw new InvalidSyntaxException(e.getMessage(), e.getCause(), e.getLine(), e.getColumn());
+            }
         }
 
         @Override
         public JsonNode parse(final String json) throws IOException, InvalidSyntaxException {
-            return jdomParser.parse(json);
+            try {
+                return jdomParser.parse(json);
+            } catch (final argo.saj.InvalidSyntaxException e) {
+                throw new InvalidSyntaxException(e.getMessage(), e.getCause(), e.getLine(), e.getColumn());
+            }
         }
     }
 

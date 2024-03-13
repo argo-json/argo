@@ -19,7 +19,7 @@
         <Bug pattern="NP_NULL_PARAM_DEREF"/>
     </Match>
     <Match>
-        <Class name="argo.staj.JsonStreamException"/>
+        <Class name="argo.JsonStreamException"/>
         <Bug pattern="EI_EXPOSE_REP"/>
     </Match>
 </FindBugsFilter>

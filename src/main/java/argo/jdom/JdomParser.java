@@ -32,7 +32,11 @@ public final class JdomParser {
      * @throws InvalidSyntaxException if the characters streamed from the specified {@code String} does not represent valid JSON.
      */
     public JsonNode parse(final String json) throws InvalidSyntaxException {
-        return JSON_PARSER.parse(json);
+        try {
+            return JSON_PARSER.parse(json);
+        } catch (final argo.InvalidSyntaxException e) {
+            throw InvalidSyntaxException.from(e);
+        }
     }
 
     /**
@@ -44,6 +48,10 @@ public final class JdomParser {
      * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
     public JsonNode parse(final Reader reader) throws InvalidSyntaxException, IOException {
-        return JSON_PARSER.parse(reader);
+        try {
+            return JSON_PARSER.parse(reader);
+        } catch (final argo.InvalidSyntaxException e) {
+            throw InvalidSyntaxException.from(e);
+        }
     }
 }

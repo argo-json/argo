@@ -3,6 +3,10 @@
 - `argo.jdom.JdomParser#parse(Reader)` now throws `IOException` propagated from the given `Reader`.
 - `argo.saj.SajParser#parse(Reader)` now throws `IOException` propagated from the given `Reader`.
 - `argo.staj.JsonStreamElement#text()` is replaced with `argo.staj.JsonStreamElement#reader()` because the text content of nodes is now streamed so that the entire value doesn't have to be held in memory.
+- `argo.staj.JsonStreamElement` is moved to `argo.JsonStreamElement` in preparation for removing the `argo.staj` package.
+- `argo.staj.JsonStreamElementType` is moved to `argo.JsonStreamElementType` in preparation for removing the `argo.staj` package.
+- `argo.staj.InvalidSyntaxRuntimeException` is moved to `argo.InvalidSyntaxRuntimeException` in preparation for removing the `argo.staj` package.
+- `argo.staj.JsonStreamException` is moved to `argo.JsonStreamException` in preparation for removing the `argo.staj` package.
 - `argo.staj.InvalidSyntaxRuntimeException#asInvalidSyntaxException()` removed as it was intended for internal use only.
 - `argo.staj.InvalidSyntaxRuntimeException` is now final; it was never intended for extension.
 - `argo.staj.InvalidSyntaxRuntimeException` constructor is replaced with a factory method.

@@ -911,3 +911,10 @@ Benchmark                                Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse               thrpt   25  18396.677 ± 213.029  ops/s
 ParserBenchmark.streamingEventParse     thrpt   25  27631.006 ± 257.731  ops/s
 ParserBenchmark.streamingIteratorParse  thrpt   25  28488.863 ± 316.368  ops/s
+
+Implement StajParser in terms of JsonParser
+
+Benchmark                                Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse               thrpt   25  17970.228 ± 352.737  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25  27204.317 ± 327.117  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25  28005.488 ± 295.693  ops/s

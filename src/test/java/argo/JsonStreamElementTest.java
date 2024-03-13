@@ -8,18 +8,18 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.staj;
+package argo;
 
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 
+import static argo.JsonStreamElement.*;
+import static argo.JsonStreamElementType.*;
 import static argo.TestingFactories.aString;
 import static argo.jdom.JsonNumberNodeTestingFactories.aValidJsonNumber;
-import static argo.staj.JsonStreamElement.*;
-import static argo.staj.JsonStreamElementMatchers.aNonTextJsonStreamElementWithType;
-import static argo.staj.JsonStreamElementMatchers.aTextJsonStreamElementWithType;
-import static argo.staj.JsonStreamElementType.*;
+import static argo.JsonStreamElementMatchers.aNonTextJsonStreamElementWithType;
+import static argo.JsonStreamElementMatchers.aTextJsonStreamElementWithType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 

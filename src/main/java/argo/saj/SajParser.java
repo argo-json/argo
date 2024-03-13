@@ -35,7 +35,11 @@ public final class SajParser {
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
      */
     public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
-        JSON_PARSER.parseStreaming(json, jsonListener);
+        try {
+            JSON_PARSER.parseStreaming(json, jsonListener);
+        } catch (final argo.InvalidSyntaxException e) {
+            throw InvalidSyntaxException.from(e);
+        }
     }
 
     /**
@@ -47,7 +51,11 @@ public final class SajParser {
      * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      */
     public void parse(final Reader in, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
-        JSON_PARSER.parseStreaming(in, jsonListener);
+        try {
+            JSON_PARSER.parseStreaming(in, jsonListener);
+        } catch (argo.InvalidSyntaxException e) {
+            throw InvalidSyntaxException.from(e);
+        }
     }
 
 }

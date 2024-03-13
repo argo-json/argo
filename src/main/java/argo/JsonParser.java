@@ -11,12 +11,7 @@
 package argo;
 
 import argo.jdom.*;
-import argo.saj.InvalidSyntaxException;
 import argo.saj.JsonListener;
-import argo.staj.InvalidSyntaxRuntimeException;
-import argo.staj.JsonStreamElement;
-import argo.staj.JsonStreamException;
-import argo.staj.StajParser;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -26,6 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
+import static argo.JsonStreamElement.NonTextJsonStreamElement.END_DOCUMENT;
 import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.prevalidatedNumberBuilder;
 
@@ -74,7 +70,52 @@ public final class JsonParser {
      * @return an {@code Iterator} of {@code JsonStreamElement}s reading from the given {@code Reader}.
      */
     public Iterator<JsonStreamElement> parseStreaming(final Reader reader) {
-        return new StajParser(reader);
+        return new Iterator<JsonStreamElement>() {
+            private final PositionTrackingPushbackReader pushbackReader = new PositionTrackingPushbackReader(reader);  // TODO tolerate byte order mark?  See https://datatracker.ietf.org/doc/html/rfc8259#section-8.1
+            private final Stack<JsonStreamElementType> stack = new Stack<JsonStreamElementType>();
+            private JsonStreamElement current;
+            private JsonStreamElement next;
+
+            public boolean hasNext() {
+                if (current != null && current == END_DOCUMENT) {
+                    return false;
+                } else if (next == null) {
+                    next = getNextElement();
+                }
+                return true;
+            }
+
+            public JsonStreamElement next() {
+                if (next == null) {
+                    current = getNextElement();
+                } else {
+                    current = next;
+                    next = null;
+                }
+                return current;
+            }
+
+            private JsonStreamElement getNextElement() {
+                if (current == null) {
+                    stack.push(JsonStreamElementType.START_DOCUMENT);
+                    return JsonStreamElement.NonTextJsonStreamElement.START_DOCUMENT;
+                } else {
+                    try {
+                        current.close();
+                        return current.jsonStreamElementType().parseNext(pushbackReader, stack);
+                    } catch (final IOException e) {
+                        throw new JsonStreamException("Failed to read from Reader", e);
+                    }
+                }
+            }
+
+            /**
+             * Not supported.
+             */
+            public void remove() {
+                throw new UnsupportedOperationException("JsonParser cannot remove elements from JSON it has parsed");
+            }
+        };
     }
 
     /**

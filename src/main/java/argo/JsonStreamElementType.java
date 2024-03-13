@@ -8,7 +8,7 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.staj;
+package argo;
 
 import argo.internal.NumberParserState;
 
@@ -18,9 +18,9 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import static argo.staj.CharacterUtilities.asPrintableString;
-import static argo.staj.InvalidSyntaxRuntimeException.unexpectedCharacterInvalidSyntaxRuntimeException;
-import static argo.staj.JsonStreamElement.*;
+import static argo.CharacterUtilities.asPrintableString;
+import static argo.InvalidSyntaxRuntimeException.unexpectedCharacterInvalidSyntaxRuntimeException;
+import static argo.JsonStreamElement.*;
 
 /**
  * Types of element a {@code StajParser} can produce.

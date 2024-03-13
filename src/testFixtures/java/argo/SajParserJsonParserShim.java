@@ -8,9 +8,10 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.saj;
+package argo;
 
-import argo.JsonParser;
+import argo.saj.JsonListener;
+import argo.saj.SajParser;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -29,12 +30,20 @@ interface SajParserJsonParserShim {
 
         @Override
         public void parse(final Reader reader, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
-            sajParser.parse(reader, jsonListener);
+            try {
+                sajParser.parse(reader, jsonListener);
+            } catch (final argo.saj.InvalidSyntaxException e) {
+                throw new InvalidSyntaxException(e.getMessage(), e.getCause(), e.getLine(), e.getColumn());
+            }
         }
 
         @Override
         public void parse(final String json, JsonListener jsonListener) throws IOException, InvalidSyntaxException {
-            sajParser.parse(json, jsonListener);
+            try {
+                sajParser.parse(json, jsonListener);
+            } catch (final argo.saj.InvalidSyntaxException e) {
+                throw new InvalidSyntaxException(e.getMessage(), e.getCause(), e.getLine(), e.getColumn());
+            }
         }
     }
 

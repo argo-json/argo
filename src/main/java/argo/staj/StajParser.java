@@ -10,23 +10,22 @@
 
 package argo.staj;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Iterator;
-import java.util.Stack;
+import argo.InvalidSyntaxRuntimeException;
+import argo.JsonParser;
+import argo.JsonStreamElement;
+import argo.JsonStreamException;
 
-import static argo.staj.JsonStreamElement.NonTextJsonStreamElement.END_DOCUMENT;
+import java.io.Reader;
+import java.util.Iterator;
 
 /**
  * Parses a JSON character stream into an {@code Iterator} of {@code JsonStreamElement}s.
  */
 public final class StajParser implements Iterator<JsonStreamElement> {
 
-    private final PositionTrackingPushbackReader pushbackReader;
-    private final Stack<JsonStreamElementType> stack = new Stack<JsonStreamElementType>();
-    private JsonStreamElement current;
-    private JsonStreamElement next;
+    private static final JsonParser JSON_PARSER = new JsonParser();
+
+    private final Iterator<JsonStreamElement> delegate;
 
     /**
      * Constructs a StajParser reading from the specified {@code Reader}.
@@ -34,8 +33,8 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * @param in the {@code Reader} to convert into {@code JsonStreamElement}s.
      */
     public StajParser(final Reader in) {
-        this.pushbackReader = new PositionTrackingPushbackReader(in);
-    } // TODO tolerate byte order mark?  See https://datatracker.ietf.org/doc/html/rfc8259#section-8.1
+        delegate = JSON_PARSER.parseStreaming(in);
+    }
 
     /**
      * Constructs a StajParser reading from the given {@code String}.
@@ -43,7 +42,7 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * @param json the {@code String} to convert into {@code JsonStreamElement}s.
      */
     public StajParser(final String json) {
-        this(new StringReader(json));
+        delegate = JSON_PARSER.parseStreaming(json);
     }
 
     /**
@@ -54,12 +53,7 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * @throws JsonStreamException           if the underlying character stream failed.
      */
     public boolean hasNext() {
-        if (current != null && current == END_DOCUMENT) {
-            return false;
-        } else if (next == null) {
-            next = getNextElement();
-        }
-        return true;
+        return delegate.hasNext();
     }
 
     /**
@@ -71,33 +65,13 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * @throws java.util.NoSuchElementException if there are no more elements to read.
      */
     public JsonStreamElement next() {
-        if (next == null) {
-            current = getNextElement();
-        } else {
-            current = next;
-            next = null;
-        }
-        return current;
-    }
-
-    private JsonStreamElement getNextElement() {
-        if (current == null) {
-            stack.push(JsonStreamElementType.START_DOCUMENT);
-            return JsonStreamElement.NonTextJsonStreamElement.START_DOCUMENT;
-        } else {
-            try {
-                current.close();
-                return current.jsonStreamElementType().parseNext(pushbackReader, stack);
-            } catch (final IOException e) {
-                throw new JsonStreamException("Failed to read from Reader", e);
-            }
-        }
+        return delegate.next();
     }
 
     /**
      * Not supported.
      */
     public void remove() {
-        throw new UnsupportedOperationException("StajParser cannot remove elements from JSON it has parsed");
+        delegate.remove();
     }
 }

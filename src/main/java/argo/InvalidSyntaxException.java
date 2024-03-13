@@ -8,28 +8,28 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.saj;
+package argo;
 
 /**
  * Thrown to indicate a given character stream is not valid JSON.
  */
-public final class InvalidSyntaxException extends Exception { // TODO should be in parent package?
+public final class InvalidSyntaxException extends Exception {
 
     private final int column;
     private final int line;
 
-    private InvalidSyntaxException(final String message, final Throwable cause, final int line, final int column) {
+    InvalidSyntaxException(final String message, final Throwable cause, final int line, final int column) { // TODO this is only package-private to support deprecated classes
         super(message, cause);
         this.column = column;
         this.line = line;
     }
 
-    public static InvalidSyntaxException from(final argo.InvalidSyntaxException invalidSyntaxException) {
+    static InvalidSyntaxException from(final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException) {
         return new InvalidSyntaxException(
-                invalidSyntaxException.getMessage(),
-                invalidSyntaxException.getCause(),
-                invalidSyntaxException.getLine(),
-                invalidSyntaxException.getColumn()
+                invalidSyntaxRuntimeException.getMessage(),
+                invalidSyntaxRuntimeException.getCause(),
+                invalidSyntaxRuntimeException.getLine(),
+                invalidSyntaxRuntimeException.getColumn()
         );
     }
 

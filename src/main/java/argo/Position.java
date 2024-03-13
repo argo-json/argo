@@ -8,27 +8,22 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package argo.staj;
+package argo;
 
-import java.io.IOException;
+final class Position {
 
-/**
- * Thrown to indicate that it was not possible to read any further along the JSON stream.
- */
-public final class JsonStreamException extends RuntimeException {
+    /**
+     * The line number, or -1 if the line number is unknown.
+     */
+    final int line;
 
-    private final IOException typedCause;
+    /**
+     * The column number, or -1 if the column number is unknown.
+     */
+    final int column;
 
-    JsonStreamException(final String message, final IOException cause) {
-        super(message, cause);
-        if (cause == null) {
-            throw new NullPointerException("cause is null");
-        }
-        this.typedCause = cause;
-    }
-
-    @Override
-    public IOException getCause() {
-        return typedCause;
+    Position(final int column, final int line) {
+        this.line = line;
+        this.column = column;
     }
 }

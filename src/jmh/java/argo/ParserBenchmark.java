@@ -11,8 +11,6 @@
 package argo;
 
 import argo.saj.BlackHoleJsonListener;
-import argo.saj.InvalidSyntaxException;
-import argo.staj.JsonStreamElement;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -117,7 +115,7 @@ public class ParserBenchmark {
     private final JsonParser jsonParser = new JsonParser();
 
     @Benchmark
-    public void jdomParse(final Blackhole blackhole) throws InvalidSyntaxException, IOException {
+    public void jdomParse(final Blackhole blackhole) throws InvalidSyntaxException {
         blackhole.consume(jsonParser.parse(JSON_STRING));
     }
 
