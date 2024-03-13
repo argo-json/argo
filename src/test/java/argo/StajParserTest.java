@@ -51,7 +51,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
-@SuppressWarnings("PMD.CloseResource")
 final class StajParserTest {
 
     static final class ParserArgumentsProvider implements ArgumentsProvider {
@@ -269,7 +268,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    @SuppressWarnings("PMD.UseTryWithResources")
+    @SuppressWarnings({"PMD.UseTryWithResources", "PMD.CloseResource"})
     void propagatesIoExceptionReadingNumber(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
@@ -325,6 +324,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderCanCallCloseAgain(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -335,6 +335,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderMarkThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -345,6 +346,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderMarkSupportedReturnsFalse(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -355,6 +357,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderReadingACharacterThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -365,6 +368,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderReadingToABufferThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -375,6 +379,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderReadingToABufferWithOffsetAndLengthThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -385,6 +390,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderReadingToACharBufferThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -395,6 +401,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderReadyThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -405,6 +412,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderResetThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -415,6 +423,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingANumberReaderSkipThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -626,7 +635,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    @SuppressWarnings("PMD.UseTryWithResources")
+    @SuppressWarnings({"PMD.UseTryWithResources", "PMD.CloseResource"})
     void propagatesIoExceptionReadingString(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
@@ -682,6 +691,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderCanCallCloseAgain(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -692,6 +702,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderMarkThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -702,6 +713,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderMarkSupportedReturnsFalse(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -712,6 +724,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderReadingACharacterThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -722,6 +735,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderReadingToABufferThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -732,6 +746,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderReadingToABufferWithOffsetAndLengthThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -742,6 +757,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderReadingToACharBufferThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -752,6 +768,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderReadyThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -762,6 +779,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderResetThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -772,6 +790,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    @SuppressWarnings("PMD.CloseResource")
     void afterClosingAStringReaderSkipThrowsIOException(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
