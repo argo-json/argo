@@ -20,8 +20,11 @@ import java.util.Iterator;
 
 /**
  * Parses a JSON character stream into an {@code Iterator} of {@code JsonStreamElement}s.
+ *
+ * @deprecated Replaced by {@link argo.JsonParser}.
  */
-public final class StajParser implements Iterator<JsonStreamElement> {
+@SuppressWarnings("DeprecatedIsStillUsed")
+@Deprecated public final class StajParser implements Iterator<JsonStreamElement> {
 
     private static final JsonParser JSON_PARSER = new JsonParser();
 
@@ -31,6 +34,8 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * Constructs a StajParser reading from the specified {@code Reader}.
      *
      * @param in the {@code Reader} to convert into {@code JsonStreamElement}s.
+     *
+     * @deprecated Replaced by {@link argo.JsonParser#parseStreaming(Reader)}.
      */
     public StajParser(final Reader in) {
         delegate = JSON_PARSER.parseStreaming(in);
@@ -40,6 +45,8 @@ public final class StajParser implements Iterator<JsonStreamElement> {
      * Constructs a StajParser reading from the given {@code String}.
      *
      * @param json the {@code String} to convert into {@code JsonStreamElement}s.
+     *
+     * @deprecated Replaced by {@link argo.JsonParser#parseStreaming(Reader)}.
      */
     public StajParser(final String json) {
         delegate = JSON_PARSER.parseStreaming(json);

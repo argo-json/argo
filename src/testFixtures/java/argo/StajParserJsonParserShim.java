@@ -10,8 +10,6 @@
 
 package argo;
 
-import argo.staj.StajParser;
-
 import java.io.Reader;
 import java.util.Iterator;
 
@@ -23,13 +21,15 @@ interface StajParserJsonParserShim {
     final class Staj implements StajParserJsonParserShim {
 
         @Override
+        @SuppressWarnings("deprecation")
         public Iterator<JsonStreamElement> parse(final Reader reader) {
-            return new StajParser(reader);
+            return new argo.staj.StajParser(reader);
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         public Iterator<JsonStreamElement> parse(final String json) {
-            return new StajParser(json);
+            return new argo.staj.StajParser(json);
         }
     }
 

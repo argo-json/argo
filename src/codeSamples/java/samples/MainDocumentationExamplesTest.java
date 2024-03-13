@@ -10,13 +10,12 @@
 
 package samples;
 
-import argo.format.WriteableJsonArray;
-import argo.format.WriteableJsonString;
-import argo.jdom.*;
 import argo.JsonListener;
 import argo.JsonStreamElement;
 import argo.JsonStreamElementType;
-import argo.staj.StajParser;
+import argo.format.WriteableJsonArray;
+import argo.format.WriteableJsonString;
+import argo.jdom.*;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
@@ -251,11 +250,12 @@ final class MainDocumentationExamplesTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void parsesUsingStaj() throws Exception {
         try (Reader jsonReader = new InputStreamReader(newInputStream(Utilities.getExampleJsonFile().toPath()), UTF_8)) {
             // tag::jsonThroughIteration[]
             Set<String> fieldNames = new HashSet<>();
-            StajParser stajParser = new StajParser(jsonReader);
+            argo.staj.StajParser stajParser = new argo.staj.StajParser(jsonReader);
             while (stajParser.hasNext()) {
                 JsonStreamElement next = stajParser.next();
                 if (next.jsonStreamElementType() == JsonStreamElementType.START_FIELD) {
