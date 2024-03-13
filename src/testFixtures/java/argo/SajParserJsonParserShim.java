@@ -10,7 +10,6 @@
 
 package argo;
 
-import argo.saj.JsonListener;
 import argo.saj.SajParser;
 
 import java.io.IOException;

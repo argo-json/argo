@@ -13,7 +13,7 @@ package samples;
 import argo.format.WriteableJsonArray;
 import argo.format.WriteableJsonString;
 import argo.jdom.*;
-import argo.saj.JsonListener;
+import argo.JsonListener;
 import argo.saj.SajParser;
 import argo.JsonStreamElement;
 import argo.JsonStreamElementType;

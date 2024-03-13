@@ -34,6 +34,9 @@ acceptedBreaks:
     - code: "java.class.removed"
       old: "enum argo.staj.JsonStreamElementType"
       justification: "Documented: move to new package appropriate to a major release."
+    - code: "java.class.removed"
+      old: "interface argo.saj.JsonListener"
+      justification: "Documented: move to new package appropriate to a major release."
     - code: "java.class.superTypeTypeParametersChanged"
       old: "class argo.staj.StajParser"
       new: "class argo.staj.StajParser"
@@ -56,6 +59,12 @@ acceptedBreaks:
       new: "method argo.jdom.JsonNode argo.jdom.JdomParser::parse(java.io.Reader)\
         \ throws argo.saj.InvalidSyntaxException, java.io.IOException"
       justification: "Documented: Now propagates IOException from Reader"
+    - code: "java.method.exception.checkedAdded"
+      old: "method void argo.saj.SajParser::parse(java.io.Reader, argo.saj.JsonListener)\
+        \ throws argo.saj.InvalidSyntaxException"
+      new: "method void argo.saj.SajParser::parse(java.io.Reader, argo.JsonListener)\
+        \ throws argo.saj.InvalidSyntaxException, java.io.IOException"
+      justification: "Documented: Breaking change appropriate to major release"
     - code: "java.method.exception.checkedAdded"
       old: "method void argo.saj.SajParser::parse(java.io.Reader, argo.saj.JsonListener)\
         \ throws argo.saj.InvalidSyntaxException"
@@ -90,6 +99,18 @@ acceptedBreaks:
       old: "parameter void argo.saj.JsonListener::stringValue(===java.lang.String===)"
       new: "parameter void argo.saj.JsonListener::stringValue(===java.io.Reader===)"
       justification: "Documented: Breaking change appropriate to major release"
+    - code: "java.method.parameterTypeChanged"
+      old: "parameter void argo.saj.SajParser::parse(java.io.Reader, ===argo.saj.JsonListener===)\
+        \ throws argo.saj.InvalidSyntaxException"
+      new: "parameter void argo.saj.SajParser::parse(java.io.Reader, ===argo.JsonListener===)\
+        \ throws argo.saj.InvalidSyntaxException, java.io.IOException"
+      justification: "Documented: move to new package appropriate to a major release."
+    - code: "java.method.parameterTypeChanged"
+      old: "parameter void argo.saj.SajParser::parse(java.lang.String, ===argo.saj.JsonListener===)\
+        \ throws argo.saj.InvalidSyntaxException"
+      new: "parameter void argo.saj.SajParser::parse(java.lang.String, ===argo.JsonListener===)\
+        \ throws argo.saj.InvalidSyntaxException"
+      justification: "Documented: move to new package appropriate to a major release."
     - code: "java.method.removed"
       old: "method argo.jdom.JsonNode argo.jdom.JsonNodeFactories::lazyArray(java.util.List<?\
         \ extends argo.jdom.JsonNode>)"

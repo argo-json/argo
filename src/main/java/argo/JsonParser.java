@@ -11,7 +11,6 @@
 package argo;
 
 import argo.jdom.*;
-import argo.saj.JsonListener;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -147,7 +146,7 @@ public final class JsonParser {
      * @param jsonListener            the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException if the characters streamed from the given {@code String} do not represent valid JSON.
      */
-    public void parseStreaming(final String json, final JsonListener jsonListener) throws InvalidSyntaxException { // TODO move JsonListener?
+    public void parseStreaming(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
         try {
             parseStreaming(new StringReader(json), jsonListener);
         } catch (final IOException e) {

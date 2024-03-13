@@ -10,7 +10,6 @@
 
 package argo;
 
-import argo.saj.RecordingJsonListener;
 import argo.saj.SajParser;
 import org.apache.commons.io.input.BrokenReader;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -23,11 +22,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.stream.Stream;
 
-import static argo.saj.BlackHoleJsonListener.BLACK_HOLE_JSON_LISTENER;
-import static argo.saj.RecordingJsonListener.*;
-import static argo.saj.RecordingJsonListener.NumberValue.numberValue;
-import static argo.saj.RecordingJsonListener.StartField.startField;
-import static argo.saj.RecordingJsonListener.StringValue.stringValue;
+import static argo.BlackHoleJsonListener.BLACK_HOLE_JSON_LISTENER;
+import static argo.RecordingJsonListener.*;
+import static argo.RecordingJsonListener.NumberValue.numberValue;
+import static argo.RecordingJsonListener.StartField.startField;
+import static argo.RecordingJsonListener.StringValue.stringValue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
