@@ -12,8 +12,10 @@ package argo.saj;
 
 /**
  * Thrown to indicate a given character stream is not valid JSON.
+ *
+ * @deprecated Only thrown by deprecated classes.
  */
-public final class InvalidSyntaxException extends Exception { // TODO should be in parent package?
+@Deprecated public final class InvalidSyntaxException extends Exception {
 
     private final int column;
     private final int line;

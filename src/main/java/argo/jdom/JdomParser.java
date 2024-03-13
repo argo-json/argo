@@ -11,7 +11,6 @@
 package argo.jdom;
 
 import argo.JsonParser;
-import argo.saj.InvalidSyntaxException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -32,15 +31,15 @@ import java.io.Reader;
      *
      * @param json the {@code String} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code String}.
-     * @throws InvalidSyntaxException if the characters streamed from the specified {@code String} does not represent valid JSON.
+     * @throws argo.saj.InvalidSyntaxException if the characters streamed from the specified {@code String} does not represent valid JSON.
      *
      * @deprecated Replaced by {@link argo.JsonParser#parse(String)}.
      */
-    public JsonNode parse(final String json) throws InvalidSyntaxException {
+    public JsonNode parse(final String json) throws argo.saj.InvalidSyntaxException {
         try {
             return JSON_PARSER.parse(json);
         } catch (final argo.InvalidSyntaxException e) {
-            throw InvalidSyntaxException.from(e);
+            throw argo.saj.InvalidSyntaxException.from(e);
         }
     }
 
@@ -49,16 +48,16 @@ import java.io.Reader;
      *
      * @param reader the {@code Reader} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code Reader}.
-     * @throws InvalidSyntaxException if the characters streamed from the specified {@code Reader} does not represent valid JSON.
+     * @throws argo.saj.InvalidSyntaxException if the characters streamed from the specified {@code Reader} does not represent valid JSON.
      * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
      *
      * @deprecated Replaced by {@link argo.JsonParser#parse(Reader)}.
      */
-    public JsonNode parse(final Reader reader) throws InvalidSyntaxException, IOException {
+    public JsonNode parse(final Reader reader) throws argo.saj.InvalidSyntaxException, IOException {
         try {
             return JSON_PARSER.parse(reader);
         } catch (final argo.InvalidSyntaxException e) {
-            throw InvalidSyntaxException.from(e);
+            throw argo.saj.InvalidSyntaxException.from(e);
         }
     }
 }
