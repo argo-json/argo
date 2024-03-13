@@ -14,7 +14,6 @@ import argo.format.WriteableJsonArray;
 import argo.format.WriteableJsonString;
 import argo.jdom.*;
 import argo.JsonListener;
-import argo.saj.SajParser;
 import argo.JsonStreamElement;
 import argo.JsonStreamElementType;
 import argo.staj.StajParser;
@@ -57,8 +56,8 @@ final class MainDocumentationExamplesTest {
 
     private static final JdomParser JDOM_PARSER = new JdomParser();
 
-    private static final SajParser SAJ_PARSER
-            = new SajParser();
+    @SuppressWarnings("deprecation")
+    private static final argo.saj.SajParser SAJ_PARSER = new argo.saj.SajParser();
 
     @Test
     void producesJsonFromFactory() {
@@ -187,6 +186,7 @@ final class MainDocumentationExamplesTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void parsesUsingSaj() throws Exception {
         try (Reader jsonReader = newBufferedReader(Utilities.getExampleJsonFile().toPath(), UTF_8)) {
             // tag::jsonThroughEvents[]

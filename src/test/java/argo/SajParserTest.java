@@ -10,7 +10,6 @@
 
 package argo;
 
-import argo.saj.SajParser;
 import org.apache.commons.io.input.BrokenReader;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,9 +36,10 @@ final class SajParserTest {
 
     static final class ParserArgumentsProvider implements ArgumentsProvider {
         @Override
+        @SuppressWarnings("deprecation")
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
-                    new SajParserJsonParserShim.Saj(new SajParser()),
+                    new SajParserJsonParserShim.Saj(new argo.saj.SajParser()),
                     new SajParserJsonParserShim.Json(new JsonParser())
             ).map(Arguments::arguments);
         }

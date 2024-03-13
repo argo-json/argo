@@ -10,8 +10,6 @@
 
 package argo;
 
-import argo.saj.SajParser;
-
 import java.io.IOException;
 import java.io.Reader;
 
@@ -20,10 +18,11 @@ interface SajParserJsonParserShim {
 
     void parse(String json, JsonListener jsonListener) throws IOException, InvalidSyntaxException;
 
+    @SuppressWarnings("deprecation")
     final class Saj implements SajParserJsonParserShim {
-        private final SajParser sajParser;
+        private final argo.saj.SajParser sajParser;
 
-        Saj(final SajParser sajParser) {
+        Saj(final argo.saj.SajParser sajParser) {
             this.sajParser = sajParser;
         }
 

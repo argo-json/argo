@@ -23,8 +23,11 @@ import java.io.Reader;
  * each call is made with a different {@code Reader} and a different {@code JsonListener}.
  *
  * @see JsonListener
+ *
+ * @deprecated Replaced by {@link argo.JsonParser}.
  */
-public final class SajParser {
+@SuppressWarnings("DeprecatedIsStillUsed")
+@Deprecated public final class SajParser {
 
     private static final JsonParser JSON_PARSER = new JsonParser();
 
@@ -34,6 +37,8 @@ public final class SajParser {
      * @param json         the {@code String} to parse.
      * @param jsonListener the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
+     *
+     * @deprecated Replaced by {@link JsonParser#parseStreaming(String, JsonListener)}.
      */
     public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
         try {
@@ -50,6 +55,8 @@ public final class SajParser {
      * @param jsonListener the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException thrown to indicate the characters read from {@code in} did not constitute valid JSON.
      * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
+     *
+     * @deprecated Replaced by {@link JsonParser#parseStreaming(Reader, JsonListener)}.
      */
     public void parse(final Reader in, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
         try {
