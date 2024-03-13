@@ -132,6 +132,8 @@ public final class JsonNodeFactories {
 
     /**
      * Internal method.
+     * @param prevalidatedNumber a pre-validated number
+     * @return a JsonNode representing the given number
      */
     public static JsonNodeBuilder<JsonNode> prevalidatedNumberBuilder(final JsonParser.PrevalidatedNumber prevalidatedNumber) {
         return JsonNumberNode.prevalidatedJsonNumberNode(prevalidatedNumber.value);
