@@ -11,7 +11,7 @@
 package argo.format;
 
 import argo.JsonGenerator;
-import argo.jdom.JdomParser;
+import argo.JsonParser;
 import argo.jdom.JsonNode;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.junit.jupiter.api.Nested;
@@ -70,49 +70,49 @@ class JsonFormatterTest {
         @ArgumentsSource(FieldOrderPreservingJsonFormatterArgumentsProvider.class)
         void passesThroughStringUnmolested(final JsonFormatter jsonFormatter) throws Exception {
             final JsonNode stringNode = aStringNode();
-            assertThat(new JdomParser().parse(jsonFormatter.format(stringNode)), equalTo(stringNode));
+            assertThat(new JsonParser().parse(jsonFormatter.format(stringNode)), equalTo(stringNode));
         }
 
         @ParameterizedTest
         @ArgumentsSource(FieldOrderPreservingJsonFormatterArgumentsProvider.class)
         void passesThroughNumberUnmolested(final JsonFormatter jsonFormatter) throws Exception {
             final JsonNode numberNode = aNumberNode();
-            assertThat(new JdomParser().parse(jsonFormatter.format(numberNode)), equalTo(numberNode));
+            assertThat(new JsonParser().parse(jsonFormatter.format(numberNode)), equalTo(numberNode));
         }
 
         @ParameterizedTest
         @ArgumentsSource(FieldOrderPreservingJsonFormatterArgumentsProvider.class)
         void passesThroughTrueUnmolested(final JsonFormatter jsonFormatter) throws Exception {
             final JsonNode trueNode = trueNode();
-            assertThat(new JdomParser().parse(jsonFormatter.format(trueNode)), equalTo(trueNode));
+            assertThat(new JsonParser().parse(jsonFormatter.format(trueNode)), equalTo(trueNode));
         }
 
         @ParameterizedTest
         @ArgumentsSource(FieldOrderPreservingJsonFormatterArgumentsProvider.class)
         void passesThroughFalseUnmolested(final JsonFormatter jsonFormatter) throws Exception {
             final JsonNode falseNode = falseNode();
-            assertThat(new JdomParser().parse(jsonFormatter.format(falseNode)), equalTo(falseNode));
+            assertThat(new JsonParser().parse(jsonFormatter.format(falseNode)), equalTo(falseNode));
         }
 
         @ParameterizedTest
         @ArgumentsSource(FieldOrderPreservingJsonFormatterArgumentsProvider.class)
         void passesThroughNullUnmolested(final JsonFormatter jsonFormatter) throws Exception {
             final JsonNode nullNode = nullNode();
-            assertThat(new JdomParser().parse(jsonFormatter.format(nullNode)), equalTo(nullNode));
+            assertThat(new JsonParser().parse(jsonFormatter.format(nullNode)), equalTo(nullNode));
         }
 
         @ParameterizedTest
         @ArgumentsSource(FieldOrderPreservingJsonFormatterArgumentsProvider.class)
         void passesThroughArrayUnmolested(final JsonFormatter jsonFormatter) throws Exception {
             final JsonNode arrayNode = anArrayNode();
-            assertThat(new JdomParser().parse(jsonFormatter.format(arrayNode)), equalTo(arrayNode));
+            assertThat(new JsonParser().parse(jsonFormatter.format(arrayNode)), equalTo(arrayNode));
         }
 
         @ParameterizedTest
         @ArgumentsSource(FieldOrderPreservingJsonFormatterArgumentsProvider.class)
         void passesThroughObjectUnmolested(final JsonFormatter jsonFormatter) throws Exception {
             final JsonNode objectNode = anObjectNode();
-            assertThat(new JdomParser().parse(jsonFormatter.format(objectNode)), equalTo(objectNode));
+            assertThat(new JsonParser().parse(jsonFormatter.format(objectNode)), equalTo(objectNode));
         }
 
         @ParameterizedTest
@@ -121,7 +121,7 @@ class JsonFormatterTest {
             final JsonNode objectNode = anObjectNode();
             try (StringBuilderWriter stringBuilderWriter = new StringBuilderWriter()) {
                 jsonFormatter.format(objectNode, stringBuilderWriter);
-                assertThat(new JdomParser().parse(stringBuilderWriter.toString()), equalTo(objectNode));
+                assertThat(new JsonParser().parse(stringBuilderWriter.toString()), equalTo(objectNode));
             }
         }
     }
@@ -136,35 +136,35 @@ class JsonFormatterTest {
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughStringUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode stringNode = aStringNode();
-                assertThat(new JdomParser().parse(jsonFormatter.format(stringNode)), equalTo(stringNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(stringNode)), equalTo(stringNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughNumberUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode numberNode = aNumberNode();
-                assertThat(new JdomParser().parse(jsonFormatter.format(numberNode)), equalTo(numberNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(numberNode)), equalTo(numberNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughTrueUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode trueNode = trueNode();
-                assertThat(new JdomParser().parse(jsonFormatter.format(trueNode)), equalTo(trueNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(trueNode)), equalTo(trueNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughFalseUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode falseNode = falseNode();
-                assertThat(new JdomParser().parse(jsonFormatter.format(falseNode)), equalTo(falseNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(falseNode)), equalTo(falseNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughNullUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode nullNode = nullNode();
-                assertThat(new JdomParser().parse(jsonFormatter.format(nullNode)), equalTo(nullNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(nullNode)), equalTo(nullNode));
             }
 
             @ParameterizedTest
@@ -178,13 +178,13 @@ class JsonFormatterTest {
                         nullNode(),
                         array()
                 );
-                assertThat(new JdomParser().parse(jsonFormatter.format(arrayNode)), equalTo(arrayNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(arrayNode)), equalTo(arrayNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void sortsObjectFieldsLexicographically(final JsonFormatter jsonFormatter) throws Exception {
-                assertThat(new JdomParser().parse(jsonFormatter.format(object(
+                assertThat(new JsonParser().parse(jsonFormatter.format(object(
                         field("c", string("c")),
                         field("b", string("b")),
                         field("a", string("a"))
@@ -204,7 +204,7 @@ class JsonFormatterTest {
                             field("b", string("b")),
                             field("a", string("a"))
                     ), stringBuilderWriter);
-                    assertThat(new JdomParser().parse(stringBuilderWriter.toString()), equalTo(object(
+                    assertThat(new JsonParser().parse(stringBuilderWriter.toString()), equalTo(object(
                             field("a", string("a")),
                             field("b", string("b")),
                             field("c", string("c"))
@@ -215,7 +215,7 @@ class JsonFormatterTest {
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void maintainsOrderOfFieldsWithEqualNames(final JsonFormatter jsonFormatter) throws Exception {
-                assertThat(new JdomParser().parse(jsonFormatter.format(object(
+                assertThat(new JsonParser().parse(jsonFormatter.format(object(
                         field("b", string("1")),
                         field("a", string("2")),
                         field("b", string("3"))
@@ -234,35 +234,35 @@ class JsonFormatterTest {
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughStringUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode stringNode = array(aStringNode());
-                assertThat(new JdomParser().parse(jsonFormatter.format(stringNode)), equalTo(stringNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(stringNode)), equalTo(stringNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughNumberUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode numberNode = array(aNumberNode());
-                assertThat(new JdomParser().parse(jsonFormatter.format(numberNode)), equalTo(numberNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(numberNode)), equalTo(numberNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughTrueUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode trueNode = array(trueNode());
-                assertThat(new JdomParser().parse(jsonFormatter.format(trueNode)), equalTo(trueNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(trueNode)), equalTo(trueNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughFalseUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode falseNode = array(falseNode());
-                assertThat(new JdomParser().parse(jsonFormatter.format(falseNode)), equalTo(falseNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(falseNode)), equalTo(falseNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughNullUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode nullNode = array(nullNode());
-                assertThat(new JdomParser().parse(jsonFormatter.format(nullNode)), equalTo(nullNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(nullNode)), equalTo(nullNode));
             }
 
             @ParameterizedTest
@@ -276,13 +276,13 @@ class JsonFormatterTest {
                         nullNode(),
                         array()
                 ));
-                assertThat(new JdomParser().parse(jsonFormatter.format(arrayNode)), equalTo(arrayNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(arrayNode)), equalTo(arrayNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void sortsObjectFieldsLexicographically(final JsonFormatter jsonFormatter) throws Exception {
-                assertThat(new JdomParser().parse(jsonFormatter.format(array(object(
+                assertThat(new JsonParser().parse(jsonFormatter.format(array(object(
                         field("c", string("c")),
                         field("b", string("b")),
                         field("a", string("a"))
@@ -296,7 +296,7 @@ class JsonFormatterTest {
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void maintainsOrderOfFieldsWithEqualNames(final JsonFormatter jsonFormatter) throws Exception {
-                assertThat(new JdomParser().parse(jsonFormatter.format(array(object(
+                assertThat(new JsonParser().parse(jsonFormatter.format(array(object(
                         field("b", string("1")),
                         field("a", string("2")),
                         field("b", string("3"))
@@ -315,35 +315,35 @@ class JsonFormatterTest {
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughStringUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode stringNode = object(field("foo", aStringNode()));
-                assertThat(new JdomParser().parse(jsonFormatter.format(stringNode)), equalTo(stringNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(stringNode)), equalTo(stringNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughNumberUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode numberNode = object(field("foo", aNumberNode()));
-                assertThat(new JdomParser().parse(jsonFormatter.format(numberNode)), equalTo(numberNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(numberNode)), equalTo(numberNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughTrueUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode trueNode = object(field("foo", trueNode()));
-                assertThat(new JdomParser().parse(jsonFormatter.format(trueNode)), equalTo(trueNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(trueNode)), equalTo(trueNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughFalseUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode falseNode = object(field("foo", falseNode()));
-                assertThat(new JdomParser().parse(jsonFormatter.format(falseNode)), equalTo(falseNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(falseNode)), equalTo(falseNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void passesThroughNullUnmolested(final JsonFormatter jsonFormatter) throws Exception {
                 final JsonNode nullNode = object(field("foo", nullNode()));
-                assertThat(new JdomParser().parse(jsonFormatter.format(nullNode)), equalTo(nullNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(nullNode)), equalTo(nullNode));
             }
 
             @ParameterizedTest
@@ -357,13 +357,13 @@ class JsonFormatterTest {
                         nullNode(),
                         array()
                 )));
-                assertThat(new JdomParser().parse(jsonFormatter.format(arrayNode)), equalTo(arrayNode));
+                assertThat(new JsonParser().parse(jsonFormatter.format(arrayNode)), equalTo(arrayNode));
             }
 
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void sortsObjectFieldsLexicographically(final JsonFormatter jsonFormatter) throws Exception {
-                assertThat(new JdomParser().parse(jsonFormatter.format(object(field("foo", object(
+                assertThat(new JsonParser().parse(jsonFormatter.format(object(field("foo", object(
                         field("c", string("c")),
                         field("b", string("b")),
                         field("a", string("a"))
@@ -377,7 +377,7 @@ class JsonFormatterTest {
             @ParameterizedTest
             @ArgumentsSource(FieldOrderNormalisingJsonFormatterArgumentsProvider.class)
             void maintainsOrderOfFieldsWithEqualNames(final JsonFormatter jsonFormatter) throws Exception {
-                assertThat(new JdomParser().parse(jsonFormatter.format(object(field("foo", object(
+                assertThat(new JsonParser().parse(jsonFormatter.format(object(field("foo", object(
                         field("b", string("1")),
                         field("a", string("2")),
                         field("b", string("3"))

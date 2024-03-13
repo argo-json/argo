@@ -10,7 +10,6 @@
 
 package argo;
 
-import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeSelectors;
 import org.apache.commons.io.input.BrokenReader;
@@ -35,9 +34,10 @@ final class JdomParserTest {
 
     static final class ParserArgumentsProvider implements ArgumentsProvider {
         @Override
+        @SuppressWarnings("deprecation")
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
-                    new JdomParserJsonParserShim.Jdom(new JdomParser()),
+                    new JdomParserJsonParserShim.Jdom(new argo.jdom.JdomParser()),
                     new JdomParserJsonParserShim.Json(new JsonParser())
             ).map(Arguments::arguments);
         }

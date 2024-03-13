@@ -54,6 +54,7 @@ final class MainDocumentationExamplesTest {
             ))
     );
 
+    @SuppressWarnings("deprecation")
     private static final JdomParser JDOM_PARSER = new JdomParser();
 
     @SuppressWarnings("deprecation")
@@ -133,6 +134,7 @@ final class MainDocumentationExamplesTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void parsesJsonAndGetsElementsWithCallToJsonNodeInline() throws Exception {
         final String jsonText = readFileToString(Utilities.getExampleJsonFile(), UTF_8);
         // tag::jdomPath[]
@@ -142,6 +144,7 @@ final class MainDocumentationExamplesTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void parsesJsonAndGetsElementsWithCallToJsonNode() throws Exception {
         final String jsonText = readFileToString(Utilities.getExampleJsonFile(), UTF_8);
         // tag::jdomParser[]
@@ -158,6 +161,7 @@ final class MainDocumentationExamplesTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void parsesJsonAndGetsElementsWithJsonNodeSelector() throws Exception {
         final String jsonText = readFileToString(Utilities.getExampleJsonFile(), UTF_8);
         final JsonNode json = JDOM_PARSER.parse(jsonText);

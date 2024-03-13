@@ -11,7 +11,7 @@
 package argo.format;
 
 import argo.JsonGenerator;
-import argo.jdom.JdomParser;
+import argo.JsonParser;
 import argo.jdom.JsonNode;
 import org.apache.commons.io.output.BrokenWriter;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -99,7 +99,7 @@ class JsonWriterTest {
     void writesTwoStringsToReuseWriteBuffer(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) throws Exception {
         final JsonNode jsonNode = array(aStringNode(), aStringNode());
         final String jsonText = jsonGeneratorJsonWriterTestCase.write(jsonNode);
-        assertThat(new JdomParser().parse(jsonText), equalTo(jsonNode));
+        assertThat(new JsonParser().parse(jsonText), equalTo(jsonNode));
     }
 
     @ParameterizedTest
@@ -111,7 +111,7 @@ class JsonWriterTest {
             arrayWriter.writeElement((WriteableJsonString) writer -> writer.write(firstString));
             arrayWriter.writeElement((WriteableJsonString) writer -> writer.write(secondString));
         });
-        assertThat(new JdomParser().parse(jsonText), equalTo(array(string(firstString), string(secondString))));
+        assertThat(new JsonParser().parse(jsonText), equalTo(array(string(firstString), string(secondString))));
     }
 
     @ParameterizedTest

@@ -11,7 +11,7 @@
 package argo.format;
 
 import argo.JsonGenerator;
-import argo.jdom.JdomParser;
+import argo.JsonParser;
 import argo.jdom.JsonNode;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -202,10 +202,10 @@ final class PrettyJsonFormatterTest {
     void testRoundTrip(final JsonFormatter jsonFormatter) throws Exception {
         final File longJsonExample = new File(this.getClass().getResource("Sample.json").getFile());
         final String json = readFileToString(longJsonExample, UTF_8);
-        final JdomParser jdomParser = new JdomParser();
-        final JsonNode node = jdomParser.parse(json);
+        final JsonParser jsonParser = new JsonParser();
+        final JsonNode node = jsonParser.parse(json);
         final String expected = jsonFormatter.format(node);
-        assertThat(jdomParser.parse(expected), Matchers.equalTo(node));
+        assertThat(jsonParser.parse(expected), Matchers.equalTo(node));
     }
 
     @ParameterizedTest

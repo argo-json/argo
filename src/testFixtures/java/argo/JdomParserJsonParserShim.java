@@ -10,7 +10,6 @@
 
 package argo;
 
-import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
 
 import java.io.IOException;
@@ -21,10 +20,11 @@ interface JdomParserJsonParserShim {
 
     JsonNode parse(String json) throws IOException, InvalidSyntaxException;
 
+    @SuppressWarnings("deprecation")
     final class Jdom implements JdomParserJsonParserShim {
-        private final JdomParser jdomParser;
+        private final argo.jdom.JdomParser jdomParser;
 
-        Jdom(final JdomParser jdomParser) {
+        Jdom(final argo.jdom.JdomParser jdomParser) {
             this.jdomParser = jdomParser;
         }
 

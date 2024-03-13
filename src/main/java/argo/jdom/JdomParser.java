@@ -19,8 +19,11 @@ import java.io.Reader;
 /**
  * Parses a JSON character stream into a {@code JsonNode} object.  Instances of this class can safely be shared
  * between threads.
+ *
+ * @deprecated Replaced by {@link argo.JsonParser}.
  */
-public final class JdomParser {
+@SuppressWarnings("DeprecatedIsStillUsed")
+@Deprecated public final class JdomParser {
 
     private static final JsonParser JSON_PARSER = new JsonParser();
 
@@ -30,6 +33,8 @@ public final class JdomParser {
      * @param json the {@code String} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code String}.
      * @throws InvalidSyntaxException if the characters streamed from the specified {@code String} does not represent valid JSON.
+     *
+     * @deprecated Replaced by {@link argo.JsonParser#parse(String)}.
      */
     public JsonNode parse(final String json) throws InvalidSyntaxException {
         try {
@@ -46,6 +51,8 @@ public final class JdomParser {
      * @return a {@code JsonNode} representing the JSON read from the specified {@code Reader}.
      * @throws InvalidSyntaxException if the characters streamed from the specified {@code Reader} does not represent valid JSON.
      * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
+     *
+     * @deprecated Replaced by {@link argo.JsonParser#parse(Reader)}.
      */
     public JsonNode parse(final Reader reader) throws InvalidSyntaxException, IOException {
         try {

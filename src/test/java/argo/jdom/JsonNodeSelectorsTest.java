@@ -10,6 +10,7 @@
 
 package argo.jdom;
 
+import argo.JsonParser;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -1233,7 +1234,7 @@ final class JsonNodeSelectorsTest {
     @Test
     void javadocExampleWorks() throws Exception {
         final String json = "{\"Fee\":{\"fi\":\"fo\"}}";
-        final JsonNode jsonNode = new JdomParser().parse(new StringReader(json));
+        final JsonNode jsonNode = new JsonParser().parse(new StringReader(json));
         final String result = JsonNodeSelectors.anObjectNodeWithField("Fee")
                 .with(JsonNodeSelectors.anObjectNodeWithField("fi"))
                 .with(JsonNodeSelectors.aStringNode())

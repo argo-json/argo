@@ -10,7 +10,6 @@
 
 package samples;
 
-import argo.jdom.JdomParser;
 import org.junit.jupiter.api.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -22,9 +21,10 @@ import static samples.Utilities.getExampleJsonFile;
 final class SimpleJdomExamplesTest {
 
     @Test
+    @SuppressWarnings("deprecation")
     void parseSimpleExample() throws Exception {
         final String jsonText = readFileToString(getExampleJsonFile(), UTF_8);
-        final String secondSingle = new JdomParser().parse(jsonText).getStringValue("singles", 1);
+        final String secondSingle = new argo.jdom.JdomParser().parse(jsonText).getStringValue("singles", 1);
         assertThat(secondSingle, equalTo("Agadoo"));
     }
 }
