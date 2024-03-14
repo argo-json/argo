@@ -918,3 +918,11 @@ Benchmark                                Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse               thrpt   25  17970.228 ± 352.737  ops/s
 ParserBenchmark.streamingEventParse     thrpt   25  27204.317 ± 327.117  ops/s
 ParserBenchmark.streamingIteratorParse  thrpt   25  28005.488 ± 295.693  ops/s
+
+
+Try switching JsonArrayNodeBuilder and JsonObjectNodeBuilder from LinkedList to ArrayList; rejected as not faster empirically, and not expected to be faster for arrays and objects < 50 elements long
+
+Benchmark                                Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse               thrpt   25  17816.769 ± 383.144  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25  27061.630 ± 259.707  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25  28048.100 ± 208.906  ops/s

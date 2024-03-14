@@ -51,7 +51,7 @@ public abstract class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode>
 
     static final class DuplicateFieldNamePermittingJsonObjectNodeBuilder extends JsonObjectNodeBuilder {
 
-        private final List<Builder<? extends JsonField>> fieldBuilders = new LinkedList<Builder<? extends JsonField>>(); // TODO or ArrayList?
+        private final Queue<Builder<? extends JsonField>> fieldBuilders = new LinkedList<Builder<? extends JsonField>>();
 
         JsonObjectNodeBuilder withFieldBuilder(final NamedJsonFieldBuilder jsonFieldBuilder) {
             fieldBuilders.add(jsonFieldBuilder);

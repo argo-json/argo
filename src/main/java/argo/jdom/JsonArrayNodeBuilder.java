@@ -17,7 +17,7 @@ import java.util.*;
  */
 public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
-    private final Queue<Builder<? extends JsonNode>> elementBuilders = new LinkedList<Builder<? extends JsonNode>>(); // TODO or ArrayList?
+    private final Queue<Builder<? extends JsonNode>> elementBuilders = new LinkedList<Builder<? extends JsonNode>>();
 
     JsonArrayNodeBuilder() {
     }
