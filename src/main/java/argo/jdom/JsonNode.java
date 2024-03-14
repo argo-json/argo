@@ -331,6 +331,11 @@ public abstract class JsonNode {
         return wrapExceptionsFor(JsonNodeSelectors.aNullableArrayNode(pathElements), this, pathElements);
     }
 
+    /**
+     * Executes a callback to the method corresponding to the type of this {@code JsonNode}.
+     *
+     * @param jsonNodeVisitor the {@code JsonNodeVisitor} to call back.
+     */
     public abstract void visit(JsonNodeVisitor jsonNodeVisitor);
 
     /**

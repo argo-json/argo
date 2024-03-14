@@ -12,12 +12,53 @@ package argo.jdom;
 
 import java.util.List;
 
-public interface JsonNodeVisitor { // TODO document or make package-private
+/**
+ * Called back using the method that matches the type of element being visited.
+ */
+public interface JsonNodeVisitor {
+
+    /**
+     * Called by JSON objects.
+     *
+     * @param fields the members of the object.
+     */
     void object(List<JsonField> fields);
+
+    /**
+     * Called by JSON arrays.
+     *
+     * @param elements the elements of the array.
+     */
     void array(List<JsonNode> elements);
+
+    /**
+     * Called by JSON strings.
+     *
+     * @param value the text of the string.
+     */
     void string(String value);
+
+    /**
+     * Called by JSON numbers.
+     *
+     * @param value the text of the number.
+     *
+     * @see JsonNumberUtils for utility methods for converting JSON number text into Java numeric types.
+     */
     void number(String value);
+
+    /**
+     * Called by JSON true values.
+     */
     void trueNode();
+
+    /**
+     * Called by JSON false values.
+     */
     void falseNode();
+
+    /**
+     * Called by JSON null values.
+     */
     void nullNode();
 }
