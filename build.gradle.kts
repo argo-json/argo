@@ -196,7 +196,6 @@ tasks {
         javaLauncher.set(project.javaToolchains.launcherFor {
             languageVersion.set(JavaLanguageVersion.of(21))
         })
-        useJUnitPlatform()
     }
 
     val ico by registering(com.gitlab.svg2ico.Svg2IcoTask::class) {
