@@ -104,3 +104,45 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson, inde
 <1> A `StringReader` for demonstration purposes, but could be any `Reader`
 <2> The stack will keep track of the parents of the current element
 <3> Nodes' text is also streamed, so we can have unbounded strings, numbers, and field names
+
+== Limitations
+
+[cols=",,,,"]
+|===
+|
+|parse
+|streaming parse
+|generate
+|streaming generate
+
+|Characters in a string
+|`Integer.MAX_VALUE` - 8
+|Unlimited
+|
+|Unlimited
+
+|Characters in a number
+|`Integer.MAX_VALUE` - 8
+|Unlimited
+|
+|Unlimited
+
+|Elements in an array
+|
+|Unlimited
+|
+|Unlimited
+
+|Fields in an object
+|
+|Unlimited
+|
+|Unlimited
+
+|Nesting depth
+|
+|`Integer.MAX_VALUE` - 8
+|
+|Limited by JVM stack (>3000 using 1MB stack)
+
+|===

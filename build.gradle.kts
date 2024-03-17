@@ -196,6 +196,7 @@ tasks {
         javaLauncher.set(project.javaToolchains.launcherFor {
             languageVersion.set(JavaLanguageVersion.of(21))
         })
+        maxHeapSize = "11g"
     }
 
     val ico by registering(com.gitlab.svg2ico.Svg2IcoTask::class) {

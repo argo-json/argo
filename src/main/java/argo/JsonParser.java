@@ -71,7 +71,7 @@ public final class JsonParser {
     public Iterator<JsonStreamElement> parseStreaming(final Reader reader) {
         return new Iterator<JsonStreamElement>() {
             private final PositionTrackingPushbackReader pushbackReader = new PositionTrackingPushbackReader(reader);  // TODO tolerate byte order mark?  See https://datatracker.ietf.org/doc/html/rfc8259#section-8.1
-            private final Stack<JsonStreamElementType> stack = new Stack<JsonStreamElementType>();
+            private final Stack<JsonStreamElementType> stack = new Stack<JsonStreamElementType>(); // TODO LinkedList used as a Deque?
             private JsonStreamElement current;
             private JsonStreamElement next;
 

@@ -926,3 +926,11 @@ Benchmark                                Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse               thrpt   25  17816.769 ± 383.144  ops/s
 ParserBenchmark.streamingEventParse     thrpt   25  27061.630 ± 259.707  ops/s
 ParserBenchmark.streamingIteratorParse  thrpt   25  28048.100 ± 208.906  ops/s
+
+
+Try switching parser stack from Stack to ArrayList; rejected as no faster, and less intuitive (ArrayDeque *might* be faster for Java > 6)
+
+Benchmark                                Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse               thrpt   25  17845.220 ± 316.179  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25  27335.714 ± 253.745  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25  27547.592 ± 222.375  ops/s
