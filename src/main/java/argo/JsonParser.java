@@ -68,7 +68,7 @@ public final class JsonParser {
      * @param reader the {@code Reader} to parse.
      * @return an {@code Iterator} of {@code JsonStreamElement}s reading from the given {@code Reader}.
      */
-    public Iterator<JsonStreamElement> parseStreaming(final Reader reader) {
+    public Iterator<JsonStreamElement> parseStreaming(final Reader reader) { // TODO accept initial stack capacity argument, to circumvent array copying for known deep stacks?
         return new Iterator<JsonStreamElement>() {
             private final PositionTrackingPushbackReader pushbackReader = new PositionTrackingPushbackReader(reader);  // TODO tolerate byte order mark?  See https://datatracker.ietf.org/doc/html/rfc8259#section-8.1
             private final Stack<JsonStreamElementType> stack = new Stack<JsonStreamElementType>(); // TODO LinkedList used as a Deque?
