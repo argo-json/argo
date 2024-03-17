@@ -934,3 +934,11 @@ Benchmark                                Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse               thrpt   25  17845.220 ± 316.179  ops/s
 ParserBenchmark.streamingEventParse     thrpt   25  27335.714 ± 253.745  ops/s
 ParserBenchmark.streamingIteratorParse  thrpt   25  27547.592 ± 222.375  ops/s
+
+
+Try a hand-rolled stack, to avoid large stacks causing large array copies, leading to OOM; rejected as it exacerbates the problem
+
+Benchmark                                Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse               thrpt   25  17933.122 ± 285.249  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25  27319.672 ± 232.831  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25  28253.060 ± 243.050  ops/s
