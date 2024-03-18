@@ -118,13 +118,13 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson, inde
 |Characters in a string
 |`Integer.MAX_VALUE` - 8
 |Unlimited
-|
+|`Integer.MAX_VALUE` - 8
 |Unlimited
 
 |Characters in a number
 |`Integer.MAX_VALUE` - 8
 |Unlimited
-|
+|`Integer.MAX_VALUE` - 8
 |Unlimited
 
 |Elements in an array

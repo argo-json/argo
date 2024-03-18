@@ -56,6 +56,13 @@ class LimitationsTest {
 
     @Test
     @Disabled
+    void generateAndParseString() throws IOException, InterruptedException, InvalidSyntaxException {
+        final JsonNode node = string("a".repeat(Integer.MAX_VALUE - 8));
+        executeTest(writer -> JSON_GENERATOR.generate(writer, node), reader -> new JsonParser().parse(reader));
+    }
+
+    @Test
+    @Disabled
     void streamingGenerateAndStreamingParseString() throws IOException, InterruptedException, InvalidSyntaxException {
         final int max = Integer.MAX_VALUE;
         final int percentile = max / 100;
@@ -67,6 +74,13 @@ class LimitationsTest {
                 stringWriter.write('a');
             }
         }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
+    }
+
+    @Test
+    @Disabled
+    void generateAndParseNumber() throws IOException, InterruptedException, InvalidSyntaxException {
+        final JsonNode node = number("1".repeat(Integer.MAX_VALUE - 8));
+        executeTest(writer -> JSON_GENERATOR.generate(writer, node), reader -> new JsonParser().parse(reader));
     }
 
     @Test
