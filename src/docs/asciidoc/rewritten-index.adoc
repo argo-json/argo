@@ -140,9 +140,9 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson, inde
 |Unlimited
 
 |Nesting depth
-|
+|Limited by JVM stack (>1000 using 1MB stack)
 |`Integer.MAX_VALUE` - 8
-|
+|Limited by JVM stack (>2000 using 1MB stack)
 |Limited by JVM stack (>3000 using 1MB stack)
 
 |===

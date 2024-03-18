@@ -11,9 +11,7 @@
 package argo;
 
 import argo.format.*;
-import argo.jdom.JsonField;
-import argo.jdom.JsonNode;
-import argo.jdom.JsonStringNode;
+import argo.jdom.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -185,10 +183,41 @@ class LimitationsTest {
 
     @Test
     @Disabled
+    void generateNested() throws IOException {
+        final JsonNode jsonNode = nestedArray(array(), 2000);
+
+        LOGGER.info("Made json node");
+        JSON_GENERATOR.generate(Writer.nullWriter(), jsonNode);
+    }
+
+    private static JsonNode nestedArray(final JsonNode member, final int depth) {
+        if (depth == 0) {
+            return member;
+        } else {
+            return nestedArray(array(member), depth - 1);
+        }
+    }
+
+    @Test
+    @Disabled
+    void parseNested() throws IOException, InterruptedException, InvalidSyntaxException {
+        executeTest(writer -> {
+            final int max = 1000;
+            for (int i = 0; i < max; i++) {
+                writer.write('[');
+            }
+            for (int i = 0; i < max; i++) {
+                writer.write(']');
+            }
+        }, reader -> new JsonParser().parse(reader));
+    }
+
+    @Test
+    @Disabled
     void streamingParseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
-            final int percentile = Integer.MAX_VALUE / 100;
+            final int percentile = max / 100;
             for (int i = 0; i < max; i++) {
                 if (i % percentile == 0) {
                     LOGGER.info("Opened " + (i / percentile) + "%");
