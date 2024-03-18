@@ -12,6 +12,7 @@ package argo;
 
 import argo.format.*;
 import argo.jdom.*;
+import org.apache.commons.io.output.NullWriter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -56,7 +57,11 @@ class LimitationsTest {
     @Test
     @Disabled
     void generateAndParseString() throws IOException, InterruptedException, InvalidSyntaxException {
-        final JsonNode node = string("a".repeat(Integer.MAX_VALUE - 8));
+        final StringBuilder stringBuilder = new StringBuilder(Integer.MAX_VALUE - 8);
+        for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
+            stringBuilder.append('a');
+        }
+        final JsonNode node = string(stringBuilder.toString());
         executeTest(writer -> JSON_GENERATOR.generate(writer, node), reader -> new JsonParser().parse(reader));
     }
 
@@ -78,7 +83,11 @@ class LimitationsTest {
     @Test
     @Disabled
     void generateAndParseNumber() throws IOException, InterruptedException, InvalidSyntaxException {
-        final JsonNode node = number("1".repeat(Integer.MAX_VALUE - 8));
+        final StringBuilder stringBuilder = new StringBuilder(Integer.MAX_VALUE - 8);
+        for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
+            stringBuilder.append('1');
+        }
+        final JsonNode node = string(stringBuilder.toString());
         executeTest(writer -> JSON_GENERATOR.generate(writer, node), reader -> new JsonParser().parse(reader));
     }
 
@@ -103,7 +112,7 @@ class LimitationsTest {
         final JsonNode number = number(0);
         final JsonNode jsonNode = array(Stream.generate(() -> number).limit(Integer.MAX_VALUE - 8).iterator());
         LOGGER.info("Made json node");
-        JSON_GENERATOR.generate(Writer.nullWriter(), jsonNode);
+        JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
     @Test
@@ -145,7 +154,7 @@ class LimitationsTest {
         final JsonField field = field(string("a"), number(0));
         final JsonNode jsonNode = object(Stream.generate(() -> field).limit(Integer.MAX_VALUE - 8).iterator());
         LOGGER.info("Made json node");
-        JSON_GENERATOR.generate(Writer.nullWriter(), jsonNode);
+        JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
     @Test
@@ -187,7 +196,7 @@ class LimitationsTest {
         final JsonNode jsonNode = nestedArray(array(), 2000);
 
         LOGGER.info("Made json node");
-        JSON_GENERATOR.generate(Writer.nullWriter(), jsonNode);
+        JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
     private static JsonNode nestedArray(final JsonNode member, final int depth) {

@@ -94,6 +94,15 @@ testing {
                 implementation(testFixtures(project()))
             }
         }
+
+        register<JvmTestSuite>("limitations") {
+            useJUnitJupiter()
+            dependencies {
+                implementation(project())
+                implementation(testFixtures(project()))
+                implementation("commons-io:commons-io:2.15.1")
+            }
+        }
     }
 }
 
@@ -196,6 +205,9 @@ tasks {
         javaLauncher.set(project.javaToolchains.launcherFor {
             languageVersion.set(JavaLanguageVersion.of(21))
         })
+    }
+
+    named<Test>("limitations") {
         maxHeapSize = "11g"
     }
 
