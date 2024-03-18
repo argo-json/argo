@@ -10,9 +10,7 @@
 
 package argo;
 
-import argo.format.ArrayWriter;
-import argo.format.WriteableJsonArray;
-import argo.format.WriteableJsonObject;
+import argo.format.*;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonStringNode;
 import org.junit.jupiter.api.Disabled;
@@ -58,7 +56,37 @@ class LimitationsTest {
 
     @Test
     @Disabled
-    void parseStreamingArray() throws IOException, InterruptedException, InvalidSyntaxException {
+    void streamingGenerateAndStreamingParseString() throws IOException, InterruptedException, InvalidSyntaxException {
+        final int max = Integer.MAX_VALUE;
+        final int percentile = max / 100;
+        executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonString) stringWriter -> {
+            for (int i = -5; i < max; i++) {
+                if (i % percentile == 0) {
+                    LOGGER.info("Wrote " + (i / percentile) + "%");
+                }
+                stringWriter.write('a');
+            }
+        }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
+    }
+
+    @Test
+    @Disabled
+    void streamingGenerateAndStreamingParseNumber() throws IOException, InterruptedException, InvalidSyntaxException {
+        final int max = Integer.MAX_VALUE;
+        final int percentile = max / 100;
+        executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonNumber) numberWriter -> {
+            for (int i = -5; i < max; i++) {
+                if (i % percentile == 0) {
+                    LOGGER.info("Wrote " + (i / percentile) + "%");
+                }
+                numberWriter.write('1');
+            }
+        }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
+    }
+
+    @Test
+    @Disabled
+    void streamingGenerateAndStreamingParseArray() throws IOException, InterruptedException, InvalidSyntaxException {
         final int max = Integer.MAX_VALUE;
         final int percentile = max / 100;
         final JsonNode number = number(0);
@@ -74,7 +102,7 @@ class LimitationsTest {
 
     @Test
     @Disabled
-    void parseStreamingObject() throws IOException, InterruptedException, InvalidSyntaxException {
+    void streamingGenerateAndStreamingParseObject() throws IOException, InterruptedException, InvalidSyntaxException {
         final JsonStringNode name = string("");
         final JsonNode number = number(0);
         final int max = Integer.MAX_VALUE;
@@ -91,7 +119,7 @@ class LimitationsTest {
 
     @Test
     @Disabled
-    void parseStreamingNested() throws IOException, InterruptedException, InvalidSyntaxException {
+    void streamingParseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = Integer.MAX_VALUE - 9;
             final int percentile = Integer.MAX_VALUE / 100;
@@ -112,7 +140,7 @@ class LimitationsTest {
 
     @Test
     @Disabled
-    void generateStreamingNested() throws IOException, InterruptedException, InvalidSyntaxException {
+    void streamingGenerateNested() throws IOException, InterruptedException, InvalidSyntaxException {
         final WriteableJsonArray writeableJsonArray = new WriteableJsonArray() {
             private int callCount = 0;
 
