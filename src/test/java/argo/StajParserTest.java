@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 
 import static argo.ElementTrackingStajParserMatcher.generatesElements;
 import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
+import static argo.JsonReaderFactory.readerOf;
 import static argo.JsonStreamElement.number;
 import static argo.JsonStreamElement.string;
 import static argo.JsonStreamElement.*;
@@ -45,7 +46,6 @@ import static argo.jdom.JsonNodeTestingFactories.aJsonNode;
 import static argo.jdom.JsonNumberNodeTestingFactories.aNumberNode;
 import static argo.jdom.JsonStringNodeTestingFactories.aNonEmptyString;
 import static argo.jdom.JsonStringNodeTestingFactories.aStringNode;
-import static argo.JsonReaderFactory.readerOf;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

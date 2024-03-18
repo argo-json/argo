@@ -11,7 +11,9 @@
 package argo;
 
 import argo.format.*;
-import argo.jdom.*;
+import argo.jdom.JsonField;
+import argo.jdom.JsonNode;
+import argo.jdom.JsonStringNode;
 import org.apache.commons.io.output.NullWriter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

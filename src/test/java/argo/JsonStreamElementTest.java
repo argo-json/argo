@@ -15,11 +15,11 @@ import org.junit.jupiter.api.Test;
 import java.io.StringReader;
 
 import static argo.JsonStreamElement.*;
+import static argo.JsonStreamElementMatchers.aNonTextJsonStreamElementWithType;
+import static argo.JsonStreamElementMatchers.aTextJsonStreamElementWithType;
 import static argo.JsonStreamElementType.*;
 import static argo.TestingFactories.aString;
 import static argo.jdom.JsonNumberNodeTestingFactories.aValidJsonNumber;
-import static argo.JsonStreamElementMatchers.aNonTextJsonStreamElementWithType;
-import static argo.JsonStreamElementMatchers.aTextJsonStreamElementWithType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 

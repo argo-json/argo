@@ -19,7 +19,8 @@ import static argo.jdom.JsonNodeTestingFactories.someJsonNodes;
 import static java.util.Collections.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JsonArrayTest {
 

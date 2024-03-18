@@ -10,7 +10,8 @@
 
 package argo.jdom;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Builder for {@code JsonNode}s representing JSON arrays.
