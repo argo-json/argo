@@ -128,9 +128,9 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson, inde
 |Unlimited
 
 |Elements in an array
-|
+|`Integer.MAX_VALUE` / 2
 |Unlimited
-|
+|`Integer.MAX_VALUE` - 8
 |Unlimited
 
 |Fields in an object

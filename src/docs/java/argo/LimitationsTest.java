@@ -18,10 +18,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
-import static argo.jdom.JsonNodeFactories.number;
-import static argo.jdom.JsonNodeFactories.string;
+import static argo.jdom.JsonNodeFactories.*;
 
 class LimitationsTest {
 
@@ -96,6 +96,31 @@ class LimitationsTest {
                 numberWriter.write('1');
             }
         }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
+    }
+
+    @Test
+    @Disabled
+    void generateArray() throws IOException {
+        final JsonNode number = number(0);
+        final JsonNode jsonNode = array(Stream.generate(() -> number).limit(Integer.MAX_VALUE - 8).iterator());
+        LOGGER.info("Made json node");
+        JSON_GENERATOR.generate(Writer.nullWriter(), jsonNode);
+    }
+
+    @Test
+    @Disabled
+    void parseArray() throws IOException, InterruptedException, InvalidSyntaxException {
+        final int max = Integer.MAX_VALUE / 2;
+        final int percentile = max / 100;
+        final JsonNode number = number(0);
+        executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonArray) arrayWriter -> {
+            for (int i = 0; i < max; i++) {
+                if (i % percentile == 0) {
+                    LOGGER.info("Wrote " + (i / percentile) + "%");
+                }
+                arrayWriter.writeElement(number);
+            }
+        }), reader -> new JsonParser().parse(reader));
     }
 
     @Test

@@ -942,3 +942,9 @@ Benchmark                                Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse               thrpt   25  17933.122 ± 285.249  ops/s
 ParserBenchmark.streamingEventParse     thrpt   25  27319.672 ± 232.831  ops/s
 ParserBenchmark.streamingIteratorParse  thrpt   25  28253.060 ± 243.050  ops/s
+
+
+Try switching JsonArrayNodeBuilder and JsonObjectNodeBuilder backing collections from LinkedList to ArrayList for better scalability.
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  17776.488 ± 545.194  ops/s
