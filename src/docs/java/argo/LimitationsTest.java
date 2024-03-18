@@ -121,7 +121,7 @@ class LimitationsTest {
     @Disabled
     void streamingParseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
-            final int max = Integer.MAX_VALUE - 9;
+            final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
             final int percentile = Integer.MAX_VALUE / 100;
             for (int i = 0; i < max; i++) {
                 if (i % percentile == 0) {
