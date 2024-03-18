@@ -11,6 +11,7 @@
 package argo;
 
 import argo.format.*;
+import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonStringNode;
 import org.junit.jupiter.api.Disabled;
@@ -137,6 +138,32 @@ class LimitationsTest {
                 arrayWriter.writeElement(number);
             }
         }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
+    }
+
+
+    @Test
+    @Disabled
+    void generateObject() throws IOException {
+        final JsonField field = field(string("a"), number(0));
+        final JsonNode jsonNode = object(Stream.generate(() -> field).limit(Integer.MAX_VALUE - 8).iterator());
+        LOGGER.info("Made json node");
+        JSON_GENERATOR.generate(Writer.nullWriter(), jsonNode);
+    }
+
+    @Test
+    @Disabled
+    void parseObject() throws IOException, InterruptedException, InvalidSyntaxException {
+        final int max = Integer.MAX_VALUE / 8;
+        final int percentile = max / 100;
+        final JsonField field = field(string("a"), number(0));
+        executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonObject) objectWriter -> {
+            for (int i = 0; i < max; i++) {
+                if (i % percentile == 0) {
+                    LOGGER.info("Wrote " + (i / percentile) + "%");
+                }
+                objectWriter.writeField(field);
+            }
+        }), reader -> new JsonParser().parse(reader));
     }
 
     @Test

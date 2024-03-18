@@ -136,7 +136,7 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson, inde
 |Fields in an object
 |
 |Unlimited
-|
+|`Integer.MAX_VALUE` - 8
 |Unlimited
 
 |Nesting depth
