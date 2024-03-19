@@ -22,7 +22,7 @@ public final class InfiniteReader extends Reader {
     }
 
     @Override
-    public int read(final char[] cbuf, final int off, final int len) {
+    public int read(@SuppressWarnings("NullableProblems") final char[] cbuf, final int off, final int len) {
         Arrays.fill(cbuf, off, off + len, repeatingChar);
         return len;
     }

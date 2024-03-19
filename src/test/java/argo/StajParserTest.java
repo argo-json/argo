@@ -1124,7 +1124,7 @@ final class StajParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void handlesRuntimeExceptionDuringParsing(final StajParserJsonParserShim stajParserJsonParserShim) {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new Reader() { // TODO commons-io BrokenReader ought to be made to throw RuntimeExceptions too.
-            public int read(char[] chars, int offset, int length) {
+            public int read(@SuppressWarnings("NullableProblems") char[] chars, int offset, int length) {
                 throw new MyTestRuntimeException();
             }
 
