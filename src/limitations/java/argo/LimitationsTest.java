@@ -119,7 +119,7 @@ class LimitationsTest {
     @Test
     @Disabled
     void parseArray() throws IOException, InterruptedException, InvalidSyntaxException {
-        final int max = Integer.MAX_VALUE / 2;
+        final int max = Integer.MAX_VALUE - 8;
         final int percentile = max / 100;
         final JsonNode number = number(0);
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonArray) arrayWriter -> {
