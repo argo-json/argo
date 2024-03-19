@@ -64,6 +64,12 @@ public final class JsonParser {
 
     /**
      * Parses the character stream from the given {@code Reader} into an {@code Iterator} of {@code JsonStreamElement}s.
+     * <p>
+     * The {@code next()} and {@code hasNext()} methods of the returned {@code Iterator} throw
+     * <ul>
+     *     <li>{@link InvalidSyntaxRuntimeException} if the next element could not be read, for example if the next element turns out not to be valid JSON</li>
+     *     <li>{@link JsonStreamException} if the underlying character stream failed.</li>
+     * </ul>
      *
      * @param reader the {@code Reader} to parse.
      * @return an {@code Iterator} of {@code JsonStreamElement}s reading from the given {@code Reader}.
@@ -119,11 +125,17 @@ public final class JsonParser {
 
     /**
      * Parses the given JSON {@code String} into an {@code Iterator} of {@code JsonStreamElement}s.
+     * <p>
+     * The {@code next()} and {@code hasNext()} methods of the returned {@code Iterator} throw
+     * <ul>
+     *     <li>{@link InvalidSyntaxRuntimeException} if the next element could not be read, for example if the next element turns out not to be valid JSON</li>
+     *     <li>{@link JsonStreamException} if the underlying character stream failed.</li>
+     * </ul>
      *
      * @param json the {@code String} to parse.
      * @return an {@code Iterator} of {@code JsonStreamElement}s reading from the given {@code Reader}.
      */
-    public Iterator<JsonStreamElement> parseStreaming(final String json) { // TODO maybe introduce a sub-interface of Iterator<JsonStreamElement> to facilitate documentation of runtime exceptions
+    public Iterator<JsonStreamElement> parseStreaming(final String json) {
         return parseStreaming(new StringReader(json));
     }
 
