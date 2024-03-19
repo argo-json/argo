@@ -30,7 +30,7 @@ public final class BoundedRepeatingReader extends Reader {
         }
     }
 
-    public int read(final char[] cbuf, final int offset, final int length) {
+    public int read(@SuppressWarnings("NullableProblems") final char[] cbuf, final int offset, final int length) {
         validateArguments(cbuf, offset, length);
         int n = 0;
         int nextChar;

@@ -290,7 +290,7 @@ public class GeneratorBenchmark {
         }
 
         @Override
-        public void write(final char[] cbuf, final int off, final int len) {
+        public void write(@SuppressWarnings("NullableProblems") final char[] cbuf, final int off, final int len) {
             blackhole.consume(cbuf);
         }
 
