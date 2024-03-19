@@ -10,8 +10,8 @@
 
 package argo.jdom;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNodeDoesNotMatchJsonNodeSelectorException {
@@ -31,16 +31,15 @@ final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNod
 
     static JsonNodeDoesNotMatchJsonNodeSelectorException createChainedJsonNodeDoesNotMatchJsonNodeSelectorException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException e,
                                                                                                                     final JsonNodeSelector<?, ?> parentJsonNodeSelector) {
-        final LinkedList<JsonNodeSelector<?, ?>> chainedFailPath = new LinkedList<JsonNodeSelector<?, ?>>(e.failPath);
+        final List<JsonNodeSelector<?, ?>> chainedFailPath = new ArrayList<JsonNodeSelector<?, ?>>(e.failPath.size() + 1);
+        chainedFailPath.addAll(e.failPath);
         chainedFailPath.add(parentJsonNodeSelector);
         return new JsonNodeDoesNotMatchChainedJsonNodeSelectorException(e.failedNode, chainedFailPath);
     }
 
     static JsonNodeDoesNotMatchJsonNodeSelectorException createUnchainedJsonNodeDoesNotMatchJsonNodeSelectorException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException e,
                                                                                                                       final JsonNodeSelector<?, ?> parentJsonNodeSelector) {
-        final LinkedList<JsonNodeSelector<?, ?>> unchainedFailPath = new LinkedList<JsonNodeSelector<?, ?>>();
-        unchainedFailPath.add(parentJsonNodeSelector);
-        return new JsonNodeDoesNotMatchChainedJsonNodeSelectorException(e.failedNode, unchainedFailPath);
+        return new JsonNodeDoesNotMatchChainedJsonNodeSelectorException(e.failedNode, Collections.<JsonNodeSelector<?, ?>>singletonList(parentJsonNodeSelector));
     }
 
     static String getShortFormFailPath(final List<JsonNodeSelector<?, ?>> failPath) {
