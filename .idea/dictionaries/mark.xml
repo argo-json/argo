@@ -15,6 +15,7 @@
       <w>deref</w>
       <w>errorprone</w>
       <w>flakey</w>
+      <w>foojay</w>
       <w>hidetake</w>
       <w>jdom</w>
       <w>ncss</w>
