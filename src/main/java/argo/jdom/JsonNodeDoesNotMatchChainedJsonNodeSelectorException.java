@@ -10,6 +10,7 @@
 
 package argo.jdom;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNod
     }
 
     static JsonNodeDoesNotMatchJsonNodeSelectorException createJsonNodeDoesNotMatchJsonNodeSelectorException(final Functor<?, ?> failedNode) {
-        return new JsonNodeDoesNotMatchChainedJsonNodeSelectorException(failedNode, new LinkedList<JsonNodeSelector<?, ?>>());
+        return new JsonNodeDoesNotMatchChainedJsonNodeSelectorException(failedNode, Collections.<JsonNodeSelector<?, ?>>emptyList());
     }
 
     static JsonNodeDoesNotMatchJsonNodeSelectorException createChainedJsonNodeDoesNotMatchJsonNodeSelectorException(final JsonNodeDoesNotMatchChainedJsonNodeSelectorException e,
