@@ -31,7 +31,10 @@ public final class JsonNumberNodeTestingFactories {
         }
         return result.toString();
     };
-
+    private static final Supplier<String> RANDOM_ZERO_OR_DIGITS = randomSupplierSwitcher(
+            () -> "0",
+            RANDOM_DIGITS_WITHOUT_LEADING_ZERO
+    );
     private static final Supplier<String> RANDOM_DIGITS = () -> {
         StringBuilder result = new StringBuilder(RANDOM_DIGIT.get());
         for (int i = 0; i < RANDOM.nextInt(10); i++) {
@@ -39,39 +42,31 @@ public final class JsonNumberNodeTestingFactories {
         }
         return result.toString();
     };
-
-    private static final Supplier<String> RANDOM_OPTIONAL_NEGATIVE_PREFIX = randomSupplierSwitcher(
-            () -> "",
-            () -> "-"
-    );
-
     private static final Supplier<String> RANDOM_OPTIONAL_FRACTIONAL_PART = randomSupplierSwitcher(
             () -> "",
             () -> "." + RANDOM_DIGITS.get()
     );
-
+    private static final Supplier<String> RANDOM_OPTIONAL_NEGATIVE_PREFIX = randomSupplierSwitcher(
+            () -> "",
+            () -> "-"
+    );
     private static final Supplier<String> RANDOM_EXPONENT_SIGN = randomSupplierSwitcher(
             () -> "e",
             () -> "E"
     );
-
     private static final Supplier<String> RANDOM_PLUS_MINUS_OR_NOTHING = randomSupplierSwitcher(
             () -> "+",
             () -> "",
             () -> "-"
     );
-
     private static final Supplier<String> RANDOM_EXPONENTIAL_PART = () -> RANDOM_EXPONENT_SIGN.get() + RANDOM_PLUS_MINUS_OR_NOTHING.get() + RANDOM_DIGITS.get();
-
     private static final Supplier<String> RANDOM_OPTIONAL_EXPONENTIAL_PART = randomSupplierSwitcher(
             () -> "",
             RANDOM_EXPONENTIAL_PART
     );
 
-    private static final Supplier<String> RANDOM_ZERO_OR_DIGITS = randomSupplierSwitcher(
-            () -> "0",
-            RANDOM_DIGITS_WITHOUT_LEADING_ZERO
-    );
+    private JsonNumberNodeTestingFactories() {
+    }
 
     public static JsonNode aNumberNode() {
         return number(aValidJsonNumber());
@@ -82,8 +77,5 @@ public final class JsonNumberNodeTestingFactories {
                 + RANDOM_ZERO_OR_DIGITS.get()
                 + RANDOM_OPTIONAL_FRACTIONAL_PART.get()
                 + RANDOM_OPTIONAL_EXPONENTIAL_PART.get();
-    }
-
-    private JsonNumberNodeTestingFactories() {
     }
 }

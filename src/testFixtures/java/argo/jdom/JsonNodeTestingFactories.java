@@ -46,6 +46,9 @@ public final class JsonNodeTestingFactories {
             integer -> falseNode()
     ));
 
+    private JsonNodeTestingFactories() {
+    }
+
     public static JsonNode anArrayNode() {
         return anArrayNode(10);
     }
@@ -98,6 +101,5 @@ public final class JsonNodeTestingFactories {
         return Stream.generate(() -> field(aStringNode(), aJsonNode(maxDepth))).limit(RANDOM.nextInt(5)).collect(toList());
     }
 
-    private JsonNodeTestingFactories() {
-    }
+
 }
