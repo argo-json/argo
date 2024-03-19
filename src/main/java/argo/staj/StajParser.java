@@ -24,7 +24,8 @@ import java.util.Iterator;
  * @deprecated Replaced by {@link argo.JsonParser}.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated public final class StajParser implements Iterator<JsonStreamElement> {
+@Deprecated
+public final class StajParser implements Iterator<JsonStreamElement> {
 
     private static final JsonParser JSON_PARSER = new JsonParser();
 
@@ -34,7 +35,6 @@ import java.util.Iterator;
      * Constructs a StajParser reading from the specified {@code Reader}.
      *
      * @param in the {@code Reader} to convert into {@code JsonStreamElement}s.
-     *
      * @deprecated Replaced by {@link argo.JsonParser#parseStreaming(Reader)}.
      */
     public StajParser(final Reader in) {
@@ -45,7 +45,6 @@ import java.util.Iterator;
      * Constructs a StajParser reading from the given {@code String}.
      *
      * @param json the {@code String} to convert into {@code JsonStreamElement}s.
-     *
      * @deprecated Replaced by {@link argo.JsonParser#parseStreaming(Reader)}.
      */
     public StajParser(final String json) {

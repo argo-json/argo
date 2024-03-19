@@ -34,17 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class SajParserTest {
 
-    static final class ParserArgumentsProvider implements ArgumentsProvider {
-        @Override
-        @SuppressWarnings("deprecation")
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(
-                    new SajParserJsonParserShim.Saj(new argo.saj.SajParser()),
-                    new SajParserJsonParserShim.Json(new JsonParser())
-            ).map(Arguments::arguments);
-        }
-    }
-
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
     void tokenizesFromReader(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
@@ -176,11 +165,21 @@ final class SajParserTest {
         assertThat(actualException, sameInstance(ioException));
     }
 
-
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
     void parsingInvalidJsonThrowsInvalidSyntaxExceptionFromReader(final SajParserJsonParserShim sajParserJsonParserShim) {
         assertThrows(InvalidSyntaxException.class, () -> sajParserJsonParserShim.parse(new StringReader("not json"), BLACK_HOLE_JSON_LISTENER));
+    }
+
+    static final class ParserArgumentsProvider implements ArgumentsProvider {
+        @Override
+        @SuppressWarnings("deprecation")
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    new SajParserJsonParserShim.Saj(new argo.saj.SajParser()),
+                    new SajParserJsonParserShim.Json(new JsonParser())
+            ).map(Arguments::arguments);
+        }
     }
 
 }

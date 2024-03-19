@@ -47,13 +47,12 @@ class LimitationsTest {
         }
     }
 
-    @FunctionalInterface
-    private interface Generator {
-        void generate(Writer writer) throws IOException;
-    }
-
-    private interface Parser {
-        void parse(Reader reader) throws IOException, InvalidSyntaxException;
+    private static JsonNode nestedArray(final JsonNode member, final int depth) {
+        if (depth == 0) {
+            return member;
+        } else {
+            return nestedArray(array(member), depth - 1);
+        }
     }
 
     @Test
@@ -149,7 +148,6 @@ class LimitationsTest {
         }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
     }
 
-
     @Test
     @Disabled
     void generateObject() throws IOException {
@@ -199,14 +197,6 @@ class LimitationsTest {
 
         LOGGER.info("Made json node");
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
-    }
-
-    private static JsonNode nestedArray(final JsonNode member, final int depth) {
-        if (depth == 0) {
-            return member;
-        } else {
-            return nestedArray(array(member), depth - 1);
-        }
     }
 
     @Test
@@ -262,5 +252,14 @@ class LimitationsTest {
                 writer -> JSON_GENERATOR.generate(writer, writeableJsonArray),
                 reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER)
         );
+    }
+
+    @FunctionalInterface
+    private interface Generator {
+        void generate(Writer writer) throws IOException;
+    }
+
+    private interface Parser {
+        void parse(Reader reader) throws IOException, InvalidSyntaxException;
     }
 }

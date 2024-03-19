@@ -33,5 +33,6 @@ public final class InfiniteReader extends Reader {
     }
 
     @Override
-    public void close() {}
+    public void close() {
+    }
 }

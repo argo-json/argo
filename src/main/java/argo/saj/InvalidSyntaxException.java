@@ -15,7 +15,8 @@ package argo.saj;
  *
  * @deprecated Only thrown by deprecated classes.
  */
-@Deprecated public final class InvalidSyntaxException extends Exception {
+@Deprecated
+public final class InvalidSyntaxException extends Exception {
 
     private final int column;
     private final int line;

@@ -42,7 +42,6 @@ public interface JsonNodeVisitor {
      * Called by JSON numbers.
      *
      * @param value the text of the number.
-     *
      * @see JsonNumberUtils for utility methods for converting JSON number text into Java numeric types.
      */
     void number(String value);

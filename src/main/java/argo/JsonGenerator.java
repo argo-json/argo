@@ -48,7 +48,7 @@ public final class JsonGenerator {
      *
      * @param target             the {@code Writer} to output to.
      * @param writeableJsonArray the {@code WriteableJsonArray} to output.
-     * @throws IOException       if there was a problem writing to the {@code Writer}.
+     * @throws IOException if there was a problem writing to the {@code Writer}.
      */
     public void generate(final Writer target, final WriteableJsonArray writeableJsonArray) throws IOException {
         jsonGeneratorStyle.newJsonPrinter(target, lineSeparator).write(writeableJsonArray);
@@ -58,8 +58,8 @@ public final class JsonGenerator {
      * Generates a JSON representation of the given {@code WriteableJsonArray} as a {@code String}.
      *
      * @param writeableJsonArray the {@code WriteableJsonArray} to output.
-     * @return                   a JSON representation of the given {@code WriteableJsonArray} as a {@code String}
-     * @throws IOException       propagated from {@link WriteableJsonArray#writeTo(ArrayWriter)}.
+     * @return a JSON representation of the given {@code WriteableJsonArray} as a {@code String}
+     * @throws IOException propagated from {@link WriteableJsonArray#writeTo(ArrayWriter)}.
      */
     public String generate(final WriteableJsonArray writeableJsonArray) throws IOException {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
@@ -76,7 +76,7 @@ public final class JsonGenerator {
      *
      * @param target              the {@code Writer} to output to.
      * @param writeableJsonObject the {@code WriteableJsonObject} to output.
-     * @throws IOException        if there was a problem writing to the {@code Writer}.
+     * @throws IOException if there was a problem writing to the {@code Writer}.
      */
     public void generate(final Writer target, final WriteableJsonObject writeableJsonObject) throws IOException {
         jsonGeneratorStyle.newJsonPrinter(target, lineSeparator).write(writeableJsonObject);
@@ -86,8 +86,8 @@ public final class JsonGenerator {
      * Generates a JSON representation of the given {@code WriteableJsonObject} as a {@code String}.
      *
      * @param writeableJsonObject the {@code WriteableJsonObject} to output.
-     * @return                    a JSON representation of the given {@code WriteableJsonObject} as a {@code String}
-     * @throws IOException        propagated from {@link WriteableJsonObject#writeTo(ObjectWriter)}.
+     * @return a JSON representation of the given {@code WriteableJsonObject} as a {@code String}
+     * @throws IOException propagated from {@link WriteableJsonObject#writeTo(ObjectWriter)}.
      */
     public String generate(final WriteableJsonObject writeableJsonObject) throws IOException {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
@@ -104,7 +104,7 @@ public final class JsonGenerator {
      *
      * @param target              the {@code Writer} to output to.
      * @param writeableJsonString the {@code WriteableJsonString} to output.
-     * @throws IOException        if there was a problem writing to the {@code Writer}.
+     * @throws IOException if there was a problem writing to the {@code Writer}.
      */
     public void generate(final Writer target, final WriteableJsonString writeableJsonString) throws IOException {
         jsonGeneratorStyle.newJsonPrinter(target, lineSeparator).write(writeableJsonString);
@@ -114,8 +114,8 @@ public final class JsonGenerator {
      * Generates a JSON representation of the given {@code WriteableJsonString} as a {@code String}.
      *
      * @param writeableJsonString the {@code WriteableJsonString} to output.
-     * @return                    a JSON representation of the given {@code WriteableJsonString} as a {@code String}
-     * @throws IOException        propagated from {@link WriteableJsonString#writeTo(Writer)}.
+     * @return a JSON representation of the given {@code WriteableJsonString} as a {@code String}
+     * @throws IOException propagated from {@link WriteableJsonString#writeTo(Writer)}.
      */
     public String generate(final WriteableJsonString writeableJsonString) throws IOException {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
@@ -130,8 +130,8 @@ public final class JsonGenerator {
     /**
      * Streams a JSON representation of the given {@code WriteableJsonNumber} to the given {@code Writer}.
      *
-     * @param target                    the {@code Writer} to output to.
-     * @param writeableJsonNumber       the {@code WriteableJsonNumber} to output.
+     * @param target              the {@code Writer} to output to.
+     * @param writeableJsonNumber the {@code WriteableJsonNumber} to output.
      * @throws IOException              if there was a problem writing to the {@code Writer}.
      * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} don't constitute a complete JSON number.
      */
@@ -142,8 +142,8 @@ public final class JsonGenerator {
     /**
      * Generates a JSON representation of the given {@code WriteableJsonNumber} as a {@code String}.
      *
-     * @param writeableJsonNumber       the {@code WriteableJsonNumber} to output.
-     * @return                          a JSON representation of the given {@code WriteableJsonNumber} as a {@code String}
+     * @param writeableJsonNumber the {@code WriteableJsonNumber} to output.
+     * @return a JSON representation of the given {@code WriteableJsonNumber} as a {@code String}
      * @throws IOException              propagated from {@link WriteableJsonNumber#writeTo(Writer)}.
      * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} don't constitute a complete JSON number.
      */
@@ -160,8 +160,8 @@ public final class JsonGenerator {
     /**
      * Streams a JSON representation of the given {@code JsonNode} to the given {@code Writer}.
      *
-     * @param target       the {@code Writer} to output to.
-     * @param jsonNode     the {@code JsonNode} to output.
+     * @param target   the {@code Writer} to output to.
+     * @param jsonNode the {@code JsonNode} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
      */
     public void generate(final Writer target, final JsonNode jsonNode) throws IOException {
@@ -172,7 +172,7 @@ public final class JsonGenerator {
      * Generates a JSON representation of the given {@code JsonNode} as a {@code String}.
      *
      * @param jsonNode the {@code JsonNode} to output.
-     * @return         a JSON representation of the given {@code JsonNode} as a {@code String}
+     * @return a JSON representation of the given {@code JsonNode} as a {@code String}
      */
     public String generate(final JsonNode jsonNode) {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
@@ -190,8 +190,9 @@ public final class JsonGenerator {
      * Streams a JSON representation of the given {@code JsonNode} to the given {@code Writer}, outputting fields in lexicographic order.
      * JSON does not mandate a particular ordering for the fields of an object, but for comparing JSON documents it can be convenient for field order to be consistent.
      * In the event that more than one field with the same name exists in an object, the relative order of those fields is preserved.
-     * @param target       the {@code Writer} to output to.
-     * @param jsonNode     the {@code JsonNode} to output.
+     *
+     * @param target   the {@code Writer} to output to.
+     * @param jsonNode the {@code JsonNode} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
      */
     public void generateWithFieldSorting(final Writer target, final JsonNode jsonNode) throws IOException {
@@ -202,8 +203,9 @@ public final class JsonGenerator {
      * Generates a JSON representation of the given {@code JsonNode} as a {@code String}, outputting fields in lexicographic order.
      * JSON does not mandate a particular ordering for the fields of an object, but for comparing JSON documents it can be convenient for field order to be consistent.
      * In the event that more than one field with the same name exists in an object, the relative order of those fields is preserved.
+     *
      * @param jsonNode the {@code JsonNode} to output.
-     * @return         a JSON representation of the given {@code JsonNode} as a {@code String}
+     * @return a JSON representation of the given {@code JsonNode} as a {@code String}
      */
     public String generateWithFieldSorting(final JsonNode jsonNode) {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
@@ -263,6 +265,7 @@ public final class JsonGenerator {
         }
 
         abstract JsonPrinter newJsonPrinter(Writer writer, String lineSeparator);
+
         abstract JsonPrinter newFieldSortingJsonPrinter(Writer writer, String lineSeparator);
     }
 }

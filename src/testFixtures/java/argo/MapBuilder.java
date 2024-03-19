@@ -1,5 +1,5 @@
 /*
- *  Copyright 2023 Mark Slater
+ *  Copyright 2024 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -17,20 +17,20 @@ public class MapBuilder<K, V> {
 
     private final Map<K, V> map;
 
-    public static <K, V> MapBuilder<K, V> mapBuilder() {
-        return new MapBuilder<>();
-    }
-
-    public static <K, V> MapBuilder<K, V> mapBuilder(K key, V value) {
-        return new MapBuilder<K, V>().put(key, value);
-    }
-
     private MapBuilder() {
         map = new HashMap<>();
     }
 
     private MapBuilder(final Map<K, V> map) {
         this.map = map;
+    }
+
+    public static <K, V> MapBuilder<K, V> mapBuilder() {
+        return new MapBuilder<>();
+    }
+
+    public static <K, V> MapBuilder<K, V> mapBuilder(K key, V value) {
+        return new MapBuilder<K, V>().put(key, value);
     }
 
     public MapBuilder<K, V> put(final K key, final V value) {

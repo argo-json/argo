@@ -92,7 +92,7 @@ class StringBuilderWriterTest {
     void writesACharArray() {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            stringBuilderWriter.write(new char[] {'a', 'b', 'c'});
+            stringBuilderWriter.write(new char[]{'a', 'b', 'c'});
         } finally {
             stringBuilderWriter.close();
         }
@@ -103,7 +103,7 @@ class StringBuilderWriterTest {
     void writesACharArrayWithDefaultOffsetAndLength() {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            stringBuilderWriter.write(new char[] {'a', 'b', 'c'}, 0, 3);
+            stringBuilderWriter.write(new char[]{'a', 'b', 'c'}, 0, 3);
         } finally {
             stringBuilderWriter.close();
         }
@@ -114,7 +114,7 @@ class StringBuilderWriterTest {
     void writesACharArrayWithOffset() {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            stringBuilderWriter.write(new char[] {'a', 'b', 'c'}, 1, 2);
+            stringBuilderWriter.write(new char[]{'a', 'b', 'c'}, 1, 2);
         } finally {
             stringBuilderWriter.close();
         }
@@ -125,7 +125,7 @@ class StringBuilderWriterTest {
     void writesACharArrayWithLength() {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            stringBuilderWriter.write(new char[] {'a', 'b', 'c'}, 0, 2);
+            stringBuilderWriter.write(new char[]{'a', 'b', 'c'}, 0, 2);
         } finally {
             stringBuilderWriter.close();
         }
@@ -136,7 +136,7 @@ class StringBuilderWriterTest {
     void writesACharArrayWithOffsetAndLength() {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
-            stringBuilderWriter.write(new char[] {'a', 'b', 'c'}, 1, 1);
+            stringBuilderWriter.write(new char[]{'a', 'b', 'c'}, 1, 1);
         } finally {
             stringBuilderWriter.close();
         }
@@ -276,9 +276,9 @@ class StringBuilderWriterTest {
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingWritingACharArrayDoesNotThrowException() {
         StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        stringBuilderWriter.write(new char[] {'a', 'b', 'c'});
+        stringBuilderWriter.write(new char[]{'a', 'b', 'c'});
         stringBuilderWriter.close();
-        stringBuilderWriter.write(new char[] {'d', 'e', 'f'});
+        stringBuilderWriter.write(new char[]{'d', 'e', 'f'});
         assertThat(stringBuilderWriter.toString(), equalTo("abcdef"));
     }
 
@@ -286,9 +286,9 @@ class StringBuilderWriterTest {
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingWritingACharArrayWithOffsetAndLengthDoesNotThrowException() {
         StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        stringBuilderWriter.write(new char[] {'a', 'b', 'c'}, 0, 3);
+        stringBuilderWriter.write(new char[]{'a', 'b', 'c'}, 0, 3);
         stringBuilderWriter.close();
-        stringBuilderWriter.write(new char[] {'d', 'e', 'f'}, 0, 3);
+        stringBuilderWriter.write(new char[]{'d', 'e', 'f'}, 0, 3);
         assertThat(stringBuilderWriter.toString(), equalTo("abcdef"));
     }
 

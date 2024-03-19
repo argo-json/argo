@@ -19,7 +19,8 @@ abstract class JsonConstant extends JsonNode implements JsonNodeBuilder<JsonNode
     static final JsonConstant TRUE = new TrueNode();
     static final JsonConstant FALSE = new FalseNode();
 
-    private JsonConstant() {}
+    private JsonConstant() {
+    }
 
     @Override
     public boolean hasText() {

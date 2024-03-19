@@ -22,7 +22,8 @@ import java.io.Reader;
  * @deprecated Replaced by {@link argo.JsonParser}.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated public final class JdomParser {
+@Deprecated
+public final class JdomParser {
 
     private static final JsonParser JSON_PARSER = new JsonParser();
 
@@ -32,7 +33,6 @@ import java.io.Reader;
      * @param json the {@code String} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code String}.
      * @throws argo.saj.InvalidSyntaxException if the characters streamed from the specified {@code String} does not represent valid JSON.
-     *
      * @deprecated Replaced by {@link argo.JsonParser#parse(String)}.
      */
     public JsonNode parse(final String json) throws argo.saj.InvalidSyntaxException {
@@ -49,8 +49,7 @@ import java.io.Reader;
      * @param reader the {@code Reader} to parse.
      * @return a {@code JsonNode} representing the JSON read from the specified {@code Reader}.
      * @throws argo.saj.InvalidSyntaxException if the characters streamed from the specified {@code Reader} does not represent valid JSON.
-     * @throws IOException rethrown when reading characters from {@code in} throws {@code IOException}.
-     *
+     * @throws IOException                     rethrown when reading characters from {@code in} throws {@code IOException}.
      * @deprecated Replaced by {@link argo.JsonParser#parse(Reader)}.
      */
     public JsonNode parse(final Reader reader) throws argo.saj.InvalidSyntaxException, IOException {

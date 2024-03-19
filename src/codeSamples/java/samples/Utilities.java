@@ -16,7 +16,8 @@ import java.net.URL;
 
 final class Utilities {
 
-    private Utilities() {}
+    private Utilities() {
+    }
 
     static File getExampleJsonFile() throws FileNotFoundException {
         final String filename = "SimpleExample.json";

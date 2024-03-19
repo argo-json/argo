@@ -44,114 +44,11 @@ public final class RecordingJsonListener implements JsonListener {
 
     private final List<JsonListenerEvent> jsonListenerEvents = new ArrayList<>();
 
-    public interface JsonListenerEvent {
-    }
-
-    public static final class StartField implements JsonListenerEvent {
-        public final String name;
-
-        public static StartField startField(final String name) {
-            return new StartField(name);
-        }
-
-        public StartField(final String name) {
-            this.name = name;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            } else if (o == null || getClass() != o.getClass()) {
-                return false;
-            } else {
-                final StartField that = (StartField) o;
-                return Objects.equals(name, that.name);
-            }
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(name);
-        }
-
-        @Override
-        public String toString() {
-            return "StartField{" +
-                    "name='" + name + '\'' +
-                    '}';
-        }
-    }
-
-    public static final class StringValue implements JsonListenerEvent {
-        public final String value;
-
-        public static StringValue stringValue(final String value) {
-            return new StringValue(value);
-        }
-
-        public StringValue(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            } else if (o == null || getClass() != o.getClass()) {
-                return false;
-            } else {
-                StringValue that = (StringValue) o;
-                return Objects.equals(value, that.value);
-            }
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(value);
-        }
-
-        @Override
-        public String toString() {
-            return "StringValue{" +
-                    "value='" + value + '\'' +
-                    '}';
-        }
-    }
-
-    public static final class NumberValue implements JsonListenerEvent {
-        public final String value;
-
-        public static NumberValue numberValue(final String value) {
-            return new NumberValue(value);
-        }
-
-        public NumberValue(final String value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            } else if (o == null || getClass() != o.getClass()) {
-                return false;
-            } else {
-                NumberValue that = (NumberValue) o;
-                return Objects.equals(value, that.value);
-            }
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(value);
-        }
-
-        @Override
-        public String toString() {
-            return "NumberValue{" +
-                    "value='" + value + '\'' +
-                    '}';
+    private static String toString(final Reader reader) {
+        try {
+            return IOUtils.toString(reader);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -224,11 +121,114 @@ public final class RecordingJsonListener implements JsonListener {
         return Collections.unmodifiableList(new ArrayList<>(jsonListenerEvents));
     }
 
-    private static String toString(final Reader reader) {
-        try {
-            return IOUtils.toString(reader);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
+    public interface JsonListenerEvent {
+    }
+
+    public static final class StartField implements JsonListenerEvent {
+        public final String name;
+
+        public StartField(final String name) {
+            this.name = name;
+        }
+
+        public static StartField startField(final String name) {
+            return new StartField(name);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            } else {
+                final StartField that = (StartField) o;
+                return Objects.equals(name, that.name);
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name);
+        }
+
+        @Override
+        public String toString() {
+            return "StartField{" +
+                    "name='" + name + '\'' +
+                    '}';
+        }
+    }
+
+    public static final class StringValue implements JsonListenerEvent {
+        public final String value;
+
+        public StringValue(String value) {
+            this.value = value;
+        }
+
+        public static StringValue stringValue(final String value) {
+            return new StringValue(value);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            } else {
+                StringValue that = (StringValue) o;
+                return Objects.equals(value, that.value);
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(value);
+        }
+
+        @Override
+        public String toString() {
+            return "StringValue{" +
+                    "value='" + value + '\'' +
+                    '}';
+        }
+    }
+
+    public static final class NumberValue implements JsonListenerEvent {
+        public final String value;
+
+        public NumberValue(final String value) {
+            this.value = value;
+        }
+
+        public static NumberValue numberValue(final String value) {
+            return new NumberValue(value);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            } else {
+                NumberValue that = (NumberValue) o;
+                return Objects.equals(value, that.value);
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(value);
+        }
+
+        @Override
+        public String toString() {
+            return "NumberValue{" +
+                    "value='" + value + '\'' +
+                    '}';
         }
     }
 }

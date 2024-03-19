@@ -27,18 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JsonConstantTest {
 
-    static final class JsonConstantsArgumentsProvider implements ArgumentsProvider {
-
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(
-                    nullNode(),
-                    trueNode(),
-                    falseNode()
-            ).map(Arguments::arguments);
-        }
-    }
-
     @ParameterizedTest
     @ArgumentsSource(JsonConstantsArgumentsProvider.class)
     @SuppressWarnings("EqualsWithItself")
@@ -135,6 +123,18 @@ class JsonConstantTest {
     @ArgumentsSource(JsonConstantsArgumentsProvider.class)
     void testGetElementsThrowsUnsupportedOperationException(final JsonNode jsonNode) {
         assertThrows(UnsupportedOperationException.class, jsonNode::getElements);
+    }
+
+    static final class JsonConstantsArgumentsProvider implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    nullNode(),
+                    trueNode(),
+                    falseNode()
+            ).map(Arguments::arguments);
+        }
     }
 
 }

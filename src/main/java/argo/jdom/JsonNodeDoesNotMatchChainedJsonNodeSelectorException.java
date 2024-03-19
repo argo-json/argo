@@ -18,6 +18,12 @@ final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNod
     final Functor<?, ?> failedNode;
     final List<JsonNodeSelector<?, ?>> failPath;
 
+    private JsonNodeDoesNotMatchChainedJsonNodeSelectorException(final Functor<?, ?> failedNode, final List<JsonNodeSelector<?, ?>> failPath) {
+        super("Failed to match [" + failedNode.shortForm() + "] at [" + getShortFormFailPath(failPath) + "]");
+        this.failedNode = failedNode;
+        this.failPath = failPath;
+    }
+
     static JsonNodeDoesNotMatchJsonNodeSelectorException createJsonNodeDoesNotMatchJsonNodeSelectorException(final Functor<?, ?> failedNode) {
         return new JsonNodeDoesNotMatchChainedJsonNodeSelectorException(failedNode, new LinkedList<JsonNodeSelector<?, ?>>());
     }
@@ -34,12 +40,6 @@ final class JsonNodeDoesNotMatchChainedJsonNodeSelectorException extends JsonNod
         final LinkedList<JsonNodeSelector<?, ?>> unchainedFailPath = new LinkedList<JsonNodeSelector<?, ?>>();
         unchainedFailPath.add(parentJsonNodeSelector);
         return new JsonNodeDoesNotMatchChainedJsonNodeSelectorException(e.failedNode, unchainedFailPath);
-    }
-
-    private JsonNodeDoesNotMatchChainedJsonNodeSelectorException(final Functor<?, ?> failedNode, final List<JsonNodeSelector<?, ?>> failPath) {
-        super("Failed to match [" + failedNode.shortForm() + "] at [" + getShortFormFailPath(failPath) + "]");
-        this.failedNode = failedNode;
-        this.failPath = failPath;
     }
 
     static String getShortFormFailPath(final List<JsonNodeSelector<?, ?>> failPath) {

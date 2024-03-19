@@ -32,17 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JdomParserTest {
 
-    static final class ParserArgumentsProvider implements ArgumentsProvider {
-        @Override
-        @SuppressWarnings("deprecation")
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(
-                    new JdomParserJsonParserShim.Jdom(new argo.jdom.JdomParser()),
-                    new JdomParserJsonParserShim.Json(new JsonParser())
-            ).map(Arguments::arguments);
-        }
-    }
-
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
     void parsesANumber(final JdomParserJsonParserShim parser) throws Exception {
@@ -221,7 +210,7 @@ final class JdomParserTest {
 
     /**
      * This test exposes a bug in PositionTrackingPushbackReader where it doesn't call Reader.read(chars, ...) in the intended manner.
-     *    (When read's return value != supplied buffer's length, caller should keep calling!)
+     * (When read's return value != supplied buffer's length, caller should keep calling!)
      * Reader.read(...) may return 'some input', but not enough to fill the supplied buffer.
      * In that case the consumer is expected to call again to fill the supplied buffer.
      * When testing with Readers backed by readily available data (ie a local file), this seems to not happen.
@@ -244,7 +233,6 @@ final class JdomParserTest {
         assertThat(jsonNode.getNode(0).getFieldList().get(0).getName(), sameInstance(jsonNode.getNode(1).getFieldList().get(0).getName()));
     }
 
-
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
     void equalStringsInTheSameDocumentReferToTheSameObject(final JdomParserJsonParserShim parser) throws Exception {
@@ -257,6 +245,17 @@ final class JdomParserTest {
     void equalNumbersInTheSameDocumentReferToTheSameObject(final JdomParserJsonParserShim parser) throws Exception {
         final JsonNode jsonNode = parser.parse("[123, 123]");
         assertThat(jsonNode.getNode(0), sameInstance(jsonNode.getNode(1)));
+    }
+
+    static final class ParserArgumentsProvider implements ArgumentsProvider {
+        @Override
+        @SuppressWarnings("deprecation")
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    new JdomParserJsonParserShim.Jdom(new argo.jdom.JdomParser()),
+                    new JdomParserJsonParserShim.Json(new JsonParser())
+            ).map(Arguments::arguments);
+        }
     }
 
 

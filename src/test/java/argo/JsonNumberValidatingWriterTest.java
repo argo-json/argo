@@ -147,9 +147,10 @@ class JsonNumberValidatingWriterTest {
     void rejectsNumberWithLeadingInvalidSubstring() {
         final StringWriter stringWriter = new StringWriter();
         assertThrows(IllegalArgumentException.class, () -> {
-            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
-                jsonNumberValidatingWriter.write(".");
-            }}
+                    try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
+                        jsonNumberValidatingWriter.write(".");
+                    }
+                }
         );
     }
 
@@ -157,9 +158,10 @@ class JsonNumberValidatingWriterTest {
     void rejectsNumberWithLeadingInvalidCharacter() {
         final StringWriter stringWriter = new StringWriter();
         assertThrows(IllegalArgumentException.class, () -> {
-            try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
-                jsonNumberValidatingWriter.write('.');
-            }}
+                    try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringWriter, new WriteBufferHolder())) {
+                        jsonNumberValidatingWriter.write('.');
+                    }
+                }
         );
     }
 

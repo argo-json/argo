@@ -17,9 +17,9 @@ import java.io.Writer;
 
 final class JsonNumberValidatingWriter extends Writer {
 
+    private final WriteBufferHolder writeBufferHolder;
     private NumberParserState numberParserState = NumberParserState.BEFORE_START;
     private Writer out;
-    private final WriteBufferHolder writeBufferHolder;
 
     JsonNumberValidatingWriter(final Writer out, final WriteBufferHolder writeBufferHolder) {
         if (out == null) {

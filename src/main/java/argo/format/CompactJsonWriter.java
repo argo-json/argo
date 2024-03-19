@@ -23,14 +23,15 @@ import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
  * @deprecated Replaced by {@link JsonGenerator}.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated public final class CompactJsonWriter extends AbstractJsonWriter {
+@Deprecated
+public final class CompactJsonWriter extends AbstractJsonWriter {
 
     /**
      * @deprecated Replaced by {@link JsonGenerator#generate(Writer, JsonNode)} and other similar {@link JsonGenerator} methods.
-     *   For example, use
-     *     {@code new JsonGenerator().style(COMPACT).generate(Writer, JsonNode) }
-     *   or
-     *     {@code new JsonGenerator().style(COMPACT).generate(Writer, WriteableJsonObject) }
+     * For example, use
+     * {@code new JsonGenerator().style(COMPACT).generate(Writer, JsonNode) }
+     * or
+     * {@code new JsonGenerator().style(COMPACT).generate(Writer, WriteableJsonObject) }
      */
     public CompactJsonWriter() {
         super(new JsonGenerator().style(COMPACT));

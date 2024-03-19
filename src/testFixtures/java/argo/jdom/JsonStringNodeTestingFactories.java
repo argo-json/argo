@@ -24,6 +24,9 @@ public final class JsonStringNodeTestingFactories {
 
     private static final Random RANDOM = new Random();
 
+    private JsonStringNodeTestingFactories() {
+    }
+
     public static JsonStringNode aStringNode() {
         return string(aString());
     }
@@ -39,8 +42,5 @@ public final class JsonStringNodeTestingFactories {
 
     public static String aNonEmptyString() {
         return RandomStringUtils.random(RANDOM.nextInt(20) + 1);
-    }
-
-    private JsonStringNodeTestingFactories() {
     }
 }

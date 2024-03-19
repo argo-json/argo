@@ -36,28 +36,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @SuppressWarnings("deprecation")
 final class PrettyJsonFormatterTest {
-    static final class FieldOrderPreservingPrettyJsonFormatterArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(
-                    PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter(),
-                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator()),
-                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator().style(PRETTY))
-            ).map(Arguments::arguments);
-        }
-    }
-
-    static final class FieldOrderNormalisingPrettyJsonFormatterArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(
-                    PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter(),
-                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator()),
-                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator().style(PRETTY))
-            ).map(Arguments::arguments);
-        }
-    }
-
     @ParameterizedTest
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsAJsonObject(final JsonFormatter jsonFormatter) {
@@ -91,16 +69,16 @@ final class PrettyJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsAJsonArray(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(array(asList(
-                string("BobBob")
-                , number("23")
-        ))), equalTo(
-                aJsonStringResultBuilder()
-                        .printLine("[")
-                        .printLine("\t\"BobBob\",")
-                        .printLine("\t23")
-                        .print("]")
-                        .build()
-        )
+                        string("BobBob")
+                        , number("23")
+                ))), equalTo(
+                        aJsonStringResultBuilder()
+                                .printLine("[")
+                                .printLine("\t\"BobBob\",")
+                                .printLine("\t23")
+                                .print("]")
+                                .build()
+                )
         );
     }
 
@@ -108,10 +86,10 @@ final class PrettyJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsAnEmptyJsonArray(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(array(emptyList())), equalTo(
-                aJsonStringResultBuilder()
-                        .print("[]")
-                        .build()
-        )
+                        aJsonStringResultBuilder()
+                                .print("[]")
+                                .build()
+                )
         );
     }
 
@@ -119,9 +97,9 @@ final class PrettyJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsAString(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(string("foo")), equalTo(
-                aJsonStringResultBuilder()
-                        .print("\"foo\"")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("\"foo\"")
+                                .build()
                 )
         );
     }
@@ -130,9 +108,9 @@ final class PrettyJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsANumber(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(number("123.456E789")), equalTo(
-                aJsonStringResultBuilder()
-                        .print("123.456E789")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("123.456E789")
+                                .build()
                 )
         );
     }
@@ -141,9 +119,9 @@ final class PrettyJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsANull(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(nullNode()), equalTo(
-                aJsonStringResultBuilder()
-                        .print("null")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("null")
+                                .build()
                 )
         );
     }
@@ -152,9 +130,9 @@ final class PrettyJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsATrue(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(trueNode()), equalTo(
-                aJsonStringResultBuilder()
-                        .print("true")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("true")
+                                .build()
                 )
         );
     }
@@ -163,9 +141,9 @@ final class PrettyJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsAFalse(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(falseNode()), equalTo(
-                aJsonStringResultBuilder()
-                        .print("false")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("false")
+                                .build()
                 )
         );
     }
@@ -174,13 +152,13 @@ final class PrettyJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsAJsonStringWithEscapedCharacters(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(array(singletonList(
-                (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo(
-                aJsonStringResultBuilder()
-                        .printLine("[")
-                        .printLine("\t\"\\\" \\\\ \\b \\f \\n \\r \\t\"")
-                        .print("]")
-                        .build()
-        )
+                        (JsonNode) string("\" \\ \b \f \n \r \t")))), equalTo(
+                        aJsonStringResultBuilder()
+                                .printLine("[")
+                                .printLine("\t\"\\\" \\\\ \\b \\f \\n \\r \\t\"")
+                                .print("]")
+                                .build()
+                )
         );
     }
 
@@ -302,16 +280,15 @@ final class PrettyJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void formatsEcmaSurrogatePairExamples(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(array(singletonList(
-                (JsonNode) string("\ud834\udd1e")))), equalTo(
-                aJsonStringResultBuilder()
-                        .printLine("[")
-                        .printLine("\t\"\ud834\udd1e\"")
-                        .print("]")
-                        .build()
-        )
+                        (JsonNode) string("\ud834\udd1e")))), equalTo(
+                        aJsonStringResultBuilder()
+                                .printLine("[")
+                                .printLine("\t\"\ud834\udd1e\"")
+                                .print("]")
+                                .build()
+                )
         );
     }
-
 
     @ParameterizedTest
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
@@ -325,6 +302,28 @@ final class PrettyJsonFormatterTest {
                                 .build()
                 )
         );
+    }
+
+    static final class FieldOrderPreservingPrettyJsonFormatterArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    PrettyJsonFormatter.fieldOrderPreservingPrettyJsonFormatter(),
+                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator()),
+                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator().style(PRETTY))
+            ).map(Arguments::arguments);
+        }
+    }
+
+    static final class FieldOrderNormalisingPrettyJsonFormatterArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    PrettyJsonFormatter.fieldOrderNormalisingPrettyJsonFormatter(),
+                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator()),
+                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator().style(PRETTY))
+            ).map(Arguments::arguments);
+        }
     }
 
 }

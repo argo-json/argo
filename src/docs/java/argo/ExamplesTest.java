@@ -24,6 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExamplesTest {
 
+    static Iterable<String> queryComments() {
+        return Arrays.asList("Thanks for the post!", "\uD83D\uDC4D");
+    }
+
+    static String trim(final String taggedString) {
+        return taggedString.replaceFirst("^[^\n]*// tag::[^\n]*\n", "").replaceFirst("\n[^\n]*// end::[^\n]*\n", "");
+    }
+
     @Test
     void generateSomeJson() throws Exception {
         // tag::generateSomeJson[]
@@ -114,13 +122,5 @@ class ExamplesTest {
         // end::streamInSomeJson[]
 
         assertEquals(2, commentCount);
-    }
-
-    static Iterable<String> queryComments() {
-        return Arrays.asList("Thanks for the post!", "\uD83D\uDC4D");
-    }
-
-    static String trim(final String taggedString) {
-        return taggedString.replaceFirst("^[^\n]*// tag::[^\n]*\n", "").replaceFirst("\n[^\n]*// end::[^\n]*\n", "");
     }
 }

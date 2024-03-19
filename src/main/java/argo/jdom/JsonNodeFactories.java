@@ -132,6 +132,7 @@ public final class JsonNodeFactories {
 
     /**
      * Internal method.
+     *
      * @param prevalidatedNumber a pre-validated number
      * @return a JsonNode representing the given number
      */

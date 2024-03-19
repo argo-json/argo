@@ -32,6 +32,33 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JsonStringEscapingWriterTest {
 
+    static TypeSafeDiagnosingMatcher<String> writtenAs(final String expected) {
+        final Matcher<String> stringMatcher = equalTo(expected);
+        return new TypeSafeDiagnosingMatcher<String>() {
+            @Override
+            protected boolean matchesSafely(String item, Description mismatchDescription) {
+                final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+                try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
+                    try {
+                        jsonStringEscapingWriter.write(item);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                final boolean matches = stringMatcher.matches(stringBuilderWriter.toString());
+                if (!matches) {
+                    stringMatcher.describeMismatch(stringBuilderWriter.toString(), mismatchDescription);
+                }
+                return matches;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Writes output ").appendDescriptionOf(stringMatcher);
+            }
+        };
+    }
+
     @Test
     @SuppressWarnings("resource")
     void rejectsNullDelegate() {
@@ -217,7 +244,7 @@ class JsonStringEscapingWriterTest {
     void writesACharArrayWithOffset() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
-            jsonStringEscapingWriter.write(new char[] {'a', 'b', 'c'}, 1, 2);
+            jsonStringEscapingWriter.write(new char[]{'a', 'b', 'c'}, 1, 2);
         }
         assertThat(stringBuilderWriter.toString(), equalTo("bc"));
     }
@@ -226,7 +253,7 @@ class JsonStringEscapingWriterTest {
     void writesACharArrayWithLength() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
-            jsonStringEscapingWriter.write(new char[] {'a', 'b', 'c'}, 0, 2);
+            jsonStringEscapingWriter.write(new char[]{'a', 'b', 'c'}, 0, 2);
         }
         assertThat(stringBuilderWriter.toString(), equalTo("ab"));
     }
@@ -235,7 +262,7 @@ class JsonStringEscapingWriterTest {
     void writesACharArrayWithOffsetAndLength() throws Exception {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
-            jsonStringEscapingWriter.write(new char[] {'a', 'b', 'c'}, 1, 1);
+            jsonStringEscapingWriter.write(new char[]{'a', 'b', 'c'}, 1, 1);
         }
         assertThat(stringBuilderWriter.toString(), equalTo("b"));
     }
@@ -352,32 +379,5 @@ class JsonStringEscapingWriterTest {
         jsonStringEscapingWriter.close();
         assertThrows(IOException.class, jsonStringEscapingWriter::flush);
         assertThat(stringBuilderWriter.toString(), equalTo("a"));
-    }
-
-    static TypeSafeDiagnosingMatcher<String> writtenAs(final String expected) {
-        final Matcher<String> stringMatcher = equalTo(expected);
-        return new TypeSafeDiagnosingMatcher<String>() {
-            @Override
-            protected boolean matchesSafely(String item, Description mismatchDescription) {
-                final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-                try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
-                    try {
-                        jsonStringEscapingWriter.write(item);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                final boolean matches = stringMatcher.matches(stringBuilderWriter.toString());
-                if (!matches) {
-                    stringMatcher.describeMismatch(stringBuilderWriter.toString(), mismatchDescription);
-                }
-                return matches;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Writes output ").appendDescriptionOf(stringMatcher);
-            }
-        };
     }
 }

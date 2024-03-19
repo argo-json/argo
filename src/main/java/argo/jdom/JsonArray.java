@@ -23,6 +23,10 @@ final class JsonArray extends JsonNode {
 
     private final List<JsonNode> elements;
 
+    private JsonArray(final List<JsonNode> elements) {
+        this.elements = elements;
+    }
+
     static JsonArray jsonArray(final Iterator<? extends JsonNode> elements) {
         return jsonArray(immutableListOf(elements));
     }
@@ -33,10 +37,6 @@ final class JsonArray extends JsonNode {
 
     private static JsonArray jsonArray(final List<JsonNode> elementList) {
         return elementList.isEmpty() ? EMPTY_ARRAY : new JsonArray(elementList);
-    }
-
-    private JsonArray(final List<JsonNode> elements) {
-        this.elements = elements;
     }
 
     @Override

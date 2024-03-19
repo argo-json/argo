@@ -20,6 +20,9 @@ public final class TestingFactories {
 
     private static final Random RANDOM = new Random();
 
+    private TestingFactories() {
+    }
+
     @SafeVarargs
     public static <T> Supplier<T> randomSupplierSwitcher(Supplier<T> supplier, Supplier<T>... suppliers) {
         return new RandomSupplierSwitcher<>(supplier, suppliers);
@@ -35,8 +38,5 @@ public final class TestingFactories {
 
     public static String aStringOfLength(final int length) {
         return RandomStringUtils.random(length);
-    }
-
-    private TestingFactories() {
     }
 }

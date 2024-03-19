@@ -27,16 +27,16 @@ public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMa
     private final Collection<JsonStreamElement> expected;
     private final Collection<Matcher<JsonStreamElement>> expectedMatchers;
 
-    public static Matcher<Iterator<JsonStreamElement>> generatesElements(final JsonStreamElement... jsonStreamElements) {
-        return new ElementTrackingStajParserMatcher(jsonStreamElements);
-    }
-
     private ElementTrackingStajParserMatcher(final JsonStreamElement... expected) {
         expectedMatchers = new ArrayList<>();
         for (JsonStreamElement jsonStreamElement : expected) {
             expectedMatchers.add(aJsonStreamElementMatching(jsonStreamElement));
         }
         this.expected = asList(expected);
+    }
+
+    public static Matcher<Iterator<JsonStreamElement>> generatesElements(final JsonStreamElement... jsonStreamElements) {
+        return new ElementTrackingStajParserMatcher(jsonStreamElements);
     }
 
     @Override

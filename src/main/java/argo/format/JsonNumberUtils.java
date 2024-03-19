@@ -19,7 +19,8 @@ import java.math.BigInteger;
  * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils}.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated public final class JsonNumberUtils {
+@Deprecated
+public final class JsonNumberUtils {
 
     private JsonNumberUtils() {
     }
@@ -30,7 +31,6 @@ import java.math.BigInteger;
      * @param jsonNumberString a {@code String} representation of a JSON number.
      * @return a {@code BigDecimal} representing the given JSON number {@code String}.
      * @throws NumberFormatException if the given {@code String} is not a valid JSON number.
-     *
      * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils#asBigDecimal(String)}
      */
     @SuppressWarnings("DeprecatedIsStillUsed")
@@ -44,7 +44,6 @@ import java.math.BigInteger;
      * @param jsonNumberString a {@code String} representation of an integer JSON number.
      * @return a {@code BigInteger} representing the given JSON number {@code String}.
      * @throws NumberFormatException if the given {@code String} is not a valid JSON number or is not an integer.
-     *
      * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils#asBigInteger(String)}
      */
     @SuppressWarnings("DeprecatedIsStillUsed")
@@ -60,7 +59,6 @@ import java.math.BigInteger;
      * @param jsonNumberString a {@code String} representation of an integer JSON number.
      * @return a {@code Double} representing the given JSON number {@code String}.
      * @throws NumberFormatException if the given {@code String} is not a valid JSON number.
-     *
      * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils#asDouble(String)}
      */
     @SuppressWarnings("DeprecatedIsStillUsed")
@@ -76,7 +74,6 @@ import java.math.BigInteger;
      * @param jsonNumberString a {@code String} representation of an integer JSON number.
      * @return a {@code Integer} representing the given JSON number {@code String}.
      * @throws NumberFormatException if the given {@code String} is not a valid JSON number or is not an integer.
-     *
      * @deprecated Replaced by {@link argo.jdom.JsonNumberUtils#asInteger(String)}
      */
     @SuppressWarnings("DeprecatedIsStillUsed")

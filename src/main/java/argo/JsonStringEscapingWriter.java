@@ -16,8 +16,8 @@ import java.io.Writer;
 import static argo.JsonEscapedString.escapeCharBufferTo;
 
 final class JsonStringEscapingWriter extends Writer {
-    private Writer out;
     private final WriteBufferHolder writeBufferHolder;
+    private Writer out;
 
     JsonStringEscapingWriter(final Writer out, final WriteBufferHolder writeBufferHolder) {
         if (out == null) {

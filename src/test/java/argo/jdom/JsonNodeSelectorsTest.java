@@ -43,7 +43,26 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JsonNodeSelectorsTest {
 
+    @Test
+    void javadocExampleWorks() throws Exception {
+        final String json = "{\"Fee\":{\"fi\":\"fo\"}}";
+        final JsonNode jsonNode = new JsonParser().parse(new StringReader(json));
+        final String result = JsonNodeSelectors.anObjectNodeWithField("Fee")
+                .with(JsonNodeSelectors.anObjectNodeWithField("fi"))
+                .with(JsonNodeSelectors.aStringNode())
+                .getValue(jsonNode);
+        assertThat(result, equalTo("fo"));
+    }
+
     static class TreeTestCase {
+
+        private static Stream<? extends Arguments> nestedPermutations(final TestCase... testCases) {
+            return Arrays.stream(testCases).flatMap(testCase -> Stream.of(
+                    Arguments.arguments(testCase.candidate, new Object[]{}, testCase.expectedMatch, testCase.expectedValue),
+                    Arguments.arguments(array(testCase.candidate), new Object[]{0}, testCase.expectedMatch, testCase.expectedValue),
+                    Arguments.arguments(object(field("foo", testCase.candidate)), new Object[]{"foo"}, testCase.expectedMatch, testCase.expectedValue)
+            ));
+        }
 
         static final class TestCase {
             final JsonNode candidate;
@@ -256,14 +275,6 @@ final class JsonNodeSelectorsTest {
                 );
             }
         }
-
-        private static Stream<? extends Arguments> nestedPermutations(final TestCase... testCases) {
-            return Arrays.stream(testCases).flatMap(testCase -> Stream.of(
-                    Arguments.arguments(testCase.candidate, new Object[] {}, testCase.expectedMatch, testCase.expectedValue),
-                    Arguments.arguments(array(testCase.candidate), new Object[] {0}, testCase.expectedMatch, testCase.expectedValue),
-                    Arguments.arguments(object(field("foo", testCase.candidate)), new Object[] {"foo"}, testCase.expectedMatch, testCase.expectedValue)
-            ));
-        }
     }
 
     static class NodeTestCase {
@@ -308,7 +319,7 @@ final class JsonNodeSelectorsTest {
                         Arguments.arguments(candidateJsonObject, key, true, value),
                         Arguments.arguments(JsonNodeTestingFactories.anArrayNode(), aString(), false, null),
                         Arguments.arguments(candidateJsonObject, aStringNodeDifferentTo(key, mismatchKey), false, null)
-                        );
+                );
             }
         }
 
@@ -1229,17 +1240,6 @@ final class JsonNodeSelectorsTest {
             final int index = aSmallNonNegativeInt();
             assertThat(anArrayNodeWithElement(index).toString(), equalTo("an array, with an element at index [" + index + "]"));
         }
-    }
-
-    @Test
-    void javadocExampleWorks() throws Exception {
-        final String json = "{\"Fee\":{\"fi\":\"fo\"}}";
-        final JsonNode jsonNode = new JsonParser().parse(new StringReader(json));
-        final String result = JsonNodeSelectors.anObjectNodeWithField("Fee")
-                .with(JsonNodeSelectors.anObjectNodeWithField("fi"))
-                .with(JsonNodeSelectors.aStringNode())
-                .getValue(jsonNode);
-        assertThat(result, equalTo("fo"));
     }
 
 }

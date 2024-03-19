@@ -23,14 +23,15 @@ import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
  * @deprecated Replaced by {@link JsonGenerator}.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated public final class PrettyJsonWriter extends AbstractJsonWriter {
+@Deprecated
+public final class PrettyJsonWriter extends AbstractJsonWriter {
 
     /**
      * @deprecated Replaced by {@link JsonGenerator#generate(Writer, JsonNode)} and other similar {@link JsonGenerator} methods.
-     *   For example, use
-     *     {@code new JsonGenerator().style(PRETTY).generate(Writer, JsonNode) }
-     *   or
-     *     {@code new JsonGenerator().style(PRETTY).generate(Writer, WriteableJsonObject) }
+     * For example, use
+     * {@code new JsonGenerator().style(PRETTY).generate(Writer, JsonNode) }
+     * or
+     * {@code new JsonGenerator().style(PRETTY).generate(Writer, WriteableJsonObject) }
      */
     public PrettyJsonWriter() {
         super(new JsonGenerator().style(PRETTY));

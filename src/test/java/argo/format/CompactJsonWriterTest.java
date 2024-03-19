@@ -27,20 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CompactJsonWriterTest {
 
-    @SuppressWarnings("deprecation")
-    static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.concat(
-                    Stream.of(
-                            new CompactJsonWriter(),
-                            new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(COMPACT))
-                    ).map(WriterJsonGeneratorJsonWriterTestCase::new), Stream.of(
-                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(COMPACT))
-                    )).map(Arguments::arguments);
-        }
-    }
-
     @ParameterizedTest
     @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
     void canWriteEmptyArray(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) throws Exception {
@@ -289,6 +275,20 @@ class CompactJsonWriterTest {
         assertThat(jsonGeneratorJsonWriterTestCase.write((WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 writer -> writer.write("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
         )), equalTo("{\"Foo\":1234}"));
+    }
+
+    @SuppressWarnings("deprecation")
+    static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.concat(
+                    Stream.of(
+                            new CompactJsonWriter(),
+                            new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(COMPACT))
+                    ).map(WriterJsonGeneratorJsonWriterTestCase::new), Stream.of(
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(COMPACT))
+                    )).map(Arguments::arguments);
+        }
     }
 
 }

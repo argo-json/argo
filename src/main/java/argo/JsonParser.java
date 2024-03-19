@@ -31,13 +31,22 @@ import static argo.jdom.JsonNodeFactories.prevalidatedNumberBuilder;
  */
 public final class JsonParser {
 
+    private static String asString(final Reader reader, final int initialCapacity) throws IOException {
+        final StringBuilder stringBuilder = new StringBuilder(initialCapacity);
+        int c;
+        while ((c = reader.read()) != -1) {
+            stringBuilder.append((char) c);
+        }
+        return stringBuilder.toString();
+    }
+
     /**
      * Parses the character stream from the given {@code Reader} into a {@code JsonNode} object.
      *
      * @param reader the {@code Reader} to parse.
      * @return a {@code JsonNode} representing the JSON read from the given {@code Reader}.
      * @throws InvalidSyntaxException if the characters streamed from the given {@code Reader} do not represent valid JSON.
-     * @throws IOException rethrown when reading characters from the given {@code Reader} throws {@code IOException}.
+     * @throws IOException            rethrown when reading characters from the given {@code Reader} throws {@code IOException}.
      */
     public JsonNode parse(final Reader reader) throws InvalidSyntaxException, IOException {
         return parse(new ParseExecutor() {
@@ -142,10 +151,10 @@ public final class JsonParser {
     /**
      * Parses the character stream from the given {@code Reader} into calls to the given JsonListener.
      *
-     * @param reader                  the {@code Reader} to parse.
-     * @param jsonListener            the JsonListener to notify of parsing events
+     * @param reader       the {@code Reader} to parse.
+     * @param jsonListener the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException if the characters streamed from the given {@code Reader} do not represent valid JSON.
-     * @throws IOException rethrown when reading characters from the given {@code Reader} throws {@code IOException}.
+     * @throws IOException            rethrown when reading characters from the given {@code Reader} throws {@code IOException}.
      */
     public void parseStreaming(final Reader reader, final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
         parseStreaming(parseStreaming(reader), jsonListener);
@@ -154,8 +163,8 @@ public final class JsonParser {
     /**
      * Parses the given JSON {@code String} into calls to the given JsonListener.
      *
-     * @param json                    the {@code String} to parse.
-     * @param jsonListener            the JsonListener to notify of parsing events
+     * @param json         the {@code String} to parse.
+     * @param jsonListener the JsonListener to notify of parsing events
      * @throws InvalidSyntaxException if the characters streamed from the given {@code String} do not represent valid JSON.
      */
     public void parseStreaming(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
@@ -178,11 +187,8 @@ public final class JsonParser {
         }
     }
 
-    interface ParseExecutor {
-        void parseUsing(JsonListener jsonListener) throws InvalidSyntaxException, IOException;
-    }
-
-    @SuppressWarnings("PMD.ExceptionAsFlowControl") // TODO this is apparently fixed in PMD 7.0.0
+    @SuppressWarnings("PMD.ExceptionAsFlowControl")
+        // TODO this is apparently fixed in PMD 7.0.0
     JsonNode parse(final ParseExecutor parseExecutor) throws InvalidSyntaxException, IOException {
         final JsonStringNodeFactory jsonStringNodeFactory = new JsonStringNodeFactory();
         final JsonNumberNodeFactory jsonNumberNodeFactory = new JsonNumberNodeFactory();
@@ -191,9 +197,11 @@ public final class JsonParser {
         stack.push(root);
         try {
             parseExecutor.parseUsing(new JsonListener() {
-                public void startDocument() {}
+                public void startDocument() {
+                }
 
-                public void endDocument() {}
+                public void endDocument() {
+                }
 
                 public void startArray() {
                     final ArrayNodeContainer arrayNodeContainer = new ArrayNodeContainer();
@@ -263,6 +271,18 @@ public final class JsonParser {
         return root.build();
     }
 
+    interface ParseExecutor {
+        void parseUsing(JsonListener jsonListener) throws InvalidSyntaxException, IOException;
+    }
+
+    private interface NodeContainer {
+
+        void addNode(JsonNodeBuilder<?> jsonNodeBuilder);
+
+        void addField(FieldNodeContainer fieldNodeContainer);
+
+    }
+
     private static final class IORuntimeException extends RuntimeException {
         private final IOException typedCause;
 
@@ -275,14 +295,6 @@ public final class JsonParser {
         public IOException getCause() {
             return typedCause;
         }
-    }
-
-    private interface NodeContainer {
-
-        void addNode(JsonNodeBuilder<?> jsonNodeBuilder);
-
-        void addField(FieldNodeContainer fieldNodeContainer);
-
     }
 
     private static final class RootNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
@@ -395,15 +407,6 @@ public final class JsonParser {
                 return cachedNumberNode;
             }
         }
-    }
-
-    private static String asString(final Reader reader, final int initialCapacity) throws IOException {
-        final StringBuilder stringBuilder = new StringBuilder(initialCapacity);
-        int c;
-        while((c = reader.read()) != -1) {
-            stringBuilder.append((char) c);
-        }
-        return stringBuilder.toString();
     }
 
     /**

@@ -19,11 +19,11 @@ final class JsonStringResultBuilder {
     private final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
     private final PrintWriter printWriter = new PrintWriter(stringBuilderWriter);
 
-    static JsonStringResultBuilder aJsonStringResultBuilder() {
-        return new JsonStringResultBuilder();
+    private JsonStringResultBuilder() {
     }
 
-    private JsonStringResultBuilder() {
+    static JsonStringResultBuilder aJsonStringResultBuilder() {
+        return new JsonStringResultBuilder();
     }
 
     JsonStringResultBuilder printLine(final String text) {

@@ -53,13 +53,6 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 final class StajParserTest {
 
-    static final class ParserArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return shims().map(Arguments::arguments);
-        }
-    }
-
     private static Stream<StajParserJsonParserShim> shims() {
         return Stream.of(
                 new StajParserJsonParserShim.Staj(),
@@ -1000,22 +993,8 @@ final class StajParserTest {
         }
     }
 
-    static final class TestCase {
-        final String input;
-        final int expected;
-
-        static TestCase testCase(final String input, final int expected) {
-            return new TestCase(input, expected);
-        }
-
-        TestCase(String input, int expected) {
-            this.input = input;
-            this.expected = expected;
-        }
-    }
-
     @TestFactory
-    Stream<DynamicTest>parsesValidStringWithEscapedChars() {
+    Stream<DynamicTest> parsesValidStringWithEscapedChars() {
         return Stream.of(
                 testCase("\"", 0x22),
                 testCase("\\", 0x5c),
@@ -1154,9 +1133,6 @@ final class StajParserTest {
         });
         stajParser.next();
         assertThrows(MyTestRuntimeException.class, stajParser::next);
-    }
-
-    private static final class MyTestRuntimeException extends RuntimeException {
     }
 
     @ParameterizedTest
@@ -2545,7 +2521,7 @@ final class StajParserTest {
                 stajParser.next();
             });
             final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9 but got [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "]"));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected a digit 0 - 9 but got [" + String.format("\\u%04X", (int) expectedInvalidCharacter) + "]"));
             assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
             assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
         })));
@@ -2578,7 +2554,7 @@ final class StajParserTest {
                 IOUtils.consume(stajParser.next().reader());
                 stajParser.next();
             });
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + numberString.charAt(numberString.length() -1) + "]"));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + numberString.charAt(numberString.length() - 1) + "]"));
             assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
             assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
         })));
@@ -2598,7 +2574,7 @@ final class StajParserTest {
                 stajParser.next();
             });
             final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "]"));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + String.format("\\u%04X", (int) expectedInvalidCharacter) + "]"));
             assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(numberString.length()));
             assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
         })));
@@ -2889,7 +2865,7 @@ final class StajParserTest {
                 stajParser.next();
             });
             final char expectedInvalidCharacter = text.charAt(0);
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (text.length()) + ":  Invalid character [" + String.format("\\u%04X", (int)expectedInvalidCharacter) + "] at start of value"));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo("At line 1, column " + (text.length()) + ":  Invalid character [" + String.format("\\u%04X", (int) expectedInvalidCharacter) + "] at start of value"));
             assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(text.length()));
             assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
         })));
@@ -2927,5 +2903,29 @@ final class StajParserTest {
             assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(7));
             assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(1));
         })));
+    }
+
+    static final class ParserArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return shims().map(Arguments::arguments);
+        }
+    }
+
+    static final class TestCase {
+        final String input;
+        final int expected;
+
+        TestCase(String input, int expected) {
+            this.input = input;
+            this.expected = expected;
+        }
+
+        static TestCase testCase(final String input, final int expected) {
+            return new TestCase(input, expected);
+        }
+    }
+
+    private static final class MyTestRuntimeException extends RuntimeException {
     }
 }

@@ -46,12 +46,12 @@ final class ImmutableListFactoriesTest {
 
     @Test
     void rejectsNullList() {
-        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Collection<JsonNode>)null));
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Collection<JsonNode>) null));
     }
 
     @Test
     void rejectsNullNonCollectionIterable() {
-        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Iterable<JsonNode>)null));
+        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Iterable<JsonNode>) null));
     }
 
     @Test

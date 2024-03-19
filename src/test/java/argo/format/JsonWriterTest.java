@@ -48,44 +48,6 @@ class JsonWriterTest {
         );
     }
 
-    static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.concat(
-                    jsonWritersAndShimmedJsonGenerators().map(WriterJsonGeneratorJsonWriterTestCase::new),
-                    Stream.of(
-                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator()),
-                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY))
-                    )).map(Arguments::arguments);
-        }
-
-    }
-
-    static final class JsonWriterArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return jsonWritersAndShimmedJsonGenerators().map(Arguments::arguments);
-        }
-    }
-
-    static final class JsonNodeJsonWriterCartesianProductArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return jsonWritersAndShimmedJsonGenerators().flatMap(jsonWriter ->
-                    Stream.of(
-                            nullNode(),
-                            trueNode(),
-                            falseNode(),
-                            aNumberNode(),
-                            string(aStringOfLength(aSmallNonNegativeInt())),
-                            string(aStringOfLength(2048)),
-                            anObjectNode(),
-                            anArrayNode()
-                    ).map(jsonNode -> Arguments.arguments(jsonWriter, jsonNode))
-            );
-        }
-    }
-
     @ParameterizedTest
     @ArgumentsSource(JsonNodeJsonWriterCartesianProductArgumentsProvider.class)
     void propagatesIOExceptionFromTargetWriter(final JsonWriter jsonWriter, final JsonNode jsonNode) {
@@ -155,7 +117,45 @@ class JsonWriterTest {
     @ParameterizedTest
     @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
     void correctExceptionIsPropagatedThroughJsonWriter(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) {
-        assertThrows(IndexOutOfBoundsException.class, () -> jsonGeneratorJsonWriterTestCase.write((WriteableJsonNumber) numberWriter -> numberWriter.write(new char[] {'1', '.'}, 1, 3)));
+        assertThrows(IndexOutOfBoundsException.class, () -> jsonGeneratorJsonWriterTestCase.write((WriteableJsonNumber) numberWriter -> numberWriter.write(new char[]{'1', '.'}, 1, 3)));
+    }
+
+    static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.concat(
+                    jsonWritersAndShimmedJsonGenerators().map(WriterJsonGeneratorJsonWriterTestCase::new),
+                    Stream.of(
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator()),
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY))
+                    )).map(Arguments::arguments);
+        }
+
+    }
+
+    static final class JsonWriterArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return jsonWritersAndShimmedJsonGenerators().map(Arguments::arguments);
+        }
+    }
+
+    static final class JsonNodeJsonWriterCartesianProductArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return jsonWritersAndShimmedJsonGenerators().flatMap(jsonWriter ->
+                    Stream.of(
+                            nullNode(),
+                            trueNode(),
+                            falseNode(),
+                            aNumberNode(),
+                            string(aStringOfLength(aSmallNonNegativeInt())),
+                            string(aStringOfLength(2048)),
+                            anObjectNode(),
+                            anArrayNode()
+                    ).map(jsonNode -> Arguments.arguments(jsonWriter, jsonNode))
+            );
+        }
     }
 
 }

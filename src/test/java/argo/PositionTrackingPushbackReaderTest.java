@@ -329,6 +329,19 @@ class PositionTrackingPushbackReaderTest {
         assertThat(positionTrackingPushbackReader.line(), equalTo(2));
     }
 
+    @Test
+    @Tag("slow")
+    void handlesMoreCarriageReturnsThanLargestInteger() throws IOException {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('\r'));
+        for (int i = -1; i != Integer.MAX_VALUE; i++) {
+            positionTrackingPushbackReader.read();
+        }
+        assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
+        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
+        assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
+        assertThat(positionTrackingPushbackReader.line(), equalTo(-1));
+    }
+
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -371,7 +384,7 @@ class PositionTrackingPushbackReaderTest {
         @Order(2)
         @Tag("slow")
         void afterLineLongerThanLargestIntegerNextLineHasCorrectPosition() throws IOException {
-            assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
+            assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
             assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
             assertThat(positionTrackingPushbackReader.column(), equalTo(0));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
@@ -416,7 +429,7 @@ class PositionTrackingPushbackReaderTest {
             assertThat(positionTrackingPushbackReader.column(), equalTo(2));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(Integer.MAX_VALUE));
             assertThat(positionTrackingPushbackReader.line(), equalTo(Integer.MAX_VALUE));
-            assertThat(positionTrackingPushbackReader.read(), equalTo((int)'\n'));
+            assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
             positionTrackingPushbackReader.unread('\n');
             assertThat(positionTrackingPushbackReader.position().column, equalTo(2));
             assertThat(positionTrackingPushbackReader.column(), equalTo(2));
@@ -429,26 +442,13 @@ class PositionTrackingPushbackReaderTest {
         @Order(1)
         @Tag("slow")
         void afterMoreLinesThanLargestIntegerNextColumnIsCorrect() throws IOException {
-            assertThat(positionTrackingPushbackReader.read(), equalTo((int)'a'));
+            assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'a'));
             assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
             assertThat(positionTrackingPushbackReader.column(), equalTo(1));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
             assertThat(positionTrackingPushbackReader.line(), equalTo(-1));
         }
 
-    }
-
-    @Test
-    @Tag("slow")
-    void handlesMoreCarriageReturnsThanLargestInteger() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('\r'));
-        for (int i = -1; i != Integer.MAX_VALUE; i++) {
-            positionTrackingPushbackReader.read();
-        }
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
-        assertThat(positionTrackingPushbackReader.column(), equalTo(0));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
-        assertThat(positionTrackingPushbackReader.line(), equalTo(-1));
     }
 
 }

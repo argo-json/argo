@@ -23,7 +23,6 @@ package argo.jdom;
  *
  * @param <T> The type of Object worked on.
  * @param <U> The type of Object returned.
- *
  * @see argo.jdom.JsonNodeSelectors
  */
 public final class JsonNodeSelector<T, U> {
@@ -63,7 +62,7 @@ public final class JsonNodeSelector<T, U> {
 
     /**
      * <p>Constructs a JsonNodeSelector consisting of this chained with the given {@code JsonNodeSelector}.</p>
-     * 
+     *
      * <p>For example, if we have a {@code JsonNodeSelector} for the first element of an array, and another that
      * selects the second element of an array, and we chain them together in that order, we will get a selector that
      * works on nested arrays, selecting the second element from an array stored in the first element of a parent

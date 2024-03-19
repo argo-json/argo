@@ -13,11 +13,11 @@ package argo.jdom;
 import static argo.jdom.JsonNodeTestingFactories.aJsonNode;
 
 public final class JsonNodeBuilderTestingFactories {
+    private JsonNodeBuilderTestingFactories() {
+    }
+
     public static JsonNodeBuilder<JsonNode> aJsonNodeBuilder() {
         final JsonNode jsonNode = aJsonNode();
         return () -> jsonNode;
-    }
-
-    private JsonNodeBuilderTestingFactories() {
     }
 }

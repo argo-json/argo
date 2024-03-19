@@ -22,6 +22,10 @@ final class JsonObject extends JsonNode {
     private final List<JsonField> fields;
     private transient Map<JsonStringNode, JsonNode> fieldMap;
 
+    private JsonObject(final List<JsonField> fields) {
+        this.fields = fields;
+    }
+
     static JsonObject jsonObject(final Iterator<JsonField> fields) {
         return jsonObject(immutableListOf(fields));
     }
@@ -32,10 +36,6 @@ final class JsonObject extends JsonNode {
 
     private static JsonObject jsonObject(final List<JsonField> fieldList) {
         return fieldList.isEmpty() ? EMPTY_OBJECT : new JsonObject(fieldList);
-    }
-
-    private JsonObject(final List<JsonField> fields) {
-        this.fields = fields;
     }
 
     @Override

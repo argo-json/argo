@@ -21,10 +21,10 @@ public final class JsonReaderFactory {
 
     private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(PRETTY);
 
-    public static Reader readerOf(final JsonNode jsonNode) {
-        return new StringReader(JSON_GENERATOR.generate(jsonNode));
+    private JsonReaderFactory() {
     }
 
-    private JsonReaderFactory() {
+    public static Reader readerOf(final JsonNode jsonNode) {
+        return new StringReader(JSON_GENERATOR.generate(jsonNode));
     }
 }

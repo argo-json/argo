@@ -17,16 +17,16 @@ import static argo.jdom.JsonNodeDoesNotMatchPathElementsException.jsonNodeDoesNo
 
 /**
  * <p>A node (leaf or otherwise) in a JSON document.</p>
- *     
+ *
  * <p>Supplies methods for examining the node, and also examining and navigating the hierarchy at and below this node.
  * Methods for navigating the hierarchy are of the form {@code getXXXValue(Object... pathElements)}.</p>
- * 
+ *
  * <p>For example, {@link #getStringValue(Object...)} takes a series of {@code String}s and
  * {@code Integer}s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
  * The {@code String}s tell it to select a field with the given name from an object, and the {@code Integer}s
  * tell it to select an element with the given index from an array.  If no field of that name exists, or the field
  * exists, but it isn't a JSON string, an {@code IllegalArgumentException} is thrown.</p>
- * 
+ *
  * <p>Methods for examining the hierarchy work on the same principal as the
  * {@code getXXXValue(Object... pathElements)} methods, but return a {@code boolean} indicating whether
  * or not the element at the given path exists and is of the type specified, for example,
@@ -37,6 +37,17 @@ public abstract class JsonNode {
 
     // Only extensible by classes in this package
     JsonNode() {
+    }
+
+    /**
+     * @throws JsonNodeDoesNotMatchPathElementsException in place of checked Exception.
+     */
+    private static <T, V extends JsonNode> T wrapExceptionsFor(final JsonNodeSelector<V, T> value, final V node, final Object[] pathElements) {
+        try {
+            return value.getValue(node);
+        } catch (final JsonNodeDoesNotMatchChainedJsonNodeSelectorException e) {
+            throw jsonNodeDoesNotMatchPathElementsException(e, pathElements, JsonNodeFactories.array(node));
+        }
     }
 
     public abstract JsonNodeType getType();
@@ -337,16 +348,5 @@ public abstract class JsonNode {
      * @param jsonNodeVisitor the {@code JsonNodeVisitor} to call back.
      */
     public abstract void visit(JsonNodeVisitor jsonNodeVisitor);
-
-    /**
-     * @throws JsonNodeDoesNotMatchPathElementsException in place of checked Exception.
-     */
-    private static <T, V extends JsonNode> T wrapExceptionsFor(final JsonNodeSelector<V, T> value, final V node, final Object[] pathElements) {
-        try {
-            return value.getValue(node);
-        } catch (final JsonNodeDoesNotMatchChainedJsonNodeSelectorException e) {
-            throw jsonNodeDoesNotMatchPathElementsException(e, pathElements, JsonNodeFactories.array(node));
-        }
-    }
 
 }

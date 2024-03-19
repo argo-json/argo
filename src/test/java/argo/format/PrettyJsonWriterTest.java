@@ -28,22 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PrettyJsonWriterTest {
 
-    @SuppressWarnings("deprecation")
-    static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.concat(
-                    Stream.of(
-                            new PrettyJsonWriter(),
-                            new JsonGeneratorJsonWriterAdapter(new JsonGenerator()),
-                            new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(PRETTY))
-                    ).map(WriterJsonGeneratorJsonWriterTestCase::new), Stream.of(
-                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator()),
-                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY))
-                    )).map(Arguments::arguments);
-        }
-    }
-
     @ParameterizedTest
     @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
     void canWriteEmptyArray(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) throws Exception {
@@ -331,6 +315,22 @@ class PrettyJsonWriterTest {
         jsonGeneratorJsonWriterTestCase.write((WriteableJsonObject) objectWriter -> objectWriter.writeField(
                 writer -> writer.write("Foo"), (WriteableJsonNumber) numberWriter -> numberWriter.write("1234")
         ));
+    }
+
+    @SuppressWarnings("deprecation")
+    static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.concat(
+                    Stream.of(
+                            new PrettyJsonWriter(),
+                            new JsonGeneratorJsonWriterAdapter(new JsonGenerator()),
+                            new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(PRETTY))
+                    ).map(WriterJsonGeneratorJsonWriterTestCase::new), Stream.of(
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator()),
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY))
+                    )).map(Arguments::arguments);
+        }
     }
 
 }

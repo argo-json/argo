@@ -103,8 +103,8 @@ final class JsonNodeFactoriesTest {
                 object(field("Gina", string("Dreams of running away")), field(string("Tommy"), string("Used to work on the dock"))),
                 equalTo(object(
                         mapBuilder(string("Gina"), string("Dreams of running away"))
-                        .put(string("Tommy"), string("Used to work on the dock"))
-                        .build()
+                                .put(string("Tommy"), string("Used to work on the dock"))
+                                .build()
                 ))
         );
     }
@@ -112,8 +112,8 @@ final class JsonNodeFactoriesTest {
     @Test
     void createsJsonObjectNodeWithFieldIterator() {
         assertThat(object(asList(
-                field("Gina", string("Dreams of running away"))
-                , field("Tommy", string("Used to work on the dock"))
+                        field("Gina", string("Dreams of running away"))
+                        , field("Tommy", string("Used to work on the dock"))
                 ).iterator()),
                 equalTo(object(
                         mapBuilder(string("Gina"), string("Dreams of running away"))
@@ -126,8 +126,8 @@ final class JsonNodeFactoriesTest {
     @Test
     void createsJsonObjectNodeWithFieldIterable() {
         assertThat(object(asList(
-                field("Gina", string("Dreams of running away"))
-                , field("Tommy", string("Used to work on the dock"))
+                        field("Gina", string("Dreams of running away"))
+                        , field("Tommy", string("Used to work on the dock"))
                 )),
                 equalTo(object(
                         mapBuilder(string("Gina"), string("Dreams of running away"))

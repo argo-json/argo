@@ -18,7 +18,7 @@ import static argo.jdom.JsonNodeType.*;
 
 /**
  * <p>Factories for {@code JsonNodeSelectors}.</p>
- * 
+ *
  * <p>Methods in this class fall into two broad categories - those that take a varargs argument of {@code Object}s
  * and navigate down an entire hierarchy, and those that address a single node in a hierarchy.</p>
  * <p>For example,
@@ -26,7 +26,7 @@ import static argo.jdom.JsonNodeType.*;
  * {@code Integer}s as its argument which tell it how to navigate down a hierarchy to a particular JSON string.
  * The {@code String}s tell it to select a field with the given name from an object, and the {@code Integer}s
  * tell it to select an element with the given index from an array.</p>
- * 
+ *
  * <p>By contrast, {@code anArrayNodeWithElement(int index)} addresses a single array node only, selecting the
  * element at the given index from it.</p>
  */

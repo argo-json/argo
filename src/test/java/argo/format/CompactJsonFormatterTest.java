@@ -30,26 +30,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @SuppressWarnings("deprecation")
 final class CompactJsonFormatterTest {
-    static final class FieldOrderPreservingCompactJsonFormatterArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(
-                    CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter(),
-                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator().style(COMPACT))
-            ).map(Arguments::arguments);
-        }
-    }
-
-    static final class FieldOrderNormalisingCompactJsonFormatterArgumentsProvider implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
-            return Stream.of(
-                    CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter(),
-                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator().style(COMPACT))
-            ).map(Arguments::arguments);
-        }
-    }
-
     @ParameterizedTest
     @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
     void formatsAJsonObject(final JsonFormatter jsonFormatter) {
@@ -87,14 +67,13 @@ final class CompactJsonFormatterTest {
         ))), equalTo("[null,true,false]"));
     }
 
-
     @ParameterizedTest
     @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
     void formatsAString(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(string("foo")), equalTo(
-                aJsonStringResultBuilder()
-                        .print("\"foo\"")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("\"foo\"")
+                                .build()
                 )
         );
     }
@@ -103,9 +82,9 @@ final class CompactJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
     void formatsANumber(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(number("123.456E789")), equalTo(
-                aJsonStringResultBuilder()
-                        .print("123.456E789")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("123.456E789")
+                                .build()
                 )
         );
     }
@@ -114,9 +93,9 @@ final class CompactJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
     void formatsANull(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(nullNode()), equalTo(
-                aJsonStringResultBuilder()
-                        .print("null")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("null")
+                                .build()
                 )
         );
     }
@@ -125,9 +104,9 @@ final class CompactJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
     void formatsATrue(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(trueNode()), equalTo(
-                aJsonStringResultBuilder()
-                        .print("true")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("true")
+                                .build()
                 )
         );
     }
@@ -136,9 +115,9 @@ final class CompactJsonFormatterTest {
     @ArgumentsSource(FieldOrderPreservingCompactJsonFormatterArgumentsProvider.class)
     void formatsAFalse(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(falseNode()), equalTo(
-                aJsonStringResultBuilder()
-                        .print("false")
-                        .build()
+                        aJsonStringResultBuilder()
+                                .print("false")
+                                .build()
                 )
         );
     }
@@ -167,5 +146,25 @@ final class CompactJsonFormatterTest {
     @ArgumentsSource(FieldOrderNormalisingCompactJsonFormatterArgumentsProvider.class)
     void orderNormalisingFormatterNormalisesFieldOrder(final JsonFormatter jsonFormatter) {
         assertThat(jsonFormatter.format(object(field("b", string("A String")), field("a", string("A String")))), equalTo("{\"a\":\"A String\",\"b\":\"A String\"}"));
+    }
+
+    static final class FieldOrderPreservingCompactJsonFormatterArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    CompactJsonFormatter.fieldOrderPreservingCompactJsonFormatter(),
+                    new JsonGeneratorFieldOrderPreservingJsonFormatterAdapter(new JsonGenerator().style(COMPACT))
+            ).map(Arguments::arguments);
+        }
+    }
+
+    static final class FieldOrderNormalisingCompactJsonFormatterArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return Stream.of(
+                    CompactJsonFormatter.fieldOrderNormalisingCompactJsonFormatter(),
+                    new JsonGeneratorFieldOrderNormalisingJsonFormatterAdapter(new JsonGenerator().style(COMPACT))
+            ).map(Arguments::arguments);
+        }
     }
 }

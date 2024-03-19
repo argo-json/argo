@@ -31,7 +31,7 @@ public enum JsonStreamElementType {
         JsonStreamElement parseNext(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
             final int secondChar = readNextNonWhitespaceChar(pushbackReader);
             if (']' != secondChar) {
-                if(secondChar != -1) {
+                if (secondChar != -1) {
                     pushbackReader.unread(secondChar);
                 }
                 return aJsonValue(pushbackReader, stack);
@@ -124,8 +124,6 @@ public enum JsonStreamElementType {
     private static final char NEWLINE = '\n';
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
-
-    abstract JsonStreamElement parseNext(PositionTrackingPushbackReader pushbackReader, Stack<JsonStreamElementType> stack) throws IOException;
 
     private static JsonStreamElement parseFieldOrObjectEnd(final PositionTrackingPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
@@ -224,7 +222,7 @@ public enum JsonStreamElementType {
 
     private static JsonStreamElement constant(final PositionTrackingPushbackReader pushbackReader, final String expectedCharacters, final JsonStreamElement result) throws IOException {
         final char[] actual = new char[expectedCharacters.length() - 1];
-        for(int i = 0; i < actual.length; i++) {
+        for (int i = 0; i < actual.length; i++) {
             final int character = pushbackReader.read();
             if (character == expectedCharacters.charAt(i + 1)) {
                 actual[i] = (char) character;
@@ -292,7 +290,7 @@ public enum JsonStreamElementType {
     private static int hexadecimalNumber(final PositionTrackingPushbackReader in) throws IOException {
         final Position startPosition = in.position();
         final char[] resultCharArray = new char[4];
-        for (int i = 0; i< resultCharArray.length; i++) {
+        for (int i = 0; i < resultCharArray.length; i++) {
             final int character = in.read();
             if (character == -1) {
                 throw new InvalidSyntaxRuntimeException("Expected 4 hexadecimal digits" + ", but " + (i == 0 ? "reached end of input" : "got " + asPrintableString(resultCharArray, i)), in.position());
@@ -306,6 +304,8 @@ public enum JsonStreamElementType {
             throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + asPrintableString(resultCharArray, resultCharArray.length) + " as a hexadecimal number", e, startPosition);
         }
     }
+
+    abstract JsonStreamElement parseNext(PositionTrackingPushbackReader pushbackReader, Stack<JsonStreamElementType> stack) throws IOException;
 
     private static abstract class SingleCharacterReader extends Reader {
 
@@ -398,9 +398,9 @@ public enum JsonStreamElementType {
 
     private static final class StringReader extends SingleCharacterReader {
 
-        private PositionTrackingPushbackReader in;
         private final int openDoubleQuotesColumn;
         private final int openDoubleQuotesLine;
+        private PositionTrackingPushbackReader in;
         private boolean ended = false;
 
         StringReader(final PositionTrackingPushbackReader in, final int column, final int line) {

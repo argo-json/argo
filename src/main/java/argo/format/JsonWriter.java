@@ -21,7 +21,8 @@ import java.io.Writer;
  * @deprecated Replaced by {@link argo.JsonGenerator}.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated public interface JsonWriter {
+@Deprecated
+public interface JsonWriter {
 
     /**
      * Streams the specified {@code WriteableJsonArray} formatted to the specified {@code Writer}.
@@ -29,7 +30,6 @@ import java.io.Writer;
      * @param writer             the {@code Writer} to output to.
      * @param writeableJsonArray the {@code WriteableJsonArray} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
-     *
      * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, WriteableJsonArray)}.
      */
     void write(Writer writer, WriteableJsonArray writeableJsonArray) throws IOException;
@@ -40,7 +40,6 @@ import java.io.Writer;
      * @param writer              the {@code Writer} to output to.
      * @param writeableJsonObject the {@code WriteableJsonObject} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
-     *
      * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, WriteableJsonObject)}.
      */
     void write(Writer writer, WriteableJsonObject writeableJsonObject) throws IOException;
@@ -51,7 +50,6 @@ import java.io.Writer;
      * @param writer              the {@code Writer} to output to.
      * @param writeableJsonString the {@code WriteableJsonString} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
-     *
      * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, WriteableJsonString)}.
      */
     void write(Writer writer, WriteableJsonString writeableJsonString) throws IOException;
@@ -63,7 +61,6 @@ import java.io.Writer;
      * @param writeableJsonNumber the {@code WriteableJsonNumber} to output.
      * @throws IOException              if there was a problem writing to the {@code Writer}.
      * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} didn't constitute a complete JSON number.
-     *
      * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, WriteableJsonNumber)}.
      */
     void write(Writer writer, WriteableJsonNumber writeableJsonNumber) throws IOException;
@@ -71,10 +68,9 @@ import java.io.Writer;
     /**
      * Streams the specified {@code JsonNode} formatted to the specified {@code Writer}.
      *
-     * @param writer the {@code Writer} to output to.
+     * @param writer   the {@code Writer} to output to.
      * @param jsonNode the {@code JsonNode} to output.
      * @throws IOException if there was a problem writing to the {@code Writer}.
-     *
      * @deprecated Replaced by {@link argo.JsonGenerator#generate(Writer, JsonNode)}.
      */
     void write(Writer writer, JsonNode jsonNode) throws IOException;

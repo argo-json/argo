@@ -14,15 +14,11 @@ import java.io.Reader;
 
 public final class BlackHoleJsonListener implements JsonListener {
 
-    public static final BlackHoleJsonListener BLACK_HOLE_JSON_LISTENER = new BlackHoleJsonListener(reader -> {});
+    public static final BlackHoleJsonListener BLACK_HOLE_JSON_LISTENER = new BlackHoleJsonListener(reader -> {
+    });
 
     private final BlackHoleReader blackHoleReader;
 
-
-    @FunctionalInterface
-    public interface BlackHoleReader {
-        void consume(Reader reader);
-    }
 
     public BlackHoleJsonListener(final BlackHoleReader blackHoleReader) {
         this.blackHoleReader = blackHoleReader;
@@ -68,5 +64,10 @@ public final class BlackHoleJsonListener implements JsonListener {
     }
 
     public void nullValue() {
+    }
+
+    @FunctionalInterface
+    public interface BlackHoleReader {
+        void consume(Reader reader);
     }
 }

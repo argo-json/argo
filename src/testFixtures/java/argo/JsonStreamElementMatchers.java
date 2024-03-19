@@ -23,6 +23,9 @@ import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.Matchers.equalTo;
 
 public class JsonStreamElementMatchers {
+    private JsonStreamElementMatchers() {
+    }
+
     public static Matcher<JsonStreamElement> aTextJsonStreamElementWithType(final JsonStreamElementType jsonStreamElementType, final String textValue) {
         return allOf(jsonStreamElementWithType(equalTo(jsonStreamElementType)), jsonStreamElementWithText(equalTo(textValue)));
     }
@@ -135,8 +138,5 @@ public class JsonStreamElementMatchers {
                 description.appendText("A JsonStreamElement for which hasText() returns ").appendDescriptionOf(booleanMatcher);
             }
         };
-    }
-
-    private JsonStreamElementMatchers() {
     }
 }

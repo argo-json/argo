@@ -20,6 +20,60 @@ public abstract class JsonStreamElement {
 
     private final JsonStreamElementType jsonStreamElementType;
 
+    private JsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
+        this.jsonStreamElementType = jsonStreamElementType;
+    }
+
+    static JsonStreamElement startField(final Reader reader) {
+        return new TextJsonStreamElement.StartFieldJsonStreamElement(reader);
+    }
+
+    static JsonStreamElement string(final Reader reader) {
+        return new TextJsonStreamElement.StringJsonStreamElement(reader);
+    }
+
+    static JsonStreamElement number(final Reader reader) {
+        return new TextJsonStreamElement.NumberJsonStreamElement(reader);
+    }
+
+    /**
+     * Gets the type of this element.
+     *
+     * @return the type of the element.
+     */
+    public final JsonStreamElementType jsonStreamElementType() {
+        return jsonStreamElementType;
+    }
+
+    /**
+     * Determines whether the element has text.
+     *
+     * @return true if the element has text.
+     */
+    public abstract boolean hasText();
+
+    /**
+     * Gets a Reader to stream the text associated with the element.
+     *
+     * @return a reader of the text associated with the element.
+     * @throws IllegalStateException if the element doesn't have any text associated with it.
+     */
+    public abstract Reader reader();
+
+    /**
+     * Converts this element into a callback to a JsonListener.
+     *
+     * @param jsonListener the JsonListener to call back with the details of this element
+     */
+    public abstract void visit(JsonListener jsonListener);
+
+    @Override
+    public final String toString() {
+        return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType;
+    }
+
+    abstract void close() throws IOException;
+
     static abstract class NonTextJsonStreamElement extends JsonStreamElement {
         static final JsonStreamElement START_DOCUMENT = new NonTextJsonStreamElement(JsonStreamElementType.START_DOCUMENT) {
             @Override
@@ -97,7 +151,8 @@ public abstract class JsonStreamElement {
         }
 
         @Override
-        final void close() {}
+        final void close() {
+        }
     }
 
     private static abstract class TextJsonStreamElement extends JsonStreamElement {
@@ -154,58 +209,4 @@ public abstract class JsonStreamElement {
             }
         }
     }
-
-    static JsonStreamElement startField(final Reader reader) {
-        return new TextJsonStreamElement.StartFieldJsonStreamElement(reader);
-    }
-
-    static JsonStreamElement string(final Reader reader) {
-        return new TextJsonStreamElement.StringJsonStreamElement(reader);
-    }
-
-    static JsonStreamElement number(final Reader reader) {
-        return new TextJsonStreamElement.NumberJsonStreamElement(reader);
-    }
-
-    private JsonStreamElement(final JsonStreamElementType jsonStreamElementType) {
-        this.jsonStreamElementType = jsonStreamElementType;
-    }
-
-    /**
-     * Gets the type of this element.
-     *
-     * @return the type of the element.
-     */
-    public final JsonStreamElementType jsonStreamElementType() {
-        return jsonStreamElementType;
-    }
-
-    /**
-     * Determines whether the element has text.
-     *
-     * @return true if the element has text.
-     */
-    public abstract boolean hasText();
-
-    /**
-     * Gets a Reader to stream the text associated with the element.
-     *
-     * @return a reader of the text associated with the element.
-     * @throws IllegalStateException if the element doesn't have any text associated with it.
-     */
-    public abstract Reader reader();
-
-    /**
-     * Converts this element into a callback to a JsonListener.
-     *
-     * @param jsonListener the JsonListener to call back with the details of this element
-     */
-    public abstract void visit(JsonListener jsonListener);
-
-    @Override
-    public final String toString() {
-        return "JsonStreamElement jsonStreamElementType: " + jsonStreamElementType;
-    }
-
-    abstract void close() throws IOException;
 }

@@ -164,7 +164,7 @@ class CharacterUtilitiesTest {
             "0xffff,\\uFFFF",
     })
     void convertsNonPrintableCharacterToItsUnicodeEscapedRepresentation(final int character, final String expectedRepresentation) {
-        assertThat(CharacterUtilities.asPrintableString((char)character), equalTo(expectedRepresentation));
+        assertThat(CharacterUtilities.asPrintableString((char) character), equalTo(expectedRepresentation));
     }
 
     @Test
