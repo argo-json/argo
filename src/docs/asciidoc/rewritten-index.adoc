@@ -136,7 +136,8 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson,inden
 |Unlimited
 
 |Elements in an array
-|`Integer.MAX_VALUE` / 2
+|`Integer.MAX_VALUE` - 8
+// TODO this is only tested with ArrayList instead of LinkedList in JsonArrayNodeBuilder, and with ImmutableList and JsonArrayNodeBuilder primed for Integer.MAX_VALUE - 8 elements.
 |Unlimited
 |`Integer.MAX_VALUE` - 8
 |Unlimited
