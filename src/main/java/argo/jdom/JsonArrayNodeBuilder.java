@@ -10,15 +10,15 @@
 
 package argo.jdom;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Builder for {@code JsonNode}s representing JSON arrays.
  */
 public final class JsonArrayNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
-    private final Queue<Builder<? extends JsonNode>> elementBuilders = new LinkedList<Builder<? extends JsonNode>>();
+    private final Collection<Builder<? extends JsonNode>> elementBuilders = new ArrayList<Builder<? extends JsonNode>>();
 
     JsonArrayNodeBuilder() {
     }

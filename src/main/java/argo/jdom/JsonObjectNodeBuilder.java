@@ -10,10 +10,10 @@
 
 package argo.jdom;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
 import static argo.jdom.JsonFieldNodeBuilder.aJsonFieldBuilder;
 import static argo.jdom.JsonNodeFactories.object;
@@ -54,7 +54,7 @@ public abstract class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode>
 
     static final class DuplicateFieldNamePermittingJsonObjectNodeBuilder extends JsonObjectNodeBuilder {
 
-        private final Queue<Builder<? extends JsonField>> fieldBuilders = new LinkedList<Builder<? extends JsonField>>();
+        private final Collection<Builder<? extends JsonField>> fieldBuilders = new ArrayList<Builder<? extends JsonField>>();
 
         JsonObjectNodeBuilder withFieldBuilder(final NamedJsonFieldBuilder jsonFieldBuilder) {
             fieldBuilders.add(jsonFieldBuilder);

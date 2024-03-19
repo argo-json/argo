@@ -948,3 +948,9 @@ Try switching JsonArrayNodeBuilder and JsonObjectNodeBuilder backing collections
 
 Benchmark                   Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse  thrpt   25  17776.488 ± 545.194  ops/s
+
+
+Use ArrayList in JsonArrayNodeBuilder and JsonObjectNodeBuilder, and avoid ArrayList(Collection) when building an immutable list of BuilderCollection as it creates has two full-sized arrays of all elements in memory at once.
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  18105.375 ± 190.755  ops/s
