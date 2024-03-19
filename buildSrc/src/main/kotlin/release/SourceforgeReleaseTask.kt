@@ -52,13 +52,21 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
         val defaultDownloadUri =
             URI.create("https://sourceforge.net/projects/argo/files/argo/${project.version}/argo-${project.version}.jar")
         val response = HttpClient.newHttpClient()
-                .send(
-                        HttpRequest.newBuilder(defaultDownloadUri)
-                                .PUT(HttpRequest.BodyPublishers.ofString("default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others&download_label=${project.version}%20with%20source&api_key=${project.property("sourceforgeApiKey")}"))
-                                .setHeader("content-type", "application/x-www-form-urlencoded")
-                                .build(),
-                        HttpResponse.BodyHandlers.ofString()
-                )
+            .send(
+                HttpRequest.newBuilder(defaultDownloadUri)
+                    .PUT(
+                        HttpRequest.BodyPublishers.ofString(
+                            "default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others&download_label=${project.version}%20with%20source&api_key=${
+                                project.property(
+                                    "sourceforgeApiKey"
+                                )
+                            }"
+                        )
+                    )
+                    .setHeader("content-type", "application/x-www-form-urlencoded")
+                    .build(),
+                HttpResponse.BodyHandlers.ofString()
+            )
         if (response.statusCode() < 200 || response.statusCode() >= 400) {
             throw GradleException("updating SourceForge default download to {$defaultDownloadUri} resulted in response code ${response.statusCode()} with body\n${response.body()}")
         }
@@ -66,7 +74,7 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
     }
 
     private fun <T> retrying(block: () -> T) = generateSequence { runCatching(block) }
-            .filterIndexed { index, result -> index >= 3 || result.isSuccess }
-            .first()
-            .getOrThrow()
+        .filterIndexed { index, result -> index >= 3 || result.isSuccess }
+        .first()
+        .getOrThrow()
 }
