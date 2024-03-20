@@ -960,3 +960,9 @@ Build more eagerly during non-streaming parse
 
 Benchmark                   Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse  thrpt   25  19050.058 ± 352.789  ops/s
+
+
+Try defensive copy avoidance during non-streaming parse because we already know the source collection won't be modified; rejected as no faster (at the size benchmarked), and prone to future mistakes
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  18101.496 ± 311.258  ops/s
