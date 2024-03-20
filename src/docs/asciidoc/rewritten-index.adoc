@@ -148,7 +148,8 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson,inden
 |Unlimited
 
 |Nesting depth
-|Limited by JVM stack (>1000 using 1MB stack)
+|Limited by JVM stack (>3000 using 1MB stack)
+// TODO this is probably now memory limited.
 |`Integer.MAX_VALUE` - 8
 |Limited by JVM stack (>2000 using 1MB stack)
 |Limited by JVM stack (>3000 using 1MB stack)
