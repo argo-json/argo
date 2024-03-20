@@ -24,20 +24,14 @@ final class ImmutableListFactories {
 
     static <T> List<T> immutableListOf(final Iterable<? extends T> elements) {
         if (elements instanceof Collection) {
-            final List<T> result;
-            if (elements instanceof BuildingCollection) {
-                final ArrayList<T> modifiableResult = new ArrayList<T>(((Collection<?>) elements).size());
-                for (final T next : elements) {
-                    modifiableResult.add(next);
+            final ArrayList<T> modifiableResult = new ArrayList<T>(((Collection<?>) elements).size());
+            for (final T next : elements) {
+                if (next == null) {
+                    throw new NullPointerException();
                 }
-                result = unmodifiableList(modifiableResult);
-            } else {
-                result = unmodifiableList(new ArrayList<T>((Collection<? extends T>) elements));
+                modifiableResult.add(next);
             }
-            if (result.contains(null)) {
-                throw new NullPointerException();
-            }
-            return result;
+            return unmodifiableList(modifiableResult);
         } else {
             return immutableListOf(elements.iterator());
         }

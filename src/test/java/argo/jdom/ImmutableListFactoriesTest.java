@@ -14,7 +14,6 @@ import net.sourceforge.ickles.RandomSizeListSupplier;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyList;
@@ -36,11 +35,6 @@ final class ImmutableListFactoriesTest {
     }
 
     @Test
-    void handlesEmptyBuildingCollection() {
-        assertThat(ImmutableListFactories.immutableListOf(new BuildingCollection<>(emptyList())), is(emptyList()));
-    }
-
-    @Test
     void handlesEmptyNonCollectionIterable() {
         assertThat(ImmutableListFactories.immutableListOf(Collections::emptyIterator), is(emptyList()));
     }
@@ -53,11 +47,6 @@ final class ImmutableListFactoriesTest {
     @Test
     void rejectsNullList() {
         assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((Collection<JsonNode>) null));
-    }
-
-    @Test
-    void rejectsNullBuildingCollection() {
-        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf((BuildingCollection<JsonNode>) null));
     }
 
     @Test
@@ -77,11 +66,6 @@ final class ImmutableListFactoriesTest {
     }
 
     @Test
-    void rejectsBuildingCollectionThatBuildsNull() {
-        assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(new BuildingCollection<>(Collections.singletonList(() -> null))));
-    }
-
-    @Test
     @SuppressWarnings("FunctionalExpressionCanBeFolded")
     void rejectsNonCollectionIterableContainingNull() {
         assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(Collections.singletonList(null)::iterator));
@@ -96,13 +80,6 @@ final class ImmutableListFactoriesTest {
     void returnedListIsEqualToSourceList() {
         final List<Object> sourceList = aList();
         assertThat(ImmutableListFactories.immutableListOf(sourceList), equalTo(sourceList));
-    }
-
-    @Test
-    void returnedListIsEqualToBuiltSourceBuildingCollection() {
-        final List<Object> sourceList = aList();
-        final BuildingCollection<Object> buildingCollection = new BuildingCollection<>(sourceList.stream().map(o -> (Builder<Object>) () -> o).collect(Collectors.toList()));
-        assertThat(ImmutableListFactories.immutableListOf(buildingCollection), equalTo(sourceList));
     }
 
     @Test

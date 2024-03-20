@@ -966,3 +966,9 @@ Try defensive copy avoidance during non-streaming parse because we already know 
 
 Benchmark                   Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse  thrpt   25  18101.496 ± 311.258  ops/s
+
+
+Always use hand-rolled List copy when making ImmutableLists rather than new ArrayList(Collection) to reduce working memory requirement.
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  18858.632 ± 366.157  ops/s
