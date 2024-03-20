@@ -47,14 +47,6 @@ class LimitationsTest {
         }
     }
 
-    private static JsonNode nestedArray(final JsonNode member, final int depth) {
-        if (depth == 0) {
-            return member;
-        } else {
-            return nestedArray(array(member), depth - 1);
-        }
-    }
-
     @Test
     @Disabled
     void generateAndParseString() throws IOException, InterruptedException, InvalidSyntaxException {
@@ -193,9 +185,10 @@ class LimitationsTest {
     @Test
     @Disabled
     void generateNested() throws IOException {
-        final JsonNode jsonNode = nestedArray(array(), 2000);
-
-        LOGGER.info("Made json node");
+        JsonNode jsonNode = array();
+        for (int i = 1; i < 2900; i++) {
+            jsonNode = array(jsonNode);
+        }
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
@@ -243,7 +236,7 @@ class LimitationsTest {
             @Override
             public void writeTo(final ArrayWriter arrayWriter) throws IOException {
                 callCount++;
-                if (callCount < 3000) {
+                if (callCount < 3001) {
                     arrayWriter.writeElement(this);
                 }
             }
