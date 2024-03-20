@@ -117,7 +117,7 @@ idea {
 }
 
 jmh {
-    includes = listOf("[streamingEvent|jdom]Parse")
+    includes = listOf("jdomParse")
 }
 
 revapi {
