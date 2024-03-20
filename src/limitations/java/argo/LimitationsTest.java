@@ -48,7 +48,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // TODO test with big heap
     void generateAndParseString() throws IOException, InterruptedException, InvalidSyntaxException {
         final StringBuilder stringBuilder = new StringBuilder(Integer.MAX_VALUE - 8);
         for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
@@ -59,7 +59,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // checked
     void streamingGenerateAndStreamingParseString() throws IOException, InterruptedException, InvalidSyntaxException {
         final int max = Integer.MAX_VALUE;
         final int percentile = max / 100;
@@ -74,7 +74,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // TODO test with big heap
     void generateAndParseNumber() throws IOException, InterruptedException, InvalidSyntaxException {
         final StringBuilder stringBuilder = new StringBuilder(Integer.MAX_VALUE - 8);
         for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
@@ -85,7 +85,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // checked
     void streamingGenerateAndStreamingParseNumber() throws IOException, InterruptedException, InvalidSyntaxException {
         final int max = Integer.MAX_VALUE;
         final int percentile = max / 100;
@@ -100,7 +100,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // TODO test with big heap
     void generateArray() throws IOException {
         final JsonNode number = number(0);
         final JsonNode jsonNode = array(Stream.generate(() -> number).limit(Integer.MAX_VALUE - 8).iterator());
@@ -109,7 +109,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // TODO test with big heap
     void parseArray() throws IOException, InterruptedException, InvalidSyntaxException {
         final int max = Integer.MAX_VALUE - 8;
         final int percentile = max / 100;
@@ -125,7 +125,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // checked
     void streamingGenerateAndStreamingParseArray() throws IOException, InterruptedException, InvalidSyntaxException {
         final int max = Integer.MAX_VALUE;
         final int percentile = max / 100;
@@ -141,7 +141,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // TODO test with big heap
     void generateObject() throws IOException {
         final JsonField field = field(string("a"), number(0));
         final JsonNode jsonNode = object(Stream.generate(() -> field).limit(Integer.MAX_VALUE - 8).iterator());
@@ -150,7 +150,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // TODO test with big heap
     void parseObject() throws IOException, InterruptedException, InvalidSyntaxException {
         final int max = Integer.MAX_VALUE / 8;
         final int percentile = max / 100;
@@ -166,7 +166,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // checked
     void streamingGenerateAndStreamingParseObject() throws IOException, InterruptedException, InvalidSyntaxException {
         final JsonStringNode name = string("");
         final JsonNode number = number(0);
@@ -183,7 +183,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // checked
     void generateNested() throws IOException {
         JsonNode jsonNode = array();
         for (int i = 1; i < 2900; i++) {
@@ -193,7 +193,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled // checked
     void parseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = 3000;
@@ -207,7 +207,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled  // TODO test with big heap
     void streamingParseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
@@ -228,7 +228,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled
+    @Disabled  // checked
     void streamingGenerateNested() throws IOException, InterruptedException, InvalidSyntaxException {
         final WriteableJsonArray writeableJsonArray = new WriteableJsonArray() {
             private int callCount = 0;
@@ -236,7 +236,7 @@ class LimitationsTest {
             @Override
             public void writeTo(final ArrayWriter arrayWriter) throws IOException {
                 callCount++;
-                if (callCount < 3001) {
+                if (callCount < 3000) {
                     arrayWriter.writeElement(this);
                 }
             }
