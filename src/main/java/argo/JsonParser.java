@@ -15,14 +15,10 @@ import argo.jdom.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import static argo.JsonStreamElement.NonTextJsonStreamElement.END_DOCUMENT;
-import static argo.jdom.JsonNodeBuilders.*;
-import static argo.jdom.JsonNodeFactories.prevalidatedNumberBuilder;
+import static argo.jdom.JsonNodeFactories.*;
 
 /**
  * Provides operations to parse JSON.
@@ -194,52 +190,50 @@ public final class JsonParser {
         final JsonNumberNodeFactory jsonNumberNodeFactory = new JsonNumberNodeFactory();
         final RootNodeContainer root = new RootNodeContainer();
         final Stack<NodeContainer> stack = new Stack<NodeContainer>();
-        stack.push(root);
         try {
             parseExecutor.parseUsing(new JsonListener() {
                 public void startDocument() {
+                    stack.push(root);
                 }
 
                 public void endDocument() {
+                    stack.pop();
                 }
 
                 public void startArray() {
-                    final ArrayNodeContainer arrayNodeContainer = new ArrayNodeContainer();
-                    stack.peek().addNode(arrayNodeContainer);
-                    stack.push(arrayNodeContainer);
+                    stack.push(new ArrayNodeContainer());
                 }
 
                 public void endArray() {
-                    stack.pop();
+                    final JsonNode jsonNode = stack.pop().buildNode();
+                    stack.peek().add(jsonNode);
                 }
 
                 public void startObject() {
-                    final ObjectNodeContainer objectNodeContainer = new ObjectNodeContainer();
-                    stack.peek().addNode(objectNodeContainer);
-                    stack.push(objectNodeContainer);
+                    stack.push(new ObjectNodeContainer());
                 }
 
                 public void endObject() {
-                    stack.pop();
+                    final JsonNode jsonNode = stack.pop().buildNode();
+                    stack.peek().add(jsonNode);
                 }
 
                 public void startField(final Reader name) {
                     try {
-                        final FieldNodeContainer fieldNodeContainer = new FieldNodeContainer(jsonStringNodeFactory.jsonStringNode(asString(name, 32)));
-                        stack.peek().addField(fieldNodeContainer);
-                        stack.push(fieldNodeContainer);
+                        stack.push(new FieldNodeContainer(jsonStringNodeFactory.jsonStringNode(asString(name, 32))));
                     } catch (final IOException e) {
                         throw new IORuntimeException(e);
                     }
                 }
 
                 public void endField() {
-                    stack.pop();
+                    final JsonField jsonField = stack.pop().buildField();
+                    stack.peek().add(jsonField);
                 }
 
                 public void stringValue(final Reader value) {
                     try {
-                        stack.peek().addNode(jsonStringNodeFactory.jsonStringNode(asString(value, 32)));
+                        stack.peek().add(jsonStringNodeFactory.jsonStringNode(asString(value, 32)));
                     } catch (final IOException e) {
                         throw new IORuntimeException(e);
                     }
@@ -247,28 +241,28 @@ public final class JsonParser {
 
                 public void numberValue(final Reader value) {
                     try {
-                        stack.peek().addNode(jsonNumberNodeFactory.jsonNumberNode(asString(value, 16)));
+                        stack.peek().add(jsonNumberNodeFactory.jsonNumberNode(asString(value, 16)));
                     } catch (final IOException e) {
                         throw new IORuntimeException(e);
                     }
                 }
 
                 public void trueValue() {
-                    stack.peek().addNode(aTrueBuilder());
+                    stack.peek().add(trueNode());
                 }
 
                 public void falseValue() {
-                    stack.peek().addNode(aFalseBuilder());
+                    stack.peek().add(falseNode());
                 }
 
                 public void nullValue() {
-                    stack.peek().addNode(aNullBuilder());
+                    stack.peek().add(nullNode());
                 }
             });
         } catch (final IORuntimeException e) {
             throw e.getCause();
         }
-        return root.build();
+        return root.buildNode();
     }
 
     interface ParseExecutor {
@@ -277,9 +271,13 @@ public final class JsonParser {
 
     private interface NodeContainer {
 
-        void addNode(JsonNodeBuilder<?> jsonNodeBuilder);
+        void add(JsonNode jsonNode);
 
-        void addField(FieldNodeContainer fieldNodeContainer);
+        void add(JsonField jsonField);
+
+        JsonNode buildNode();
+
+        JsonField buildField();
 
     }
 
@@ -297,84 +295,103 @@ public final class JsonParser {
         }
     }
 
-    private static final class RootNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
+    private static final class RootNodeContainer implements NodeContainer {
 
-        private JsonNodeBuilder<?> valueBuilder;
+        private JsonNode value;
 
-        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
-            if (valueBuilder == null) {
-                valueBuilder = jsonNodeBuilder;
+        public void add(final JsonNode jsonNode) {
+            if (value == null) {
+                value = jsonNode;
             } else {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to add more than one root node");
             }
         }
 
-        public void addField(final FieldNodeContainer fieldNodeContainer) {
+        public void add(final JsonField jsonField) {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a field as root node");
         }
 
-        public JsonNode build() {
-            if (valueBuilder == null) {
+        public JsonNode buildNode() {
+            if (value == null) {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to build document with no root node");
             } else {
-                return valueBuilder.build();
+                return value;
             }
         }
-    }
 
-    private static final class ArrayNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
-        private final JsonArrayNodeBuilder arrayBuilder = anArrayBuilder();
-
-        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
-            arrayBuilder.withElement(jsonNodeBuilder);
+        public JsonField buildField() {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to build a field from a root node");
         }
 
-        public void addField(final FieldNodeContainer fieldNodeContainer) {
+    }
+
+    private static final class ArrayNodeContainer implements NodeContainer {
+        private final List<JsonNode> elements = new ArrayList<JsonNode>();
+
+        public void add(final JsonNode jsonNode) {
+            elements.add(jsonNode);
+        }
+
+        public void add(final JsonField jsonField) {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to an array");
         }
 
-        public JsonNode build() {
-            return arrayBuilder.build();
+        public JsonNode buildNode() {
+            return array(elements); // TODO can we skip the defensive copy of the list, since we know it won't be mutated after this point?
         }
+
+        public JsonField buildField() {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to build a field from an array node");
+        }
+
     }
 
-    private static final class ObjectNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
-        private final JsonObjectNodeBuilder jsonObjectNodeBuilder = anObjectBuilder();
+    private static final class ObjectNodeContainer implements NodeContainer {
+        private final List<JsonField> fields = new ArrayList<JsonField>();
 
-        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
+        public void add(final JsonNode jsonNode) {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a node to an object");
         }
 
-        public void addField(final FieldNodeContainer fieldNodeContainer) {
-            jsonObjectNodeBuilder.withField(fieldNodeContainer.name, fieldNodeContainer);
+        public void add(final JsonField jsonField) {
+            fields.add(jsonField);
         }
 
-        public JsonNode build() {
-            return jsonObjectNodeBuilder.build();
+        public JsonNode buildNode() {
+            return object(fields); // TODO can we skip the defensive copy of the list, since we know it won't be mutated after this point?
         }
+
+        public JsonField buildField() {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to build a field from a root node");
+        }
+
     }
 
-    private static final class FieldNodeContainer implements NodeContainer, JsonNodeBuilder<JsonNode> {
-        final JsonStringNode name;
-        private JsonNodeBuilder<?> valueBuilder;
+    private static final class FieldNodeContainer implements NodeContainer {
+        private final JsonStringNode name;
+        private JsonNode value;
 
         FieldNodeContainer(final JsonStringNode name) {
             this.name = name;
         }
 
-        public void addNode(final JsonNodeBuilder<?> jsonNodeBuilder) {
-            valueBuilder = jsonNodeBuilder;
+        public void add(final JsonNode jsonNode) {
+            value = jsonNode;
         }
 
-        public void addField(final FieldNodeContainer fieldNodeContainer) {
+        public void add(final JsonField jsonField) {
             throw new RuntimeException("Coding failure in Argo:  Attempt to add a field to a field");
         }
 
-        public JsonNode build() {
-            if (valueBuilder == null) {
+        public JsonNode buildNode() {
+            throw new RuntimeException("Coding failure in Argo:  Attempt to build a JSON node from a field");
+        }
+
+        public JsonField buildField() {
+            if (value == null) {
                 throw new RuntimeException("Coding failure in Argo:  Attempt to create a field without a value");
             } else {
-                return valueBuilder.build();
+                return field(name, value);
             }
         }
     }
@@ -395,12 +412,12 @@ public final class JsonParser {
     }
 
     private static final class JsonNumberNodeFactory {
-        private final Map<String, JsonNodeBuilder<JsonNode>> existingJsonNumberNodes = new HashMap<String, JsonNodeBuilder<JsonNode>>(); // TODO make object reuse switchable.
+        private final Map<String, JsonNode> existingJsonNumberNodes = new HashMap<String, JsonNode>(); // TODO make object reuse switchable.
 
-        JsonNodeBuilder<JsonNode> jsonNumberNode(final String value) {
-            final JsonNodeBuilder<JsonNode> cachedNumberNode = existingJsonNumberNodes.get(value);
+        JsonNode jsonNumberNode(final String value) {
+            final JsonNode cachedNumberNode = existingJsonNumberNodes.get(value);
             if (cachedNumberNode == null) {
-                final JsonNodeBuilder<JsonNode> newJsonNumberNode = prevalidatedNumberBuilder(new PrevalidatedNumber(value));
+                final JsonNode newJsonNumberNode = prevalidatedNumber(new PrevalidatedNumber(value));
                 existingJsonNumberNodes.put(value, newJsonNumberNode);
                 return newJsonNumberNode;
             } else {

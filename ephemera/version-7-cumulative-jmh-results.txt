@@ -954,3 +954,9 @@ Use ArrayList in JsonArrayNodeBuilder and JsonObjectNodeBuilder, and avoid Array
 
 Benchmark                   Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse  thrpt   25  18105.375 ± 190.755  ops/s
+
+
+Build more eagerly during non-streaming parse
+
+Benchmark                   Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse  thrpt   25  19050.058 ± 352.789  ops/s
