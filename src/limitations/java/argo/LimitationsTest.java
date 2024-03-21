@@ -160,7 +160,7 @@ class LimitationsTest {
     @Disabled // checked
     void parseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
-            final int max = 3000;
+            final int max = Integer.MAX_VALUE / 8;
             for (int i = 0; i < max; i++) {
                 writer.write('[');
             }
