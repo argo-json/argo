@@ -207,7 +207,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled  // TODO test with big heap
+    @Disabled  // checked
     void streamingParseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
