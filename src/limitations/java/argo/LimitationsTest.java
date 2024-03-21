@@ -48,7 +48,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // TODO test with big heap
+    @Disabled // checked
     void generateAndParseString() throws IOException, InterruptedException, InvalidSyntaxException {
         final StringBuilder stringBuilder = new StringBuilder(Integer.MAX_VALUE - 8);
         for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
