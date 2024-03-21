@@ -33,9 +33,9 @@ class LimitationsTest {
     private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(COMPACT);
 
     private static void executeTest(final Generator generator, final Parser parser) throws IOException, InterruptedException, InvalidSyntaxException {
-        try (PipedReader pipedReader = new PipedReader(); Reader reader = new BufferedReader(pipedReader); Writer pipedWriter = new PipedWriter(pipedReader)) {
+        try (PipedReader pipedReader = new PipedReader(); Reader reader = new BufferedReader(pipedReader, 1024 * 256); Writer pipedWriter = new PipedWriter(pipedReader)) {
             final Thread thread = new Thread(() -> {
-                try (Writer writer = new BufferedWriter(pipedWriter)) {
+                try (Writer writer = new BufferedWriter(pipedWriter, 1024 * 256)) {
                     generator.generate(writer);
                 } catch (final IOException e) {
                     throw new RuntimeException(e);
