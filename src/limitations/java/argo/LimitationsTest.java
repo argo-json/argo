@@ -100,7 +100,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // TODO test with big heap
+    @Disabled // checked
     void generateArray() throws IOException {
         final JsonNode number = number(0);
         final JsonNode jsonNode = array(Stream.generate(() -> number).limit(Integer.MAX_VALUE - 8).iterator());
