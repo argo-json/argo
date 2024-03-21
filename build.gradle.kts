@@ -208,7 +208,7 @@ tasks {
     }
 
     named<Test>("limitations") {
-        maxHeapSize = "56g"
+        maxHeapSize = "112g"
     }
 
     val ico by registering(com.gitlab.svg2ico.Svg2IcoTask::class) {
