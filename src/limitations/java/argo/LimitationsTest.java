@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
-import java.util.stream.Stream;
+import java.util.Collections;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
 import static argo.jdom.JsonNodeFactories.*;
@@ -88,10 +88,9 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
+    @Disabled // TODO recheck
     void generateArray() throws IOException {
-        final JsonNode number = number(0);
-        final JsonNode jsonNode = array(Stream.generate(() -> number).limit(Integer.MAX_VALUE - 8).iterator()); // TODO Collections.nCopies
+        final JsonNode jsonNode = array(Collections.nCopies(Integer.MAX_VALUE - 8, number(0)));
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
@@ -118,10 +117,9 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
+    @Disabled // TODO recheck
     void generateObject() throws IOException {
-        final JsonField field = field(string("a"), number(0));
-        final JsonNode jsonNode = object(Stream.generate(() -> field).limit(Integer.MAX_VALUE - 8).iterator());  // TODO Collections.nCopies
+        final JsonNode jsonNode = object(Collections.nCopies(Integer.MAX_VALUE - 8, field(string("a"), number(0))));
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
