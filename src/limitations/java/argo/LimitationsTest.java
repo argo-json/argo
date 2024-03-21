@@ -109,7 +109,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // TODO test with big heap
+    @Disabled // checked
     void parseArray() throws IOException, InterruptedException, InvalidSyntaxException {
         final int max = Integer.MAX_VALUE - 8;
         final int percentile = max / 100;
