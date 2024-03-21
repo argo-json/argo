@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
@@ -27,7 +26,6 @@ import static argo.jdom.JsonNodeFactories.*;
 
 class LimitationsTest {
 
-    private static final Logger LOGGER = Logger.getLogger(LimitationsTest.class.getName());
     private static final BlackHoleJsonListener BLACK_HOLE_JSON_LISTENER = new BlackHoleJsonListener(reader -> {
     });
     private static final JsonGenerator JSON_GENERATOR = new JsonGenerator().style(COMPACT);
@@ -61,13 +59,8 @@ class LimitationsTest {
     @Test
     @Disabled // checked
     void streamingGenerateAndStreamingParseString() throws IOException, InterruptedException, InvalidSyntaxException {
-        final int max = Integer.MAX_VALUE;
-        final int percentile = max / 100;
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonString) stringWriter -> {
-            for (int i = -5; i < max; i++) {
-                if (i % percentile == 0) {
-                    LOGGER.info("Wrote " + (i / percentile) + "%");
-                }
+            for (int i = -5; i < Integer.MAX_VALUE; i++) {
                 stringWriter.write('a');
             }
         }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
@@ -87,13 +80,8 @@ class LimitationsTest {
     @Test
     @Disabled // checked
     void streamingGenerateAndStreamingParseNumber() throws IOException, InterruptedException, InvalidSyntaxException {
-        final int max = Integer.MAX_VALUE;
-        final int percentile = max / 100;
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonNumber) numberWriter -> {
-            for (int i = -5; i < max; i++) {
-                if (i % percentile == 0) {
-                    LOGGER.info("Wrote " + (i / percentile) + "%");
-                }
+            for (int i = -5; i < Integer.MAX_VALUE; i++) {
                 numberWriter.write('1');
             }
         }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
@@ -103,22 +91,16 @@ class LimitationsTest {
     @Disabled // checked
     void generateArray() throws IOException {
         final JsonNode number = number(0);
-        final JsonNode jsonNode = array(Stream.generate(() -> number).limit(Integer.MAX_VALUE - 8).iterator());
-        LOGGER.info("Made json node");
+        final JsonNode jsonNode = array(Stream.generate(() -> number).limit(Integer.MAX_VALUE - 8).iterator()); // TODO Collections.nCopies
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
     @Test
     @Disabled // checked
     void parseArray() throws IOException, InterruptedException, InvalidSyntaxException {
-        final int max = Integer.MAX_VALUE - 8;
-        final int percentile = max / 100;
         final JsonNode number = number(0);
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonArray) arrayWriter -> {
-            for (int i = 0; i < max; i++) {
-                if (i % percentile == 0) {
-                    LOGGER.info("Wrote " + (i / percentile) + "%");
-                }
+            for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
                 arrayWriter.writeElement(number);
             }
         }), reader -> new JsonParser().parse(reader));
@@ -127,14 +109,9 @@ class LimitationsTest {
     @Test
     @Disabled // checked
     void streamingGenerateAndStreamingParseArray() throws IOException, InterruptedException, InvalidSyntaxException {
-        final int max = Integer.MAX_VALUE;
-        final int percentile = max / 100;
         final JsonNode number = number(0);
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonArray) arrayWriter -> {
-            for (int i = -5; i < max; i++) {
-                if (i % percentile == 0) {
-                    LOGGER.info("Wrote " + (i / percentile) + "%");
-                }
+            for (int i = -5; i < Integer.MAX_VALUE; i++) {
                 arrayWriter.writeElement(number);
             }
         }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
@@ -144,22 +121,16 @@ class LimitationsTest {
     @Disabled // checked
     void generateObject() throws IOException {
         final JsonField field = field(string("a"), number(0));
-        final JsonNode jsonNode = object(Stream.generate(() -> field).limit(Integer.MAX_VALUE - 8).iterator());
-        LOGGER.info("Made json node");
+        final JsonNode jsonNode = object(Stream.generate(() -> field).limit(Integer.MAX_VALUE - 8).iterator());  // TODO Collections.nCopies
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
     @Test
     @Disabled // TODO test with big heap
     void parseObject() throws IOException, InterruptedException, InvalidSyntaxException {
-        final int max = Integer.MAX_VALUE - 8;
-        final int percentile = max / 100;
         final JsonField field = field(string("a"), number(0));
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonObject) objectWriter -> {
-            for (int i = 0; i < max; i++) {
-                if (i % percentile == 0) {
-                    LOGGER.info("Wrote " + (i / percentile) + "%");
-                }
+            for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
                 objectWriter.writeField(field);
             }
         }), reader -> new JsonParser().parse(reader));
@@ -170,13 +141,8 @@ class LimitationsTest {
     void streamingGenerateAndStreamingParseObject() throws IOException, InterruptedException, InvalidSyntaxException {
         final JsonStringNode name = string("");
         final JsonNode number = number(0);
-        final int max = Integer.MAX_VALUE;
-        final int percentile = max / 100;
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonObject) objectWriter -> {
-            for (int i = -5; i < max; i++) {
-                if (i % percentile == 0) {
-                    LOGGER.info("Wrote " + (i / percentile) + "%");
-                }
+            for (int i = -5; i < Integer.MAX_VALUE; i++) {
                 objectWriter.writeField(name, number);
             }
         }), reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
@@ -211,17 +177,10 @@ class LimitationsTest {
     void streamingParseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
-            final int percentile = max / 100;
             for (int i = 0; i < max; i++) {
-                if (i % percentile == 0) {
-                    LOGGER.info("Opened " + (i / percentile) + "%");
-                }
                 writer.write('[');
             }
             for (int i = 0; i < max; i++) {
-                if (i % percentile == 0) {
-                    LOGGER.info("Closed " + (i / percentile) + "%");
-                }
                 writer.write(']');
             }
         }, reader -> new JsonParser().parseStreaming(reader, BLACK_HOLE_JSON_LISTENER));
