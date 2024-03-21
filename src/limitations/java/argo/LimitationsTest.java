@@ -88,7 +88,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // TODO recheck
+    @Disabled // checked
     void generateArray() throws IOException {
         final JsonNode jsonNode = array(Collections.nCopies(Integer.MAX_VALUE - 8, number(0)));
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
@@ -117,7 +117,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // TODO recheck
+    @Disabled // checked
     void generateObject() throws IOException {
         final JsonNode jsonNode = object(Collections.nCopies(Integer.MAX_VALUE - 8, field(string("a"), number(0))));
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
