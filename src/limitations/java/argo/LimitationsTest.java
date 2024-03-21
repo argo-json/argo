@@ -124,7 +124,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // TODO test with big heap
+    @Disabled // checked
     void parseObject() throws IOException, InterruptedException, InvalidSyntaxException {
         final JsonField field = field(string("a"), number(0));
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonObject) objectWriter -> {
