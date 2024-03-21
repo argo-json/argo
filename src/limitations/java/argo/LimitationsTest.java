@@ -193,7 +193,7 @@ class LimitationsTest {
             @Override
             public void writeTo(final ArrayWriter arrayWriter) throws IOException {
                 callCount++;
-                if (callCount < 3000) {
+                if (callCount < 4_000) {
                     arrayWriter.writeElement(this);
                 }
             }
