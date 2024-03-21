@@ -160,7 +160,7 @@ class LimitationsTest {
     @Disabled // checked
     void parseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
-            final int max = Integer.MAX_VALUE - 9;
+            final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
             for (int i = 0; i < max; i++) {
                 writer.write('[');
             }
