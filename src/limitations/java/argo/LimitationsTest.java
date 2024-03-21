@@ -157,7 +157,7 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
+    @Disabled // TODO retest
     void parseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
