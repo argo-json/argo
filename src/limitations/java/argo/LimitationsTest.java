@@ -119,14 +119,14 @@ class LimitationsTest {
     @Test
     @Disabled // checked
     void generateObject() throws IOException {
-        final JsonNode jsonNode = object(Collections.nCopies(Integer.MAX_VALUE - 8, field(string("a"), number(0))));
+        final JsonNode jsonNode = object(Collections.nCopies(Integer.MAX_VALUE - 8, field(string(""), number(0))));
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
     @Test
     @Disabled // checked
     void parseObject() throws IOException, InterruptedException, InvalidSyntaxException {
-        final JsonField field = field(string("a"), number(0));
+        final JsonField field = field(string(""), number(0));
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonObject) objectWriter -> {
             for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
                 objectWriter.writeField(field);
