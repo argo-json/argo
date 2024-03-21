@@ -142,7 +142,7 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson,inden
 |Unlimited
 
 |Fields in an object
-|`Integer.MAX_VALUE` / 8
+|`Integer.MAX_VALUE` - 8
 |Unlimited
 |`Integer.MAX_VALUE` - 8
 |Unlimited
