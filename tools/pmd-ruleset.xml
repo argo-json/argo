@@ -84,7 +84,6 @@
         <exclude name="CognitiveComplexity"/> <!-- configured later -->
         <exclude name="CyclomaticComplexity"/> <!-- configured later -->
         <exclude name="ExcessiveImports"/>
-        <exclude name="ExcessivePublicCount"/>
         <exclude name="GodClass"/>
         <exclude name="SignatureDeclareThrowsException"/> <!-- configured later -->
         <exclude name="LawOfDemeter"/>
