@@ -113,15 +113,16 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson,inden
 <2> The stack will keep track of the parents of the current element
 <3> Nodes' text is also streamed, so we can have unbounded strings, numbers, and field names
 
+=== Further details
+
+// suppress inspection "AsciiDocLinkResolve"
+In-depth details of the API are available in the link:javadoc/[online javadoc].  The project is hosted on https://sourceforge.net/projects/argo[SourceForge].
+
 == Limitations
 
-[cols=",,,,"]
+[cols="h,,,,"]
 |===
-|
-|parse
-|streaming parse
-|generate
-|streaming generate
+| |parse |streaming parse |generate |streaming generate
 
 |Characters in a string
 |`Integer.MAX_VALUE` - 8
@@ -155,3 +156,5 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson,inden
 |Limited by JVM stack (>4000 using 1MB stack)
 
 |===
+
+image::https://sflogo.sourceforge.net/sflogo.php?group_id=245339&type=13["Get Argo at SourceForge.net. Fast, secure and Free Open Source software downloads",align="center",link=https://sourceforge.net/projects/argo]
