@@ -45,7 +45,6 @@
         <exclude name="LinguisticNaming"/> <!-- configured later -->
         <exclude name="LocalVariableCouldBeFinal"/> <!-- Don't want this on for code samples; switched back on for main TODO this should be switched on for everything except documentation -->
         <exclude name="LongVariable"/> <!-- configured later -->
-        <exclude name="MethodArgumentCouldBeFinal"/> <!-- Don't want this on for code samples; switched back on for main TODO this should be switched on for everything except documentation -->
         <exclude name="OnlyOneReturn"/>
         <exclude name="ShortClassName"/> <!-- configured later -->
         <exclude name="ShortVariable"/>
