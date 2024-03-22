@@ -96,7 +96,7 @@ class PrettyJsonPrinter extends JsonPrinter {
     final void write(final WriteableJsonArray writeableJsonArray) throws IOException {
         writer.write('[');
         depth++;
-        final boolean[] isFirst = {true};
+        final boolean[] refIsFirst = {true};
         writeableJsonArray.writeTo(new ArrayWriter() {
 
             public void writeElement(final WriteableJsonObject element) throws IOException {
@@ -125,17 +125,17 @@ class PrettyJsonPrinter extends JsonPrinter {
             }
 
             private void writePreamble() throws IOException {
-                if (!isFirst[0]) {
+                if (!refIsFirst[0]) {
                     writer.write(',');
                 }
-                isFirst[0] = false;
+                refIsFirst[0] = false;
                 writer.write(lineSeparator);
                 addTabs();
             }
 
         });
         depth--;
-        if (!isFirst[0]) {
+        if (!refIsFirst[0]) {
             writer.write(lineSeparator);
             addTabs();
         }
@@ -146,7 +146,7 @@ class PrettyJsonPrinter extends JsonPrinter {
     final void write(final WriteableJsonObject writeableJsonObject) throws IOException {
         writer.write('{');
         depth++;
-        final boolean[] isFirst = {true};
+        final boolean[] refIsFirst = {true};
         writeableJsonObject.writeTo(new ObjectWriter() {
             public void writeField(final String name, final WriteableJsonObject value) throws IOException {
                 writeField(JsonNodeFactories.string(name), value);
@@ -235,16 +235,16 @@ class PrettyJsonPrinter extends JsonPrinter {
             }
 
             private void writePreamble() throws IOException {
-                if (!isFirst[0]) {
+                if (!refIsFirst[0]) {
                     writer.write(',');
                 }
-                isFirst[0] = false;
+                refIsFirst[0] = false;
                 writer.write(lineSeparator);
                 addTabs();
             }
         });
         depth--;
-        if (!isFirst[0]) {
+        if (!refIsFirst[0]) {
             writer.write(lineSeparator);
             addTabs();
         }
