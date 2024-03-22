@@ -22,7 +22,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -113,9 +112,11 @@ class JsonStringEscapingWriterTest {
     @Test
     void writesLongStringToDelegate() throws IOException {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        char[] charArray = new char[2048];
-        Arrays.fill(charArray, 'a');
-        String value = new String(charArray);
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 2048; i++) {
+            stringBuilder.append('a');
+        }
+        String value = stringBuilder.toString();
         try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
             jsonStringEscapingWriter.write(value);
         }
@@ -135,9 +136,11 @@ class JsonStringEscapingWriterTest {
     @Test
     void writingLongJsonStringDoesNotUseReusableWriteBuffer() throws IOException {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        char[] charArray = new char[2048];
-        Arrays.fill(charArray, 'a');
-        String value = new String(charArray);
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 2048; i++) {
+            stringBuilder.append('a');
+        }
+        String value = stringBuilder.toString();
         final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
         try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, writeBufferHolder)) {
             jsonStringEscapingWriter.write(value);

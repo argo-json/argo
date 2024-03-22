@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
 import static argo.jdom.JsonNodeFactories.*;
+import static java.util.logging.Level.INFO;
 
 class LimitationsTest {
 
@@ -167,13 +168,13 @@ class LimitationsTest {
             final int percentile = max / 100;
             for (int i = 0; i < max; i++) {
                 writer.write('[');
-                if (i % percentile == 0) {
+                if (LOGGER.isLoggable(INFO) && i % percentile == 0) {
                     LOGGER.info("Opened " + (i / percentile) + "%");
                 }
             }
             for (int i = 0; i < max; i++) {
                 writer.write(']');
-                if (i % percentile == 0) {
+                if (LOGGER.isLoggable(INFO) && i % percentile == 0) {
                     LOGGER.info("Closed " + (i / percentile) + "%");
                 }
             }

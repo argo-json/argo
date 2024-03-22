@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -78,9 +77,11 @@ class JsonNumberValidatingWriterTest {
     @Test
     void writesLongValidNumberToDelegate() throws IOException {
         try (StringBuilderWriter stringBuilderWriter = new StringBuilderWriter()) {
-            char[] charArray = new char[2048];
-            Arrays.fill(charArray, '1');
-            String value = new String(charArray);
+            final StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < 2048; i++) {
+                stringBuilder.append('1');
+            }
+            String value = stringBuilder.toString();
             try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringBuilderWriter, new WriteBufferHolder())) {
                 jsonNumberValidatingWriter.write(value);
             }
@@ -101,9 +102,11 @@ class JsonNumberValidatingWriterTest {
     @Test
     void writingLongValidNumberDoesNotUseReusableWriteBuffer() throws IOException {
         try (StringBuilderWriter stringBuilderWriter = new StringBuilderWriter()) {
-            char[] charArray = new char[2048];
-            Arrays.fill(charArray, '1');
-            String value = new String(charArray);
+            final StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < 2048; i++) {
+                stringBuilder.append('1');
+            }
+            String value = stringBuilder.toString();
             final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
             try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringBuilderWriter, writeBufferHolder)) {
                 jsonNumberValidatingWriter.write(value);
