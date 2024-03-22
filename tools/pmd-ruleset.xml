@@ -85,7 +85,6 @@
         <exclude name="CyclomaticComplexity"/> <!-- configured later -->
         <exclude name="ExcessiveImports"/>
         <exclude name="GodClass"/>
-        <exclude name="SignatureDeclareThrowsException"/> <!-- configured later -->
         <exclude name="LawOfDemeter"/>
         <exclude name="LoosePackageCoupling"/>
         <exclude name="NcssCount"/> <!-- configured later -->
@@ -109,12 +108,6 @@
             <property name="ncssOptions" value=""/>
         </properties>
     </rule>
-    <rule ref="category/java/design.xml/SignatureDeclareThrowsException">
-        <properties>
-            <property name="IgnoreJUnitCompletely" value="true"/>
-        </properties>
-    </rule>
-
 
     <rule ref="category/java/errorprone.xml">
         <exclude name="NullAssignment"/>
