@@ -148,7 +148,6 @@ tasks {
 
             options.compilerArgs = listOf(
                 "--module-path", classpath.asPath,
-//                "--add-modules", "ALL-SYSTEM",
                 "-d", sourceSets["main"].output.classesDirs.asPath
             )
         }
