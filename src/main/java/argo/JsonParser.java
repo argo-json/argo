@@ -183,8 +183,6 @@ public final class JsonParser {
         }
     }
 
-    @SuppressWarnings("PMD.ExceptionAsFlowControl")
-        // TODO this is apparently fixed in PMD 7.0.0
     JsonNode parse(final ParseExecutor parseExecutor) throws InvalidSyntaxException, IOException {
         final JsonStringNodeFactory jsonStringNodeFactory = new JsonStringNodeFactory();
         final JsonNumberNodeFactory jsonNumberNodeFactory = new JsonNumberNodeFactory();

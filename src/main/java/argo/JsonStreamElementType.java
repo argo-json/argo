@@ -286,7 +286,6 @@ public enum JsonStreamElementType {
         return result;
     }
 
-    @SuppressWarnings("PMD.PrematureDeclaration") // TODO this is apparently fixed in PMD 7.0.0
     private static int hexadecimalNumber(final PositionTrackingPushbackReader in) throws IOException {
         final Position startPosition = in.position();
         final char[] resultCharArray = new char[4];
