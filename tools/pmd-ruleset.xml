@@ -130,7 +130,8 @@
             <property name="closeTargets" value=""/>
             <property name="types" value="java.lang.AutoCloseable,java.sql.Connection,java.sql.Statement,java.sql.ResultSet"/>
             <property name="closeAsDefaultTarget" value="true"/>
-            <property name="allowedResourceTypes" value="java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringReader,java.io.StringWriter,java.io.CharArrayWriter,java.util.stream.Stream,org.apache.commons.io.output.StringBuilderWriter"/>
+            <property name="allowedResourceTypes" value="java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringReader,java.io.StringWriter,java.io.CharArrayWriter,java.util.stream.Stream,java.util.stream.IntStream,java.util.stream.LongStream,java.util.stream.DoubleStream,org.apache.commons.io.output.StringBuilderWriter"/>
+            <property name="closeNotInFinally" value="false"/>
         </properties>
     </rule>
     <rule ref="category/java/multithreading.xml">
