@@ -81,7 +81,7 @@ class JsonNumberValidatingWriterTest {
             for (int i = 0; i < 2048; i++) {
                 stringBuilder.append('1');
             }
-            String value = stringBuilder.toString();
+            final String value = stringBuilder.toString();
             try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringBuilderWriter, new WriteBufferHolder())) {
                 jsonNumberValidatingWriter.write(value);
             }
@@ -106,7 +106,7 @@ class JsonNumberValidatingWriterTest {
             for (int i = 0; i < 2048; i++) {
                 stringBuilder.append('1');
             }
-            String value = stringBuilder.toString();
+            final String value = stringBuilder.toString();
             final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
             try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(stringBuilderWriter, writeBufferHolder)) {
                 jsonNumberValidatingWriter.write(value);

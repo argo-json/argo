@@ -37,7 +37,7 @@ final class SajParserTest {
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
     void tokenizesFromReader(final SajParserJsonParserShim sajParserJsonParserShim) throws Exception {
-        RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
+        final RecordingJsonListener recordingJsonListener = new RecordingJsonListener();
         sajParserJsonParserShim.parse(new StringReader("null"), recordingJsonListener);
         assertThat(recordingJsonListener.jsonListenerEvents(), contains(
                 START_DOCUMENT,

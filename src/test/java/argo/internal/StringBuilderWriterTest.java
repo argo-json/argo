@@ -246,7 +246,7 @@ class StringBuilderWriterTest {
     @Test
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingCanCallCloseAgain() {
-        StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         stringBuilderWriter.write("a");
         stringBuilderWriter.close();
         stringBuilderWriter.close();
@@ -255,7 +255,7 @@ class StringBuilderWriterTest {
     @Test
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingWritingASubstringDoesNotThrowException() {
-        StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         stringBuilderWriter.write("a");
         stringBuilderWriter.close();
         stringBuilderWriter.write("b");
@@ -265,7 +265,7 @@ class StringBuilderWriterTest {
     @Test
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingWritingACharacterDoesNotThrowException() {
-        StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         stringBuilderWriter.write('a');
         stringBuilderWriter.close();
         stringBuilderWriter.write('b');
@@ -275,7 +275,7 @@ class StringBuilderWriterTest {
     @Test
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingWritingACharArrayDoesNotThrowException() {
-        StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         stringBuilderWriter.write(new char[]{'a', 'b', 'c'});
         stringBuilderWriter.close();
         stringBuilderWriter.write(new char[]{'d', 'e', 'f'});
@@ -285,7 +285,7 @@ class StringBuilderWriterTest {
     @Test
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingWritingACharArrayWithOffsetAndLengthDoesNotThrowException() {
-        StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         stringBuilderWriter.write(new char[]{'a', 'b', 'c'}, 0, 3);
         stringBuilderWriter.close();
         stringBuilderWriter.write(new char[]{'d', 'e', 'f'}, 0, 3);
@@ -295,7 +295,7 @@ class StringBuilderWriterTest {
     @Test
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingWritingAStringWithOffsetAndLengthDoesNotThrowException() {
-        StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         stringBuilderWriter.write("abc", 0, 3);
         stringBuilderWriter.close();
         stringBuilderWriter.write("def", 0, 3);
@@ -305,7 +305,7 @@ class StringBuilderWriterTest {
     @Test
     @SuppressWarnings("PMD.CloseResource")
     void afterClosingFlushDoesNotThrowException() {
-        StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         stringBuilderWriter.write('a');
         stringBuilderWriter.close();
         stringBuilderWriter.flush();

@@ -25,7 +25,7 @@ public final class JsonNumberNodeTestingFactories {
     private static final Supplier<String> RANDOM_DIGIT = () -> Integer.toString(RANDOM.nextInt(10));
 
     private static final Supplier<String> RANDOM_DIGITS_WITHOUT_LEADING_ZERO = () -> {
-        StringBuilder result = new StringBuilder(RANDOM_NON_ZERO_DIGIT.get());
+        final StringBuilder result = new StringBuilder(RANDOM_NON_ZERO_DIGIT.get());
         for (int i = 0; i < RANDOM.nextInt(10); i++) {
             result.append(RANDOM_DIGIT.get());
         }
@@ -36,7 +36,7 @@ public final class JsonNumberNodeTestingFactories {
             RANDOM_DIGITS_WITHOUT_LEADING_ZERO
     );
     private static final Supplier<String> RANDOM_DIGITS = () -> {
-        StringBuilder result = new StringBuilder(RANDOM_DIGIT.get());
+        final StringBuilder result = new StringBuilder(RANDOM_DIGIT.get());
         for (int i = 0; i < RANDOM.nextInt(10); i++) {
             result.append(RANDOM_DIGIT.get());
         }

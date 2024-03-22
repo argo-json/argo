@@ -178,7 +178,7 @@ public final class RecordingJsonListener implements JsonListener {
             } else if (o == null || getClass() != o.getClass()) {
                 return false;
             } else {
-                StringValue that = (StringValue) o;
+                final StringValue that = (StringValue) o;
                 return Objects.equals(value, that.value);
             }
         }
@@ -214,7 +214,7 @@ public final class RecordingJsonListener implements JsonListener {
             } else if (o == null || getClass() != o.getClass()) {
                 return false;
             } else {
-                NumberValue that = (NumberValue) o;
+                final NumberValue that = (NumberValue) o;
                 return Objects.equals(value, that.value);
             }
         }

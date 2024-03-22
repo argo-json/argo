@@ -29,7 +29,7 @@ public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMa
 
     private ElementTrackingStajParserMatcher(final JsonStreamElement... expected) {
         expectedMatchers = new ArrayList<>();
-        for (JsonStreamElement jsonStreamElement : expected) {
+        for (final JsonStreamElement jsonStreamElement : expected) {
             expectedMatchers.add(aJsonStreamElementMatching(jsonStreamElement));
         }
         this.expected = asList(expected);
@@ -42,7 +42,7 @@ public final class ElementTrackingStajParserMatcher extends TypeSafeDiagnosingMa
     @Override
     protected boolean matchesSafely(final Iterator<JsonStreamElement> item, final Description mismatchDescription) {
         boolean matches = true;
-        for (Matcher<JsonStreamElement> jsonStreamElementMatcher : expectedMatchers) {
+        for (final Matcher<JsonStreamElement> jsonStreamElementMatcher : expectedMatchers) {
             final boolean hasNextItem = item.hasNext();
             if (hasNextItem) {
                 final JsonStreamElement next = item.next();

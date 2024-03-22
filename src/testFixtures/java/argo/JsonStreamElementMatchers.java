@@ -126,7 +126,7 @@ public class JsonStreamElementMatchers {
         return new TypeSafeDiagnosingMatcher<JsonStreamElement>() {
             @Override
             protected boolean matchesSafely(final JsonStreamElement jsonStreamElement, final Description description) {
-                boolean hasText = jsonStreamElement.hasText();
+                final boolean hasText = jsonStreamElement.hasText();
                 final boolean matches = booleanMatcher.matches(hasText);
                 if (!matches) {
                     booleanMatcher.describeMismatch(hasText, description);

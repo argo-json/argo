@@ -116,7 +116,7 @@ class JsonStringEscapingWriterTest {
         for (int i = 0; i < 2048; i++) {
             stringBuilder.append('a');
         }
-        String value = stringBuilder.toString();
+        final String value = stringBuilder.toString();
         try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
             jsonStringEscapingWriter.write(value);
         }
@@ -140,7 +140,7 @@ class JsonStringEscapingWriterTest {
         for (int i = 0; i < 2048; i++) {
             stringBuilder.append('a');
         }
-        String value = stringBuilder.toString();
+        final String value = stringBuilder.toString();
         final WriteBufferHolder writeBufferHolder = new WriteBufferHolder();
         try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, writeBufferHolder)) {
             jsonStringEscapingWriter.write(value);
