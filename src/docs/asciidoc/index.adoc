@@ -13,8 +13,6 @@ Argo is compliant with https://datatracker.ietf.org/doc/html/rfc8259[RFC 8259].
 It works with Java 5 onwards, and includes JPMS module information for Java 9 onwards.
 Argo has no dependencies.
 
-// TODO document parser limitations, per https://datatracker.ietf.org/doc/html/rfc8259#section-9
-
 == Downloads
 
 Argo is published on https://central.sonatype.com/artifact/net.sourceforge.argo/argo[Maven Central].
@@ -150,7 +148,6 @@ In-depth details of the API are available in the link:javadoc/[online javadoc]. 
 
 |Nesting depth
 |`Integer.MAX_VALUE` / 4
-// TODO this is probably now memory limited.
 |`Integer.MAX_VALUE` - 8
 |Limited by JVM stack (>2900 using 1MB stack)
 |Limited by JVM stack (>4000 using 1MB stack)
