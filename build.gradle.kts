@@ -211,7 +211,7 @@ tasks {
         testLogging {
             showStandardStreams = true
         }
-        maxHeapSize = "192g"
+        maxHeapSize = "224g"
     }
 
     val ico by registering(com.gitlab.svg2ico.Svg2IcoTask::class) {
