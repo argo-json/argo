@@ -31,7 +31,6 @@ import java.util.Set;
 
 import static argo.jdom.JsonNodeBuilders.*;
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeSelectors.aStringNode;
 import static argo.jdom.JsonNodeSelectors.anArrayNode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newBufferedReader;
@@ -169,7 +168,7 @@ final class MainDocumentationExamplesTest {
         // end::jsonNodeSelectorPath[]
         // tag::jsonNodeSelectorListString[]
         JsonNodeSelector<JsonNode, List<JsonNode>> singlesSelector = anArrayNode("singles");
-        JsonNodeSelector<JsonNode, String> singleNameSelector = aStringNode();
+        JsonNodeSelector<JsonNode, String> singleNameSelector = JsonNodeSelectors.aStringNode();
         List<String> singles = new AbstractList<String>() {
             public String get(int index) {
                 return singleNameSelector.getValue(singlesSelector.getValue(json).get(index));

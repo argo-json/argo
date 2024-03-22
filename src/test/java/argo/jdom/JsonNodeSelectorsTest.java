@@ -29,7 +29,6 @@ import static argo.MapBuilder.mapBuilder;
 import static argo.TestingFactories.aSmallNonNegativeInt;
 import static argo.TestingFactories.aString;
 import static argo.jdom.JsonNodeFactories.*;
-import static argo.jdom.JsonNodeSelectors.*;
 import static argo.jdom.JsonNodeSelectorsTest.TreeTestCase.TestCase.expectCandidateTestCase;
 import static argo.jdom.JsonNodeSelectorsTest.TreeTestCase.TestCase.mismatchTestCase;
 import static argo.jdom.JsonNodeSelectorsTest.TreeTestCase.TestCase.testCase;
@@ -375,7 +374,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(anyNode().toString(), equalTo("any value"));
+            assertThat(JsonNodeSelectors.anyNode().toString(), equalTo("any value"));
         }
     }
 
@@ -425,7 +424,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(aStringNode().toString(), equalTo("a value that is a string"));
+            assertThat(JsonNodeSelectors.aStringNode().toString(), equalTo("a value that is a string"));
         }
     }
 
@@ -475,7 +474,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(aNullableStringNode().toString(), equalTo("a value that is a string or null"));
+            assertThat(JsonNodeSelectors.aNullableStringNode().toString(), equalTo("a value that is a string or null"));
         }
     }
 
@@ -525,7 +524,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(aNumberNode().toString(), equalTo("a value that is a number"));
+            assertThat(JsonNodeSelectors.aNumberNode().toString(), equalTo("a value that is a number"));
         }
     }
 
@@ -575,7 +574,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(aNullableNumberNode().toString(), equalTo("a value that is a number or null"));
+            assertThat(JsonNodeSelectors.aNullableNumberNode().toString(), equalTo("a value that is a number or null"));
         }
     }
 
@@ -625,7 +624,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(aBooleanNode().toString(), equalTo("a value that is true or false"));
+            assertThat(JsonNodeSelectors.aBooleanNode().toString(), equalTo("a value that is true or false"));
         }
     }
 
@@ -675,7 +674,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(aNullableBooleanNode().toString(), equalTo("a value that is true or false or null"));
+            assertThat(JsonNodeSelectors.aNullableBooleanNode().toString(), equalTo("a value that is true or false or null"));
         }
     }
 
@@ -725,7 +724,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(aNullNode().toString(), equalTo("null value"));
+            assertThat(JsonNodeSelectors.aNullNode().toString(), equalTo("null value"));
         }
     }
 
@@ -775,7 +774,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(anArrayNode().toString(), equalTo("an array"));
+            assertThat(JsonNodeSelectors.anArrayNode().toString(), equalTo("an array"));
         }
     }
 
@@ -825,7 +824,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(aNullableArrayNode().toString(), equalTo("an array or null"));
+            assertThat(JsonNodeSelectors.aNullableArrayNode().toString(), equalTo("an array or null"));
         }
     }
 
@@ -875,7 +874,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(anObjectNode().toString(), equalTo("an object"));
+            assertThat(JsonNodeSelectors.anObjectNode().toString(), equalTo("an object"));
         }
     }
 
@@ -925,7 +924,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void toStringWorks() {
-            assertThat(aNullableObjectNode().toString(), equalTo("an object or null"));
+            assertThat(JsonNodeSelectors.aNullableObjectNode().toString(), equalTo("an object or null"));
         }
     }
 
@@ -987,7 +986,7 @@ final class JsonNodeSelectorsTest {
             @Test
             void toStringWorks() {
                 final String fieldName = aString();
-                assertThat(aField(fieldName).toString(), equalTo("a field called [\"" + fieldName + "\"]"));
+                assertThat(JsonNodeSelectors.aField(fieldName).toString(), equalTo("a field called [\"" + fieldName + "\"]"));
             }
         }
 
@@ -1047,7 +1046,7 @@ final class JsonNodeSelectorsTest {
             @Test
             void toStringWorks() {
                 final JsonStringNode fieldName = JsonStringNodeTestingFactories.aStringNode();
-                assertThat(aField(fieldName).toString(), equalTo("a field called [\"" + fieldName.getText() + "\"]"));
+                assertThat(JsonNodeSelectors.aField(fieldName).toString(), equalTo("a field called [\"" + fieldName.getText() + "\"]"));
             }
         }
     }
@@ -1090,7 +1089,7 @@ final class JsonNodeSelectorsTest {
             @Test
             void toStringWorks() {
                 final String fieldName = aString();
-                assertThat(anObjectNodeWithField(fieldName).toString(), equalTo("an object, with a field called [\"" + fieldName + "\"]"));
+                assertThat(JsonNodeSelectors.anObjectNodeWithField(fieldName).toString(), equalTo("an object, with a field called [\"" + fieldName + "\"]"));
             }
         }
 
@@ -1130,7 +1129,7 @@ final class JsonNodeSelectorsTest {
             @Test
             void toStringWorks() {
                 final JsonStringNode fieldName = JsonStringNodeTestingFactories.aStringNode();
-                assertThat(anObjectNodeWithField(fieldName).toString(), equalTo("an object, with a field called [\"" + fieldName.getText() + "\"]"));
+                assertThat(JsonNodeSelectors.anObjectNodeWithField(fieldName).toString(), equalTo("an object, with a field called [\"" + fieldName.getText() + "\"]"));
             }
         }
     }
@@ -1180,7 +1179,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void rejectsNegativeIndex() {
-            final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> anElement(-1));
+            final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> JsonNodeSelectors.anElement(-1));
             assertThat(illegalArgumentException.getMessage(), equalTo("-1"));
         }
 
@@ -1197,7 +1196,7 @@ final class JsonNodeSelectorsTest {
         @Test
         void toStringWorks() {
             final int index = aSmallNonNegativeInt();
-            assertThat(anElement(index).toString(), equalTo("an element at index [" + index + "]"));
+            assertThat(JsonNodeSelectors.anElement(index).toString(), equalTo("an element at index [" + index + "]"));
         }
     }
 
@@ -1221,7 +1220,7 @@ final class JsonNodeSelectorsTest {
 
         @Test
         void rejectsNegativeIndex() {
-            final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> anArrayNodeWithElement(-1));
+            final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> JsonNodeSelectors.anArrayNodeWithElement(-1));
             assertThat(illegalArgumentException.getMessage(), equalTo("-1"));
         }
 
@@ -1238,7 +1237,7 @@ final class JsonNodeSelectorsTest {
         @Test
         void toStringWorks() {
             final int index = aSmallNonNegativeInt();
-            assertThat(anArrayNodeWithElement(index).toString(), equalTo("an array, with an element at index [" + index + "]"));
+            assertThat(JsonNodeSelectors.anArrayNodeWithElement(index).toString(), equalTo("an array, with an element at index [" + index + "]"));
         }
     }
 

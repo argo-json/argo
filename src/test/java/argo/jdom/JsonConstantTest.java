@@ -44,7 +44,7 @@ class JsonConstantTest {
     @ParameterizedTest
     @ArgumentsSource(JsonConstantsArgumentsProvider.class)
     void testNotEqualsObjectOfDifferentType(final JsonNode jsonNode) {
-        assertThat(jsonNode.equals(JsonNodeFactories.number("42")), equalTo(false));
+        assertThat(jsonNode.equals(number("42")), equalTo(false));
     }
 
     @ParameterizedTest

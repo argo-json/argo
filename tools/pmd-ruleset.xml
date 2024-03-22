@@ -50,7 +50,6 @@
         <exclude name="ShortClassName"/> <!-- configured later -->
         <exclude name="ShortVariable"/>
         <exclude name="TooManyStaticImports"/>
-        <exclude name="UnnecessaryFullyQualifiedName"/> <!-- doesn't understand name clashes -->
         <exclude name="UseDiamondOperator"/> <!-- not in Java 5, son -->
     </rule>
     <rule ref="category/java/codestyle.xml/LinguisticNaming">

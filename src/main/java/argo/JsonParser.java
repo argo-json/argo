@@ -400,7 +400,7 @@ public final class JsonParser {
         JsonStringNode jsonStringNode(final String value) {
             final JsonStringNode cachedStringNode = existingJsonStringNodes.get(value);
             if (cachedStringNode == null) {
-                final JsonStringNode newJsonStringNode = JsonNodeFactories.string(value);
+                final JsonStringNode newJsonStringNode = string(value);
                 existingJsonStringNodes.put(value, newJsonStringNode);
                 return newJsonStringNode;
             } else {

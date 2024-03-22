@@ -13,7 +13,6 @@ package argo;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonNodeFactories;
 import argo.jdom.JsonStringNode;
-import argo.jdom.JsonStringNodeTestingFactories;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BrokenReader;
 import org.apache.commons.io.input.SequenceReader;
@@ -178,7 +177,7 @@ final class StajParserTest {
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
     void objectWithFieldHasCorrectElements(final StajParserJsonParserShim stajParserJsonParserShim) {
-        final JsonStringNode aFieldName = JsonStringNodeTestingFactories.aStringNode();
+        final JsonStringNode aFieldName = aStringNode();
         assertThat(stajParserJsonParserShim.parse(readerOf(object(field(aFieldName, array())))), generatesElements(
                 NonTextJsonStreamElement.START_DOCUMENT,
                 NonTextJsonStreamElement.START_OBJECT,
