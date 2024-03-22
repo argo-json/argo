@@ -52,7 +52,7 @@ java {
 dependencies {
     "moduleInfoImplementation"(sourceSets["main"].output)
 
-    testFixturesImplementation(group = "org.apache.commons", name = "commons-lang3", version = "3.12.0")
+    testFixturesImplementation(group = "org.apache.commons", name = "commons-lang3", version = "3.14.0")
     testFixturesImplementation(group = "commons-io", name = "commons-io", version = "2.15.1")
     testFixturesImplementation(group = "net.sourceforge.ickles", name = "ickles", version = "0.21")
     testFixturesImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
