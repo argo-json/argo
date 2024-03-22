@@ -17,7 +17,8 @@ import static argo.CharacterUtilities.asPrintableString;
  */
 public final class InvalidSyntaxRuntimeException extends RuntimeException {
 
-    private final Position position;
+    private final int line;
+    private final int column;
 
     InvalidSyntaxRuntimeException(final String explanation, final Position position) {
         this(explanation, null, position);
@@ -25,7 +26,8 @@ public final class InvalidSyntaxRuntimeException extends RuntimeException {
 
     InvalidSyntaxRuntimeException(final String explanation, final Throwable cause, final Position position) {
         super("At " + lineLabel(position.line) + ", " + columnLabel(position.column) + ":  " + explanation, cause);
-        this.position = position;
+        this.line = position.line;
+        this.column = position.column;
     }
 
     static InvalidSyntaxRuntimeException unexpectedCharacterInvalidSyntaxRuntimeException(final String expectation, final int actualCharacter, final Position position) {
@@ -42,21 +44,21 @@ public final class InvalidSyntaxRuntimeException extends RuntimeException {
     }
 
     /**
-     * The column number at which the invalid syntax occurred, or -1 if the column number is unknown.
-     *
-     * @return the column number at which the invalid syntax occurred, or -1 if the column number is unknown.
-     */
-    public int getColumn() {
-        return position.column;
-    }
-
-    /**
      * The line number at which the invalid syntax occurred, or -1 if the line number is unknown.
      *
      * @return the line number at which the invalid syntax occurred, or -1 if the line number is unknown.
      */
     public int getLine() {
-        return position.line;
+        return line;
+    }
+
+    /**
+     * The column number at which the invalid syntax occurred, or -1 if the column number is unknown.
+     *
+     * @return the column number at which the invalid syntax occurred, or -1 if the column number is unknown.
+     */
+    public int getColumn() {
+        return column;
     }
 
 }
