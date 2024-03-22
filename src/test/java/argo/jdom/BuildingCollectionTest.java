@@ -14,6 +14,7 @@ import net.sourceforge.ickles.RandomSizeListSupplier;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -64,7 +65,7 @@ class BuildingCollectionTest {
     @Test
     void producesCollectionOfBuiltElements() {
         final List<Object> expected = new RandomSizeListSupplier<>(Object::new, 1, 20).get();
-        final BuildingCollection<Object> buildingCollection = new BuildingCollection<>(expected.stream().map(object -> (Builder<Object>) () -> object).collect(toList()));
+        final Collection<Object> buildingCollection = new BuildingCollection<>(expected.stream().map(object -> (Builder<Object>) () -> object).collect(toList()));
         assertThat(new ArrayList<>(buildingCollection), equalTo(expected));
     }
 }

@@ -34,7 +34,7 @@ public class MapBuilder<K, V> {
     }
 
     public MapBuilder<K, V> put(final K key, final V value) {
-        final HashMap<K, V> updated = new HashMap<>(map);
+        final Map<K, V> updated = new HashMap<>(map);
         updated.put(key, value);
         return new MapBuilder<>(updated);
     }

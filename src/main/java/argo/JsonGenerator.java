@@ -261,9 +261,6 @@ public final class JsonGenerator {
             }
         };
 
-        JsonGeneratorStyle() {
-        }
-
         abstract JsonPrinter newJsonPrinter(Writer writer, String lineSeparator);
 
         abstract JsonPrinter newFieldSortingJsonPrinter(Writer writer, String lineSeparator);

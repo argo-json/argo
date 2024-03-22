@@ -24,7 +24,7 @@ final class ImmutableListFactories {
 
     static <T> List<T> immutableListOf(final Iterable<? extends T> elements) {
         if (elements instanceof Collection) {
-            final ArrayList<T> modifiableResult = new ArrayList<T>(((Collection<?>) elements).size());
+            final List<T> modifiableResult = new ArrayList<T>(((Collection<?>) elements).size());
             for (final T next : elements) {
                 if (next == null) {
                     throw new NullPointerException();

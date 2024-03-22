@@ -352,7 +352,7 @@ class PositionTrackingPushbackReaderTest {
         ));
 
         @BeforeAll
-        void overflowColumn() throws Exception {
+        void overflowColumn() throws IOException {
             for (int i = -1; i != Integer.MAX_VALUE; i++) {
                 positionTrackingPushbackReader.read();
             }
@@ -415,7 +415,7 @@ class PositionTrackingPushbackReaderTest {
         ));
 
         @BeforeAll
-        void overflowLines() throws Exception {
+        void overflowLines() throws IOException {
             for (int i = -1; i != Integer.MAX_VALUE; i++) {
                 positionTrackingPushbackReader.read();
             }
