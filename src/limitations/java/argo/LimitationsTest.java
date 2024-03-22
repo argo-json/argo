@@ -20,11 +20,14 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
 import static argo.jdom.JsonNodeFactories.*;
 
 class LimitationsTest {
+
+    private static final Logger LOGGER = Logger.getLogger(LimitationsTest.class.getName());
 
     private static final BlackHoleJsonListener BLACK_HOLE_JSON_LISTENER = new BlackHoleJsonListener(reader -> {
     });
@@ -161,11 +164,18 @@ class LimitationsTest {
     void parseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
+            final int percentile = max / 100;
             for (int i = 0; i < max; i++) {
                 writer.write('[');
+                if (i % percentile == 0) {
+                    LOGGER.info("Opened " + (i / percentile) + "%");
+                }
             }
             for (int i = 0; i < max; i++) {
                 writer.write(']');
+                if (i % percentile == 0) {
+                    LOGGER.info("Closed " + (i / percentile) + "%");
+                }
             }
         }, reader -> new JsonParser().parse(reader));
     }

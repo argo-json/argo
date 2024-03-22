@@ -208,6 +208,9 @@ tasks {
     }
 
     named<Test>("limitations") {
+        testLogging {
+            showStandardStreams = true
+        }
         maxHeapSize = "192g"
     }
 
