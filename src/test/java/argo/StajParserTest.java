@@ -2916,7 +2916,7 @@ final class StajParserTest {
         final String input;
         final int expected;
 
-        TestCase(String input, int expected) {
+        TestCase(final String input, final int expected) {
             this.input = input;
             this.expected = expected;
         }

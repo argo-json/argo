@@ -83,7 +83,7 @@ public final class RecordingJsonListener implements JsonListener {
     }
 
     @Override
-    public void startField(Reader name) {
+    public void startField(final Reader name) {
         jsonListenerEvents.add(new StartField(toString(name)));
     }
 
@@ -93,12 +93,12 @@ public final class RecordingJsonListener implements JsonListener {
     }
 
     @Override
-    public void stringValue(Reader value) {
+    public void stringValue(final Reader value) {
         jsonListenerEvents.add(new StringValue(toString(value)));
     }
 
     @Override
-    public void numberValue(Reader value) {
+    public void numberValue(final Reader value) {
         jsonListenerEvents.add(new NumberValue(toString(value)));
     }
 
@@ -136,7 +136,7 @@ public final class RecordingJsonListener implements JsonListener {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             if (this == o) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {
@@ -163,7 +163,7 @@ public final class RecordingJsonListener implements JsonListener {
     public static final class StringValue implements JsonListenerEvent {
         public final String value;
 
-        public StringValue(String value) {
+        public StringValue(final String value) {
             this.value = value;
         }
 
@@ -172,7 +172,7 @@ public final class RecordingJsonListener implements JsonListener {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             if (this == o) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {
@@ -208,7 +208,7 @@ public final class RecordingJsonListener implements JsonListener {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             if (this == o) {
                 return true;
             } else if (o == null || getClass() != o.getClass()) {

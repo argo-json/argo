@@ -69,7 +69,7 @@ final class JsonNodeSelectorsTest {
             final boolean expectedMatch;
             final Object expectedValue;
 
-            private TestCase(final JsonNode candidate, boolean expectedMatch, final Object expectedValue) {
+            private TestCase(final JsonNode candidate, final boolean expectedMatch, final Object expectedValue) {
                 this.candidate = candidate;
                 this.expectedMatch = expectedMatch;
                 this.expectedValue = expectedValue;

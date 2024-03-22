@@ -35,7 +35,7 @@ class JsonStringEscapingWriterTest {
         final Matcher<String> stringMatcher = equalTo(expected);
         return new TypeSafeDiagnosingMatcher<String>() {
             @Override
-            protected boolean matchesSafely(String item, Description mismatchDescription) {
+            protected boolean matchesSafely(final String item, final Description mismatchDescription) {
                 final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
                 try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(stringBuilderWriter, new WriteBufferHolder())) {
                     try {
@@ -52,7 +52,7 @@ class JsonStringEscapingWriterTest {
             }
 
             @Override
-            public void describeTo(Description description) {
+            public void describeTo(final Description description) {
                 description.appendText("Writes output ").appendDescriptionOf(stringMatcher);
             }
         };

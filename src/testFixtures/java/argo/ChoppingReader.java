@@ -23,12 +23,12 @@ import java.io.Reader;
 public final class ChoppingReader extends Reader {
     private final Reader reader;
 
-    public ChoppingReader(Reader reader) {
+    public ChoppingReader(final Reader reader) {
         this.reader = reader;
     }
 
     @Override
-    public int read(@SuppressWarnings("NullableProblems") char[] chars, int off, int len) throws IOException {
+    public int read(@SuppressWarnings("NullableProblems") final char[] chars, final int off, final int len) throws IOException {
         return reader.read(chars, off, (len == 0) ? 0 : 1);
     }
 

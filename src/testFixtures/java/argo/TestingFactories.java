@@ -24,7 +24,7 @@ public final class TestingFactories {
     }
 
     @SafeVarargs
-    public static <T> Supplier<T> randomSupplierSwitcher(Supplier<T> supplier, Supplier<T>... suppliers) {
+    public static <T> Supplier<T> randomSupplierSwitcher(final Supplier<T> supplier, final Supplier<T>... suppliers) {
         return new RandomSupplierSwitcher<>(supplier, suppliers);
     }
 

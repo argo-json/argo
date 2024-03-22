@@ -42,18 +42,18 @@ public final class BlackHoleJsonListener implements JsonListener {
     public void endObject() {
     }
 
-    public void startField(Reader name) {
+    public void startField(final Reader name) {
         blackHoleReader.consume(name);
     }
 
     public void endField() {
     }
 
-    public void stringValue(Reader value) {
+    public void stringValue(final Reader value) {
         blackHoleReader.consume(value);
     }
 
-    public void numberValue(Reader value) {
+    public void numberValue(final Reader value) {
         blackHoleReader.consume(value);
     }
 

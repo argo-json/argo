@@ -69,7 +69,7 @@ public final class JsonNodeTestingFactories {
         return aJsonNode(10);
     }
 
-    public static JsonNode aJsonNodeDifferentTo(JsonNode jsonNode) {
+    public static JsonNode aJsonNodeDifferentTo(final JsonNode jsonNode) {
         JsonNode result;
         do {
             result = aJsonNode();
@@ -77,7 +77,7 @@ public final class JsonNodeTestingFactories {
         return result;
     }
 
-    private static JsonNode aJsonNode(int maxDepth) {
+    private static JsonNode aJsonNode(final int maxDepth) {
         if (maxDepth <= 0) {
             return RANDOM_LEAF_NODE.get();
         } else {

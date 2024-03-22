@@ -29,7 +29,7 @@ public class MapBuilder<K, V> {
         return new MapBuilder<>();
     }
 
-    public static <K, V> MapBuilder<K, V> mapBuilder(K key, V value) {
+    public static <K, V> MapBuilder<K, V> mapBuilder(final K key, final V value) {
         return new MapBuilder<K, V>().put(key, value);
     }
 

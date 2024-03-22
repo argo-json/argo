@@ -285,7 +285,7 @@ public class GeneratorBenchmark {
     private static final class BlackholeWriter extends Writer {
         private final Blackhole blackhole;
 
-        public BlackholeWriter(Blackhole blackhole) {
+        public BlackholeWriter(final Blackhole blackhole) {
             this.blackhole = blackhole;
         }
 

@@ -23,7 +23,7 @@ public final class EventuallyBrokenWriter extends Writer {
     }
 
     @Override
-    public void write(@SuppressWarnings("NullableProblems") char[] cbuf, int off, int len) throws IOException {
+    public void write(@SuppressWarnings("NullableProblems") final char[] cbuf, final int off, final int len) throws IOException {
         if (charactersBeforeBreaking > 0) {
             charactersBeforeBreaking -= len;
         }

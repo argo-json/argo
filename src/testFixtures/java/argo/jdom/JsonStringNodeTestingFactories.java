@@ -31,7 +31,7 @@ public final class JsonStringNodeTestingFactories {
         return string(aString());
     }
 
-    public static JsonStringNode aStringNodeDifferentTo(JsonStringNode... jsonStringNode) {
+    public static JsonStringNode aStringNodeDifferentTo(final JsonStringNode... jsonStringNode) {
         final Set<JsonStringNode> exclusions = new HashSet<>(asList(jsonStringNode));
         JsonStringNode result;
         do {
