@@ -77,16 +77,6 @@ testing {
             }
         }
 
-        register<JvmTestSuite>("codeSamples") {
-            useJUnitJupiter()
-            dependencies {
-                implementation(project())
-                implementation(testFixtures(project()))
-                implementation("commons-io:commons-io:2.15.1")
-                implementation("org.hamcrest:hamcrest:2.2")
-            }
-        }
-
         register<JvmTestSuite>("docs") {
             useJUnitJupiter()
             dependencies {
@@ -167,7 +157,7 @@ tasks {
 
     check {
         @Suppress("UnstableApiUsage")
-        dependsOn(testing.suites["codeSamples"], testing.suites["docs"])
+        dependsOn(testing.suites["docs"])
     }
 
     jar {

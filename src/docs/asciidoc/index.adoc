@@ -1,46 +1,51 @@
 = Argo
 :favicon:
 :source-highlighter: rouge
-:toc: left
+:icons: font
+// :toc: left
 :toclevels: 1
 :description: Argo is an open source JSON parser and generator compliant with RFC 7159 written in Java.  It offers document, push, and pull APIs.
-:source-root: {docfile}/../../../../src/codeSamples/java
-:resources-root: {docfile}/../../../../src/codeSamples/resources
+:source-roots: {docfile}/../java
 
-== Introduction
+Argo is a free, open source JSON parsing and generating library for Java.
 
-Argo is a JSON parser and generator for Java compliant with https://datatracker.ietf.org/doc/html/rfc7159[RFC 7159]. It offers three parse interfaces - a push parser, a pull parser, and a DOM style parser. It is written to be easy to use, typesafe, and fast. It is open source, and free for you to use.
+Argo is compliant with https://datatracker.ietf.org/doc/html/rfc8259[RFC 8259].
+It works with Java 5 onwards, and includes JPMS module information for Java 9 onwards.
+Argo has no dependencies.
 
-The latest version of Argo available for download is https://sourceforge.net/projects/argo/files/latest[{revnumber}]. The https://argo.sourceforge.net/javadoc/[javadoc] is also available online.
-
-== Example
-
-A brief example demonstrates the DOM style parser. The example is based on the following JSON, which is assumed to be available in a `+String+` called `+jsonText+`.
-
-[source,json]
-----
-include::{resources-root}/samples/SimpleExample.json[]
-----
-We can use Argo to get the second single like this:
-
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jdomPath,indent=0]
-----
-On the first line, we parse the JSON text into an object hierarchy. There are various options for navigating this, but the simplest is just to give the path and type of node we expect.
-
-On line two, we ask for the JSON string at index 1 of the array in the `+singles+` field.
-
-If we check the `+secondSingle+` variable, we will find, as expected, it contains the `+String+` `+"Agadoo"+`.
+// TODO document parser limitations, per https://datatracker.ietf.org/doc/html/rfc8259#section-9
 
 == Downloads
 
-Argo is available under the http://www.apache.org/licenses/LICENSE-2.0[Apache 2 license]. It can be downloaded in four forms:
+Argo is published on https://central.sonatype.com/artifact/net.sourceforge.argo/argo[Maven Central].
 
-- the https://sourceforge.net/projects/argo/files/argo/{revnumber}/argo-{revnumber}.jar/download[standard jar], with source code included,
-- a https://sourceforge.net/projects/argo/files/argo/{revnumber}/argo-small-{revnumber}.jar/download[compact jar], with no source, and no debug information,
-- as a Maven dependency from central, using
+[tabs]
+====
+Gradle (Kotlin)::
++
+--
+[source,kotlin,subs="+attributes"]
+----
+dependencies {
+    implementation(group = "net.sourceforge.argo", name = "argo", version = "{revnumber}")
+}
+----
+--
 
+Gradle (Groovy)::
++
+--
+[source,groovy,subs="+attributes"]
+----
+dependencies {
+    implemenation group: 'net.sourceforge.argo', name: 'argo', version: '{revnumber}'
+}
+----
+--
+
+Maven::
++
+--
 [source,xml,subs="+attributes"]
 ----
 <dependency>
@@ -49,155 +54,107 @@ Argo is available under the http://www.apache.org/licenses/LICENSE-2.0[Apache 2 
     <version>{revnumber}</version>
 </dependency>
 ----
-- or as the full source code including tests etc. using Git from link:git://git.code.sf.net/p/argo/git[].
+--
+====
 
-http://sourceforge.net/projects/argo/files/argo/[Previous versions] are also available.
+== Usage
 
-It has no runtime dependencies, and all dependencies used in tests are retrieved by Gradle.
-
-== Documentation
-
-=== Introduction
-
-This section provides an example-based guide to Argo. In-depth details of the API are available in the https://argo.sourceforge.net/javadoc/[online javadoc], which can also be found in the https://sourceforge.net/projects/argo/files/latest[standard jar].
-
-=== Model of JSON in Argo
-
-JSON is defined in https://tools.ietf.org/html/rfc7159[RFC 7159]. There is a good explanation of the http://www.json.org/[structure of JSON] at http://www.json.org/. Argo models JSON using five types of entity - two that can have children:
-
-- Objects - pairs of a string and any entity type.
-- Arrays - sequences of any entity type.
-
-and three types of leaf entity:
-
-- Strings - essentially the same as a Java String.
-- Numbers - an unlimited precision number.
-- Constants - true, false, and null.
-
-=== Producing JSON from an Object
-
-There are two steps to producing JSON using Argo: First, an instance of `+JsonNode+` representing the JSON is built, and then an instance of `+JsonFormatter+` is used to turn that into a `+String+` representation.
-
-A number of static factory methods are provided for constructing ``JsonNode``s in the `+JsonNodeFactories+` class:
+Let's generate a JSON document to represent a blog entry.
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNodeFactory,indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=generateSomeJson,indent=0]
 ----
 
-All implementations of `+JsonNode+` are immutable. The same `+JsonNode+` could have been built up in a mutable manner using the static methods in the `+JsonNodeBuilders+` class:
+<1> Static factory methods in `argo.jdom.JsonNodeFactories` model JSON
 
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNodeBuilder,indent=0]
-----
-
-Finally, an instance of `+JsonFormatter+` is needed to produce JSON text from the `+JsonNode+`. The two implementations provided are `+PrettyJsonFormatter+`, which produces easy to read JSON, and `+CompactJsonFormatter+`, which produces very brief JSON. Instances of both classes can safely be shared between threads.
-
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonFormatter,indent=0]
-----
-Both classes also accept a `+Writer+` as an argument to the format method, to allow the output to be streamed.
-
-=== Producing a stream of JSON
-
-Argo can be used to produce dynamically generated JSON of arbitrary length by implementing the `+WriteableJsonArray+` and `+WriteableJsonObject+` interfaces. For example:
-
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=unboundedArrayWriting,indent=0]
-----
-
-Note that the number of iterations of the for loop in this example is only limited by the capacity of the `+Writer+` to accept characters.
-
-JSON strings and numbers of arbitrary length can be produced by implementing the `+WriteableJsonString+` and `+WriteableJsonNumber+` interfaces. For example:
-
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=unboundedStringWriting,indent=0]
-----
-
-Once again, the number of iterations of the for loop in this example is only limited by the capacity of the `+Writer+` to accept characters.
-
-=== Parsing JSON into an Object
-
-All the examples in this section are based on the following JSON, which is assumed to be available in a `+String+` variable called `+jsonText+`.
+Our blog entry JSON looks like this:
 
 [source,json]
 ----
-include::{resources-root}/samples/SimpleExample.json[]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=generateSomeJsonResult,indent=0]
 ----
 
-The `+JdomParser+` class is used to generate a `+JsonNode+` from JSON text. Instances of `+JdomParser+` can safely be shared between threads.
+To retrieve the title from the blog entry JSON we produced, we parse it, and then extract the value of the `title` field.
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jdomParser,indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=parseSomeJson,indent=0]
 ----
 
-Instances of `+JsonNode+` are immutable. `+JsonNode+` provides methods for exploring the generated structure, as specified in the javadoc. The simplest of these are the `+getXXXValue(Object... pathElements)+` methods, which are used as follows:
+=== Streaming
+
+Suppose we want to add an array of comments retrieved from a data source to our blog entry JSON.
+To avoid reading all the comments into memory at once, and to begin outputting JSON text as early as possible, we can use streaming.
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jdomPathExpanded,indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamOutSomeJson;!streamOutSomeJsonIntermediateResultWrapper,indent=0]
 ----
 
-It is also possible to check that the node at a particular path is of the required type as follows:
+<1> Get a source of comments
+<2> A `StringWriter` for demonstration purposes, but could be any `Writer`
+<3> At this point, the `StringWriter` has already received:
++
+[source,json]
+----
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamOutSomeJsonIntermediateResult,indent=0]
+----
+<4> The `Iterable` of comments can be unbounded; our code only keeps one comment in memory at a time
+
+To retrieve the comments from the JSON we just made without having to hold it all in memory, we can use streaming again.
 
 [source,java]
 ----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jdomPathTypeCheck,indent=0]
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson,indent=0]
 ----
 
-Alternatively, ``JsonNodeSelector``s can be used to extract data from the `JsonNode` in a typesafe manner. ``JsonNodeSelector``s are functions that can be applied to ``JsonNode``s to extract a value or a child `+JsonNode+`. The `+JsonNodeSelectors+` class provides a number of factory methods for constructing instances of `+JsonNodeSelector+`. The following code gets the name of the second single (note that like arrays, the index of the first element is zero):
+<1> A `StringReader` for demonstration purposes, but could be any `Reader`
+<2> The stack will keep track of the parents of the current element
+<3> Nodes' text is also streamed, so we can have unbounded strings, numbers, and field names
 
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNodeSelectorPath,indent=0]
-----
+=== Further details
 
-The singles can also be converted into a `+List<String>+`:
+// suppress inspection "AsciiDocLinkResolve"
+In-depth details of the API are available in the link:javadoc/[online javadoc].  The project is hosted on https://sourceforge.net/projects/argo[SourceForge].
 
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNodeSelectorListString,indent=0]
-----
+== Limitations
 
-JSON number handling deserves a brief explanation. JSON numbers are unlimited precision, and as such, cannot be represented by a Java primitive like `+double+` or `+int+`. The closest numeric representation offered by Java is BigDecimal, which accurately represents almost all JSON numbers, with the exception of some edge cases (for example, `+-0+` and ``+++0 ++``are valid JSON numbers, but collapse to `+BigDecimal.ZERO+`). For this reason, Argo doesn't do any implicit conversion of JSON numbers - they're treated as ``String``s. However, helper methods are provided for converting these ``String``s to other Java numeric types. For example, you could retrieve the total royalties from the example JSON as follows:
+[cols="h,,,,"]
+|===
+| |parse |streaming parse |generate |streaming generate
 
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonNumberParsing,indent=0]
-----
+|Characters in a string
+|`Integer.MAX_VALUE` - 8
+|Unlimited
+|`Integer.MAX_VALUE` - 8
+|Unlimited
 
-=== Parsing JSON into events
-The SajParser class offers a SAX style interface for parsing JSON. Given a `+Reader+` of a stream of JSON text, and an implementation of `+JsonListener+`, the parse method will parse the JSON from the `+Reader+`, and call methods on the `+JsonListener+` as it encounters parse events, such as the start of the document, the start of a field, or a JSON string.
+|Characters in a number
+|`Integer.MAX_VALUE` - 8
+|Unlimited
+|`Integer.MAX_VALUE` - 8
+|Unlimited
 
-The following code extracts the names of all the fields in a piece of JSON. It assumes `+jsonReader+` refers to a `+Reader+` of the example JSON in the previous section.
+|Elements in an array
+|`Integer.MAX_VALUE` - 8
+|Unlimited
+|`Integer.MAX_VALUE` - 8
+|Unlimited
 
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonThroughEvents,indent=0]
-----
+|Fields in an object
+|`Integer.MAX_VALUE` - 8
+|Unlimited
+|`Integer.MAX_VALUE` - 8
+|Unlimited
 
-=== Parsing JSON through iteration
+|Nesting depth
+|`Integer.MAX_VALUE` / 4
+// TODO this is probably now memory limited.
+|`Integer.MAX_VALUE` - 8
+|Limited by JVM stack (>2900 using 1MB stack)
+|Limited by JVM stack (>4000 using 1MB stack)
 
-The `+StajParser+` class allows the calling code to request parsing events from a stream of JSON text, similar to how the StAX parser works for XML.
-
-The following code gets the names of all the fields in a piece of JSON using the `+StajParser+`. Again, it assumes `+jsonReader+` refers to a `+Reader+` of the example JSON in the previous section.
-
-[source,java]
-----
-include::{source-root}/samples/MainDocumentationExamplesTest.java[tags=jsonThroughIteration,indent=0]
-----
-
-Iterating through the elements of a piece of JSON like this has the advantage that the parser only holds the current and next element in memory, so the above example would work for a piece of JSON larger than the available memory.
-
-== Support
-
-The best way to get help on Argo is via the https://sourceforge.net/projects/argo/forums/forum/887785[help forum].
-
-Alternatively, report a bug or browse reported bugs via the http://sourceforge.net/tracker/?group_id=245339&atid=1169592[bug tracker].
+|===
 
 image::https://sflogo.sourceforge.net/sflogo.php?group_id=245339&type=13["Get Argo at SourceForge.net. Fast, secure and Free Open Source software downloads",align="center",link=https://sourceforge.net/projects/argo]
