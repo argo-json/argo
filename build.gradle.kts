@@ -24,7 +24,7 @@ plugins {
     `jvm-test-suite`
     id("me.champeau.jmh") version "0.7.2"
     id("com.palantir.revapi") version "1.7.0"
-    id("com.github.spotbugs") version "6.0.7"
+    id("com.github.spotbugs") version "6.0.9"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("com.gitlab.svg2ico") version "1.4"
     id("org.asciidoctor.jvm.convert") version "4.0.2"
