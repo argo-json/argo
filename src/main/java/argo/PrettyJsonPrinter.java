@@ -96,8 +96,8 @@ class PrettyJsonPrinter extends JsonPrinter {
     final void write(final WriteableJsonArray writeableJsonArray) throws IOException {
         writer.write('[');
         depth++;
-        final boolean[] refIsFirst = {true};
-        writeableJsonArray.writeTo(new ArrayWriter() {
+        final WriteAwareArrayWriter writeAwareArrayWriter = new WriteAwareArrayWriter() {
+            private boolean isFirst = true;
 
             public void writeElement(final WriteableJsonObject element) throws IOException {
                 writePreamble();
@@ -125,17 +125,21 @@ class PrettyJsonPrinter extends JsonPrinter {
             }
 
             private void writePreamble() throws IOException {
-                if (!refIsFirst[0]) {
+                if (!isFirst) {
                     writer.write(',');
                 }
-                refIsFirst[0] = false;
+                isFirst = false;
                 writer.write(lineSeparator);
                 addTabs();
             }
 
-        });
+            public boolean wrote() {
+                return !isFirst;
+            }
+        };
+        writeableJsonArray.writeTo(writeAwareArrayWriter);
         depth--;
-        if (!refIsFirst[0]) {
+        if (writeAwareArrayWriter.wrote()) {
             writer.write(lineSeparator);
             addTabs();
         }
@@ -146,8 +150,9 @@ class PrettyJsonPrinter extends JsonPrinter {
     final void write(final WriteableJsonObject writeableJsonObject) throws IOException {
         writer.write('{');
         depth++;
-        final boolean[] refIsFirst = {true};
-        writeableJsonObject.writeTo(new ObjectWriter() {
+        final WriteAwareObjectWriter writeAwareObjectWriter = new WriteAwareObjectWriter() {
+            private boolean isFirst = true;
+
             public void writeField(final String name, final WriteableJsonObject value) throws IOException {
                 writeField(JsonNodeFactories.string(name), value);
             }
@@ -235,20 +240,33 @@ class PrettyJsonPrinter extends JsonPrinter {
             }
 
             private void writePreamble() throws IOException {
-                if (!refIsFirst[0]) {
+                if (!isFirst) {
                     writer.write(',');
                 }
-                refIsFirst[0] = false;
+                isFirst = false;
                 writer.write(lineSeparator);
                 addTabs();
             }
-        });
+
+            public boolean wrote() {
+                return !isFirst;
+            }
+        };
+        writeableJsonObject.writeTo(writeAwareObjectWriter);
         depth--;
-        if (!refIsFirst[0]) {
+        if (writeAwareObjectWriter.wrote()) {
             writer.write(lineSeparator);
             addTabs();
         }
         writer.write('}');
+    }
+
+    private interface WriteAwareArrayWriter extends ArrayWriter {
+        boolean wrote();
+    }
+
+    private interface WriteAwareObjectWriter extends ObjectWriter {
+        boolean wrote();
     }
 
     private static final class FieldSortingPrettyJsonPrinter extends PrettyJsonPrinter {
@@ -263,4 +281,5 @@ class PrettyJsonPrinter extends JsonPrinter {
             super.throwingObject(sorted);
         }
     }
+
 }

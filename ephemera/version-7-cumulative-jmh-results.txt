@@ -972,3 +972,12 @@ Always use hand-rolled List copy when making ImmutableLists rather than new Arra
 
 Benchmark                   Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse  thrpt   25  18858.632 ± 366.157  ops/s
+
+
+Replace use of single-element arrays to effect mutable references in PrettyJsonPrinter with inner classes with accessors
+
+Benchmark                                          Mode  Cnt      Score      Error  Units
+GeneratorBenchmark.prettyJdomGenerate             thrpt   25  38766.367 ±  327.507  ops/s
+GeneratorBenchmark.prettyJdomGenerateString       thrpt   25  68296.564 ± 1082.413  ops/s
+GeneratorBenchmark.prettyStreamingGenerate        thrpt   25  35824.622 ±  247.946  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString  thrpt   25  60516.167 ± 1242.354  ops/s
