@@ -335,7 +335,7 @@ public final class JsonParser {
         }
 
         public JsonNode buildNode() {
-            return array(elements); // TODO can we skip the defensive copy of the list, since we know it won't be mutated after this point?
+            return array(elements);
         }
 
         public JsonField buildField() {
@@ -356,7 +356,7 @@ public final class JsonParser {
         }
 
         public JsonNode buildNode() {
-            return object(fields); // TODO can we skip the defensive copy of the list, since we know it won't be mutated after this point?
+            return object(fields);
         }
 
         public JsonField buildField() {
