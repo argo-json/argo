@@ -22,7 +22,6 @@ import static argo.jdom.JsonNodeFactories.string;
 /**
  * Builder for {@code JsonNode}s representing JSON objects.
  */
-@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
 public abstract class JsonObjectNodeBuilder implements JsonNodeBuilder<JsonNode> {
 
     private JsonObjectNodeBuilder() {
