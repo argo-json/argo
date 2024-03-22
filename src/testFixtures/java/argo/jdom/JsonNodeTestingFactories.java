@@ -12,6 +12,7 @@ package argo.jdom;
 
 import net.sourceforge.ickles.RandomListMemberSupplier;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 import java.util.function.Function;
@@ -22,7 +23,6 @@ import static argo.TestingFactories.randomSupplierSwitcher;
 import static argo.jdom.JsonNodeFactories.*;
 import static argo.jdom.JsonNumberNodeTestingFactories.aNumberNode;
 import static argo.jdom.JsonStringNodeTestingFactories.aStringNode;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 public final class JsonNodeTestingFactories {
@@ -36,7 +36,7 @@ public final class JsonNodeTestingFactories {
             JsonNodeFactories::falseNode
     );
 
-    private static final Supplier<Function<Integer, JsonNode>> RANDOM_NODE = new RandomListMemberSupplier<>(asList(
+    private static final Supplier<Function<Integer, JsonNode>> RANDOM_NODE = new RandomListMemberSupplier<>(Arrays.asList(
             JsonNodeTestingFactories::anArrayNode,
             JsonNodeTestingFactories::anObjectNode,
             integer -> aStringNode(),
