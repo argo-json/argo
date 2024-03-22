@@ -13,7 +13,7 @@ package argo;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapBuilder<K, V> {
+public final class MapBuilder<K, V> {
 
     private final Map<K, V> map;
 

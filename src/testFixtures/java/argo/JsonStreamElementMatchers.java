@@ -22,7 +22,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.Matchers.equalTo;
 
-public class JsonStreamElementMatchers {
+public final class JsonStreamElementMatchers {
     private JsonStreamElementMatchers() {
     }
 

@@ -81,7 +81,6 @@
     <rule ref="category/java/design.xml">
         <exclude name="AvoidThrowingNullPointerException"/>
         <exclude name="AvoidThrowingRawExceptionTypes"/> <!-- All well and good... except sometimes throwing RuntimeException is OK -->
-        <exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
         <exclude name="CognitiveComplexity"/> <!-- configured later -->
         <exclude name="CouplingBetweenObjects"/> <!-- configured later -->
         <exclude name="CyclomaticComplexity"/> <!-- configured later -->
