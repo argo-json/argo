@@ -114,7 +114,8 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson,inden
 === Further details
 
 // suppress inspection "AsciiDocLinkResolve"
-In-depth details of the API are available in the link:javadoc/[online javadoc].  The project is hosted on https://sourceforge.net/projects/argo[SourceForge].
+In-depth details of the API are available in the link:javadoc/[online javadoc].
+The project is hosted on https://sourceforge.net/projects/argo[SourceForge].
 
 == Limitations
 
@@ -154,4 +155,4 @@ In-depth details of the API are available in the link:javadoc/[online javadoc]. 
 
 |===
 
-image::https://sflogo.sourceforge.net/sflogo.php?group_id=245339&type=13["Get Argo at SourceForge.net. Fast, secure and Free Open Source software downloads",align="center",link=https://sourceforge.net/projects/argo]
+image::https://sflogo.sourceforge.net/sflogo.php?group_id=245339&type=13["Get Argo at SourceForge.net. Fast,secure and Free Open Source software downloads",align="center",link=https://sourceforge.net/projects/argo]
