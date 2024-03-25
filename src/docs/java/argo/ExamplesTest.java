@@ -43,13 +43,13 @@ class ExamplesTest {
         );
         // end::generateSomeJson[]
         assertEquals(trim("""
-// tag::generateSomeJsonResult[]
-{
-	"title": "How to use Argo",
-	"version": 1
-}
-// end::generateSomeJsonResult[]
-""")
+                        // tag::generateSomeJsonResult[]
+                        {
+                        	"title": "How to use Argo",
+                        	"version": 1
+                        }
+                        // end::generateSomeJsonResult[]
+                        """)
                 , blogEntry);
 
         // tag::parseSomeJson[]
@@ -68,11 +68,11 @@ class ExamplesTest {
             objectWriter.writeField("title", string("How to use Argo")); // <3>
             // tag::streamOutSomeJsonIntermediateResultWrapper[]
             assertEquals(trim("""
-// tag::streamOutSomeJsonIntermediateResult[]
-{
-	"title": "How to use Argo"
-// end::streamOutSomeJsonIntermediateResult[]
-                    	"""), stringWriter.toString());
+                    // tag::streamOutSomeJsonIntermediateResult[]
+                    {
+                    	"title": "How to use Argo"
+                    // end::streamOutSomeJsonIntermediateResult[]
+                                        	"""), stringWriter.toString());
             // end::streamOutSomeJsonIntermediateResultWrapper[]
             objectWriter.writeField("version", number(2));
             objectWriter.writeField("comments", (WriteableJsonArray) arrayWriter -> {
@@ -83,14 +83,14 @@ class ExamplesTest {
         });
         // end::streamOutSomeJson[]
         assertEquals("""
-{
-	"title": "How to use Argo",
-	"version": 2,
-	"comments": [
-		"Thanks for the post!",
-		"👍"
-	]
-}""", stringWriter.toString());
+                {
+                	"title": "How to use Argo",
+                	"version": 2,
+                	"comments": [
+                		"Thanks for the post!",
+                		"👍"
+                	]
+                }""", stringWriter.toString());
 
         // tag::streamInSomeJson[]
         int commentCount = 0;
