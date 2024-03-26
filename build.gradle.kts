@@ -107,6 +107,7 @@ idea {
 
 jmh {
     includes = listOf("jdomParse")
+    includeTests = false
 }
 
 revapi {
