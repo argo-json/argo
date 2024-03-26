@@ -81,7 +81,6 @@ testing {
             useJUnitJupiter()
             dependencies {
                 implementation(project())
-                implementation(testFixtures(project()))
             }
         }
 
