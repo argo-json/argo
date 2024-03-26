@@ -20,17 +20,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import java.io.File;
 import java.util.stream.Stream;
 
 import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 import static argo.format.JsonStringResultBuilder.aJsonStringResultBuilder;
 import static argo.jdom.JsonNodeFactories.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -178,8 +175,13 @@ final class PrettyJsonFormatterTest {
     @ParameterizedTest
     @ArgumentsSource(FieldOrderPreservingPrettyJsonFormatterArgumentsProvider.class)
     void testRoundTrip(final JsonFormatter jsonFormatter) throws Exception {
-        final File longJsonExample = new File(this.getClass().getResource("Sample.json").getFile());
-        final String json = readFileToString(longJsonExample, UTF_8);
+        final String json = "{\n" +
+                "    \"name\": \"Black Lace\"\n" +
+                "    , \"singles\": [\n" +
+                "        \"Agadoo\",\n" +
+                "        \"Superman\"\n" +
+                "    ]\n" +
+                "}";
         final JsonParser jsonParser = new JsonParser();
         final JsonNode node = jsonParser.parse(json);
         final String expected = jsonFormatter.format(node);
