@@ -263,12 +263,12 @@ public class GeneratorBenchmark {
     }
 
     @Benchmark
-    public void compactJdomGenerateString(final Blackhole blackhole) throws IOException {
+    public void compactJdomGenerateString(final Blackhole blackhole) {
         blackhole.consume(compactJsonGenerator.generate(JSON_NODE));
     }
 
     @Benchmark
-    public void prettyJdomGenerateString(final Blackhole blackhole) throws IOException {
+    public void prettyJdomGenerateString(final Blackhole blackhole) {
         blackhole.consume(prettyJsonGenerator.generate(JSON_NODE));
     }
 

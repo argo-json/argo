@@ -68,6 +68,6 @@ public final class BlackHoleJsonListener implements JsonListener {
 
     @FunctionalInterface
     public interface BlackHoleReader {
-        void consume(Reader reader);
+        void consume(@SuppressWarnings("unused") Reader reader);
     }
 }
