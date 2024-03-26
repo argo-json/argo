@@ -121,6 +121,7 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
 
     private fun SshClient.execute(vararg commands: String) {
         class SshExecuteInnerRuntimeException(message: String, val commandOutput: String? = null) : RuntimeException(message)
+
         val recordingChannelEventListener = RecordingChannelEventListener()
         try {
             runTask(
@@ -166,9 +167,9 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
     }
 
     private fun <T> retrying(block: () -> T) = generateSequence { runCatching(block) }
-            .filterIndexed { index, result -> index >= 5 || result.isSuccess }
-            .first()
-            .getOrThrow()
+        .filterIndexed { index, result -> index >= 5 || result.isSuccess }
+        .first()
+        .getOrThrow()
 
     private class RecordingChannelEventListener : ChannelEventListener {
         private val standardStringBuilder = StringBuilder()
