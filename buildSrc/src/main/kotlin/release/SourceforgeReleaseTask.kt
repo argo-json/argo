@@ -26,7 +26,9 @@ import org.gradle.api.tasks.TaskAction
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
+import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse
+import java.net.http.HttpResponse.BodyHandlers
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.US_ASCII
 
@@ -95,13 +97,12 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
             throw e
         }
 
-        val defaultDownloadUri =
-            URI.create("https://sourceforge.net/projects/argo/files/argo/${project.version}/argo-${project.version}.jar")
+        val defaultDownloadUri = URI.create("https://sourceforge.net/projects/argo/files/argo/${project.version}/argo-${project.version}.jar")
         val response = HttpClient.newHttpClient()
             .send(
                 HttpRequest.newBuilder(defaultDownloadUri)
                     .PUT(
-                        HttpRequest.BodyPublishers.ofString(
+                        BodyPublishers.ofString(
                             "default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others&download_label=${project.version}%20with%20source&api_key=${
                                 project.property(
                                     "sourceforgeApiKey"
@@ -111,7 +112,7 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
                     )
                     .setHeader("content-type", "application/x-www-form-urlencoded")
                     .build(),
-                HttpResponse.BodyHandlers.ofString()
+                BodyHandlers.ofString()
             )
         if (response.statusCode() < 200 || response.statusCode() >= 400) {
             throw GradleException("updating SourceForge default download to {$defaultDownloadUri} resulted in response code ${response.statusCode()} with body\n${response.body()}")
