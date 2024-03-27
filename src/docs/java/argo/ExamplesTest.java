@@ -10,6 +10,7 @@
 
 package argo;
 
+import argo.JsonGenerator.JsonGeneratorStyle;
 import argo.format.WriteableJsonArray;
 import argo.format.WriteableJsonObject;
 import org.junit.jupiter.api.Test;
@@ -122,5 +123,13 @@ class ExamplesTest {
         // end::streamInSomeJson[]
 
         assertEquals(2, commentCount);
+    }
+
+    @Test
+    @SuppressWarnings("unused")
+    void enableCompactGeneration() {
+        // tag::enableCompactGeneration[]
+        JsonGenerator jsonGenerator = new JsonGenerator().style(JsonGeneratorStyle.COMPACT);
+        // end::enableCompactGeneration[]
     }
 }

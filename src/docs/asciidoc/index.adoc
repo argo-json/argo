@@ -111,6 +111,24 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson,inden
 <2> The stack will keep track of the parents of the current element
 <3> Nodes' text is also streamed, so we can have unbounded strings, numbers, and field names
 
+=== Performance tuning
+
+==== Optional whitespace
+
+The computational cost of parsing a JSON document correlates well with its length.  Reducing or eliminating optional whitespace from input JSON reduces its size and results in a roughly proportional reduction in parsing cost.
+// TODO citation for correlation statement.
+
+Similarly, generating JSON with optional whitespace included incurs a processing cost.  By default, Argo generates JSON with optional whitespace to improve readability.  If performance is a greater concern than readability, optional whitespace can be switched off:
+[source,java]
+----
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=enableCompactGeneration,indent=0]
+----
+// TODO quantify
+
+==== Buffering
+
+Argo does not add its own buffering to a `Reader` it parses from or to a `Writer` it generates to.  Parsing from an unbuffered `Reader` that performs poorly when reading single characters and small arrays of characters may be improved by wrapping it in an appropriately sized `BufferedReader`.  Likewise, generating JSON to an unbuffered `Writer` might be improved by wrapping it in a `BufferedWriter` if the underlying `Writer` is unsuited to single character and short `String` writes.
+
 === Further details
 
 // suppress inspection "AsciiDocLinkResolve"
