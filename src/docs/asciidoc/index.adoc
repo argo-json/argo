@@ -126,7 +126,7 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=enableCompactGeneratio
 
 ==== Buffering
 
-Argo does not add its own buffering to a `Reader` it parses from or to a `Writer` it generates to.  Parsing from an unbuffered `Reader` that performs poorly when reading single characters and small arrays of characters may be improved by wrapping it in an appropriately sized `BufferedReader`.  Likewise, generating JSON to an unbuffered `Writer` might be improved by wrapping it in a `BufferedWriter` if the underlying `Writer` is unsuited to single character and short `String` writes.
+Argo does not add its own buffering to a `Reader` it parses from, or to a `Writer` it generates to.  Parsing from an unbuffered `Reader` that performs poorly when reading single characters and small arrays of characters may be improved by wrapping it in an appropriately sized `BufferedReader`.  Likewise, generating JSON to an unbuffered `Writer` might be improved by wrapping it in a `BufferedWriter` if the underlying `Writer` is unsuited to single character and short `String` writes.
 
 === Further details
 
