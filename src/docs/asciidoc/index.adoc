@@ -123,7 +123,6 @@ Similarly, generating JSON with optional whitespace included incurs a processing
 ----
 include::{docfile}/../../java/argo/ExamplesTest.java[tags=enableCompactGeneration,indent=0]
 ----
-// TODO quantify
 
 ==== Buffering
 
