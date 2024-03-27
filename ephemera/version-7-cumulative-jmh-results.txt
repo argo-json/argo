@@ -981,3 +981,10 @@ GeneratorBenchmark.prettyJdomGenerate             thrpt   25  38766.367 ±  327.
 GeneratorBenchmark.prettyJdomGenerateString       thrpt   25  68296.564 ± 1082.413  ops/s
 GeneratorBenchmark.prettyStreamingGenerate        thrpt   25  35824.622 ±  247.946  ops/s
 GeneratorBenchmark.prettyStreamingGenerateString  thrpt   25  60516.167 ± 1242.354  ops/s
+
+
+Test cost of parsing pretty JSON vs compact JSON
+
+Benchmark                          Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse         thrpt   25  18918.325 ± 287.490  ops/s
+ParserBenchmark.jdomParseCompact  thrpt   25  22843.701 ± 410.556  ops/s

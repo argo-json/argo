@@ -116,7 +116,6 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=streamInSomeJson,inden
 ==== Optional whitespace
 
 The computational cost of parsing a JSON document correlates well with its length.  Reducing or eliminating optional whitespace from input JSON reduces its size and results in a roughly proportional reduction in parsing cost.
-// TODO citation for correlation statement.
 
 Similarly, generating JSON with optional whitespace included incurs a processing cost.  By default, Argo generates JSON with optional whitespace to improve readability.  If performance is a greater concern than readability, optional whitespace can be switched off:
 [source,java]
