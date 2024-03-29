@@ -265,7 +265,7 @@ final class StajParserTest {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("1"),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         ));
         stajParser.next();
         final Reader reader = stajParser.next().reader();
@@ -284,7 +284,7 @@ final class StajParserTest {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("1"),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         ));
         stajParser.next();
         stajParser.next();
@@ -298,7 +298,7 @@ final class StajParserTest {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("1"),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         ));
         stajParser.next();
         stajParser.next();
@@ -632,7 +632,7 @@ final class StajParserTest {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("\"F"),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         ));
         stajParser.next();
         final Reader reader = stajParser.next().reader();
@@ -651,7 +651,7 @@ final class StajParserTest {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("\"F"),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         ));
         stajParser.next();
         stajParser.next();
@@ -665,7 +665,7 @@ final class StajParserTest {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("\"F"),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         ));
         stajParser.next();
         stajParser.next();
@@ -1099,7 +1099,7 @@ final class StajParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void handlesIoExceptionDuringParsing(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new BrokenReader(ioException));
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new BrokenReader(() -> ioException));
         stajParser.next();
         final JsonStreamException jsonStreamException = assertThrows(JsonStreamException.class, stajParser::next);
         assertThat(jsonStreamException.getCause(), equalTo(ioException));
@@ -1111,7 +1111,7 @@ final class StajParserTest {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
                 new StringReader("["),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         ));
         stajParser.next();
         stajParser.next();
@@ -1122,14 +1122,7 @@ final class StajParserTest {
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
     void handlesRuntimeExceptionDuringParsing(final StajParserJsonParserShim stajParserJsonParserShim) {
-        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new Reader() { // TODO commons-io BrokenReader ought to be made to throw RuntimeExceptions too.
-            public int read(@SuppressWarnings("NullableProblems") char[] chars, int offset, int length) {
-                throw new MyTestRuntimeException();
-            }
-
-            public void close() {
-            }
-        });
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new BrokenReader(MyTestRuntimeException::new));
         stajParser.next();
         assertThrows(MyTestRuntimeException.class, stajParser::next);
     }

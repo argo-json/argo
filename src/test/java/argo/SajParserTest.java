@@ -161,7 +161,7 @@ final class SajParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void rethrowsIOExceptionFromReader(final SajParserJsonParserShim sajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final IOException actualException = assertThrows(IOException.class, () -> sajParserJsonParserShim.parse(new BrokenReader(ioException), BLACK_HOLE_JSON_LISTENER));
+        final IOException actualException = assertThrows(IOException.class, () -> sajParserJsonParserShim.parse(new BrokenReader(() -> ioException), BLACK_HOLE_JSON_LISTENER));
         assertThat(actualException, sameInstance(ioException));
     }
 

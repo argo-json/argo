@@ -153,7 +153,7 @@ final class JdomParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void rethrowsIOExceptionFromReader(final JdomParserJsonParserShim parser) {
         final IOException ioException = new IOException("An IOException");
-        final IOException actualException = assertThrows(IOException.class, () -> parser.parse(new BrokenReader(ioException)));
+        final IOException actualException = assertThrows(IOException.class, () -> parser.parse(new BrokenReader(() -> ioException)));
         assertThat(actualException, sameInstance(ioException));
     }
 
@@ -163,7 +163,7 @@ final class JdomParserTest {
         final IOException ioException = new IOException("An IOException");
         final IOException actualException = assertThrows(IOException.class, () -> parser.parse(new SequenceReader(
                 new StringReader("{\"He"),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         )));
         assertThat(actualException, sameInstance(ioException));
     }
@@ -174,7 +174,7 @@ final class JdomParserTest {
         final IOException ioException = new IOException("An IOException");
         final IOException actualException = assertThrows(IOException.class, () -> parser.parse(new SequenceReader(
                 new StringReader("\"He"),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         )));
         assertThat(actualException, sameInstance(ioException));
     }
@@ -185,7 +185,7 @@ final class JdomParserTest {
         final IOException ioException = new IOException("An IOException");
         final IOException actualException = assertThrows(IOException.class, () -> parser.parse(new SequenceReader(
                 new StringReader("1."),
-                new BrokenReader(ioException)
+                new BrokenReader(() -> ioException)
         )));
         assertThat(actualException, sameInstance(ioException));
     }

@@ -234,7 +234,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void propagatesIoExceptionWritingString() {
         final IOException ioException = new IOException("An IOException");
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(ioException), new WriteBufferHolder())) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(() -> ioException), new WriteBufferHolder())) {
             final IOException actualException = assertThrows(IOException.class, () -> jsonNumberValidatingWriter.write("0"));
             assertThat(actualException, sameInstance(ioException));
         }
@@ -243,7 +243,7 @@ class JsonNumberValidatingWriterTest {
     @Test
     void propagatesIoExceptionWritingCharacter() {
         final IOException ioException = new IOException("An IOException");
-        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(ioException), new WriteBufferHolder())) {
+        try (JsonNumberValidatingWriter jsonNumberValidatingWriter = new JsonNumberValidatingWriter(new BrokenWriter(() -> ioException), new WriteBufferHolder())) {
             final IOException actualException = assertThrows(IOException.class, () -> jsonNumberValidatingWriter.write('0'));
             assertThat(actualException, sameInstance(ioException));
         }

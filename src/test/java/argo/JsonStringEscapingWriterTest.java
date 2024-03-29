@@ -308,7 +308,7 @@ class JsonStringEscapingWriterTest {
     @Test
     void propagatesIoExceptionWritingString() {
         final IOException ioException = new IOException("An IOException");
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(new BrokenWriter(ioException), new WriteBufferHolder())) {
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(new BrokenWriter(() -> ioException), new WriteBufferHolder())) {
             final IOException actualException = assertThrows(IOException.class, () -> jsonStringEscapingWriter.write("a"));
             assertThat(actualException, sameInstance(ioException));
         }
@@ -317,7 +317,7 @@ class JsonStringEscapingWriterTest {
     @Test
     void propagatesIoExceptionWritingCharacter() {
         final IOException ioException = new IOException("An IOException");
-        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(new BrokenWriter(ioException), new WriteBufferHolder())) {
+        try (JsonStringEscapingWriter jsonStringEscapingWriter = new JsonStringEscapingWriter(new BrokenWriter(() -> ioException), new WriteBufferHolder())) {
             final IOException actualException = assertThrows(IOException.class, () -> jsonStringEscapingWriter.write('a'));
             assertThat(actualException, sameInstance(ioException));
         }

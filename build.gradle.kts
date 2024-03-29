@@ -84,7 +84,7 @@ testing {
                 implementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
                 implementation("org.hamcrest:hamcrest:2.2")
                 implementation("net.sourceforge.ickles:ickles:0.21")
-                implementation("commons-io:commons-io:2.15.1")
+                implementation("commons-io:commons-io:2.16.0")
                 runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
             }
         }
