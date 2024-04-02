@@ -311,23 +311,6 @@ ij_xml_space_around_equals_in_attribute = false
 ij_xml_space_inside_empty_tag = false
 ij_xml_text_wrap = normal
 
-[{*.har,*.json,*.jsonc}]
-indent_size = 2
-ij_json_array_wrapping = split_into_lines
-ij_json_keep_blank_lines_in_code = 0
-ij_json_keep_indents_on_empty_lines = false
-ij_json_keep_line_breaks = true
-ij_json_keep_trailing_comma = false
-ij_json_object_wrapping = split_into_lines
-ij_json_property_alignment = do_not_align
-ij_json_space_after_colon = true
-ij_json_space_after_comma = true
-ij_json_space_before_colon = false
-ij_json_space_before_comma = false
-ij_json_spaces_within_braces = false
-ij_json_spaces_within_brackets = false
-ij_json_wrap_long_lines = false
-
 [{*.htm,*.html,*.sht,*.shtm,*.shtml}]
 ij_html_add_new_line_before_tags = body,div,p,form,h1,h2,h3
 ij_html_align_attributes = true
