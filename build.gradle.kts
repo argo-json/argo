@@ -40,6 +40,7 @@ plugins {
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("com.gitlab.svg2ico") version "1.4"
     id("org.asciidoctor.jvm.convert") version "4.0.2"
+    id("org.asciidoctor.jvm.gems") version "4.0.2"
 
     id("release.sourceforge")
 }
@@ -49,6 +50,9 @@ description = "Argo is an open source JSON parser and generator written in Java.
 
 repositories {
     mavenCentral()
+    ruby {
+        gems()
+    }
 }
 
 sourceSets {
@@ -70,6 +74,8 @@ dependencies {
     testFixturesImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
 
     spotbugs(group = "com.github.spotbugs", name = "spotbugs", version = "4.8.3")
+
+    asciidoctorGems(group = "rubygems", name="asciidoctor-tabs", version="1.0.0.beta.6")
 
     jmhImplementation(testFixtures(project))
 }
@@ -241,12 +247,18 @@ tasks {
     }
 
     asciidoctor {
-        dependsOn(ico, png, javadoc) // doesn't seem to infer dependencies properly from the resources CopySpec
+        dependsOn(ico, png, javadoc, "asciidoctorGemsPrepare") // doesn't seem to infer dependencies properly from the resources CopySpec
         resources {
             from(ico, png)
             from(javadoc) {
                 into("javadoc")
             }
+        }
+        asciidoctorj {
+            requires(
+                "asciidoctor",
+                project.layout.buildDirectory.file(".asciidoctorGems/gems/asciidoctor-tabs-1.0.0.beta.6/lib/asciidoctor-tabs.rb").get().asFile // TODO this is a workaround for https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/718
+            )
         }
     }
 
