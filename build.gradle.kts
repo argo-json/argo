@@ -257,7 +257,7 @@ tasks {
         asciidoctorj {
             requires(
                 "asciidoctor",
-                project.layout.buildDirectory.file(".asciidoctorGems/gems/asciidoctor-tabs-1.0.0.beta.6/lib/asciidoctor-tabs.rb").get().asFile // TODO this is a workaround for https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/718
+                project.layout.buildDirectory.file(".asciidoctorGems/gems/asciidoctor-tabs-1.0.0.beta.6/lib/asciidoctor-tabs.rb") // TODO this is a workaround for https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/718
             )
         }
     }
