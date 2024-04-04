@@ -63,7 +63,7 @@ dependencies {
 
     spotbugs(group = "com.github.spotbugs", name = "spotbugs", version = "4.8.3")
 
-    asciidoctorGems(group = "rubygems", name="asciidoctor-tabs", version="1.0.0.beta.6")
+    asciidoctorGems(group = "rubygems", name = "asciidoctor-tabs", version = "1.0.0.beta.6")
 
     jmhImplementation(testFixtures(project))
 }
@@ -213,15 +213,15 @@ tasks {
         group = "documentation"
         source {
             sourcePath = file("resources/favicon.svg")
-            output { width = 64; height = 64}
+            output { width = 64; height = 64 }
         }
         source {
             sourcePath = file("resources/favicon.svg")
             userStyleSheet = file("resources/no-outline.css")
-            output { width = 48; height = 48}
-            output { width = 32; height = 32}
-            output { width = 24; height = 24}
-            output { width = 16; height = 16}
+            output { width = 48; height = 48 }
+            output { width = 32; height = 32 }
+            output { width = 24; height = 24 }
+            output { width = 16; height = 16 }
         }
         destination = project.layout.buildDirectory.file("icons/favicon.ico")
     }
