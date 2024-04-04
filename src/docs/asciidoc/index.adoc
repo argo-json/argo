@@ -164,7 +164,7 @@ The project is hosted on https://sourceforge.net/projects/argo[SourceForge].
 |Unlimited
 
 |Nesting depth
-|`Integer.MAX_VALUE` / 4
+|`Integer.MAX_VALUE` - 8
 |`Integer.MAX_VALUE` - 8
 |Limited by JVM stack (>2900 using 1MB stack)
 |Limited by JVM stack (>4000 using 1MB stack)
