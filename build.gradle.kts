@@ -149,7 +149,7 @@ tasks {
         }
     }
 
-    val compileTinyJava by registering(JavaCompile::class) {
+    val compileSmallJava by registering(JavaCompile::class) {
         sourceCompatibility = "1.5"
         targetCompatibility = "1.5"
         javaCompiler = project.javaToolchains.compilerFor {
@@ -157,7 +157,7 @@ tasks {
         }
         source = sourceSets["main"].allSource
         classpath = sourceSets["main"].compileClasspath
-        destinationDirectory.set(project.layout.buildDirectory.dir("tiny-classes/main"))
+        destinationDirectory.set(project.layout.buildDirectory.dir("small-classes/main"))
         options.compilerArgs = listOf("-g:none", "-Xlint:-options")
     }
 
@@ -179,9 +179,9 @@ tasks {
     }
 
     val smallJar by registering(Jar::class) {
-        dependsOn(compileTinyJava)
-        archiveClassifier = "tiny"
-        from(project.layout.buildDirectory.dir("tiny-classes/main"))
+        dependsOn(compileSmallJava)
+        archiveClassifier = "small"
+        from(project.layout.buildDirectory.dir("small-classes/main"))
         from(sourceSets["moduleInfo"].output)
     }
 
