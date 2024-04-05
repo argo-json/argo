@@ -57,7 +57,7 @@ dependencies {
     "moduleInfoImplementation"(sourceSets["main"].output)
 
     testFixturesImplementation(group = "org.apache.commons", name = "commons-lang3", version = "3.14.0")
-    testFixturesImplementation(group = "commons-io", name = "commons-io", version = "2.15.1")
+    testFixturesImplementation(group = "commons-io", name = "commons-io", version = "2.16.0")
     testFixturesImplementation(group = "net.sourceforge.ickles", name = "ickles", version = "0.21")
     testFixturesImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
 
@@ -94,7 +94,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation(testFixtures(project()))
-                implementation("commons-io:commons-io:2.15.1")
+                implementation("commons-io:commons-io:2.16.0")
             }
         }
     }
