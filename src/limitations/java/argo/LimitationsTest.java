@@ -15,7 +15,6 @@ import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonStringNode;
 import org.apache.commons.io.output.NullWriter;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -50,7 +49,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void generateAndParseString() throws IOException, InterruptedException, InvalidSyntaxException {
         final StringBuilder stringBuilder = new StringBuilder(Integer.MAX_VALUE - 8);
         for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
@@ -61,7 +59,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void streamingGenerateAndStreamingParseString() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonString) stringWriter -> {
             for (int i = -5; i < Integer.MAX_VALUE; i++) {
@@ -71,7 +68,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void generateAndParseNumber() throws IOException, InterruptedException, InvalidSyntaxException {
         final StringBuilder stringBuilder = new StringBuilder(Integer.MAX_VALUE - 8);
         for (int i = 0; i < Integer.MAX_VALUE - 8; i++) {
@@ -82,7 +78,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void streamingGenerateAndStreamingParseNumber() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonNumber) numberWriter -> {
             for (int i = -5; i < Integer.MAX_VALUE; i++) {
@@ -92,14 +87,12 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void generateArray() throws IOException {
         final JsonNode jsonNode = array(Collections.nCopies(Integer.MAX_VALUE - 8, number(0)));
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
     @Test
-    @Disabled // checked
     void parseArray() throws IOException, InterruptedException, InvalidSyntaxException {
         final JsonNode number = number(0);
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonArray) arrayWriter -> {
@@ -110,7 +103,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void streamingGenerateAndStreamingParseArray() throws IOException, InterruptedException, InvalidSyntaxException {
         final JsonNode number = number(0);
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonArray) arrayWriter -> {
@@ -121,14 +113,12 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void generateObject() throws IOException {
         final JsonNode jsonNode = object(Collections.nCopies(Integer.MAX_VALUE - 8, field(string(""), number(0))));
         JSON_GENERATOR.generate(NullWriter.INSTANCE, jsonNode);
     }
 
     @Test
-    @Disabled // checked
     void parseObject() throws IOException, InterruptedException, InvalidSyntaxException {
         final JsonField field = field(string(""), number(0));
         executeTest(writer -> JSON_GENERATOR.generate(writer, (WriteableJsonObject) objectWriter -> {
@@ -139,7 +129,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void streamingGenerateAndStreamingParseObject() throws IOException, InterruptedException, InvalidSyntaxException {
         final JsonStringNode name = string("");
         final JsonNode number = number(0);
@@ -151,7 +140,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void generateNested() throws IOException {
         JsonNode jsonNode = array();
         for (int i = 1; i < 2900; i++) {
@@ -161,7 +149,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled // checked
     void parseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
@@ -182,7 +169,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled  // checked
     void streamingParseNested() throws IOException, InterruptedException, InvalidSyntaxException {
         executeTest(writer -> {
             final int max = Integer.MAX_VALUE - 9; // outermost layer is always implicitly START_DOCUMENT
@@ -196,7 +182,6 @@ class LimitationsTest {
     }
 
     @Test
-    @Disabled  // checked
     void streamingGenerateNested() throws IOException, InterruptedException, InvalidSyntaxException {
         final WriteableJsonArray writeableJsonArray = new WriteableJsonArray() {
             private int callCount = 0;
