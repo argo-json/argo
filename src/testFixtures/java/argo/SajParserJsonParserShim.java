@@ -16,7 +16,7 @@ import java.io.Reader;
 interface SajParserJsonParserShim {
     void parse(Reader reader, JsonListener jsonListener) throws IOException, InvalidSyntaxException;
 
-    void parse(String json, JsonListener jsonListener) throws IOException, InvalidSyntaxException;
+    void parse(String json, JsonListener jsonListener) throws InvalidSyntaxException;
 
     @SuppressWarnings("deprecation")
     final class Saj implements SajParserJsonParserShim {
@@ -36,7 +36,7 @@ interface SajParserJsonParserShim {
         }
 
         @Override
-        public void parse(final String json, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
+        public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
             try {
                 sajParser.parse(json, jsonListener);
             } catch (final argo.saj.InvalidSyntaxException e) {
@@ -58,7 +58,7 @@ interface SajParserJsonParserShim {
         }
 
         @Override
-        public void parse(final String json, final JsonListener jsonListener) throws IOException, InvalidSyntaxException {
+        public void parse(final String json, final JsonListener jsonListener) throws InvalidSyntaxException {
             jsonParser.parseStreaming(json, jsonListener);
         }
     }

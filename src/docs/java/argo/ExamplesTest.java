@@ -73,7 +73,7 @@ class ExamplesTest {
                     {
                     	"title": "How to use Argo"
                     // end::streamOutSomeJsonIntermediateResult[]
-                                        	"""), stringWriter.toString());
+                    """), stringWriter.toString());
             // end::streamOutSomeJsonIntermediateResultWrapper[]
             objectWriter.writeField("version", number(2));
             objectWriter.writeField("comments", (WriteableJsonArray) arrayWriter -> {

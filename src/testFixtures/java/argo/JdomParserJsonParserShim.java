@@ -18,7 +18,7 @@ import java.io.Reader;
 interface JdomParserJsonParserShim {
     JsonNode parse(Reader reader) throws IOException, InvalidSyntaxException;
 
-    JsonNode parse(String json) throws IOException, InvalidSyntaxException;
+    JsonNode parse(String json) throws InvalidSyntaxException;
 
     @SuppressWarnings("deprecation")
     final class Jdom implements JdomParserJsonParserShim {
@@ -38,7 +38,7 @@ interface JdomParserJsonParserShim {
         }
 
         @Override
-        public JsonNode parse(final String json) throws IOException, InvalidSyntaxException {
+        public JsonNode parse(final String json) throws InvalidSyntaxException {
             try {
                 return jdomParser.parse(json);
             } catch (final argo.saj.InvalidSyntaxException e) {
@@ -60,7 +60,7 @@ interface JdomParserJsonParserShim {
         }
 
         @Override
-        public JsonNode parse(final String json) throws IOException, InvalidSyntaxException {
+        public JsonNode parse(final String json) throws InvalidSyntaxException {
             return jsonParser.parse(json);
         }
     }
