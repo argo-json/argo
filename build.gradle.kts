@@ -115,7 +115,7 @@ jmh {
 }
 
 revapi {
-    setOldVersion("6.5")
+    setOldVersion("7.0")
 }
 
 pmd {
