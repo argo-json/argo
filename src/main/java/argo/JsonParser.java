@@ -85,8 +85,8 @@ public final class JsonParser {
         abstract JsonNumberNodeFactory newJsonNumberNodeFactory();
     }
 
-    private static String asString(final Reader reader, final int initialCapacity) throws IOException {
-        final StringBuilder stringBuilder = new StringBuilder(initialCapacity);
+    private static String asString(final Reader reader, final StringBuilder stringBuilder) throws IOException {
+        stringBuilder.setLength(0);
         int c;
         while ((c = reader.read()) != -1) {
             stringBuilder.append((char) c);
@@ -254,6 +254,7 @@ public final class JsonParser {
     JsonNode parse(final ParseExecutor parseExecutor) throws InvalidSyntaxException, IOException {
         final JsonStringNodeFactory jsonStringNodeFactory = nodeInterningStrategy.newJsonStringNodeFactory();
         final JsonNumberNodeFactory jsonNumberNodeFactory = nodeInterningStrategy.newJsonNumberNodeFactory();
+        final StringBuilder stringBuilder = new StringBuilder(32);
         final RootNodeContainer root = new RootNodeContainer();
         final Stack<NodeContainer> stack = new Stack<NodeContainer>();
         try {
@@ -286,7 +287,7 @@ public final class JsonParser {
 
                 public void startField(final Reader name) {
                     try {
-                        stack.push(new FieldNodeContainer(jsonStringNodeFactory.jsonStringNode(asString(name, 32))));
+                        stack.push(new FieldNodeContainer(jsonStringNodeFactory.jsonStringNode(asString(name, stringBuilder))));
                     } catch (final IOException e) {
                         throw new IORuntimeException(e);
                     }
@@ -299,7 +300,7 @@ public final class JsonParser {
 
                 public void stringValue(final Reader value) {
                     try {
-                        stack.peek().add(jsonStringNodeFactory.jsonStringNode(asString(value, 32)));
+                        stack.peek().add(jsonStringNodeFactory.jsonStringNode(asString(value, stringBuilder)));
                     } catch (final IOException e) {
                         throw new IORuntimeException(e);
                     }
@@ -307,7 +308,7 @@ public final class JsonParser {
 
                 public void numberValue(final Reader value) {
                     try {
-                        stack.peek().add(jsonNumberNodeFactory.jsonNumberNode(asString(value, 16)));
+                        stack.peek().add(jsonNumberNodeFactory.jsonNumberNode(asString(value, stringBuilder)));
                     } catch (final IOException e) {
                         throw new IORuntimeException(e);
                     }

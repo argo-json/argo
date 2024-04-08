@@ -995,3 +995,10 @@ Try making leaf node interning switchable
 Benchmark                               Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse              thrpt   25  18858.000 ± 351.363  ops/s
 ParserBenchmark.jdomParseNonInterning  thrpt   25  19950.339 ± 671.733  ops/s
+
+
+Reuse StringBuilder across entire parse.
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse              thrpt   25  18993.718 ± 571.300  ops/s
+ParserBenchmark.jdomParseNonInterning  thrpt   25  20622.519 ± 351.257  ops/s
