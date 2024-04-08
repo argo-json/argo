@@ -988,3 +988,10 @@ Test cost of parsing pretty JSON vs compact JSON
 Benchmark                          Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse         thrpt   25  18918.325 ± 287.490  ops/s
 ParserBenchmark.jdomParseCompact  thrpt   25  22843.701 ± 410.556  ops/s
+
+
+Try making leaf node interning switchable
+
+Benchmark                               Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse              thrpt   25  18858.000 ± 351.363  ops/s
+ParserBenchmark.jdomParseNonInterning  thrpt   25  19950.339 ± 671.733  ops/s

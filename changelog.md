@@ -1,3 +1,7 @@
+## 7.1
+
+Introduced the ability to disable node reuse when performing a non-streaming parse.
+
 ## 7.0
 
 The major change introduced in version 7.0 is to use `java.io.Reader` for reading JSON strings and numbers, and `java.io.Writer` for writing JSON strings and numbers, to improve memory efficiency and to allow them to be unlimited length.  This results in breaking changes in `argo.staj.StajParser` and `argo.saj.SajParser` as methods for handling field names, string values, and number values now use `Reader` instead of `String`.  `argo.jdom.JdomParser` remains backwards-compatible with version 6.6.

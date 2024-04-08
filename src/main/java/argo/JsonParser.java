@@ -19,6 +19,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.*;
 
+import static argo.JsonParser.NodeInterningStrategy.INTERN_LEAF_NODES;
 import static argo.JsonStreamElement.NonTextJsonStreamElement.END_DOCUMENT;
 import static argo.jdom.JsonNodeFactories.*;
 
@@ -29,6 +30,61 @@ import static argo.jdom.JsonNodeFactories.*;
  */
 public final class JsonParser {
 
+    private final NodeInterningStrategy nodeInterningStrategy;
+
+    public JsonParser() {
+        this(INTERN_LEAF_NODES);
+    }
+
+    private JsonParser(final NodeInterningStrategy nodeInterningStrategy) {
+        this.nodeInterningStrategy = nodeInterningStrategy;
+    }
+
+    /**
+     * Strategies a {@code JsonParser} can use for object reuse when parsing a document without streaming.
+     */
+    public enum NodeInterningStrategy {
+
+        /**
+         * Use the same object for strings and numbers in a given document that are equal.
+         * <p>
+         * When the parser encounters a number node or a string node (including field names) equal to one it has previously encountered in the same
+         * document, it will use the same object for them, i.e. for any two strings or numbers {@code a} and {@code b} in a given document, if {@code a.equals(b)}
+         * then {@code a == b}.
+         * <p>
+         * This strategy trades a reduction in memory use for a small increase in computational cost.
+         */
+        INTERN_LEAF_NODES {
+            JsonStringNodeFactory newJsonStringNodeFactory() {
+                return new InterningJsonStringNodeFactory();
+            }
+
+            JsonNumberNodeFactory newJsonNumberNodeFactory() {
+                return new InterningJsonNumberNodeFactory();
+            }
+        },
+
+        /**
+         * Use a new object for every string and number in a document.
+         * <p>
+         * For any two equivalent strings or numbers {@code a} and {@code b} in a given document, {@code a.equals(b)}, but {@code a != b}.
+         * <p>
+         * This strategy minimises the computational cost of parsing at the expense of increased memory use.
+         */
+        INTERN_NOTHING {
+            JsonStringNodeFactory newJsonStringNodeFactory() {
+                return new InstantiatingJsonStringNodeFactory();
+            }
+
+            JsonNumberNodeFactory newJsonNumberNodeFactory() {
+                return new InstantiatingJsonNumberNodeFactory();
+            }
+        };
+
+        abstract JsonStringNodeFactory newJsonStringNodeFactory();
+        abstract JsonNumberNodeFactory newJsonNumberNodeFactory();
+    }
+
     private static String asString(final Reader reader, final int initialCapacity) throws IOException {
         final StringBuilder stringBuilder = new StringBuilder(initialCapacity);
         int c;
@@ -36,6 +92,16 @@ public final class JsonParser {
             stringBuilder.append((char) c);
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * Returns a JsonParser with the given node interning strategy.  Defaults to {@link NodeInterningStrategy#INTERN_LEAF_NODES}.
+     *
+     * @param nodeInterningStrategy the node interning strategy to use when parsing without streaming.
+     * @return a JsonParser with the given node interning strategy.
+     */
+    public JsonParser nodeInterning(final NodeInterningStrategy nodeInterningStrategy) {
+        return new JsonParser(nodeInterningStrategy);
     }
 
     /**
@@ -186,8 +252,8 @@ public final class JsonParser {
     }
 
     JsonNode parse(final ParseExecutor parseExecutor) throws InvalidSyntaxException, IOException {
-        final JsonStringNodeFactory jsonStringNodeFactory = new JsonStringNodeFactory();
-        final JsonNumberNodeFactory jsonNumberNodeFactory = new JsonNumberNodeFactory();
+        final JsonStringNodeFactory jsonStringNodeFactory = nodeInterningStrategy.newJsonStringNodeFactory();
+        final JsonNumberNodeFactory jsonNumberNodeFactory = nodeInterningStrategy.newJsonNumberNodeFactory();
         final RootNodeContainer root = new RootNodeContainer();
         final Stack<NodeContainer> stack = new Stack<NodeContainer>();
         try {
@@ -396,10 +462,14 @@ public final class JsonParser {
         }
     }
 
-    private static final class JsonStringNodeFactory {
+    private interface JsonStringNodeFactory {
+        JsonStringNode jsonStringNode(String value);
+    }
+
+    private static final class InterningJsonStringNodeFactory implements JsonStringNodeFactory {
         private final Map<String, JsonStringNode> existingJsonStringNodes = new HashMap<String, JsonStringNode>();
 
-        JsonStringNode jsonStringNode(final String value) {
+        public JsonStringNode jsonStringNode(final String value) {
             final JsonStringNode cachedStringNode = existingJsonStringNodes.get(value);
             if (cachedStringNode == null) {
                 final JsonStringNode newJsonStringNode = string(value);
@@ -411,10 +481,20 @@ public final class JsonParser {
         }
     }
 
-    private static final class JsonNumberNodeFactory {
-        private final Map<String, JsonNode> existingJsonNumberNodes = new HashMap<String, JsonNode>(); // TODO make object reuse switchable.
+    private static final class InstantiatingJsonStringNodeFactory implements JsonStringNodeFactory {
+        public JsonStringNode jsonStringNode(final String value) {
+            return string(value);
+        }
+    }
 
-        JsonNode jsonNumberNode(final String value) {
+    private interface JsonNumberNodeFactory {
+        JsonNode jsonNumberNode(String value);
+    }
+
+    private static final class InterningJsonNumberNodeFactory implements JsonNumberNodeFactory {
+        private final Map<String, JsonNode> existingJsonNumberNodes = new HashMap<String, JsonNode>();
+
+        public JsonNode jsonNumberNode(final String value) {
             final JsonNode cachedNumberNode = existingJsonNumberNodes.get(value);
             if (cachedNumberNode == null) {
                 final JsonNode newJsonNumberNode = prevalidatedNumber(new PrevalidatedNumber(value));
@@ -423,6 +503,12 @@ public final class JsonParser {
             } else {
                 return cachedNumberNode;
             }
+        }
+    }
+
+    private static final class InstantiatingJsonNumberNodeFactory implements JsonNumberNodeFactory {
+        public JsonNode jsonNumberNode(final String value) {
+            return prevalidatedNumber(new PrevalidatedNumber(value));
         }
     }
 

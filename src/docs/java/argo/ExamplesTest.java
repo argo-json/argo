@@ -11,6 +11,7 @@
 package argo;
 
 import argo.JsonGenerator.JsonGeneratorStyle;
+import argo.JsonParser.NodeInterningStrategy;
 import argo.format.WriteableJsonArray;
 import argo.format.WriteableJsonObject;
 import org.junit.jupiter.api.Test;
@@ -131,5 +132,13 @@ class ExamplesTest {
         // tag::enableCompactGeneration[]
         JsonGenerator jsonGenerator = new JsonGenerator().style(JsonGeneratorStyle.COMPACT);
         // end::enableCompactGeneration[]
+    }
+
+    @Test
+    @SuppressWarnings("unused")
+    void disableNodeInterning() {
+        // tag::disableNodeInterning[]
+        JsonParser jsonParser = new JsonParser().nodeInterning(NodeInterningStrategy.INTERN_NOTHING);
+        // end::disableNodeInterning[]
     }
 }
