@@ -22,4 +22,7 @@
         <Class name="argo.JsonStreamException"/>
         <Bug pattern="EI_EXPOSE_REP"/>
     </Match>
+    <Match>
+        <Bug pattern="SING_SINGLETON_GETTER_NOT_SYNCHRONIZED"/> <!-- False positive; see https://github.com/spotbugs/spotbugs/issues/2932 -->
+    </Match>
 </FindBugsFilter>

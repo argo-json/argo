@@ -24,7 +24,7 @@ plugins {
     `jvm-test-suite`
     id("me.champeau.jmh") version "0.7.2"
     id("com.palantir.revapi") version "1.7.0"
-    id("com.github.spotbugs") version "6.0.9"
+    id("com.github.spotbugs") version "6.0.11"
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
     id("com.gitlab.svg2ico") version "1.4"
     id("org.asciidoctor.jvm.convert") version "4.0.2"
@@ -61,7 +61,7 @@ dependencies {
     testFixturesImplementation(group = "net.sourceforge.ickles", name = "ickles", version = "0.21")
     testFixturesImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
 
-    spotbugs(group = "com.github.spotbugs", name = "spotbugs", version = "4.8.3")
+    spotbugs(group = "com.github.spotbugs", name = "spotbugs", version = "4.8.4")
 
     asciidoctorGems(group = "rubygems", name = "asciidoctor-tabs", version = "1.0.0.beta.6")
 
