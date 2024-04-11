@@ -1,3 +1,7 @@
+## 7.2
+
+Introduced the ability to disable position tracking when parsing, to trade better performance for worse error messages.
+
 ## 7.1
 
 Introduced the ability to disable node reuse when performing a non-streaming parse.

@@ -12,6 +12,7 @@ package argo;
 
 import argo.JsonGenerator.JsonGeneratorStyle;
 import argo.JsonParser.NodeInterningStrategy;
+import argo.JsonParser.PositionTracking;
 import argo.format.WriteableJsonArray;
 import argo.format.WriteableJsonObject;
 import org.junit.jupiter.api.Test;
@@ -140,5 +141,13 @@ class ExamplesTest {
         // tag::disableNodeInterning[]
         JsonParser jsonParser = new JsonParser().nodeInterning(NodeInterningStrategy.INTERN_NOTHING);
         // end::disableNodeInterning[]
+    }
+
+    @Test
+    @SuppressWarnings("unused")
+    void disablePositionTracking() {
+        // tag::disablePositionTracking[]
+        JsonParser jsonParser = new JsonParser().positionTracking(PositionTracking.DO_NOT_TRACK);
+        // end::disablePositionTracking[]
     }
 }

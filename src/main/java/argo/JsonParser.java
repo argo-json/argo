@@ -20,6 +20,7 @@ import java.io.StringReader;
 import java.util.*;
 
 import static argo.JsonParser.NodeInterningStrategy.INTERN_LEAF_NODES;
+import static argo.JsonParser.PositionTracking.TRACK;
 import static argo.JsonStreamElement.NonTextJsonStreamElement.END_DOCUMENT;
 import static argo.jdom.JsonNodeFactories.*;
 
@@ -31,13 +32,15 @@ import static argo.jdom.JsonNodeFactories.*;
 public final class JsonParser {
 
     private final NodeInterningStrategy nodeInterningStrategy;
+    private final PositionTracking positionTracking;
 
     public JsonParser() {
-        this(INTERN_LEAF_NODES);
+        this(INTERN_LEAF_NODES, TRACK);
     }
 
-    private JsonParser(final NodeInterningStrategy nodeInterningStrategy) {
+    private JsonParser(final NodeInterningStrategy nodeInterningStrategy, final PositionTracking positionTracking) {
         this.nodeInterningStrategy = nodeInterningStrategy;
+        this.positionTracking = positionTracking;
     }
 
     /**
@@ -85,6 +88,32 @@ public final class JsonParser {
         abstract JsonNumberNodeFactory newJsonNumberNodeFactory();
     }
 
+    /**
+     * Settings a {@code JsonParser} can use for tracking parsing position for error reporting.
+     */
+    public enum PositionTracking {
+
+        /**
+         * Keep track of the line and column currently being parsed for more precise error messages.  Incurs some computational cost.
+         */
+        TRACK {
+            PositionedPushbackReader newPositionedPushbackReader(final Reader delegate) {
+                return new PositionTrackingPushbackReader(delegate);
+            }
+        },
+
+        /**
+         * Do not keep track of line and column currently being parsed, trading reduced computation cost for reduced usability of error messages.
+         */
+        DO_NOT_TRACK {
+            PositionedPushbackReader newPositionedPushbackReader(final Reader delegate) {
+                return new PositionIgnoringPushbackReader(delegate);
+            }
+        };
+
+        abstract PositionedPushbackReader newPositionedPushbackReader(Reader delegate);
+    }
+
     private static String asString(final Reader reader, final StringBuilder stringBuilder) throws IOException {
         stringBuilder.setLength(0);
         int c;
@@ -101,7 +130,17 @@ public final class JsonParser {
      * @return a JsonParser with the given node interning strategy.
      */
     public JsonParser nodeInterning(final NodeInterningStrategy nodeInterningStrategy) {
-        return new JsonParser(nodeInterningStrategy);
+        return new JsonParser(nodeInterningStrategy, positionTracking);
+    }
+
+    /**
+     * Returns a JsonParser with the given position tracking setting.  Defaults to {@link PositionTracking#TRACK}.
+     *
+     * @param positionTracking the position tracking setting to use.
+     * @return a JsonParser with the given position tracking setting.
+     */
+    public JsonParser positionTracking(final PositionTracking positionTracking) {
+        return new JsonParser(nodeInterningStrategy, positionTracking);
     }
 
     /**
@@ -149,7 +188,7 @@ public final class JsonParser {
      */
     public Iterator<JsonStreamElement> parseStreaming(final Reader reader) {
         return new Iterator<JsonStreamElement>() {
-            private final PositionTrackingPushbackReader pushbackReader = new PositionTrackingPushbackReader(reader);
+            private final PositionedPushbackReader pushbackReader = positionTracking.newPositionedPushbackReader(reader);
             private final Stack<JsonStreamElementType> stack = new Stack<JsonStreamElementType>();
             private JsonStreamElement current;
             private JsonStreamElement next;

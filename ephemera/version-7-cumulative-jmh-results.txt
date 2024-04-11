@@ -1002,3 +1002,12 @@ Reuse StringBuilder across entire parse.
 Benchmark                               Mode  Cnt      Score     Error  Units
 ParserBenchmark.jdomParse              thrpt   25  18993.718 ± 571.300  ops/s
 ParserBenchmark.jdomParseNonInterning  thrpt   25  20622.519 ± 351.257  ops/s
+
+
+Switch off position tracking
+
+Benchmark                                Mode  Cnt      Score     Error  Units
+ParserBenchmark.jdomParse               thrpt   25  21425.725 ± 371.700  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25  23774.070 ± 772.166  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25  32068.089 ± 417.792  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25  33299.266 ± 652.781  ops/s

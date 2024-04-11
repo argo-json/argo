@@ -22,6 +22,10 @@ import java.io.StringReader;
 import java.util.stream.Stream;
 
 import static argo.BlackHoleJsonListener.BLACK_HOLE_JSON_LISTENER;
+import static argo.ExceptionDetailMapper.POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER;
+import static argo.ExceptionDetailMapper.UNTRACKED_POSITION_EXCEPTION_DETAIL_MAPPER;
+import static argo.JsonParser.PositionTracking.DO_NOT_TRACK;
+import static argo.JsonParser.PositionTracking.TRACK;
 import static argo.RecordingJsonListener.*;
 import static argo.RecordingJsonListener.NumberValue.numberValue;
 import static argo.RecordingJsonListener.StartField.startField;
@@ -149,12 +153,12 @@ final class SajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void throwsOnInvalidInput(final SajParserJsonParserShim sajParserJsonParserShim) {
+    void throwsOnInvalidInput(final SajParserJsonParserShim sajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
         final String inputString = "oops";
         final InvalidSyntaxException invalidSyntaxException = assertThrows(InvalidSyntaxException.class, () -> sajParserJsonParserShim.parse(inputString, BLACK_HOLE_JSON_LISTENER));
-        assertThat(invalidSyntaxException.getMessage(), equalTo("At line 1, column 1:  Invalid character [o] at start of value"));
-        assertThat(invalidSyntaxException.getColumn(), equalTo(1));
-        assertThat(invalidSyntaxException.getLine(), equalTo(1));
+        assertThat(invalidSyntaxException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 1) + ":  Invalid character [o] at start of value"));
+        assertThat(invalidSyntaxException.getColumn(), equalTo(exceptionDetailMapper.column(1)));
+        assertThat(invalidSyntaxException.getLine(), equalTo(exceptionDetailMapper.line(1)));
     }
 
     @ParameterizedTest
@@ -176,8 +180,10 @@ final class SajParserTest {
         @SuppressWarnings("deprecation")
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
-                    new SajParserJsonParserShim.Saj(new argo.saj.SajParser()),
-                    new SajParserJsonParserShim.Json(new JsonParser())
+                    new Object[] { new SajParserJsonParserShim.Saj(new argo.saj.SajParser()), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER },
+                    new Object[] { new SajParserJsonParserShim.Json(new JsonParser()), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER },
+                    new Object[] { new SajParserJsonParserShim.Json(new JsonParser().positionTracking(TRACK)), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER },
+                    new Object[] { new SajParserJsonParserShim.Json(new JsonParser().positionTracking(DO_NOT_TRACK)), UNTRACKED_POSITION_EXCEPTION_DETAIL_MAPPER }
             ).map(Arguments::arguments);
         }
     }

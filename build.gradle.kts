@@ -111,6 +111,7 @@ idea {
 }
 
 jmh {
+    includes = listOf("Parse")
     includeTests = false
 }
 

@@ -127,6 +127,15 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=enableCompactGeneratio
 
 Argo does not add its own buffering to a `Reader` it parses from, or to a `Writer` it generates to.  Parsing from an unbuffered `Reader` may be improved by wrapping it in an appropriately sized `BufferedReader` if the underlying `Reader` performs poorly when reading single characters and small arrays of characters.  Likewise, generating JSON to an unbuffered `Writer` might be improved by wrapping it in a `BufferedWriter` if the underlying `Writer` is unsuited to single character and short `String` writes.
 
+==== Position tracking
+
+By default, Argo keeps track of the line and column it's currently parsing, so that it can specify the position of syntax errors.  Keeping track of position has a computational cost, but it can be switched off, in exchange for less informative error messages:
+[source,java]
+----
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=disablePositionTracking,indent=0]
+----
+
+
 ==== Node interning
 
 When parsing a document without streaming, if Argo encounters a string or number equal to one it has previously encountered in the same document, by default it will use the same object for them.  This strategy trades a reduction in memory for a small increase in computational cost.  If the input is known to contain very little repetition, or if computational cost is prioritised over memory efficiency, it might be effective to disable object reuse:

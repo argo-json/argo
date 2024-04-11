@@ -17,7 +17,7 @@ import java.io.Reader;
  * @author Mark Slater
  * @author Henrik Sjöstrand
  */
-final class PositionTrackingPushbackReader { // TODO make position tracking switchable
+final class PositionTrackingPushbackReader implements PositionedPushbackReader {
     private static final int NEWLINE = '\n';
     private static final int CARRIAGE_RETURN = '\r';
 
@@ -43,7 +43,7 @@ final class PositionTrackingPushbackReader { // TODO make position tracking swit
         this.delegate = in;
     }
 
-    void unread(final int character) {
+    public void unread(final int character) {
         pushbackBuffer = character;
 
         if (CARRIAGE_RETURN == character) {
@@ -71,7 +71,7 @@ final class PositionTrackingPushbackReader { // TODO make position tracking swit
         }
     }
 
-    int read() throws IOException {
+    public int read() throws IOException {
         final int character;
         if (pushbackBuffer < 0) {
             character = delegate.read();
@@ -120,15 +120,15 @@ final class PositionTrackingPushbackReader { // TODO make position tracking swit
         return character;
     }
 
-    int column() {
+    public int column() {
         return columnOverflow ? -1 : column;
     }
 
-    int line() {
+    public int line() {
         return lineOverflow ? -1 : line;
     }
 
-    Position position() {
+    public Position position() {
         return new Position(column(), line());
     }
 

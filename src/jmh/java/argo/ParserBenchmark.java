@@ -20,6 +20,7 @@ import java.io.StringReader;
 import java.util.Iterator;
 
 import static argo.JsonParser.NodeInterningStrategy.INTERN_NOTHING;
+import static argo.JsonParser.PositionTracking.DO_NOT_TRACK;
 
 @State(Scope.Benchmark)
 public class ParserBenchmark {
@@ -113,8 +114,8 @@ public class ParserBenchmark {
             "        \"taglib-uri\": \"cofax.tld\",\n" +
             "        \"taglib-location\": \"/WEB-INF/tlds/cofax.tld\"}}}";
 
-    private final JsonParser jsonParser = new JsonParser();
-    private final JsonParser jsonParserNonInterning = new JsonParser().nodeInterning(INTERN_NOTHING);
+    private final JsonParser jsonParser = new JsonParser().positionTracking(DO_NOT_TRACK);
+    private final JsonParser jsonParserNonInterning = jsonParser.nodeInterning(INTERN_NOTHING);
 
     @Benchmark
     public void jdomParse(final Blackhole blackhole) throws InvalidSyntaxException {
