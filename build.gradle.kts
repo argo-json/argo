@@ -57,7 +57,7 @@ dependencies {
     "moduleInfoImplementation"(sourceSets["main"].output)
 
     testFixturesImplementation(group = "org.apache.commons", name = "commons-lang3", version = "3.14.0")
-    testFixturesImplementation(group = "commons-io", name = "commons-io", version = "2.16.0")
+    testFixturesImplementation(group = "commons-io", name = "commons-io", version = "2.16.1")
     testFixturesImplementation(group = "net.sourceforge.ickles", name = "ickles", version = "0.21")
     testFixturesImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
 
@@ -78,7 +78,7 @@ testing {
                 implementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
                 implementation("org.hamcrest:hamcrest:2.2")
                 implementation("net.sourceforge.ickles:ickles:0.21")
-                implementation("commons-io:commons-io:2.16.0")
+                implementation("commons-io:commons-io:2.16.1")
             }
         }
 
@@ -94,7 +94,7 @@ testing {
             dependencies {
                 implementation(project())
                 implementation(testFixtures(project()))
-                implementation("commons-io:commons-io:2.16.0")
+                implementation("commons-io:commons-io:2.16.1")
             }
         }
     }
