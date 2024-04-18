@@ -1,3 +1,11 @@
+## 7.4
+
+Migrate from SourceForge to GitHub.
+
+## 7.3
+
+Upgrade test dependencies.
+
 ## 7.2
 
 Introduced the ability to disable position tracking when parsing, to trade better performance for worse error messages.
