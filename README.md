@@ -13,7 +13,7 @@ Argo is published on [Maven Central](https://central.sonatype.com/artifact/net.s
 
 ## Documentation
 
-See https://argo.sourceforge.net/
+See https://argo.sourceforge.net/.
 
 ## Build
 
