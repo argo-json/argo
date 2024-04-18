@@ -13,6 +13,8 @@ Argo is compliant with https://datatracker.ietf.org/doc/html/rfc8259[RFC 8259].
 It works with Java 5 onwards, and includes JPMS module information for Java 9 onwards.
 Argo has no dependencies.  It's licensed under the https://www.apache.org/licenses/LICENSE-2.0[Apache 2 License].
 
+The project is https://github.com/argo-json/argo[hosted on GitHub].
+
 == Downloads
 
 Argo is published on https://central.sonatype.com/artifact/net.sourceforge.argo/argo[Maven Central].
@@ -149,7 +151,6 @@ Bear in mind that disabling object reuse will result in more object instantiatio
 
 // suppress inspection "AsciiDocLinkResolve"
 In-depth details of the API are available in the link:javadoc/[online javadoc].
-The project is hosted on https://sourceforge.net/projects/argo[SourceForge].
 
 == Limitations
 
@@ -188,5 +189,3 @@ The project is hosted on https://sourceforge.net/projects/argo[SourceForge].
 |Limited by JVM stack (>4000 using 1MB stack)
 
 |===
-
-image::https://sflogo.sourceforge.net/sflogo.php?group_id=245339&type=13["Get Argo at SourceForge.net. Fast,secure and Free Open Source software downloads",align="center",link=https://sourceforge.net/projects/argo]
