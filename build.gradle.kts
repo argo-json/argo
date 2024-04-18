@@ -325,7 +325,7 @@ publishing {
             pom {
                 name = "Argo"
                 description = project.description
-                url = "http://argo.sourceforge.net"
+                url = "https://argo.sourceforge.net"
                 scm {
                     url = "git://git.code.sf.net/p/argo/git"
                 }
