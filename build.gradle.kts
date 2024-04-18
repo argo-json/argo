@@ -30,7 +30,7 @@ plugins {
     id("org.asciidoctor.jvm.convert") version "4.0.2"
     id("org.asciidoctor.jvm.gems") version "4.0.2"
 
-    id("release.sourceforge")
+    id("release")
 }
 
 group = "net.sourceforge.argo"
@@ -284,11 +284,11 @@ tasks {
 
     val release by registering {
         group = "publishing"
-        dependsOn(clean, build, publish, closeAndReleaseStagingRepositories, sourceforgeRelease, incrementVersionNumber)
+        dependsOn(clean, build, publish, closeAndReleaseStagingRepositories, sourceforgeRelease, gitHubRelease, incrementVersionNumber)
     }
 
     incrementVersionNumber {
-        mustRunAfter(closeAndReleaseStagingRepositories, sourceforgeRelease)
+        mustRunAfter(closeAndReleaseStagingRepositories, sourceforgeRelease, gitHubRelease)
     }
 }
 
@@ -310,6 +310,7 @@ artifacts {
 }
 
 releasing {
+    jar = tasks.jar.get().archiveFile
     combinedJar = tasks.named<Jar>("combinedJar").get().archiveFile
     smallJar = tasks.named<Jar>("smallJar").get().archiveFile
     documentationTar = tasks.named<Tar>("documentationTar").get().archiveFile
