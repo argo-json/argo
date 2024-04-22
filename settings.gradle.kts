@@ -27,7 +27,6 @@ dependencyResolutionManagement {
             plugin("asciidoctorConvert", "org.asciidoctor.jvm.convert").versionRef("asciidoctor")
             plugin("asciidoctorGems", "org.asciidoctor.jvm.gems").versionRef("asciidoctor")
 
-            library("junitJupiterApi", "org.junit.jupiter", "junit-jupiter-api").versionRef("junit")
             library("junitJupiterParams", "org.junit.jupiter", "junit-jupiter-params").versionRef("junit")
             library("commonsLang", "org.apache.commons", "commons-lang3").version("3.14.0")
             library("commonsIO", "commons-io", "commons-io").version("2.16.1")

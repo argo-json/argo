@@ -74,7 +74,6 @@ testing {
         val test by getting(JvmTestSuite::class) {
             useJUnitJupiter(libs.versions.junit)
             dependencies {
-                implementation(libs.junitJupiterApi)
                 implementation(libs.junitJupiterParams)
                 implementation(libs.hamcrest)
                 implementation(libs.ickles)
