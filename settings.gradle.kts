@@ -21,7 +21,7 @@ dependencyResolutionManagement {
 
             plugin("jmh", "me.champeau.jmh").version("0.7.2")
             plugin("revapi", "com.palantir.revapi").version("1.7.0")
-            plugin("spotbugs", "com.github.spotbugs").version("6.0.11")
+            plugin("spotbugs", "com.github.spotbugs").version("6.0.12")
             plugin("nexusPublish", "io.github.gradle-nexus.publish-plugin").version("2.0.0")
             plugin("svg2ico", "com.gitlab.svg2ico").version("1.4")
             plugin("asciidoctorConvert", "org.asciidoctor.jvm.convert").versionRef("asciidoctor")
