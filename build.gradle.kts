@@ -22,13 +22,13 @@ plugins {
     pmd
     `java-test-fixtures`
     `jvm-test-suite`
-    id("me.champeau.jmh") version "0.7.2"
-    id("com.palantir.revapi") version "1.7.0"
-    id("com.github.spotbugs") version "6.0.11"
-    id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
-    id("com.gitlab.svg2ico") version "1.4"
-    id("org.asciidoctor.jvm.convert") version "4.0.2"
-    id("org.asciidoctor.jvm.gems") version "4.0.2"
+    alias(libs.plugins.jmh)
+    alias(libs.plugins.revapi)
+    alias(libs.plugins.spotbugs)
+    alias(libs.plugins.nexusPublish)
+    alias(libs.plugins.svg2ico)
+    alias(libs.plugins.asciidoctorConvert)
+    alias(libs.plugins.asciidoctorGems)
 
     id("release")
 }
@@ -56,14 +56,14 @@ java {
 dependencies {
     "moduleInfoImplementation"(sourceSets["main"].output)
 
-    testFixturesImplementation(group = "org.apache.commons", name = "commons-lang3", version = "3.14.0")
-    testFixturesImplementation(group = "commons-io", name = "commons-io", version = "2.16.1")
-    testFixturesImplementation(group = "net.sourceforge.ickles", name = "ickles", version = "0.21")
-    testFixturesImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
+    testFixturesImplementation(libs.commonsLang)
+    testFixturesImplementation(libs.commonsIO)
+    testFixturesImplementation(libs.ickles)
+    testFixturesImplementation(libs.hamcrest)
 
-    spotbugs(group = "com.github.spotbugs", name = "spotbugs", version = "4.8.4")
+    spotbugs(libs.spotbugs)
 
-    asciidoctorGems(group = "rubygems", name = "asciidoctor-tabs", version = "1.0.0.beta.6")
+    asciidoctorGems(libs.asciidoctorTabs)
 
     jmhImplementation(testFixtures(project))
 }
@@ -72,29 +72,29 @@ testing {
     @Suppress("UnstableApiUsage")
     suites {
         val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter("5.10.2")
+            useJUnitJupiter(libs.versions.junit)
             dependencies {
-                implementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
-                implementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
-                implementation("org.hamcrest:hamcrest:2.2")
-                implementation("net.sourceforge.ickles:ickles:0.21")
-                implementation("commons-io:commons-io:2.16.1")
+                implementation(libs.junitJupiterApi)
+                implementation(libs.junitJupiterParams)
+                implementation(libs.hamcrest)
+                implementation(libs.ickles)
+                implementation(libs.commonsIO)
             }
         }
 
         register<JvmTestSuite>("docs") {
-            useJUnitJupiter("5.10.2")
+            useJUnitJupiter(libs.versions.junit)
             dependencies {
                 implementation(project())
             }
         }
 
         register<JvmTestSuite>("limitations") {
-            useJUnitJupiter("5.10.2")
+            useJUnitJupiter(libs.versions.junit)
             dependencies {
                 implementation(project())
                 implementation(testFixtures(project()))
-                implementation("commons-io:commons-io:2.16.1")
+                implementation(libs.commonsIO)
             }
         }
     }
