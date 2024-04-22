@@ -14,7 +14,7 @@ dependencyResolutionManagement {
             plugin("jvm", "org.jetbrains.kotlin.jvm").version("1.9.20")
 
             library("maverickSynergyClient", "com.sshtools", "maverick-synergy-client").version("3.1.1")
-            library("argo", "net.sourceforge.argo", "argo").version("7.3")
+            library("argo", "net.sourceforge.argo", "argo").version("7.4")
             library("urin", "net.sourceforge.urin", "urin").version("4.9")
         }
     }
