@@ -8,27 +8,14 @@
  *  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-plugins {
-    `kotlin-dsl`
-    alias(libs.plugins.jvm)
-}
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            plugin("jvm", "org.jetbrains.kotlin.jvm").version("1.9.20")
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation(gradleApi())
-    implementation(libs.maverickSynergyClient)
-    implementation(libs.argo)
-    implementation(libs.urin)
-}
-
-gradlePlugin {
-    plugins {
-        create("releasePlugin") {
-            id = "release"
-            implementationClass = "release.ReleasePlugin"
+            library("maverickSynergyClient", "com.sshtools", "maverick-synergy-client").version("3.1.1")
+            library("argo", "net.sourceforge.argo", "argo").version("7.3")
+            library("urin", "net.sourceforge.urin", "urin").version("4.9")
         }
     }
 }
