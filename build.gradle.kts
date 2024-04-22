@@ -72,7 +72,7 @@ testing {
     @Suppress("UnstableApiUsage")
     suites {
         val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter()
+            useJUnitJupiter("5.10.2")
             dependencies {
                 implementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
                 implementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
@@ -83,14 +83,14 @@ testing {
         }
 
         register<JvmTestSuite>("docs") {
-            useJUnitJupiter()
+            useJUnitJupiter("5.10.2")
             dependencies {
                 implementation(project())
             }
         }
 
         register<JvmTestSuite>("limitations") {
-            useJUnitJupiter()
+            useJUnitJupiter("5.10.2")
             dependencies {
                 implementation(project())
                 implementation(testFixtures(project()))
