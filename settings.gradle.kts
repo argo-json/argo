@@ -33,7 +33,7 @@ dependencyResolutionManagement {
             library("ickles", "net.sourceforge.ickles", "ickles").version("0.21")
             library("hamcrest", "org.hamcrest", "hamcrest").version("2.2")
 
-            library("spotbugs", "com.github.spotbugs", "spotbugs").version("4.8.3")
+            library("spotbugs", "com.github.spotbugs", "spotbugs").version("4.8.4")
 
             library("asciidoctorTabs", "rubygems", "asciidoctor-tabs").version("1.0.0.beta.6")
         }
