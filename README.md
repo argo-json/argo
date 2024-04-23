@@ -20,5 +20,5 @@ See https://argo.sourceforge.net/.
 Build infrastructure requires a JDK ≥ 11 on the path.
 
 ```shell
-./gradlew clean check
+./gradlew build
 ```
