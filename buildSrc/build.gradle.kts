@@ -10,7 +10,7 @@
 
 plugins {
     `kotlin-dsl`
-    alias(libs.plugins.jvm)
+    alias(libs.plugins.kotlinJvm)
 }
 
 repositories {
