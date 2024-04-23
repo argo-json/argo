@@ -12,30 +12,3 @@ plugins {
 }
 
 rootProject.name = "argo"
-
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs") {
-            version("asciidoctor", "4.0.2")
-            version("junit", "5.10.2")
-
-            plugin("jmh", "me.champeau.jmh").version("0.7.2")
-            plugin("revapi", "com.palantir.revapi").version("1.7.0")
-            plugin("spotbugs", "com.github.spotbugs").version("6.0.12")
-            plugin("nexusPublish", "io.github.gradle-nexus.publish-plugin").version("2.0.0")
-            plugin("svg2ico", "com.gitlab.svg2ico").version("1.4")
-            plugin("asciidoctorConvert", "org.asciidoctor.jvm.convert").versionRef("asciidoctor")
-            plugin("asciidoctorGems", "org.asciidoctor.jvm.gems").versionRef("asciidoctor")
-
-            library("junitJupiterParams", "org.junit.jupiter", "junit-jupiter-params").versionRef("junit")
-            library("commonsLang", "org.apache.commons", "commons-lang3").version("3.14.0")
-            library("commonsIO", "commons-io", "commons-io").version("2.16.1")
-            library("ickles", "net.sourceforge.ickles", "ickles").version("0.21")
-            library("hamcrest", "org.hamcrest", "hamcrest").version("2.2")
-
-            library("spotbugs", "com.github.spotbugs", "spotbugs").version("4.8.4")
-
-            library("asciidoctorTabs", "rubygems", "asciidoctor-tabs").version("1.0.0.beta.6")
-        }
-    }
-}
