@@ -1,7 +1,7 @@
 # Argo
 
 [![CI](https://github.com/argo-json/argo/actions/workflows/ci.yaml/badge.svg)](https://github.com/argo-json/argo/actions/workflows/ci.yaml)
-![Maven Central Version](https://img.shields.io/maven-central/v/net.sourceforge.argo/argo?label=Maven%20Central)
+[![Maven Central Version](https://img.shields.io/maven-central/v/net.sourceforge.argo/argo?label=Maven%20Central)](https://central.sonatype.com/artifact/net.sourceforge.argo/argo)
 
 Argo is a free, open source JSON parsing and generating library for Java.
 
