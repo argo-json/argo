@@ -1,3 +1,7 @@
+## 7.5
+
+Improved build pipeline and upgraded test dependencies.
+
 ## 7.4
 
 Migrate from SourceForge to GitHub.
