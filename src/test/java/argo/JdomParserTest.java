@@ -29,11 +29,10 @@ import static argo.JsonParser.NodeInterningStrategy.INTERN_LEAF_NODES;
 import static argo.JsonParser.NodeInterningStrategy.INTERN_NOTHING;
 import static argo.JsonParser.PositionTracking.DO_NOT_TRACK;
 import static argo.JsonParser.PositionTracking.TRACK;
+import static argo.jdom.JsonNodeFactories.array;
 import static argo.jdom.JsonNodeFactories.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class JdomParserTest {

@@ -25,7 +25,8 @@
         <exclude name="JUnitTestContainsTooManyAsserts"/>
         <exclude name="JUnitTestsShouldIncludeAssert"/>
         <exclude name="LooseCoupling"/> <!-- configured later -->
-        <exclude name="MissingOverride"/> <!-- Unfortunately, this rule triggers on methods that implement an interface, which can't be annotated until Java 6 -->
+        <exclude
+                name="MissingOverride"/> <!-- Unfortunately, this rule triggers on methods that implement an interface, which can't be annotated until Java 6 -->
         <exclude name="PreserveStackTrace"/> <!-- This is good advice... unless you catch an exception which doesn't add meaningful stacktrace -->
         <exclude name="ReplaceVectorWithList"/> <!-- Requires Deque, which is only available from Java 6 -->
         <exclude name="UseTryWithResources"/> <!-- Doesn't apply when targeting Java 5 -->
@@ -56,7 +57,8 @@
             <property name="ignoredAnnotations" value="java.lang.Override,org.junit.jupiter.api.Test,org.junit.jupiter.params.ParameterizedTest"/>
             <property name="checkBooleanMethod" value="true"/>
             <property name="checkGetters" value="true"/>
-            <property name="checkSetters" value="false"/> <!-- This is great in principle... except that the JDK violates it, so to use the JDK you also might have to violate it -->
+            <property name="checkSetters"
+                      value="false"/> <!-- This is great in principle... except that the JDK violates it, so to use the JDK you also might have to violate it -->
             <property name="checkPrefixedTransformMethods" value="true"/>
             <property name="checkTransformMethods" value="false"/>
             <property name="booleanMethodPrefixes" value="is,has,can,have,will,should"/>
@@ -97,7 +99,7 @@
     </rule>
     <rule ref="category/java/design.xml/CouplingBetweenObjects">
         <properties>
-            <property name="threshold" value="30" />
+            <property name="threshold" value="30"/>
         </properties>
     </rule>
     <rule ref="category/java/design.xml/CyclomaticComplexity">
@@ -135,7 +137,8 @@
             <property name="closeTargets" value=""/>
             <property name="types" value="java.lang.AutoCloseable,java.sql.Connection,java.sql.Statement,java.sql.ResultSet"/>
             <property name="closeAsDefaultTarget" value="true"/>
-            <property name="allowedResourceTypes" value="java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringReader,java.io.StringWriter,java.io.CharArrayWriter,java.util.stream.Stream,java.util.stream.IntStream,java.util.stream.LongStream,java.util.stream.DoubleStream,org.apache.commons.io.output.StringBuilderWriter"/>
+            <property name="allowedResourceTypes"
+                      value="java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringReader,java.io.StringWriter,java.io.CharArrayWriter,java.util.stream.Stream,java.util.stream.IntStream,java.util.stream.LongStream,java.util.stream.DoubleStream,org.apache.commons.io.output.StringBuilderWriter"/>
             <property name="closeNotInFinally" value="false"/>
         </properties>
     </rule>

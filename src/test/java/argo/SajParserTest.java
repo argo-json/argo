@@ -180,10 +180,10 @@ final class SajParserTest {
         @SuppressWarnings("deprecation")
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
-                    new Object[] { new SajParserJsonParserShim.Saj(new argo.saj.SajParser()), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER },
-                    new Object[] { new SajParserJsonParserShim.Json(new JsonParser()), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER },
-                    new Object[] { new SajParserJsonParserShim.Json(new JsonParser().positionTracking(TRACK)), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER },
-                    new Object[] { new SajParserJsonParserShim.Json(new JsonParser().positionTracking(DO_NOT_TRACK)), UNTRACKED_POSITION_EXCEPTION_DETAIL_MAPPER }
+                    new Object[]{new SajParserJsonParserShim.Saj(new argo.saj.SajParser()), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER},
+                    new Object[]{new SajParserJsonParserShim.Json(new JsonParser()), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER},
+                    new Object[]{new SajParserJsonParserShim.Json(new JsonParser().positionTracking(TRACK)), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER},
+                    new Object[]{new SajParserJsonParserShim.Json(new JsonParser().positionTracking(DO_NOT_TRACK)), UNTRACKED_POSITION_EXCEPTION_DETAIL_MAPPER}
             ).map(Arguments::arguments);
         }
     }

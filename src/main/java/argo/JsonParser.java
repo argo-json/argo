@@ -43,77 +43,6 @@ public final class JsonParser {
         this.positionTracking = positionTracking;
     }
 
-    /**
-     * Strategies a {@code JsonParser} can use for object reuse when parsing a document without streaming.
-     */
-    public enum NodeInterningStrategy {
-
-        /**
-         * Use the same object for strings and numbers in a given document that are equal.
-         * <p>
-         * When the parser encounters a number node or a string node (including field names) equal to one it has previously encountered in the same
-         * document, it will use the same object for them, i.e. for any two strings or numbers {@code a} and {@code b} in a given document, if {@code a.equals(b)}
-         * then {@code a == b}.
-         * <p>
-         * This strategy trades a reduction in memory use for a small increase in computational cost.
-         */
-        INTERN_LEAF_NODES {
-            JsonStringNodeFactory newJsonStringNodeFactory() {
-                return new InterningJsonStringNodeFactory();
-            }
-
-            JsonNumberNodeFactory newJsonNumberNodeFactory() {
-                return new InterningJsonNumberNodeFactory();
-            }
-        },
-
-        /**
-         * Use a new object for every string and number in a document.
-         * <p>
-         * For any two equivalent strings or numbers {@code a} and {@code b} in a given document, {@code a.equals(b)}, but {@code a != b}.
-         * <p>
-         * This strategy minimises the computational cost of parsing at the expense of increased memory use.
-         */
-        INTERN_NOTHING {
-            JsonStringNodeFactory newJsonStringNodeFactory() {
-                return new InstantiatingJsonStringNodeFactory();
-            }
-
-            JsonNumberNodeFactory newJsonNumberNodeFactory() {
-                return new InstantiatingJsonNumberNodeFactory();
-            }
-        };
-
-        abstract JsonStringNodeFactory newJsonStringNodeFactory();
-        abstract JsonNumberNodeFactory newJsonNumberNodeFactory();
-    }
-
-    /**
-     * Settings a {@code JsonParser} can use for tracking parsing position for error reporting.
-     */
-    public enum PositionTracking {
-
-        /**
-         * Keep track of the line and column currently being parsed for more precise error messages.  Incurs some computational cost.
-         */
-        TRACK {
-            PositionedPushbackReader newPositionedPushbackReader(final Reader delegate) {
-                return new PositionTrackingPushbackReader(delegate);
-            }
-        },
-
-        /**
-         * Do not keep track of line and column currently being parsed, trading reduced computation cost for reduced usability of error messages.
-         */
-        DO_NOT_TRACK {
-            PositionedPushbackReader newPositionedPushbackReader(final Reader delegate) {
-                return new PositionIgnoringPushbackReader(delegate);
-            }
-        };
-
-        abstract PositionedPushbackReader newPositionedPushbackReader(Reader delegate);
-    }
-
     private static String asString(final Reader reader, final StringBuilder stringBuilder) throws IOException {
         stringBuilder.setLength(0);
         int c;
@@ -371,6 +300,78 @@ public final class JsonParser {
         return root.buildNode();
     }
 
+    /**
+     * Strategies a {@code JsonParser} can use for object reuse when parsing a document without streaming.
+     */
+    public enum NodeInterningStrategy {
+
+        /**
+         * Use the same object for strings and numbers in a given document that are equal.
+         * <p>
+         * When the parser encounters a number node or a string node (including field names) equal to one it has previously encountered in the same
+         * document, it will use the same object for them, i.e. for any two strings or numbers {@code a} and {@code b} in a given document, if {@code a.equals(b)}
+         * then {@code a == b}.
+         * <p>
+         * This strategy trades a reduction in memory use for a small increase in computational cost.
+         */
+        INTERN_LEAF_NODES {
+            JsonStringNodeFactory newJsonStringNodeFactory() {
+                return new InterningJsonStringNodeFactory();
+            }
+
+            JsonNumberNodeFactory newJsonNumberNodeFactory() {
+                return new InterningJsonNumberNodeFactory();
+            }
+        },
+
+        /**
+         * Use a new object for every string and number in a document.
+         * <p>
+         * For any two equivalent strings or numbers {@code a} and {@code b} in a given document, {@code a.equals(b)}, but {@code a != b}.
+         * <p>
+         * This strategy minimises the computational cost of parsing at the expense of increased memory use.
+         */
+        INTERN_NOTHING {
+            JsonStringNodeFactory newJsonStringNodeFactory() {
+                return new InstantiatingJsonStringNodeFactory();
+            }
+
+            JsonNumberNodeFactory newJsonNumberNodeFactory() {
+                return new InstantiatingJsonNumberNodeFactory();
+            }
+        };
+
+        abstract JsonStringNodeFactory newJsonStringNodeFactory();
+
+        abstract JsonNumberNodeFactory newJsonNumberNodeFactory();
+    }
+
+    /**
+     * Settings a {@code JsonParser} can use for tracking parsing position for error reporting.
+     */
+    public enum PositionTracking {
+
+        /**
+         * Keep track of the line and column currently being parsed for more precise error messages.  Incurs some computational cost.
+         */
+        TRACK {
+            PositionedPushbackReader newPositionedPushbackReader(final Reader delegate) {
+                return new PositionTrackingPushbackReader(delegate);
+            }
+        },
+
+        /**
+         * Do not keep track of line and column currently being parsed, trading reduced computation cost for reduced usability of error messages.
+         */
+        DO_NOT_TRACK {
+            PositionedPushbackReader newPositionedPushbackReader(final Reader delegate) {
+                return new PositionIgnoringPushbackReader(delegate);
+            }
+        };
+
+        abstract PositionedPushbackReader newPositionedPushbackReader(Reader delegate);
+    }
+
     interface ParseExecutor {
         void parseUsing(JsonListener jsonListener) throws InvalidSyntaxException, IOException;
     }
@@ -385,6 +386,14 @@ public final class JsonParser {
 
         JsonField buildField();
 
+    }
+
+    private interface JsonStringNodeFactory {
+        JsonStringNode jsonStringNode(String value);
+    }
+
+    private interface JsonNumberNodeFactory {
+        JsonNode jsonNumberNode(String value);
     }
 
     private static final class IORuntimeException extends RuntimeException {
@@ -502,10 +511,6 @@ public final class JsonParser {
         }
     }
 
-    private interface JsonStringNodeFactory {
-        JsonStringNode jsonStringNode(String value);
-    }
-
     private static final class InterningJsonStringNodeFactory implements JsonStringNodeFactory {
         private final Map<String, JsonStringNode> existingJsonStringNodes = new HashMap<String, JsonStringNode>();
 
@@ -525,10 +530,6 @@ public final class JsonParser {
         public JsonStringNode jsonStringNode(final String value) {
             return string(value);
         }
-    }
-
-    private interface JsonNumberNodeFactory {
-        JsonNode jsonNumberNode(String value);
     }
 
     private static final class InterningJsonNumberNodeFactory implements JsonNumberNodeFactory {

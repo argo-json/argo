@@ -56,24 +56,6 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 final class StajParserTest {
 
-    private static final class ShimmedExpectation {
-        private final StajParserJsonParserShim shim;
-        private final ExceptionDetailMapper exceptionDetailMapper;
-
-        ShimmedExpectation(final StajParserJsonParserShim shim, final ExceptionDetailMapper exceptionDetailMapper) {
-            this.shim = shim;
-            this.exceptionDetailMapper = exceptionDetailMapper;
-        }
-
-        StajParserJsonParserShim shim() {
-            return shim;
-        }
-
-        ExceptionDetailMapper exceptionDetailMapper() {
-            return exceptionDetailMapper;
-        }
-    }
-
     private static Stream<ShimmedExpectation> shimmedExpectations() {
         return Stream.of(
                 new ShimmedExpectation(new StajParserJsonParserShim.Staj(), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER),
@@ -2923,6 +2905,24 @@ final class StajParserTest {
             assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(7)));
             assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
         })));
+    }
+
+    private static final class ShimmedExpectation {
+        private final StajParserJsonParserShim shim;
+        private final ExceptionDetailMapper exceptionDetailMapper;
+
+        ShimmedExpectation(final StajParserJsonParserShim shim, final ExceptionDetailMapper exceptionDetailMapper) {
+            this.shim = shim;
+            this.exceptionDetailMapper = exceptionDetailMapper;
+        }
+
+        StajParserJsonParserShim shim() {
+            return shim;
+        }
+
+        ExceptionDetailMapper exceptionDetailMapper() {
+            return exceptionDetailMapper;
+        }
     }
 
     static final class ParserArgumentsProvider implements ArgumentsProvider {
