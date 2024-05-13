@@ -51,7 +51,7 @@ final class JsonNodeSelectorsTest {
         assertThat(result, equalTo("fo"));
     }
 
-    static class TreeTestCase {
+    static final class TreeTestCase {
 
         private static Stream<? extends Arguments> nestedPermutations(final TestCase... testCases) {
             return Arrays.stream(testCases).flatMap(testCase -> Stream.of(
@@ -274,7 +274,7 @@ final class JsonNodeSelectorsTest {
         }
     }
 
-    static class NodeTestCase {
+    static final class NodeTestCase {
 
         static final class FieldByStringArgumentsProvider implements ArgumentsProvider {
             @Override
