@@ -9,6 +9,8 @@
  */
 
 plugins {
+    `jvm-test-suite`
+    `java-test-fixtures`
     `kotlin-dsl`
     alias(libs.plugins.kotlinJvm)
 }
@@ -19,9 +21,25 @@ repositories {
 
 dependencies {
     implementation(gradleApi())
+    implementation(libs.kotlinCoroutines)
     implementation(libs.maverickSynergyClient)
     implementation(libs.argo)
     implementation(libs.urin)
+
+    testFixturesImplementation(libs.bouncycastleProvider)
+    testFixturesImplementation(libs.bouncycastlePkix)
+}
+
+testing {
+    @Suppress("UnstableApiUsage")
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnitJupiter(libs.versions.junit)
+            dependencies {
+                implementation(libs.kotest)
+            }
+        }
+    }
 }
 
 gradlePlugin {

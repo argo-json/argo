@@ -44,6 +44,9 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
 
     @TaskAction
     fun release() {
+        if (project.version == VersionNumber.DevelopmentVersion) {
+            throw GradleException("Cannot release development version")
+        }
         val username = "${project.property("sourceforgeUser")},argo"
         val password = project.property("sourceforgePassword").toString().toCharArray()
         try {

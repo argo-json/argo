@@ -283,11 +283,7 @@ tasks {
 
     val release by registering {
         group = "publishing"
-        dependsOn(clean, build, publish, closeAndReleaseStagingRepositories, sourceforgeRelease, gitHubRelease, incrementVersionNumber)
-    }
-
-    incrementVersionNumber {
-        mustRunAfter(closeAndReleaseStagingRepositories, sourceforgeRelease, gitHubRelease)
+        dependsOn(clean, build, publish, closeAndReleaseStagingRepositories, sourceforgeRelease, gitHubRelease)
     }
 }
 

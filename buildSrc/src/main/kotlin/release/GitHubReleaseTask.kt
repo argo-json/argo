@@ -10,24 +10,22 @@
 
 package release
 
-import argo.JsonGenerator
-import argo.JsonParser
-import argo.jdom.JsonNodeFactories.*
-import net.sourceforge.urin.Authority.authority
-import net.sourceforge.urin.Host.registeredName
-import net.sourceforge.urin.Path.path
-import net.sourceforge.urin.scheme.http.HttpQuery.queryParameter
-import net.sourceforge.urin.scheme.http.HttpQuery.queryParameters
-import net.sourceforge.urin.scheme.http.Https.https
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
+import release.github.Failure
+import release.github.GitHubHttp
+import release.github.GitHubHttp.GitHubApiAuthority.Companion.productionGitHubApi
+import release.github.GitHubHttp.GitHubToken
+import release.github.GitHubHttp.GitHubUploadAuthority.Companion.productionGitHubUpload
+import release.github.LoggingAuditor
+import release.github.PrivilegedGitHub.ReleaseOutcome
+import release.github.PrivilegedGitHub.UploadArtifactOutcome
+import release.github.formatFailure
+import release.pki.ReleaseTrustStore.Companion.defaultReleaseTrustStore
+import kotlin.time.Duration.Companion.seconds
 
 abstract class GitHubReleaseTask : DefaultTask() {
 
@@ -42,64 +40,41 @@ abstract class GitHubReleaseTask : DefaultTask() {
 
     @TaskAction
     fun release() {
-        val gitHubToken = project.property("gitHubToken").toString()
-
-        val releasesUri = URI("https://api.github.com/repos/argo-json/argo/releases")
-
-        val response = HttpClient.newHttpClient()
-            .send(
-                HttpRequest.newBuilder(releasesUri)
-                    .POST(HttpRequest.BodyPublishers.ofString(JsonGenerator().generate(`object`(
-                        field("tag_name", string(project.version.toString()))
-                    ))))
-                    .setHeader("content-type", "application/json")
-                    .setHeader("accept", "application/vnd.github+json")
-                    .setHeader("authorization", "Bearer $gitHubToken")
-                    .setHeader("x-github-api-version", "2022-11-28")
-                    .build(),
-                HttpResponse.BodyHandlers.ofString()
-            )
-        if (response.statusCode() != 201) {
-            throw GradleException("Creating GitHub release via {$releasesUri} resulted in response code ${response.statusCode()} with body\n${response.body()}")
-        } else {
-            logger.info("GitHub responded with status code {}", response.statusCode())
-            logger.info(response.body())
-        }
-
-        val releaseId = JsonParser().parse(response.body()).getNumberValue("id")
-
-        listOf(
-            Triple(jar, "argo-${project.version}.jar", "Jar"),
-            Triple(combinedJar, "argo-with-source-${project.version}.jar", "Jar with source code included"),
-            Triple(smallJar, "argo-small-${project.version}.jar", "Jar stripped of debug information"),
-        ).forEach {(source, targetName, label) ->
-            val uploadUri = https(
-                authority(registeredName("uploads.github.com")),
-                path("repos", "argo-json", "argo", "releases", releaseId, "assets"),
-                queryParameters(
-                    queryParameter("name", targetName),
-                    queryParameter("label", label)
+        when (val version = project.version) {
+            is VersionNumber.DevelopmentVersion -> throw GradleException("Cannot release development version")
+            is VersionNumber.ReleaseVersion -> {
+                val gitHubToken = project.property("gitHubToken").toString()
+                val privilegedGitHub = GitHubHttp(
+                    productionGitHubApi,
+                    defaultReleaseTrustStore,
+                    LoggingAuditor(project.logger),
+                    firstByteTimeout = 30.seconds,
+                    endToEndTimeout = 30.seconds
                 )
-            ).asUri()
-            val uploadResponse = HttpClient.newHttpClient()
-                .send(
-                    HttpRequest.newBuilder(uploadUri)
-                        .POST(HttpRequest.BodyPublishers.ofFile(source.get().asFile.toPath()))
-                        .setHeader("content-type", "application/java-archive")
-                        .setHeader("accept", "application/vnd.github+json")
-                        .setHeader("authorization", "Bearer $gitHubToken")
-                        .setHeader("x-github-api-version", "2022-11-28")
-                        .build(),
-                    HttpResponse.BodyHandlers.ofString()
-                )
-            if (uploadResponse.statusCode() != 201) {
-                throw GradleException("Adding jar to GitHub release via {$uploadUri} resulted in response code ${uploadResponse.statusCode()} with body\n${uploadResponse.body()}")
-            } else {
-                logger.info("GitHub responded with status code {}", uploadResponse.statusCode())
-                logger.info(uploadResponse.body())
+                    .privileged(productionGitHubUpload, GitHubToken(gitHubToken))
+                when (val releaseOutcome = privilegedGitHub.release(version)) {
+                    is ReleaseOutcome.Success -> {
+                        listOf(
+                            Triple(jar, "argo-${project.version}.jar", "Jar"),
+                            Triple(combinedJar, "argo-with-source-${project.version}.jar", "Jar with source code included"),
+                            Triple(smallJar, "argo-small-${project.version}.jar", "Jar stripped of debug information"),
+                        ).forEach { (source, targetName, label) ->
+                            when (val uploadArtifactOutcome =
+                                privilegedGitHub.uploadArtifact(releaseOutcome.releaseId, targetName, label, source.get().asFile.toPath())) {
+                                UploadArtifactOutcome.Success -> Unit
+                                is UploadArtifactOutcome.Failure -> throw uploadArtifactOutcome.failure.toGradleException("Uploading artifact for release $version failed")
+                            }
+                        }
+                    }
+
+                    is ReleaseOutcome.Failure -> throw releaseOutcome.failure.toGradleException("Releasing version $version failed")
+                }
             }
-
         }
     }
 
+    private fun Failure.toGradleException(message: String) = when (this) {
+        is Failure.ExceptionalFailure -> GradleException("$message: ${formatFailure(this)}", this.exception)
+        else -> GradleException("$message: ${formatFailure(this)}")
+    }
 }

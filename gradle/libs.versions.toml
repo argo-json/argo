@@ -2,7 +2,7 @@
 
 asciidoctor = "4.0.2"
 junit = "5.10.2"
-
+bouncycastle = "1.78.1"
 
 [plugins]
 
@@ -29,6 +29,10 @@ spotbugs = { group = "com.github.spotbugs", name = "spotbugs", version = "4.8.4"
 
 asciidoctorTabs = { group = "rubygems", name = "asciidoctor-tabs", version = "1.0.0.beta.6" }
 
+kotlinCoroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.8.0" }
 maverickSynergyClient = { group = "com.sshtools", name = "maverick-synergy-client", version = "3.1.1" }
 argo = { group = "net.sourceforge.argo", name = "argo", version = "7.4" }
 urin = { group = "net.sourceforge.urin", name = "urin", version = "4.9" }
+kotest = { group = "io.kotest", name = "kotest-assertions-core", version = "5.9.0" }
+bouncycastleProvider = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
+bouncycastlePkix = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle" }
