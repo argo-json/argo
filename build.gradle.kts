@@ -299,11 +299,6 @@ val sourcesJar by tasks.registering(Jar::class) {
     from(sourceSets["main"].allSource)
 }
 
-artifacts {
-    archives(javadocJar)
-    archives(sourcesJar)
-}
-
 releasing {
     jar = tasks.jar.get().archiveFile
     combinedJar = tasks.named<Jar>("combinedJar").get().archiveFile
