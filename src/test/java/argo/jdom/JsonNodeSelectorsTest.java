@@ -406,6 +406,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.aStringNode(new Object[]{null}));
         }
@@ -456,6 +457,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.aNullableStringNode(new Object[]{null}));
         }
@@ -506,6 +508,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.aNumberNode(new Object[]{null}));
         }
@@ -556,6 +559,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.aNullableNumberNode(new Object[]{null}));
         }
@@ -606,6 +610,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.aBooleanNode(new Object[]{null}));
         }
@@ -656,6 +661,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.aNullableBooleanNode(new Object[]{null}));
         }
@@ -706,6 +712,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.aNullNode(new Object[]{null}));
         }
@@ -756,6 +763,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.anArrayNode(new Object[]{null}));
         }
@@ -806,6 +814,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.aNullableArrayNode(new Object[]{null}));
         }
@@ -856,6 +865,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.anObjectNode(new Object[]{null}));
         }
@@ -906,6 +916,7 @@ final class JsonNodeSelectorsTest {
         }
 
         @Test
+        @SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
         void rejectsNullInPath() {
             assertThrows(NullPointerException.class, () -> JsonNodeSelectors.aNullableObjectNode(new Object[]{null}));
         }
