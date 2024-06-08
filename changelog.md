@@ -1,3 +1,7 @@
+## 7.6
+
+Upgrade build pipeline and test dependencies.
+
 ## 7.5
 
 Improved build pipeline and upgraded test dependencies.
