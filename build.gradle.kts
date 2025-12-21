@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2025 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -345,9 +345,10 @@ signing {
 nexusPublishing {
     repositories {
         sonatype {
-            stagingProfileId = "12462889504a1e"
-            username.set(project.findProperty("ossrhUser").toString())
-            password.set(project.findProperty("ossrhPassword").toString())
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+            username.set(project.findProperty("sonatypeCentralUser").toString())
+            password.set(project.findProperty("sonatypeCentralPassword").toString())
         }
     }
 }
