@@ -116,7 +116,7 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
                     .build(),
                 BodyHandlers.ofString()
             )
-        if (response.statusCode() < 200 || response.statusCode() >= 400) {
+        if (response.statusCode() !in 200 until 400) {
             throw GradleException("updating SourceForge default download to {$defaultDownloadUri} resulted in response code ${response.statusCode()} with body\n${response.body()}")
         }
 
