@@ -85,7 +85,7 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
                     "tar --extract --verbose --file=/home/project-web/argo/documentation-${project.version}.tgz --directory=/home/project-web/argo/${project.version}",
                     "rm /home/project-web/argo/documentation-${project.version}.tgz",
                     "rm /home/project-web/argo/htdocs",
-                    "ln --symbolic /home/project-web/argo/${project.version} /home/project-web/argo/htdocs"
+                    "ln --symbolic ${project.version} /home/project-web/argo/htdocs"
                 )
             }
         } catch (e: SshExecuteRuntimeException) {
