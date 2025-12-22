@@ -1,6 +1,6 @@
 [versions]
 
-asciidoctor = "4.0.2"
+asciidoctor = "4.0.5"
 junit = "5.10.2"
 bouncycastle = "1.78.1"
 
