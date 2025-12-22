@@ -169,14 +169,14 @@ tasks {
         from(sourceSets["moduleInfo"].output)
     }
 
-    val combinedJar by registering(Jar::class) {
+    register<Jar>("combinedJar") {
         archiveClassifier = "combined"
         from(sourceSets["main"].allSource)
         from(sourceSets["main"].output)
         from(sourceSets["moduleInfo"].output)
     }
 
-    val smallJar by registering(Jar::class) {
+    register<Jar>("smallJar") {
         dependsOn(compileSmallJava)
         archiveClassifier = "small"
         from(project.layout.buildDirectory.dir("small-classes/main"))
@@ -248,7 +248,7 @@ tasks {
         }
     }
 
-    val documentationTar by registering(Tar::class) {
+    register<Tar>("documentationTar") {
         group = "documentation"
         from(asciidoctor)
         archiveBaseName.set("documentation")
@@ -281,7 +281,7 @@ tasks {
         excludeFilter = file("tools/spotbugs-testFixtures-filter.xml")
     }
 
-    val release by registering {
+    register("release") {
         group = "publishing"
         dependsOn(clean, build, publish, closeAndReleaseStagingRepositories, sourceforgeRelease, gitHubRelease)
     }
