@@ -137,10 +137,10 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
                         }
                     }
                     .onTask { task, _ ->
-                        val expectShell = ExpectShell.ExpectShellBuilder.create().withTask(task).build()
+                        val expectShell = ExpectShell(task)
                         commands.forEach { command ->
                             val shellProcess = expectShell.executeCommand(command, US_ASCII.name())
-                            shellProcess.waitFor()
+                            shellProcess.drain()
                             if (shellProcess.exitCode != 0) {
                                 val cause = when (val exitCode = shellProcess.exitCode) {
                                     ExpectShell.EXIT_CODE_PROCESS_ACTIVE -> "process active"
