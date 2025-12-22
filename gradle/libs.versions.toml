@@ -20,7 +20,7 @@ kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.20" }
 [libraries]
 
 junitJupiterParams = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junit" }
-commonsLang = { group = "org.apache.commons", name = "commons-lang3", version = "3.14.0" }
+commonsLang = { group = "org.apache.commons", name = "commons-lang3", version = "3.20.0" }
 commonsIO = { group = "commons-io", name = "commons-io", version = "2.16.1" }
 ickles = { group = "net.sourceforge.ickles", name = "ickles", version = "0.21" }
 hamcrest = { group = "org.hamcrest", name = "hamcrest", version = "2.2" }
