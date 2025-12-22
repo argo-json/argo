@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       # noinspection SpellCheckingInspection
-      image: eclipse-temurin:11.0.23_9-jdk-jammy@sha256:f222d1e1d705cd9f66a6ece7ebde97c04da2fe8628cf9c8f606f77fecf0bd97d
+      image: eclipse-temurin:17.0.17_10-jdk-noble@sha256:37823ac22e65c6248a897229583835089aa06337ba4477a2878533655333f44d
     steps:
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
       - run: ./gradlew buildSrc:build clean build
