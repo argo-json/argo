@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2025 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -137,10 +137,10 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
                         }
                     }
                     .onTask { task, _ ->
-                        val expectShell = ExpectShell(task)
+                        val expectShell = ExpectShell.ExpectShellBuilder.create().withTask(task).build()
                         commands.forEach { command ->
                             val shellProcess = expectShell.executeCommand(command, US_ASCII.name())
-                            shellProcess.drain()
+                            shellProcess.waitFor()
                             if (shellProcess.exitCode != 0) {
                                 val cause = when (val exitCode = shellProcess.exitCode) {
                                     ExpectShell.EXIT_CODE_PROCESS_ACTIVE -> "process active"
