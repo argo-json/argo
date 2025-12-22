@@ -2,7 +2,7 @@
 
 asciidoctor = "4.0.5"
 junit = "5.14.1"
-bouncycastle = "1.78.1"
+bouncycastle = "1.83"
 
 [plugins]
 
