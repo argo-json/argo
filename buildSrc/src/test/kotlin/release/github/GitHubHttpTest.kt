@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2025 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -146,7 +146,7 @@ class GitHubHttpTest {
         private const val RELEASE_ID = "159517536"
         private const val TARGET_NAME = "my.jar"
         private const val LABEL = "Best Jar!"
-        private val fileContents = Random.Default.nextBytes(1024)
+        private val fileContents = Random.nextBytes(1024)
         override val executor = { gitHubHttp: GitHubHttp, uploadAuthority: GitHubUploadAuthority ->
             withTemporaryFile(fileContents) { file ->
                 gitHubHttp
