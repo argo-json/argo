@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2025 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -18,6 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.support.ParameterDeclarations;
 
 import java.io.StringReader;
 import java.util.Arrays;
@@ -87,7 +88,7 @@ final class JsonNodeSelectorsTest {
 
         static final class JsonNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 return nestedPermutations(
                         expectCandidateTestCase(nullNode()),
                         expectCandidateTestCase(trueNode()),
@@ -102,7 +103,7 @@ final class JsonNodeSelectorsTest {
 
         static final class JsonStringNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final JsonStringNode jsonStringNode = JsonStringNodeTestingFactories.aStringNode();
                 return nestedPermutations(
                         mismatchTestCase(nullNode()),
@@ -118,7 +119,7 @@ final class JsonNodeSelectorsTest {
 
         static final class NullableJsonStringNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final JsonStringNode jsonStringNode = JsonStringNodeTestingFactories.aStringNode();
                 return nestedPermutations(
                         testCase(nullNode(), null),
@@ -134,7 +135,7 @@ final class JsonNodeSelectorsTest {
 
         static final class JsonNumberNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final JsonNode jsonNode = JsonNumberNodeTestingFactories.aNumberNode();
                 return nestedPermutations(
                         mismatchTestCase(nullNode()),
@@ -150,7 +151,7 @@ final class JsonNodeSelectorsTest {
 
         static final class NullableJsonNumberNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final JsonNode jsonNode = JsonNumberNodeTestingFactories.aNumberNode();
                 return nestedPermutations(
                         testCase(nullNode(), null),
@@ -166,7 +167,7 @@ final class JsonNodeSelectorsTest {
 
         static final class JsonBooleanNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 return nestedPermutations(
                         mismatchTestCase(nullNode()),
                         testCase(trueNode(), true),
@@ -181,7 +182,7 @@ final class JsonNodeSelectorsTest {
 
         static final class NullableJsonBooleanNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 return nestedPermutations(
                         testCase(nullNode(), null),
                         testCase(trueNode(), true),
@@ -196,7 +197,7 @@ final class JsonNodeSelectorsTest {
 
         static final class JsonNullNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 return nestedPermutations(
                         expectCandidateTestCase(nullNode()),
                         mismatchTestCase(trueNode()),
@@ -211,7 +212,7 @@ final class JsonNodeSelectorsTest {
 
         static final class JsonArrayNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final JsonNode jsonNode = JsonNodeTestingFactories.anArrayNode();
                 return nestedPermutations(
                         mismatchTestCase(nullNode()),
@@ -227,7 +228,7 @@ final class JsonNodeSelectorsTest {
 
         static final class NullableJsonArrayNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final JsonNode jsonNode = JsonNodeTestingFactories.anArrayNode();
                 return nestedPermutations(
                         testCase(nullNode(), null),
@@ -243,7 +244,7 @@ final class JsonNodeSelectorsTest {
 
         static final class JsonObjectNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final JsonNode jsonNode = JsonNodeTestingFactories.anObjectNode();
                 return nestedPermutations(
                         mismatchTestCase(nullNode()),
@@ -259,7 +260,7 @@ final class JsonNodeSelectorsTest {
 
         static final class NullableJsonObjectNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final JsonNode jsonNode = JsonNodeTestingFactories.anObjectNode();
                 return nestedPermutations(
                         testCase(nullNode(), null),
@@ -278,7 +279,7 @@ final class JsonNodeSelectorsTest {
 
         static final class FieldByStringArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final String key = aString();
                 final JsonNode value = aJsonNode();
                 final JsonStringNode mismatchKey = aStringNodeDifferentTo(string(key));
@@ -300,7 +301,7 @@ final class JsonNodeSelectorsTest {
 
         static final class FieldByJsonStringNodeArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final JsonStringNode key = JsonStringNodeTestingFactories.aStringNode();
                 final JsonNode value = aJsonNode();
                 final JsonStringNode mismatchKey = aStringNodeDifferentTo(key);
@@ -322,7 +323,7 @@ final class JsonNodeSelectorsTest {
 
         static final class ArrayElementByIndexArgumentsProvider implements ArgumentsProvider {
             @Override
-            public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
                 final int index = aSmallNonNegativeInt();
                 final JsonNode value = aJsonNode();
                 final List<JsonNode> candidate = Stream.concat(
