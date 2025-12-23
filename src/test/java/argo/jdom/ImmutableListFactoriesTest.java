@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2025 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -66,7 +66,6 @@ final class ImmutableListFactoriesTest {
     }
 
     @Test
-    @SuppressWarnings("FunctionalExpressionCanBeFolded")
     void rejectsNonCollectionIterableContainingNull() {
         assertThrows(NullPointerException.class, () -> ImmutableListFactories.immutableListOf(Collections.singletonList(null)::iterator));
     }
@@ -83,7 +82,6 @@ final class ImmutableListFactoriesTest {
     }
 
     @Test
-    @SuppressWarnings("FunctionalExpressionCanBeFolded")
     void returnedListIsEqualToNonCollectionSourceIterable() {
         final List<Object> sourceList = aList();
         assertThat(ImmutableListFactories.immutableListOf(sourceList::iterator), equalTo(sourceList));
@@ -106,7 +104,6 @@ final class ImmutableListFactoriesTest {
     }
 
     @Test
-    @SuppressWarnings("FunctionalExpressionCanBeFolded")
     void returnedListFromNonCollectionIterableIsImmutable() {
         final List<Object> originalSourceList = aList();
         final List<Object> mutableSourceList = new ArrayList<>(originalSourceList);
