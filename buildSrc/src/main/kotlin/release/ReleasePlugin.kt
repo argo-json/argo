@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2025 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -21,6 +21,7 @@ import release.github.LoggingAuditor
 import release.github.formatFailure
 import release.pki.ReleaseTrustStore.Companion.defaultReleaseTrustStore
 
+@Suppress("unused")
 class ReleasePlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.version = determineVersion(target).also {
