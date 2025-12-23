@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2025 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -35,6 +35,7 @@ import java.nio.file.Path
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeoutException
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
@@ -42,9 +43,9 @@ class GitHubHttp(
     gitHubApiAuthority: GitHubApiAuthority,
     releaseTrustStore: ReleaseTrustStore,
     private val auditor: Auditor<AuditEvent>,
-    private val connectTimeout: Duration = 1.seconds,
-    private val firstByteTimeout: Duration = 2.seconds,
-    private val endToEndTimeout: Duration = 2.seconds,
+    private val connectTimeout: Duration = 2.seconds,
+    private val firstByteTimeout: Duration = 1.minutes,
+    private val endToEndTimeout: Duration = 2.minutes,
 ) : GitHub {
 
     private val releasesPath = path("repos", "argo-json", "argo", "releases")
