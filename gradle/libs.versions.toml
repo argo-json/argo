@@ -33,6 +33,6 @@ kotlinCoroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines
 maverickSynergyClient = { group = "com.sshtools", name = "maverick-synergy-client", version = "3.1.2" }
 argo = { group = "net.sourceforge.argo", name = "argo", version = "7.7" }
 urin = { group = "net.sourceforge.urin", name = "urin", version = "5.3" }
-kotest = { group = "io.kotest", name = "kotest-assertions-core", version = "5.9.1" }
+kotest = { group = "io.kotest", name = "kotest-assertions-core", version = "6.0.7" }
 bouncycastleProvider = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
 bouncycastlePkix = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle" }
