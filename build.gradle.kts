@@ -234,6 +234,12 @@ tasks {
 
     asciidoctor {
         dependsOn(ico, png, javadoc, "asciidoctorGemsPrepare") // doesn't seem to infer dependencies properly from the resources CopySpec
+        jvm {
+            jvmArgs(
+                "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
+                "--add-opens", "java.base/java.io=ALL-UNNAMED" // because of https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/597 (maybe fixed in v5 of the plugin?)
+            )
+        }
         resources {
             from(ico, png)
             from(javadoc) {
