@@ -14,7 +14,7 @@ svg2ico = { id = "com.gitlab.svg2ico", version = "2.6" }
 asciidoctorConvert = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
 asciidoctorGems = { id = "org.asciidoctor.jvm.gems", version.ref = "asciidoctor" }
 
-kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.20" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version = "2.2.0" }
 
 
 [libraries]
