@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-  ~  Copyright 2024 Mark Slater
+  ~  Copyright 2025 Mark Slater
   ~
   ~  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
   ~
@@ -21,9 +21,9 @@
 
     <rule ref="category/java/bestpractices.xml">
         <exclude name="AvoidStringBufferField"/>
-        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
-        <exclude name="JUnitTestsShouldIncludeAssert"/>
+        <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
+        <exclude name="UnitTestShouldIncludeAssert"/>
         <exclude name="LooseCoupling"/> <!-- configured later -->
         <exclude
                 name="MissingOverride"/> <!-- Unfortunately, this rule triggers on methods that implement an interface, which can't be annotated until Java 6 -->
