@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2025 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -29,6 +29,6 @@ class LoggingAuditor(private val logger: Logger) : Auditor<GitHubHttp.AuditEvent
             }
         }.toString())
 
-        is GitHubHttp.AuditEvent.RequestFailed -> logger.debug("Failed request to ${auditEvent.uri} with exception", auditEvent.cause)
+        is GitHubHttp.AuditEvent.RequestFailed -> logger.debug("Failed request to {} with exception", auditEvent.uri, auditEvent.cause)
     }
 }
