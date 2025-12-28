@@ -4,7 +4,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-22.04
     container:
-      # noinspection SpellCheckingInspection
       image: eclipse-temurin:17.0.17_10-jdk-noble@sha256:37823ac22e65c6248a897229583835089aa06337ba4477a2878533655333f44d
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
