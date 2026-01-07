@@ -99,6 +99,12 @@ final class JsonArrayTest {
     }
 
     @Test
+    void testEmptyHashCode() {
+        final Collection<JsonNode> elements = emptyList();
+        assertEquals(JsonArray.jsonArray(elements).hashCode(), JsonArray.jsonArray(elements).hashCode());
+    }
+
+    @Test
     void testToString() {
         assertThat(JsonArray.jsonArray(singletonList(number("0"))).toString(), equalTo("JsonArray{elements=[JsonNumberNode{value='0'}]}"));
     }

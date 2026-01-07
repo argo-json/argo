@@ -23,6 +23,8 @@ final class JsonArray extends JsonNode {
 
     private final List<JsonNode> elements;
 
+    private int cachedHashCode;
+
     private JsonArray(final List<JsonNode> elements) {
         this.elements = elements;
     }
@@ -99,7 +101,11 @@ final class JsonArray extends JsonNode {
 
     @Override
     public int hashCode() {
-        return getElements().hashCode();
+        int hashCode = cachedHashCode;
+        if (hashCode == 0 && !getElements().isEmpty()) {
+            cachedHashCode = hashCode = getElements().hashCode();
+        }
+        return hashCode;
     }
 
     @Override
