@@ -105,6 +105,12 @@ final class JsonObjectTest {
     }
 
     @Test
+    void testEmptyHashCode() {
+        final Collection<JsonField> fields = emptyList();
+        assertEquals(JsonObject.jsonObject(fields).hashCode(), JsonObject.jsonObject(fields).hashCode());
+    }
+
+    @Test
     void testToString() {
         assertThat(object(singletonMap(string("Test"), number("0"))).toString(), equalTo("JsonObject{fields=[JsonField{name=JsonStringNode{value='Test'}, value=JsonNumberNode{value='0'}}]}"));
     }

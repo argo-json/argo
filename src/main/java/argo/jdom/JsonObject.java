@@ -20,6 +20,9 @@ final class JsonObject extends JsonNode {
     private static final JsonObject EMPTY_OBJECT = new JsonObject(Collections.<JsonField>emptyList());
 
     private final List<JsonField> fields;
+
+    private int cachedHashCode;
+
     private transient Map<JsonStringNode, JsonNode> fieldMap;
 
     private JsonObject(final List<JsonField> fields) {
@@ -105,7 +108,11 @@ final class JsonObject extends JsonNode {
 
     @Override
     public int hashCode() {
-        return getFieldList().hashCode();
+        int hashCode = cachedHashCode;
+        if (hashCode == 0 && !getFieldList().isEmpty()) {
+            cachedHashCode = hashCode = getFieldList().hashCode();
+        }
+        return hashCode;
     }
 
     @Override
