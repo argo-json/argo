@@ -1,3 +1,7 @@
+## 7.15
+
+Deprecate `argo.jdom.JsonNode#isNullableNumberNode(Object...)` in favour of `argo.jdom.JsonNode#isNullableNumberValue(Object...)` for consistency.
+
 ## 7.6
 
 Upgrade build pipeline and test dependencies.

@@ -221,8 +221,19 @@ public abstract class JsonNode {
      *
      * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON number or a JSON null exists at the path given.
+     * @deprecated Replaced by {@link argo.jdom.JsonNode#isNullableNumberValue(Object[])}.
      */
     public final boolean isNullableNumberNode(final Object... pathElements) {
+        return isNullableNumberValue(pathElements);
+    }
+
+    /**
+     * Determines whether the node at the given path exists and is a JSON number or a JSON null.
+     *
+     * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
+     * @return whether a JSON number or a JSON null exists at the path given.
+     */
+    public final boolean isNullableNumberValue(final Object... pathElements) {
         return JsonNodeSelectors.aNullableNumberNode(pathElements).matches(this);
     }
 
