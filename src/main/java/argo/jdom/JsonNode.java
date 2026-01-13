@@ -223,6 +223,7 @@ public abstract class JsonNode {
      * @return whether a JSON number or a JSON null exists at the path given.
      * @deprecated Replaced by {@link argo.jdom.JsonNode#isNullableNumberValue(Object[])}.
      */
+    @SuppressWarnings("DeprecatedIsStillUsed")
     public final boolean isNullableNumberNode(final Object... pathElements) {
         return isNullableNumberValue(pathElements);
     }

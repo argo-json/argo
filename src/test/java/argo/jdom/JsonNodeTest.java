@@ -90,9 +90,13 @@ final class JsonNodeTest {
 
     @Test
     void matchesANullNumberNode() {
+        //noinspection deprecation
         assertThat(SAMPLE_JSON.isNullableNumberNode("championships", 2), equalTo(true));
+        //noinspection deprecation
         assertThat(SAMPLE_JSON.isNullableNumberNode("retirement age"), equalTo(true));
+        //noinspection deprecation
         assertThat(SAMPLE_JSON.isNullableNumberNode("name"), equalTo(false));
+        //noinspection deprecation
         assertThat(SAMPLE_JSON.isNullableNumberNode("some", "missing", "path"), equalTo(false));
         assertThat(SAMPLE_JSON.isNullableNumberValue("championships", 2), equalTo(true));
         assertThat(SAMPLE_JSON.isNullableNumberValue("retirement age"), equalTo(true));
