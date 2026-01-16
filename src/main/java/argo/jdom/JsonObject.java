@@ -64,7 +64,7 @@ final class JsonObject extends JsonNode {
     @Override
     public Map<JsonStringNode, JsonNode> getFields() {
         if (fieldMap == null) {
-            final Map<JsonStringNode, JsonNode> modifiableFieldMap = new LinkedHashMap<JsonStringNode, JsonNode>(fields.size() * 4 / 3 + 1);
+            final Map<JsonStringNode, JsonNode> modifiableFieldMap = new LinkedHashMap<JsonStringNode, JsonNode>((fields.size() * 4 + 2) / 3);
             for (final JsonField field : fields) {
                 modifiableFieldMap.put(field.getName(), field.getValue());
             }
