@@ -1,0 +1,76 @@
+7.16 baseline (new host)
+
+Benchmark                                           Mode  Cnt      Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  77183.460 ±  453.494  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  92471.882 ± 1824.654  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  73351.538 ± 1798.528  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  91169.983 ±  715.827  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  64925.864 ±  213.870  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  80808.262 ± 1578.877  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  61212.304 ±  670.955  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  75557.039 ± 1368.286  ops/s
+
+
+batch non-escaped character writing (crude implementation)
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  204828.535 ±  805.145  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  136595.158 ± 1010.051  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  193090.695 ± 1647.283  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  137744.927 ±  468.266  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  132487.162 ± 2080.666  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  108241.381 ±  354.460  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  125149.668 ±  900.725  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  101085.974 ±  904.815  ops/s
+
+
+batch non-escaped character writing (simplified implementation)
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  204380.139 ± 2479.675  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  131805.888 ± 2857.397  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  193478.868 ±  774.697  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  137428.981 ± 1453.768  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  135103.089 ±  454.042  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  107683.369 ±  640.923  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  125352.713 ±  474.372  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  100403.469 ± 1875.395  ops/s
+
+
+batch non-escaped character writing (remove default block that was protecting against future coding bloopers) - discarded as worse but not faster
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  206117.076 ±  918.674  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  133126.988 ± 2402.002  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  192613.688 ±  875.299  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  135725.159 ± 4320.879  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  134974.287 ±  793.856  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  105165.876 ± 2882.689  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  125342.855 ±  747.478  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  100957.417 ±  909.362  ops/s
+
+
+batch non-escaped character writing (short-circuit writing of zero-length char arrays during intermediate write) - discarded as more complex but not faster; benchmarks don't actually exercise this because it's thought to be an unusual case in practice
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  206780.774 ± 1777.790  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  133251.080 ± 3725.018  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  192109.089 ± 2697.327  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  135535.975 ± 1924.712  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  134394.288 ±  626.908  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  106949.595 ± 1019.523  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  124712.337 ± 1568.314  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  101830.368 ±  979.286  ops/s
+
+
+batch non-escaped character writing (short-circuit writing of zero-length char arrays during final write) - discarded as more complex but not faster
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  206115.041 ±  604.535  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  136460.498 ±  583.178  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  191583.694 ±  628.446  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  137827.353 ± 1414.122  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  132691.217 ± 1702.725  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  107003.359 ± 1050.660  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  123891.457 ± 1262.969  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  100678.558 ± 1173.391  ops/s
