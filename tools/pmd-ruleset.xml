@@ -110,7 +110,7 @@
     </rule>
     <rule ref="category/java/design.xml/NcssCount">
         <properties>
-            <property name="methodReportLevel" value="120"/> <!-- This is a bad metric for e.g. mapping with a case statement -->
+            <property name="methodReportLevel" value="70"/> <!-- This is a bad metric for e.g. mapping with a case statement -->
             <property name="classReportLevel" value="1500"/>
             <property name="ncssOptions" value=""/>
         </properties>

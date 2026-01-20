@@ -131,6 +131,20 @@ final class JsonEscapedStringTest {
     }
 
     @Test
+    void formatsEmptyCharArray() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[]{}, 0, 0);
+        assertThat(stringBuilderWriter.toString(), equalTo(""));
+    }
+
+    @Test
+    void formatsZeroLengthRange() throws Exception {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        JsonEscapedString.escapeCharBufferTo(stringBuilderWriter, new char[]{'a', 'b', 'c'}, 1, 0);
+        assertThat(stringBuilderWriter.toString(), equalTo(""));
+    }
+
+    @Test
     void rejectsNegativeOffset() {
         assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeCharBufferTo(NullWriter.INSTANCE, new char[]{'a', 'b', 'c'}, -1, 3));
     }
@@ -153,5 +167,25 @@ final class JsonEscapedStringTest {
     @Test
     void rejectsOffsetPlusLengthGreaterThanArrayLength() {
         assertThrows(IndexOutOfBoundsException.class, () -> JsonEscapedString.escapeCharBufferTo(NullWriter.INSTANCE, new char[]{'a', 'b', 'c'}, 2, 2));
+    }
+
+    @Test
+    void formatsAnUnescapedCharacterFollowedByAnEscapedCharacter() throws Exception {
+        assertThat(escapeString("a\""), equalTo("a\\\""));
+    }
+
+    @Test
+    void formatsAnEscapedCharacterFollowedByAnUnescapedCharacter() throws Exception {
+        assertThat(escapeString("\"a"), equalTo("\\\"a"));
+    }
+
+    @Test
+    void formatsAnEscapedCharacterSurroundedByUnescapedCharacters() throws Exception {
+        assertThat(escapeString("a\"b"), equalTo("a\\\"b"));
+    }
+
+    @Test
+    void formatsAnUnescapedCharacterSurroundedByEscapedCharacters() throws Exception {
+        assertThat(escapeString("\"a\n"), equalTo("\\\"a\\n"));
     }
 }
