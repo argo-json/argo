@@ -286,7 +286,8 @@ class CompactJsonWriterTest {
                             new CompactJsonWriter(),
                             new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(COMPACT))
                     ).map(WriterJsonGeneratorJsonWriterTestCase::new), Stream.of(
-                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(COMPACT))
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(COMPACT)),
+                            new StringWithCapacityJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(COMPACT))
                     )).map(Arguments::arguments);
         }
     }

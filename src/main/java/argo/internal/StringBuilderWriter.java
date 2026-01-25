@@ -14,7 +14,15 @@ import java.io.Writer;
 
 public final class StringBuilderWriter extends Writer {
 
-    private final StringBuilder stringBuilder = new StringBuilder();
+    private final StringBuilder stringBuilder;
+
+    public StringBuilderWriter() {
+        stringBuilder = new StringBuilder();
+    }
+
+    public StringBuilderWriter(final int capacity) {
+        stringBuilder = new StringBuilder(capacity);
+    }
 
     @Override
     public void write(@SuppressWarnings("NullableProblems") final char[] cbuf, final int off, final int len) {

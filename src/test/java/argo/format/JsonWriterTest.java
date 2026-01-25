@@ -127,7 +127,9 @@ class JsonWriterTest {
                     jsonWritersAndShimmedJsonGenerators().map(WriterJsonGeneratorJsonWriterTestCase::new),
                     Stream.of(
                             new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator()),
-                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY))
+                            new StringWithCapacityJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY)),
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator()),
+                            new StringWithCapacityJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY))
                     )).map(Arguments::arguments);
         }
 

@@ -30,6 +30,34 @@ class StringBuilderWriterTest {
     }
 
     @Test
+    void writesStringToBuilderWithSpecifiedCapacity() {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter(32);
+        try {
+            stringBuilderWriter.write("a");
+        } finally {
+            stringBuilderWriter.close();
+        }
+        assertThat(stringBuilderWriter.toString(), equalTo("a"));
+    }
+
+    @Test
+    void constructorAcceptsZeroCapacity() {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter(0);
+        try {
+            stringBuilderWriter.write("a");
+        } finally {
+            stringBuilderWriter.close();
+        }
+        assertThat(stringBuilderWriter.toString(), equalTo("a"));
+    }
+
+    @Test
+    @SuppressWarnings({"PMD.CloseResource", "resource"})
+    void constructorRejectsNegativeCapacity() {
+        assertThrows(NegativeArraySizeException.class, () -> new StringBuilderWriter(-1));
+    }
+
+    @Test
     void writesCharacterToBuilder() {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {

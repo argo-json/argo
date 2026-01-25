@@ -328,7 +328,9 @@ class PrettyJsonWriterTest {
                             new JsonGeneratorJsonWriterAdapter(new JsonGenerator().style(PRETTY))
                     ).map(WriterJsonGeneratorJsonWriterTestCase::new), Stream.of(
                             new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator()),
-                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY))
+                            new StringWithCapacityJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY)),
+                            new StringJsonGeneratorJsonWriterTestCase(new JsonGenerator()),
+                            new StringWithCapacityJsonGeneratorJsonWriterTestCase(new JsonGenerator().style(PRETTY))
                     )).map(Arguments::arguments);
         }
     }
