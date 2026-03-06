@@ -19,17 +19,23 @@ import argo.jdom.JsonStringNode;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static java.lang.Math.min;
 
 class PrettyJsonPrinter extends JsonPrinter {
 
     private final String lineSeparator;
+    private final char[] tabs;
     private int depth = 0;
 
     private PrettyJsonPrinter(final Writer writer, final String lineSeparator) {
         super(writer);
         this.lineSeparator = lineSeparator;
+        tabs = new char[32];
+        Arrays.fill(tabs, '\t');
     }
 
     static PrettyJsonPrinter prettyJsonPrinter(final Writer writer, final String lineSeparator) {
@@ -41,8 +47,8 @@ class PrettyJsonPrinter extends JsonPrinter {
     }
 
     private void addTabs() throws IOException {
-        for (int i = 0; i < depth; i++) {
-            writer.write('\t');
+        for (int i = 0; i < depth; i += tabs.length) {
+            writer.write(tabs, 0, min(tabs.length, depth - i));
         }
     }
 
