@@ -74,3 +74,55 @@ GeneratorBenchmark.prettyJdomGenerate              thrpt   25  132691.217 ± 170
 GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  107003.359 ± 1050.660  ops/s
 GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  123891.457 ± 1262.969  ops/s
 GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  100678.558 ± 1173.391  ops/s
+
+
+7.17 baseline
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  206210.246 ± 1380.198  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  132331.111 ± 2442.409  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  192905.869 ± 1651.915  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  138159.008 ± 1064.605  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  134018.568 ± 2189.686  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  106905.658 ±  648.861  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  125661.378 ±  837.679  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  101018.183 ± 1287.150  ops/s
+
+
+Increase StringBuilderWriter's StringBuilder initial capacity from default to 2048
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  207082.362 ±  868.586  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  141390.474 ± 1906.443  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  190218.678 ± 3892.145  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  148054.716 ± 1361.815  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  134274.240 ±  759.208  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  117229.379 ± 1303.757  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  124575.801 ± 1291.454  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  111443.423 ±  810.971  ops/s
+
+
+Increase StringBuilderWriter's StringBuilder initial capacity from default to 8192 (not faster)
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  206466.378 ± 1207.031  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  141793.653 ± 2275.455  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  194170.210 ±  985.228  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  146441.422 ± 1307.468  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  133014.752 ± 2845.053  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  114395.297 ± 1450.857  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  123732.283 ± 1713.347  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  108341.304 ±  843.502  ops/s
+
+
+Expose StringBuilder initial capacity in public API; set initial capacity to match expected size of JSON string
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  206065.295 ± 1842.992  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  159234.256 ± 2103.149  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  193475.784 ±  554.697  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  164414.117 ± 1477.532  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  135214.514 ±  788.680  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  125856.106 ±  616.380  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  125408.131 ±  577.683  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  118494.160 ± 1074.181  ops/s
