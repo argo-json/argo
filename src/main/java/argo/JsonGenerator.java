@@ -62,23 +62,7 @@ public final class JsonGenerator {
      * @throws IOException propagated from {@link WriteableJsonArray#writeTo(ArrayWriter)}.
      */
     public String generate(final WriteableJsonArray writeableJsonArray) throws IOException {
-        return generateString(writeableJsonArray, new StringBuilderWriter());
-    }
-
-    /**
-     * Generates a JSON representation of the given {@code WriteableJsonArray} as a {@code String} using an initial {@code String} builder capacity specified by the {@code capacity} argument.
-     *
-     * @param writeableJsonArray the {@code WriteableJsonArray} to output.
-     * @param capacity           the initial {@code String} builder capacity.
-     * @return a JSON representation of the given {@code WriteableJsonArray} as a {@code String}
-     * @throws IOException                propagated from {@link WriteableJsonArray#writeTo(ArrayWriter)}.
-     * @throws NegativeArraySizeException if the {@code capacity} argument is less than {@code 0}.
-     */
-    public String generate(final WriteableJsonArray writeableJsonArray, final int capacity) throws IOException {
-        return generateString(writeableJsonArray, new StringBuilderWriter(capacity));
-    }
-
-    private String generateString(final WriteableJsonArray writeableJsonArray, final StringBuilderWriter stringBuilderWriter) throws IOException {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
             generate(stringBuilderWriter, writeableJsonArray);
         } finally {
@@ -106,23 +90,7 @@ public final class JsonGenerator {
      * @throws IOException propagated from {@link WriteableJsonObject#writeTo(ObjectWriter)}.
      */
     public String generate(final WriteableJsonObject writeableJsonObject) throws IOException {
-        return generateString(writeableJsonObject, new StringBuilderWriter());
-    }
-
-    /**
-     * Generates a JSON representation of the given {@code WriteableJsonObject} as a {@code String} using an initial {@code String} builder capacity specified by the {@code capacity} argument.
-     *
-     * @param writeableJsonObject the {@code WriteableJsonObject} to output.
-     * @param capacity            the initial {@code String} builder capacity.
-     * @return a JSON representation of the given {@code WriteableJsonObject} as a {@code String}
-     * @throws IOException                propagated from {@link WriteableJsonObject#writeTo(ObjectWriter)}.
-     * @throws NegativeArraySizeException if the {@code capacity} argument is less than {@code 0}.
-     */
-    public String generate(final WriteableJsonObject writeableJsonObject, final int capacity) throws IOException {
-        return generateString(writeableJsonObject, new StringBuilderWriter(capacity));
-    }
-
-    private String generateString(final WriteableJsonObject writeableJsonObject, final StringBuilderWriter stringBuilderWriter) throws IOException {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
             generate(stringBuilderWriter, writeableJsonObject);
         } finally {
@@ -150,23 +118,7 @@ public final class JsonGenerator {
      * @throws IOException propagated from {@link WriteableJsonString#writeTo(Writer)}.
      */
     public String generate(final WriteableJsonString writeableJsonString) throws IOException {
-        return generateString(writeableJsonString, new StringBuilderWriter());
-    }
-
-    /**
-     * Generates a JSON representation of the given {@code WriteableJsonString} as a {@code String} using an initial {@code String} builder capacity specified by the {@code capacity} argument.
-     *
-     * @param writeableJsonString the {@code WriteableJsonString} to output.
-     * @param capacity            the initial {@code String} builder capacity.
-     * @return a JSON representation of the given {@code WriteableJsonString} as a {@code String}
-     * @throws IOException                propagated from {@link WriteableJsonString#writeTo(Writer)}.
-     * @throws NegativeArraySizeException if the {@code capacity} argument is less than {@code 0}.
-     */
-    public String generate(final WriteableJsonString writeableJsonString, final int capacity) throws IOException {
-        return generateString(writeableJsonString, new StringBuilderWriter(capacity));
-    }
-
-    private String generateString(final WriteableJsonString writeableJsonString, final StringBuilderWriter stringBuilderWriter) throws IOException {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
             generate(stringBuilderWriter, writeableJsonString);
         } finally {
@@ -196,24 +148,7 @@ public final class JsonGenerator {
      * @throws IllegalArgumentException if the characters written by the {@code WriteableJsonNumber} don't constitute a complete JSON number.
      */
     public String generate(final WriteableJsonNumber writeableJsonNumber) throws IOException {
-        return generateString(writeableJsonNumber, new StringBuilderWriter());
-    }
-
-    /**
-     * Generates a JSON representation of the given {@code WriteableJsonNumber} as a {@code String} using an initial {@code String} builder capacity specified by the {@code capacity} argument.
-     *
-     * @param writeableJsonNumber the {@code WriteableJsonNumber} to output.
-     * @param capacity            the initial {@code String} builder capacity.
-     * @return a JSON representation of the given {@code WriteableJsonNumber} as a {@code String}
-     * @throws IOException                propagated from {@link WriteableJsonNumber#writeTo(Writer)}.
-     * @throws IllegalArgumentException   if the characters written by the {@code WriteableJsonNumber} don't constitute a complete JSON number.
-     * @throws NegativeArraySizeException if the {@code capacity} argument is less than {@code 0}.
-     */
-    public String generate(final WriteableJsonNumber writeableJsonNumber, final int capacity) throws IOException {
-        return generateString(writeableJsonNumber, new StringBuilderWriter(capacity));
-    }
-
-    private String generateString(final WriteableJsonNumber writeableJsonNumber, final StringBuilderWriter stringBuilderWriter) throws IOException {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
             generate(stringBuilderWriter, writeableJsonNumber);
         } finally {
@@ -240,22 +175,7 @@ public final class JsonGenerator {
      * @return a JSON representation of the given {@code JsonNode} as a {@code String}
      */
     public String generate(final JsonNode jsonNode) {
-        return generateString(jsonNode, new StringBuilderWriter());
-    }
-
-    /**
-     * Generates a JSON representation of the given {@code JsonNode} as a {@code String} using an initial {@code String} builder capacity specified by the {@code capacity} argument.
-     *
-     * @param jsonNode the {@code JsonNode} to output.
-     * @param capacity the initial {@code String} builder capacity.
-     * @return a JSON representation of the given {@code JsonNode} as a {@code String}
-     * @throws NegativeArraySizeException if the {@code capacity} argument is less than {@code 0}.
-     */
-    public String generate(final JsonNode jsonNode, final int capacity) {
-        return generateString(jsonNode, new StringBuilderWriter(capacity));
-    }
-
-    private String generateString(final JsonNode jsonNode, final StringBuilderWriter stringBuilderWriter) {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
             generate(stringBuilderWriter, jsonNode);
         } catch (final IOException e) {
@@ -288,24 +208,7 @@ public final class JsonGenerator {
      * @return a JSON representation of the given {@code JsonNode} as a {@code String}
      */
     public String generateWithFieldSorting(final JsonNode jsonNode) {
-        return generateStringWithFieldSorting(jsonNode, new StringBuilderWriter());
-    }
-
-    /**
-     * Generates a JSON representation of the given {@code JsonNode} as a {@code String}, outputting fields in lexicographic order, using an initial {@code String} builder capacity specified by the {@code capacity} argument.
-     * JSON does not mandate a particular ordering for the fields of an object, but for comparing JSON documents it can be convenient for field order to be consistent.
-     * In the event that more than one field with the same name exists in an object, the relative order of those fields is preserved.
-     *
-     * @param jsonNode the {@code JsonNode} to output.
-     * @param capacity the initial {@code String} builder capacity.
-     * @return a JSON representation of the given {@code JsonNode} as a {@code String}
-     * @throws NegativeArraySizeException if the {@code capacity} argument is less than {@code 0}.
-     */
-    public String generateWithFieldSorting(final JsonNode jsonNode, final int capacity) {
-        return generateStringWithFieldSorting(jsonNode, new StringBuilderWriter(capacity));
-    }
-
-    private String generateStringWithFieldSorting(final JsonNode jsonNode, final StringBuilderWriter stringBuilderWriter) {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         try {
             generateWithFieldSorting(stringBuilderWriter, jsonNode);
         } catch (final IOException e) {
