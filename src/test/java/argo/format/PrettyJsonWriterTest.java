@@ -317,6 +317,91 @@ class PrettyJsonWriterTest {
         ));
     }
 
+    @ParameterizedTest
+    @ArgumentsSource(JsonGeneratorJsonWriterShimArgumentsProvider.class)
+    void canWriteIndentationDeeperThanTabCharacterBuffer(final JsonGeneratorJsonWriterTestCase jsonGeneratorJsonWriterTestCase) throws Exception {
+        assertThat(jsonGeneratorJsonWriterTestCase.write(recursiveWriteableJsonArray(34)), equalTo(aJsonStringResultBuilder()
+                .printLine("[")
+                .printLine("\t[")
+                .printLine("\t\t[")
+                .printLine("\t\t\t[")
+                .printLine("\t\t\t\t[")
+                .printLine("\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t[]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t\t]")
+                .printLine("\t\t\t\t\t]")
+                .printLine("\t\t\t\t]")
+                .printLine("\t\t\t]")
+                .printLine("\t\t]")
+                .printLine("\t]")
+                .print("]")
+                .build()));
+    }
+
+    private WriteableJsonArray recursiveWriteableJsonArray(final int depth) {
+        if (depth == 0) {
+            return arrayWriter -> {
+            };
+        } else {
+            return arrayWriter -> arrayWriter.writeElement(recursiveWriteableJsonArray(depth - 1));
+        }
+    }
+
     @SuppressWarnings("deprecation")
     static final class JsonGeneratorJsonWriterShimArgumentsProvider implements ArgumentsProvider {
         @Override

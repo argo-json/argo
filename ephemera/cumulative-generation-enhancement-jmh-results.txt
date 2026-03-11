@@ -126,3 +126,16 @@ GeneratorBenchmark.prettyJdomGenerate              thrpt   25  135214.514 ±  78
 GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  125856.106 ±  616.380  ops/s
 GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  125408.131 ±  577.683  ops/s
 GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  118494.160 ± 1074.181  ops/s
+
+
+Maintain an array of tabs for pretty JSON generation
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  205786.917 ± 2057.676  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  132440.230 ± 2057.674  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  192363.468 ± 1230.038  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  138024.098 ± 1287.818  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  161500.044 ± 1718.344  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  114514.676 ±  893.744  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  152597.570 ± 1436.849  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  109500.530 ± 1180.419  ops/s
