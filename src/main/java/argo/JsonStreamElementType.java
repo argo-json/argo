@@ -306,7 +306,7 @@ public enum JsonStreamElementType {
 
     abstract JsonStreamElement parseNext(PositionedPushbackReader pushbackReader, Stack<JsonStreamElementType> stack) throws IOException;
 
-    private static abstract class SingleCharacterReader extends Reader {
+    private abstract static class SingleCharacterReader extends Reader {
 
         private static void validateArguments(final char[] cbuf, final int offset, final int length) {
             if (offset < 0 || offset > cbuf.length || length < 0 ||
@@ -320,7 +320,8 @@ public enum JsonStreamElementType {
             int n = 0;
             int nextChar;
             while (n < length && (nextChar = read()) != -1) {
-                cbuf[offset + n++] = (char) nextChar;
+                cbuf[offset + n] = (char) nextChar;
+                n++;
             }
             return n == 0 && length != 0 ? -1 : n;
         }

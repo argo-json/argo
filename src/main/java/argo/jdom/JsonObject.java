@@ -110,7 +110,8 @@ final class JsonObject extends JsonNode {
     public int hashCode() {
         int hashCode = cachedHashCode;
         if (hashCode == 0 && !getFieldList().isEmpty()) {
-            cachedHashCode = hashCode = getFieldList().hashCode();
+            hashCode = getFieldList().hashCode();
+            cachedHashCode = hashCode;
         }
         return hashCode;
     }

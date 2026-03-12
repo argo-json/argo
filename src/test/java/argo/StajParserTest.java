@@ -271,7 +271,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    @SuppressWarnings({"PMD.UseTryWithResources", "PMD.CloseResource"})
+    @SuppressWarnings("PMD.CloseResource")
     void propagatesIoExceptionReadingNumber(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
@@ -638,7 +638,7 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    @SuppressWarnings({"PMD.UseTryWithResources", "PMD.CloseResource"})
+    @SuppressWarnings("PMD.CloseResource")
     void propagatesIoExceptionReadingString(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final IOException ioException = new IOException("An IOException");
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
