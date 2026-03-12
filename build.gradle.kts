@@ -271,6 +271,14 @@ tasks {
         ruleSets = emptyList()
     }
 
+    withType<com.github.spotbugs.snom.SpotBugsTask>().configureEach {
+        launcher.set(
+            project.javaToolchains.launcherFor {
+                languageVersion = JavaLanguageVersion.of(11)
+            }
+        )
+    }
+
     spotbugsMain {
         excludeFilter = file("tools/spotbugs-main-filter.xml")
     }
