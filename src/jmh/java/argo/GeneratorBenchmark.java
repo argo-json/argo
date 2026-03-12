@@ -27,6 +27,7 @@ import static argo.JsonGenerator.JsonGeneratorStyle.COMPACT;
 import static argo.JsonGenerator.JsonGeneratorStyle.PRETTY;
 import static argo.jdom.JsonNodeFactories.*;
 
+@SuppressWarnings("unused")
 @State(Scope.Benchmark)
 public class GeneratorBenchmark {
 
