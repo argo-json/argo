@@ -1,7 +1,7 @@
 [versions]
 
 asciidoctor = "4.0.5"
-junit = "5.14.1"
+junit = "5.14.3"
 bouncycastle = "1.83"
 
 
