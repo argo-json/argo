@@ -35,7 +35,8 @@ public final class BoundedRepeatingReader extends Reader {
         int n = 0;
         int nextChar;
         while (n < length && (nextChar = read()) != -1) {
-            cbuf[offset + n++] = (char) nextChar;
+            cbuf[offset + n] = (char) nextChar;
+            n++;
         }
         return n == 0 && length != 0 ? -1 : n;
     }

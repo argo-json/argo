@@ -21,6 +21,7 @@
 
     <rule ref="category/java/bestpractices.xml">
         <exclude name="AvoidStringBufferField"/>
+        <exclude name="ImplicitFunctionalInterface"/> <!-- @FunctionalInterface was introduced in Java 8 so it's inapplicable when targeting Java 5 -->
         <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
         <exclude name="UnitTestContainsTooManyAsserts"/>
         <exclude name="UnitTestShouldIncludeAssert"/>
@@ -80,6 +81,7 @@
     </rule>
 
     <rule ref="category/java/design.xml">
+        <exclude name="AvoidDeeplyNestedIfStmts "/> <!-- configured later -->
         <exclude name="AvoidThrowingNullPointerException"/>
         <exclude name="AvoidThrowingRawExceptionTypes"/> <!-- All well and good... except sometimes throwing RuntimeException is OK -->
         <exclude name="CognitiveComplexity"/> <!-- configured later -->
@@ -92,7 +94,11 @@
         <exclude name="NcssCount"/> <!-- configured later -->
         <exclude name="TooManyMethods"/>
     </rule>
-    <rule ref="category/java/design.xml/CognitiveComplexity">
+    <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts">
+        <properties>
+            <property name="problemDepth" value="4" />
+        </properties>
+    </rule>    <rule ref="category/java/design.xml/CognitiveComplexity">
         <properties>
             <property name="reportLevel" value="32"/>
         </properties>

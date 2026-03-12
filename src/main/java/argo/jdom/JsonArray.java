@@ -103,7 +103,8 @@ final class JsonArray extends JsonNode {
     public int hashCode() {
         int hashCode = cachedHashCode;
         if (hashCode == 0 && !getElements().isEmpty()) {
-            cachedHashCode = hashCode = getElements().hashCode();
+            hashCode = getElements().hashCode();
+            cachedHashCode = hashCode;
         }
         return hashCode;
     }

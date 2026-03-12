@@ -74,7 +74,7 @@ public abstract class JsonStreamElement {
 
     abstract void close() throws IOException;
 
-    static abstract class NonTextJsonStreamElement extends JsonStreamElement {
+    abstract static class NonTextJsonStreamElement extends JsonStreamElement {
         static final JsonStreamElement START_DOCUMENT = new NonTextJsonStreamElement(JsonStreamElementType.START_DOCUMENT) {
             @Override
             public void visit(final JsonListener jsonListener) {
@@ -155,7 +155,7 @@ public abstract class JsonStreamElement {
         }
     }
 
-    private static abstract class TextJsonStreamElement extends JsonStreamElement {
+    private abstract static class TextJsonStreamElement extends JsonStreamElement {
 
         private final Reader reader;
 

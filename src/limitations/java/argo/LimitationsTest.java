@@ -205,6 +205,7 @@ class LimitationsTest {
         void generate(Writer writer) throws IOException;
     }
 
+    @FunctionalInterface
     private interface Parser {
         void parse(Reader reader) throws IOException, InvalidSyntaxException;
     }

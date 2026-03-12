@@ -139,3 +139,20 @@ GeneratorBenchmark.prettyJdomGenerate              thrpt   25  161500.044 ± 171
 GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  114514.676 ±  893.744  ops/s
 GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  152597.570 ± 1436.849  ops/s
 GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  109500.530 ± 1180.419  ops/s
+
+
+Incorporate some recommendations from PMD
+
+Benchmark                                           Mode  Cnt       Score      Error  Units
+GeneratorBenchmark.compactJdomGenerate             thrpt   25  205991.523 ± 1187.010  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25  131398.389 ± 2236.137  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25  190112.152 ± 3027.590  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25  138405.894 ±  996.451  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25  162295.490 ±  852.977  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25  113986.713 ± 1175.924  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25  148188.115 ± 2356.376  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25  109555.494 ±  974.838  ops/s
+ParserBenchmark.jdomParse                          thrpt   25   26973.740 ±  280.503  ops/s
+ParserBenchmark.jdomParseNonInterning              thrpt   25   31454.117 ±  393.170  ops/s
+ParserBenchmark.streamingEventParse                thrpt   25   50841.170 ±  580.398  ops/s
+ParserBenchmark.streamingIteratorParse             thrpt   25   52658.254 ± 1445.843  ops/s

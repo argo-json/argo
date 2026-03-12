@@ -144,7 +144,7 @@ abstract class JsonPrinter implements JsonNodeVisitor {
 
         private final IOException typedCause;
 
-        public IORuntimeException(final IOException cause) {
+        IORuntimeException(final IOException cause) {
             super(cause);
             this.typedCause = cause;
         }
