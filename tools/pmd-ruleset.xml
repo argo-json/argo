@@ -81,7 +81,7 @@
     </rule>
 
     <rule ref="category/java/design.xml">
-        <exclude name="AvoidDeeplyNestedIfStmts "/> <!-- configured later -->
+        <exclude name="AvoidDeeplyNestedIfStmts"/> <!-- configured later -->
         <exclude name="AvoidThrowingNullPointerException"/>
         <exclude name="AvoidThrowingRawExceptionTypes"/> <!-- All well and good... except sometimes throwing RuntimeException is OK -->
         <exclude name="CognitiveComplexity"/> <!-- configured later -->
