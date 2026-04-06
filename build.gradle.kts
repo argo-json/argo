@@ -78,6 +78,7 @@ testing {
                 implementation(libs.hamcrest)
                 implementation(libs.ickles)
                 implementation(libs.commonsIO)
+                implementation(libs.jol)
             }
         }
 
