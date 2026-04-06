@@ -11,6 +11,7 @@
 package argo.jdom;
 
 import org.junit.jupiter.api.Test;
+import org.openjdk.jol.info.GraphLayout;
 
 import static argo.jdom.JsonNumberNodeTestingFactories.aValidJsonNumber;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -223,6 +224,12 @@ final class JsonNumberNodeTest {
     @Test
     void getElementsThrowsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> JsonNodeFactories.number(aValidJsonNumber()).getElements());
+    }
+
+    @Test
+    void heapSize() {
+        assertThat(GraphLayout.parseInstance(JsonNodeFactories.number("42")).totalSize(), equalTo(64L));
+        assertThat(GraphLayout.parseInstance(JsonNodeFactories.number("123456789.987654321e+99")).totalSize(), equalTo(104L));
     }
 
 }

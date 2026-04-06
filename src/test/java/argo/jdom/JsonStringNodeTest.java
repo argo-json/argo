@@ -11,6 +11,7 @@
 package argo.jdom;
 
 import org.junit.jupiter.api.Test;
+import org.openjdk.jol.info.GraphLayout;
 
 import static argo.TestingFactories.aString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -136,6 +137,12 @@ final class JsonStringNodeTest {
     @Test
     void getElementsThrowsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> JsonNodeFactories.string(aString()).getElements());
+    }
+
+    @Test
+    void heapSize() {
+        assertThat(GraphLayout.parseInstance(JsonNodeFactories.string("")).totalSize(), equalTo(56L));
+        assertThat(GraphLayout.parseInstance(JsonNodeFactories.string("hello")).totalSize(), equalTo(72L));
     }
 
 }

@@ -11,6 +11,7 @@
 package argo.jdom;
 
 import org.junit.jupiter.api.Test;
+import org.openjdk.jol.info.GraphLayout;
 
 import java.util.*;
 
@@ -148,6 +149,12 @@ final class JsonArrayTest {
     void getElementsReturnsCorrectValue() {
         final Collection<JsonNode> elements = someJsonNodes();
         assertThat(JsonArray.jsonArray(elements).getElements(), equalTo(elements));
+    }
+
+    @Test
+    void heapSize() {
+        assertThat(GraphLayout.parseInstance(JsonArray.jsonArray(singletonList(string("a")))).totalSize(), equalTo(160L));
+        assertThat(GraphLayout.parseInstance(JsonArray.jsonArray(Arrays.asList(string("a"), string("b"), string("c"), string("d"), string("e")))).totalSize(), equalTo(432L));
     }
 
 }
