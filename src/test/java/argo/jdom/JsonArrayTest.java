@@ -153,8 +153,8 @@ final class JsonArrayTest {
 
     @Test
     void heapSize() {
-        assertThat(GraphLayout.parseInstance(JsonArray.jsonArray(singletonList(string("a")))).totalSize(), equalTo(160L));
-        assertThat(GraphLayout.parseInstance(JsonArray.jsonArray(Arrays.asList(string("a"), string("b"), string("c"), string("d"), string("e")))).totalSize(), equalTo(432L));
+        assertThat(GraphLayout.parseInstance(JsonArray.jsonArray(singletonList(string("a")))).totalSize(), equalTo(112L));
+        assertThat(GraphLayout.parseInstance(JsonArray.jsonArray(Arrays.asList(string("a"), string("b"), string("c"), string("d"), string("e")))).totalSize(), equalTo(384L));
     }
 
 }
