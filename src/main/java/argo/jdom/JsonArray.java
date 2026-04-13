@@ -10,35 +10,49 @@
 
 package argo.jdom;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static argo.jdom.ImmutableListFactories.immutableListOf;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 final class JsonArray extends JsonNode {
 
-    private static final JsonArray EMPTY_ARRAY = new JsonArray(Collections.<JsonNode>emptyList());
+    private static final JsonArray EMPTY_ARRAY = new JsonArray(new JsonNode[0]);
 
-    private final List<JsonNode> elements;
+    private final JsonNode[] elements;
 
     private int cachedHashCode;
 
-    private JsonArray(final List<JsonNode> elements) {
+    private JsonArray(final JsonNode[] elements) {
         this.elements = elements;
     }
 
     static JsonArray jsonArray(final Iterator<? extends JsonNode> elements) {
-        return jsonArray(immutableListOf(elements));
+        return jsonArray(elements, new ArrayList<JsonNode>());
     }
 
     static JsonArray jsonArray(final Iterable<? extends JsonNode> elements) {
-        return jsonArray(immutableListOf(elements));
+        return jsonArray(
+                elements.iterator(),
+                elements instanceof Collection ? new ArrayList<JsonNode>(((Collection<?>) elements).size()) : new ArrayList<JsonNode>()
+        );
     }
 
-    private static JsonArray jsonArray(final List<JsonNode> elementList) {
-        return elementList.isEmpty() ? EMPTY_ARRAY : new JsonArray(elementList);
+    private static JsonArray jsonArray(final Iterator<? extends JsonNode> elements, final List<JsonNode> arrayBuildingList) {
+        while (elements.hasNext()) {
+            final JsonNode element = elements.next();
+            if (element == null) {
+                throw new NullPointerException();
+            } else {
+                arrayBuildingList.add(element);
+            }
+        }
+        return arrayBuildingList.isEmpty() ? EMPTY_ARRAY : new JsonArray(arrayBuildingList.toArray(new JsonNode[0]));
     }
 
     @Override
@@ -78,12 +92,12 @@ final class JsonArray extends JsonNode {
 
     @Override
     public List<JsonNode> getElements() {
-        return elements;
+        return unmodifiableList(asList(elements));
     }
 
     @Override
     public void visit(final JsonNodeVisitor jsonNodeVisitor) {
-        jsonNodeVisitor.array(elements);
+        jsonNodeVisitor.array(unmodifiableList(asList(elements)));
     }
 
     @Override
@@ -96,14 +110,14 @@ final class JsonArray extends JsonNode {
         }
 
         final JsonArray thatJsonArray = (JsonArray) that;
-        return elements.equals(thatJsonArray.elements);
+        return Arrays.equals(elements, thatJsonArray.elements);
     }
 
     @Override
     public int hashCode() {
         int hashCode = cachedHashCode;
-        if (hashCode == 0 && !getElements().isEmpty()) {
-            hashCode = getElements().hashCode();
+        if (hashCode == 0 && elements.length != 0) {
+            hashCode = Arrays.hashCode(elements);
             cachedHashCode = hashCode;
         }
         return hashCode;
@@ -111,6 +125,6 @@ final class JsonArray extends JsonNode {
 
     @Override
     public String toString() {
-        return "JsonArray{elements=" + getElements() + "}";
+        return "JsonArray{elements=" + Arrays.toString(elements) + "}";
     }
 }
