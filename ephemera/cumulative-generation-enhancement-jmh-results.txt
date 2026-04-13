@@ -196,3 +196,23 @@ ParserBenchmark.jdomParse                          thrpt   25    26978.478 ±   
 ParserBenchmark.jdomParseNonInterning              thrpt   25    31145.698 ±   368.201  ops/s
 ParserBenchmark.streamingEventParse                thrpt   25    50913.581 ±   432.955  ops/s
 ParserBenchmark.streamingIteratorParse             thrpt   25    53867.924 ±   516.324  ops/s
+
+
+JsonArray List accessor returns custom unmodifiable array-backed List
+
+Benchmark                                           Mode  Cnt        Score       Error  Units
+GeneratorBenchmark.compactJdomArrayGenerate        thrpt   25  2662392.202 ± 51771.774  ops/s
+GeneratorBenchmark.compactJdomGenerate             thrpt   25   203277.272 ±  1875.400  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25   132251.603 ±  3551.446  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25   192327.411 ±  1196.660  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25   138219.482 ±  1313.359  ops/s
+GeneratorBenchmark.prettyJdomArrayGenerate         thrpt   25  1590655.437 ±  8282.323  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25   160384.212 ±   655.219  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25   114069.202 ±   702.736  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25   151930.904 ±   868.071  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25   108596.132 ±   844.328  ops/s
+ParserBenchmark.jdomArrayParse                     thrpt   25   594706.294 ±  9097.857  ops/s
+ParserBenchmark.jdomParse                          thrpt   25    26954.236 ±   240.245  ops/s
+ParserBenchmark.jdomParseNonInterning              thrpt   25    31525.426 ±   287.654  ops/s
+ParserBenchmark.streamingEventParse                thrpt   25    49344.433 ±  1040.085  ops/s
+ParserBenchmark.streamingIteratorParse             thrpt   25    52189.523 ±  1113.815  ops/s

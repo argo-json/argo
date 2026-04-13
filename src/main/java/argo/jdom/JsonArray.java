@@ -10,15 +10,13 @@
 
 package argo.jdom;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 
 final class JsonArray extends JsonNode {
 
@@ -92,12 +90,12 @@ final class JsonArray extends JsonNode {
 
     @Override
     public List<JsonNode> getElements() {
-        return unmodifiableList(asList(elements));
+        return new UnmodifiableArrayList<JsonNode>(elements);
     }
 
     @Override
     public void visit(final JsonNodeVisitor jsonNodeVisitor) {
-        jsonNodeVisitor.array(unmodifiableList(asList(elements)));
+        jsonNodeVisitor.array(getElements());
     }
 
     @Override
@@ -127,4 +125,22 @@ final class JsonArray extends JsonNode {
     public String toString() {
         return "JsonArray{elements=" + Arrays.toString(elements) + "}";
     }
+
+    private static final class UnmodifiableArrayList<T> extends AbstractList<T> {
+
+        private final T[] elements;
+
+        private UnmodifiableArrayList(final T[] elements) {
+            this.elements = elements;
+        }
+
+        public T get(final int index) {
+            return elements[index];
+        }
+
+        public int size() {
+            return elements.length;
+        }
+    }
+
 }
