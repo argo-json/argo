@@ -114,12 +114,28 @@ public class ParserBenchmark {
             "        \"taglib-uri\": \"cofax.tld\",\n" +
             "        \"taglib-location\": \"/WEB-INF/tlds/cofax.tld\"}}}";
 
+    private static final String ARRAY_JSON_STRING = "[\n" +
+            "  [\n" +
+            "    [1, 2, 3],\n" +
+            "    [4, 5]\n" +
+            "  ],\n" +
+            "  [\n" +
+            "    [6, 7, 8, 9],\n" +
+            "    [10, 11, 12]\n" +
+            "  ]\n" +
+            "]";
+
     private final JsonParser jsonParser = new JsonParser().positionTracking(DO_NOT_TRACK);
     private final JsonParser jsonParserNonInterning = jsonParser.nodeInterning(INTERN_NOTHING);
 
     @Benchmark
     public void jdomParse(final Blackhole blackhole) throws InvalidSyntaxException {
         blackhole.consume(jsonParser.parse(JSON_STRING));
+    }
+
+    @Benchmark
+    public void jdomArrayParse(final Blackhole blackhole) throws InvalidSyntaxException {
+        blackhole.consume(jsonParser.parse(ARRAY_JSON_STRING));
     }
 
     @Benchmark

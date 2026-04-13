@@ -240,6 +240,17 @@ public class GeneratorBenchmark {
                     }
             );
 
+    private static final JsonNode ARRAY_JSON_NODE = array(
+            array(
+                    array(number(1), number(2), number(3)),
+                    array(number(4), number(5))
+            ),
+            array(
+                    array(number(6), number(7), number(8), number(9)),
+                    array(number(10), number(11), number(12))
+            )
+    );
+
     private final JsonGenerator compactJsonGenerator = new JsonGenerator().style(COMPACT);
     private final JsonGenerator prettyJsonGenerator = new JsonGenerator().style(PRETTY);
 
@@ -251,6 +262,16 @@ public class GeneratorBenchmark {
     @Benchmark
     public void prettyJdomGenerate(final Blackhole blackhole) throws IOException {
         prettyJsonGenerator.generate(new BlackholeWriter(blackhole), JSON_NODE);
+    }
+
+    @Benchmark
+    public void compactJdomArrayGenerate(final Blackhole blackhole) throws IOException {
+        compactJsonGenerator.generate(new BlackholeWriter(blackhole), ARRAY_JSON_NODE);
+    }
+
+    @Benchmark
+    public void prettyJdomArrayGenerate(final Blackhole blackhole) throws IOException {
+        prettyJsonGenerator.generate(new BlackholeWriter(blackhole), ARRAY_JSON_NODE);
     }
 
     @Benchmark
