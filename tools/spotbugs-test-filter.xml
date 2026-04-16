@@ -42,4 +42,8 @@
         <Class name="argo.JsonStreamExceptionTest"/>
         <Bug pattern="RV_EXCEPTION_NOT_THROWN"/>
     </Match>
+    <Match>
+        <Class name="argo.jdom.UnmodifiableListArrayViewTest"/>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
+    </Match>
 </FindBugsFilter>

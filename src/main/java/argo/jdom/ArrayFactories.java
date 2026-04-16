@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2026 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -15,38 +15,45 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static java.util.Collections.unmodifiableList;
+final class ArrayFactories {
 
-final class ImmutableListFactories {
-
-    private ImmutableListFactories() {
+    private ArrayFactories() {
     }
 
-    static <T> List<T> immutableListOf(final Iterable<? extends T> elements) {
+    static <T> T[] nullFreeArrayOf(final Iterable<? extends T> elements, final T[] a) {
+        final T[] result;
         if (elements instanceof Collection) {
-            final List<T> modifiableResult = new ArrayList<T>(((Collection<?>) elements).size());
-            for (final T next : elements) {
-                if (next == null) {
+            final Collection<? extends T> elementsCollection = (Collection<? extends T>) elements;
+            if (elementsCollection.isEmpty()) {
+                if (a == null) {
                     throw new NullPointerException();
                 }
-                modifiableResult.add(next);
+                result = a;
+            } else {
+                final T[] array = elementsCollection.toArray(a);
+                for (final T element : array) {
+                    if (element == null) {
+                        throw new NullPointerException();
+                    }
+                }
+                result = array;
             }
-            return unmodifiableList(modifiableResult);
         } else {
-            return immutableListOf(elements.iterator());
+            result = nullFreeArrayOf(elements.iterator(), a);
         }
+        return result;
     }
 
-    static <T> List<T> immutableListOf(final Iterator<? extends T> elements) {
-        final List<T> copy = new ArrayList<T>();
+    static <T> T[] nullFreeArrayOf(final Iterator<? extends T> elements, final T[] a) {
+        final List<T> arrayBuildingList = new ArrayList<T>();
         while (elements.hasNext()) {
             final T next = elements.next();
             if (next == null) {
                 throw new NullPointerException();
             }
-            copy.add(next);
+            arrayBuildingList.add(next);
         }
-        return unmodifiableList(copy);
+        return arrayBuildingList.toArray(a);
     }
 
 }

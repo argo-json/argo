@@ -12,33 +12,34 @@ package argo.jdom;
 
 import java.util.*;
 
-import static argo.jdom.ImmutableListFactories.immutableListOf;
+import static argo.jdom.ArrayFactories.nullFreeArrayOf;
 import static java.util.Collections.unmodifiableMap;
 
 final class JsonObject extends JsonNode {
 
-    private static final JsonObject EMPTY_OBJECT = new JsonObject(Collections.<JsonField>emptyList());
+    private static final JsonField[] EMPTY_FIELDS_ARRAY = new JsonField[0];
+    private static final JsonObject EMPTY_OBJECT = new JsonObject(EMPTY_FIELDS_ARRAY);
 
-    private final List<JsonField> fields;
+    private final JsonField[] fields;
 
     private int cachedHashCode;
 
     private transient Map<JsonStringNode, JsonNode> fieldMap;
 
-    private JsonObject(final List<JsonField> fields) {
+    private JsonObject(final JsonField[] fields) {
         this.fields = fields;
     }
 
     static JsonObject jsonObject(final Iterator<JsonField> fields) {
-        return jsonObject(immutableListOf(fields));
+        return jsonObject(nullFreeArrayOf(fields, EMPTY_FIELDS_ARRAY));
     }
 
     static JsonObject jsonObject(final Iterable<JsonField> fields) {
-        return jsonObject(immutableListOf(fields));
+        return jsonObject(nullFreeArrayOf(fields, EMPTY_FIELDS_ARRAY));
     }
 
-    private static JsonObject jsonObject(final List<JsonField> fieldList) {
-        return fieldList.isEmpty() ? EMPTY_OBJECT : new JsonObject(fieldList);
+    private static JsonObject jsonObject(final JsonField[] fields) {
+        return fields.length == 0 ? EMPTY_OBJECT : new JsonObject(fields);
     }
 
     @Override
@@ -64,7 +65,7 @@ final class JsonObject extends JsonNode {
     @Override
     public Map<JsonStringNode, JsonNode> getFields() {
         if (fieldMap == null) {
-            final Map<JsonStringNode, JsonNode> modifiableFieldMap = new LinkedHashMap<JsonStringNode, JsonNode>((fields.size() * 4 + 2) / 3);
+            final Map<JsonStringNode, JsonNode> modifiableFieldMap = new LinkedHashMap<JsonStringNode, JsonNode>((fields.length * 4 + 2) / 3);
             for (final JsonField field : fields) {
                 modifiableFieldMap.put(field.getName(), field.getValue());
             }
@@ -75,7 +76,7 @@ final class JsonObject extends JsonNode {
 
     @Override
     public List<JsonField> getFieldList() {
-        return fields;
+        return new UnmodifiableListArrayView<JsonField>(fields);
     }
 
     @Override
@@ -90,7 +91,7 @@ final class JsonObject extends JsonNode {
 
     @Override
     public void visit(final JsonNodeVisitor jsonNodeVisitor) {
-        jsonNodeVisitor.object(fields);
+        jsonNodeVisitor.object(getFieldList());
     }
 
     @Override
@@ -103,14 +104,14 @@ final class JsonObject extends JsonNode {
         }
 
         final JsonObject thatJsonObject = (JsonObject) that;
-        return this.getFieldList().equals(thatJsonObject.getFieldList());
+        return Arrays.equals(this.fields, thatJsonObject.fields);
     }
 
     @Override
     public int hashCode() {
         int hashCode = cachedHashCode;
-        if (hashCode == 0 && !getFieldList().isEmpty()) {
-            hashCode = getFieldList().hashCode();
+        if (hashCode == 0 && fields.length != 0) {
+            hashCode = Arrays.hashCode(fields);
             cachedHashCode = hashCode;
         }
         return hashCode;

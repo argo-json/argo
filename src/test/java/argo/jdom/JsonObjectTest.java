@@ -171,8 +171,8 @@ final class JsonObjectTest {
 
     @Test
     void heapSize() {
-        assertThat(GraphLayout.parseInstance(JsonObject.jsonObject(singletonList(field("k", string("v"))))).totalSize(), equalTo(248L));
-        assertThat(GraphLayout.parseInstance(JsonObject.jsonObject(Arrays.asList(field("k1", string("v1")), field("k2", string("v2")), field("k3", string("v3")), field("k4", string("v4")), field("k5", string("v5"))))).totalSize(), equalTo(872L));
+        assertThat(GraphLayout.parseInstance(JsonObject.jsonObject(singletonList(field("k", string("v"))))).totalSize(), equalTo(200L));
+        assertThat(GraphLayout.parseInstance(JsonObject.jsonObject(Arrays.asList(field("k1", string("v1")), field("k2", string("v2")), field("k3", string("v3")), field("k4", string("v4")), field("k5", string("v5"))))).totalSize(), equalTo(824L));
     }
 
 }

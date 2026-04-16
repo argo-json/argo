@@ -10,17 +10,17 @@
 
 package argo.jdom;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static argo.jdom.ArrayFactories.nullFreeArrayOf;
+
 final class JsonArray extends JsonNode {
 
-    private static final JsonArray EMPTY_ARRAY = new JsonArray(new JsonNode[0]);
+    private static final JsonNode[] EMPTY_JSON_NODES_ARRAY = new JsonNode[0];
+    private static final JsonArray EMPTY_ARRAY = new JsonArray(EMPTY_JSON_NODES_ARRAY);
 
     private final JsonNode[] elements;
 
@@ -31,26 +31,15 @@ final class JsonArray extends JsonNode {
     }
 
     static JsonArray jsonArray(final Iterator<? extends JsonNode> elements) {
-        return jsonArray(elements, new ArrayList<JsonNode>());
+        return jsonArray(nullFreeArrayOf(elements, EMPTY_JSON_NODES_ARRAY));
     }
 
     static JsonArray jsonArray(final Iterable<? extends JsonNode> elements) {
-        return jsonArray(
-                elements.iterator(),
-                elements instanceof Collection ? new ArrayList<JsonNode>(((Collection<?>) elements).size()) : new ArrayList<JsonNode>()
-        );
+        return jsonArray(nullFreeArrayOf(elements, EMPTY_JSON_NODES_ARRAY));
     }
 
-    private static JsonArray jsonArray(final Iterator<? extends JsonNode> elements, final List<JsonNode> arrayBuildingList) {
-        while (elements.hasNext()) {
-            final JsonNode element = elements.next();
-            if (element == null) {
-                throw new NullPointerException();
-            } else {
-                arrayBuildingList.add(element);
-            }
-        }
-        return arrayBuildingList.isEmpty() ? EMPTY_ARRAY : new JsonArray(arrayBuildingList.toArray(new JsonNode[0]));
+    private static JsonArray jsonArray(final JsonNode[] elements) {
+        return elements.length == 0 ? EMPTY_ARRAY : new JsonArray(elements);
     }
 
     @Override
@@ -90,7 +79,7 @@ final class JsonArray extends JsonNode {
 
     @Override
     public List<JsonNode> getElements() {
-        return new UnmodifiableArrayList<JsonNode>(elements);
+        return new UnmodifiableListArrayView<JsonNode>(elements);
     }
 
     @Override
@@ -124,23 +113,6 @@ final class JsonArray extends JsonNode {
     @Override
     public String toString() {
         return "JsonArray{elements=" + Arrays.toString(elements) + "}";
-    }
-
-    private static final class UnmodifiableArrayList<T> extends AbstractList<T> {
-
-        private final T[] elements;
-
-        private UnmodifiableArrayList(final T[] elements) {
-            this.elements = elements;
-        }
-
-        public T get(final int index) {
-            return elements[index];
-        }
-
-        public int size() {
-            return elements.length;
-        }
     }
 
 }
