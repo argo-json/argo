@@ -27,6 +27,9 @@ final class UnmodifiableListArrayView<T> extends AbstractList<T> {
     }
 
     public T get(final int index) {
+        if (index < 0 || index >= elements.length) {
+            throw new IndexOutOfBoundsException("Index out of range: " + index);
+        }
         return elements[index];
     }
 

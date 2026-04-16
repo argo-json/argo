@@ -376,3 +376,23 @@ ParserBenchmark.jdomParse                          thrpt   25    27104.898 ±   
 ParserBenchmark.jdomParseNonInterning              thrpt   25    31333.337 ±   418.590  ops/s
 ParserBenchmark.streamingEventParse                thrpt   25    50908.962 ±   524.726  ops/s
 ParserBenchmark.streamingIteratorParse             thrpt   25    53105.113 ±   369.163  ops/s
+
+
+UnmodifiableListArrayView.get throws IndexOutOfBoundsException rather than ArrayIndexOutOfBoundsException to avoid API changes if a future implementation doesn't naturally return ArrayIndexOutOfBoundsException
+
+Benchmark                                           Mode  Cnt        Score       Error  Units
+GeneratorBenchmark.compactJdomArrayGenerate        thrpt   25  2900212.113 ± 18716.735  ops/s
+GeneratorBenchmark.compactJdomGenerate             thrpt   25   207440.818 ±  3193.161  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25   140314.220 ±  2754.673  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25   191382.116 ±   917.323  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25   135356.890 ±  2994.042  ops/s
+GeneratorBenchmark.prettyJdomArrayGenerate         thrpt   25  1664095.533 ± 21498.475  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25   168601.326 ±  1203.166  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25   114373.787 ±  2813.106  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25   152146.315 ±  1401.114  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25   106945.073 ±  1075.212  ops/s
+ParserBenchmark.jdomArrayParse                     thrpt   25   682055.878 ±  5152.339  ops/s
+ParserBenchmark.jdomParse                          thrpt   25    27190.085 ±   231.601  ops/s
+ParserBenchmark.jdomParseNonInterning              thrpt   25    31147.094 ±   788.165  ops/s
+ParserBenchmark.streamingEventParse                thrpt   25    50266.054 ±   508.024  ops/s
+ParserBenchmark.streamingIteratorParse             thrpt   25    53548.347 ±   350.553  ops/s
