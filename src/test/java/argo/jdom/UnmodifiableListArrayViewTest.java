@@ -14,7 +14,9 @@ import net.sourceforge.ickles.RandomSizeListSupplier;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -74,6 +76,42 @@ final class UnmodifiableListArrayViewTest {
         final Object[] sourceArray = anArray();
         final List<Object> list = new UnmodifiableListArrayView<>(sourceArray);
         assertThrows(IndexOutOfBoundsException.class, () -> list.get(sourceArray.length));
+    }
+
+    @Test
+    void iteratorOfEmptyArrayDoesNotHaveNext() {
+        assertThat(new UnmodifiableListArrayView<>(new Object[0]).iterator().hasNext(), equalTo(false));
+    }
+
+    @Test
+    void iteratorOfEmptyArrayThrowsOnNext() {
+        final Iterator<Object> iterator = new UnmodifiableListArrayView<>(new Object[0]).iterator();
+        assertThrows(NoSuchElementException.class, iterator::next);
+    }
+
+    @Test
+    void iteratorOfNonEmptyArrayHasNext() {
+        assertThat(new UnmodifiableListArrayView<>(new Object[]{new Object()}).iterator().hasNext(), equalTo(true));
+    }
+
+    @Test
+    void iteratorOfNonEmptyArrayReturnsNext() {
+        final Object element = new Object();
+        assertThat(new UnmodifiableListArrayView<>(new Object[]{element}).iterator().next(), sameInstance(element));
+    }
+
+    @Test
+    void iteratorOfNonEmptyArrayDoesNotHaveNextWhenExhausted() {
+        final Iterator<Object> iterator = new UnmodifiableListArrayView<>(new Object[]{new Object()}).iterator();
+        iterator.next();
+        assertThat(iterator.hasNext(), equalTo(false));
+    }
+
+    @Test
+    void iteratorOfNonEmptyArrayThrowsOnNextWhenExhausted() {
+        final Iterator<Object> iterator = new UnmodifiableListArrayView<>(new Object[]{new Object()}).iterator();
+        iterator.next();
+        assertThrows(NoSuchElementException.class, iterator::next);
     }
 
 }

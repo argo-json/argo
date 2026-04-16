@@ -11,6 +11,8 @@
 package argo.jdom;
 
 import java.util.AbstractList;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 final class UnmodifiableListArrayView<T> extends AbstractList<T> {
 
@@ -31,4 +33,33 @@ final class UnmodifiableListArrayView<T> extends AbstractList<T> {
     public int size() {
         return elements.length;
     }
+
+    @Override
+    @SuppressWarnings("NullableProblems")
+    public Iterator<T> iterator() {
+        return new ArrayIterator<T>(elements);
+    }
+
+    private static final class ArrayIterator<T> extends UnmodifiableIterator<T> {
+
+        private final T[] elements;
+        private int cursor = 0;
+
+        private ArrayIterator(final T[] elements) {
+            this.elements = elements;
+        }
+
+        public boolean hasNext() {
+            return cursor < elements.length;
+        }
+
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return elements[cursor++];
+        }
+
+    }
+
 }
