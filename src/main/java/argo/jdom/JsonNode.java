@@ -96,7 +96,7 @@ public abstract class JsonNode {
      * @param pathElements a series of {@code String}s, representing the names of fields on objects, and {@code Integer}s, representing elements of arrays indicating how to navigate from this node.
      * @return whether a JSON node exists at the path given.
      */
-    public boolean isNode(final Object... pathElements) {
+    public final boolean isNode(final Object... pathElements) {
         return JsonNodeSelectors.anyNode(pathElements).matches(this);
     }
 
@@ -107,7 +107,7 @@ public abstract class JsonNode {
      * @return the {@code JsonNode} at the path given.
      * @throws IllegalArgumentException if there is no node at the given path.
      */
-    public JsonNode getNode(final Object... pathElements) {
+    public final JsonNode getNode(final Object... pathElements) {
         return wrapExceptionsFor(JsonNodeSelectors.anyNode(pathElements), this, pathElements);
     }
 
