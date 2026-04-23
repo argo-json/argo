@@ -23,46 +23,46 @@ abstract class JsonConstant extends JsonNode implements JsonNodeBuilder<JsonNode
     }
 
     @Override
-    public boolean hasText() {
+    public final boolean hasText() {
         return false;
     }
 
     @Override
-    public String getText() {
+    public final String getText() {
         throw new UnsupportedOperationException("Does not have text");
     }
 
     @Override
-    public boolean hasFields() {
+    public final boolean hasFields() {
         return false;
     }
 
     @Override
-    public Map<JsonStringNode, JsonNode> getFields() {
+    public final Map<JsonStringNode, JsonNode> getFields() {
         throw new UnsupportedOperationException("Does not have fields");
     }
 
     @Override
-    public List<JsonField> getFieldList() {
+    public final List<JsonField> getFieldList() {
         throw new UnsupportedOperationException("Does not have fields");
     }
 
     @Override
-    public boolean hasElements() {
+    public final boolean hasElements() {
         return false;
     }
 
     @Override
-    public List<JsonNode> getElements() {
+    public final List<JsonNode> getElements() {
         throw new UnsupportedOperationException("Does not have elements");
     }
 
-    public JsonNode build() {
+    public final JsonNode build() {
         return this;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "JsonNode{jsonNodeType=" + getType() + '}';
     }
 

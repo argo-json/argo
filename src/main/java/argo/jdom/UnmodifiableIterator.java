@@ -13,7 +13,6 @@ package argo.jdom;
 import java.util.Iterator;
 
 abstract class UnmodifiableIterator<T> implements Iterator<T> {
-
     public final void remove() {
         throw new UnsupportedOperationException();
     }
