@@ -161,7 +161,7 @@ public enum JsonStreamElementType {
                         pushbackReader.unread(nextChar);
                         return NonTextJsonStreamElement.END_FIELD;
                     default:
-                        throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or ]", nextChar, pushbackReader.position());
+                        throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or }", nextChar, pushbackReader.position());
                 }
             case START_DOCUMENT:
                 if (nextChar == -1) {

@@ -2698,7 +2698,7 @@ final class StajParserTest {
         stajParser.next();
         stajParser.next();
         final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 7) + ":  Expected either , or ] but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 7) + ":  Expected either , or } but reached end of input"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(7)));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
     }
