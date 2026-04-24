@@ -63,7 +63,11 @@ public final class JsonNumberUtils {
     /**
      * Helper method for converting JSON number {@code String}s into {@code Integer}s.  Note that use of this
      * method is risky as java {@code Integer}s have limited precision (between {@code Integer.MIN_VALUE} and
-     * {@code Integer.MAX_VALUE}) whereas JSON numbers have unlimited precision.
+     * {@code Integer.MAX_VALUE}) whereas JSON numbers have unlimited precision.  This conversion is analogous to a
+     * <i>narrowing primitive conversion</i> from {@code long} to {@code int} as defined in
+     * <cite>The Java&trade; Language Specification</cite>: if this JSON number {@code String} is too big to fit in an
+     * {@code int}, only the low-order 32 bits are returned. Note that this conversion can lose information about the
+     * overall magnitude of the JSON number {@code String} value as well as return a result with the opposite sign.
      *
      * @param jsonNumberString a {@code String} representation of an integer JSON number.
      * @return a {@code Integer} representing the given JSON number {@code String}.
