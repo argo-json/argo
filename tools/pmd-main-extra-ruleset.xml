@@ -29,4 +29,6 @@
         <exclude name="UncommentedEmptyMethodBody"/>
     </rule>
 
+    <rule ref="category/java/multithreading.xml/DoNotUseThreads"/> <!-- This rule was turned off for the limitations tests -->
+
 </ruleset>

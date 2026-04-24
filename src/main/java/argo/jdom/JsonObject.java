@@ -24,7 +24,7 @@ final class JsonObject extends JsonNode {
 
     private int cachedHashCode;
 
-    private transient Map<JsonStringNode, JsonNode> fieldMap;
+    private transient volatile Map<JsonStringNode, JsonNode> fieldMap;
 
     private JsonObject(final JsonField[] fields) {
         this.fields = fields;
