@@ -116,4 +116,11 @@ final class JsonNumberUtilsTest {
     void parseJsonNumberStringToIntegerRejectsDecimalNumbers() {
         assertThrows(NumberFormatException.class, () -> asInteger("10.2"));
     }
+
+    @Test
+    void parseJsonNumberStringToIntegerTruncatesOversizedNumbersAsDocumented() {
+        assertThat(asInteger("2147483648"), equalTo(-2_147_483_648));
+        assertThat(asInteger("9999999999"), equalTo(1_410_065_407));
+        assertThat(asInteger("-2147483649"), equalTo(2_147_483_647));
+    }
 }
