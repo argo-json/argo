@@ -189,17 +189,17 @@ public enum NumberParserState {
     },
     ERROR_EXPECTED_DIGIT {
         public NumberParserState handle(final int character) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to continue parsing when in error state");
+            return END;
         }
     },
     ERROR_EXPECTED_DIGIT_OR_MINUS {
         public NumberParserState handle(final int character) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to continue parsing when in error state");
+            return END;
         }
     },
     ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS {
         public NumberParserState handle(final int character) {
-            throw new RuntimeException("Coding failure in Argo:  Attempt to continue parsing when in error state");
+            return END;
         }
     };
 

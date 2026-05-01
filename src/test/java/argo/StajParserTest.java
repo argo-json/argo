@@ -319,6 +319,30 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    void propagatesInvalidSyntaxRuntimeExceptionSkippingNumberByGettingNextElement(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("1.");
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Expected a digit 0 - 9 but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void propagatesInvalidSyntaxRuntimeExceptionSkippingNumberByQueryingNextElement(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("1.");
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::hasNext);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Expected a digit 0 - 9 but reached end of input"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
     void canCloseANumberReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("12");
         stajParser.next();
@@ -686,6 +710,30 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
+    void propagatesInvalidSyntaxRuntimeExceptionSkippingStringByGettingNextElement(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"F");
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 1) + ":  Got opening [\"] without matching closing [\"]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(1)));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
+    void propagatesInvalidSyntaxRuntimeExceptionSkippingStringByQueryingNextElement(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"F");
+        stajParser.next();
+        stajParser.next();
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::hasNext);
+        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 1) + ":  Got opening [\"] without matching closing [\"]"));
+        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(1)));
+        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ParserArgumentsProvider.class)
     void canCloseAStringReader(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"Fo\"");
         stajParser.next();
@@ -1032,68 +1080,80 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void rejectsStringWithIncompleteEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+    void rejectsStringWithIncompleteEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\uF0\"");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 7) + ":  Expected 4 hexadecimal digits, but got [F, 0, \"]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(7)));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        try (Reader reader = stajParser.next().reader()) {
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 7) + ":  Expected 4 hexadecimal digits, but got [F, 0, \"]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(7)));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void rejectsStringWithPrematureEndOfStreamFollowingBackslash(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+    void rejectsStringWithPrematureEndOfStreamFollowingBackslash(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but reached end of input"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        try (Reader reader = stajParser.next().reader()) {
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but reached end of input"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void rejectsStringWithInvalidCharacterFollowingBackslash(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+    void rejectsStringWithInvalidCharacterFollowingBackslash(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\a\"");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but got [a]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        try (Reader reader = stajParser.next().reader()) {
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but got [a]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void rejectsStringWithInvalidUnprintableCharacterFollowingBackslash(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+    void rejectsStringWithInvalidUnprintableCharacterFollowingBackslash(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\\u0000\"");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but got [\\u0000]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        try (Reader reader = stajParser.next().reader()) {
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u but got [\\u0000]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void rejectsStringWithNonHexadecimalEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+    void rejectsStringWithNonHexadecimalEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\uF00L\"");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Unable to parse escaped character [F, 0, 0, L] as a hexadecimal number"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        try (Reader reader = stajParser.next().reader()) {
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Unable to parse escaped character [F, 0, 0, L] as a hexadecimal number"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void rejectsStringWithNonHexadecimalNonPrintingEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+    void rejectsStringWithNonHexadecimalNonPrintingEscapedUnicodeChars(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\uF00\u007f\"");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Unable to parse escaped character [F, 0, 0, \\u007F] as a hexadecimal number"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        try (Reader reader = stajParser.next().reader()) {
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 3) + ":  Unable to parse escaped character [F, 0, 0, \\u007F] as a hexadecimal number"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(3)));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        }
     }
 
     @ParameterizedTest
@@ -2293,13 +2353,12 @@ final class StajParserTest {
         ).flatMap(numberString -> shimmedExpectations().map(shimmedExpectation -> dynamicTest(numberString + " using " + shimmedExpectation.shim(), () -> {
             final Iterator<JsonStreamElement> stajParser = shimmedExpectation.shim().parse(numberString);
             stajParser.next();
-            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-                IOUtils.consume(stajParser.next().reader());
-                stajParser.next();
-            });
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length() + 1) + ":  Expected a digit 0 - 9 but reached end of input"));
-            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length() + 1)));
-            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            try (Reader reader = stajParser.next().reader()) {
+                final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+                assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length() + 1) + ":  Expected a digit 0 - 9 but reached end of input"));
+                assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length() + 1)));
+                assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            }
         })));
     }
 
@@ -2434,13 +2493,12 @@ final class StajParserTest {
         ).flatMap(numberString -> shimmedExpectations().map(shimmedExpectation -> dynamicTest(numberString + " using " + shimmedExpectation.shim(), () -> {
             final Iterator<JsonStreamElement> stajParser = shimmedExpectation.shim().parse(numberString);
             stajParser.next();
-            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-                IOUtils.consume(stajParser.next().reader());
-                stajParser.next();
-            });
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length() + 1) + ":  Expected '+' or '-' or a digit 0 - 9 but reached end of input"));
-            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length() + 1)));
-            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            try (Reader reader = stajParser.next().reader()) {
+                final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+                assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length() + 1) + ":  Expected '+' or '-' or a digit 0 - 9 but reached end of input"));
+                assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length() + 1)));
+                assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            }
         })));
     }
 
@@ -2500,13 +2558,12 @@ final class StajParserTest {
         ).flatMap(numberString -> shimmedExpectations().map(shimmedExpectation -> dynamicTest(numberString + " using " + shimmedExpectation.shim(), () -> {
             final Iterator<JsonStreamElement> stajParser = shimmedExpectation.shim().parse(numberString);
             stajParser.next();
-            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-                IOUtils.consume(stajParser.next().reader());
-                stajParser.next();
-            });
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length()) + ":  Expected a digit 0 - 9 but got [" + numberString.charAt(numberString.length() - 1) + "]"));
-            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length())));
-            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            try (Reader reader = stajParser.next().reader()) {
+                final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+                assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length()) + ":  Expected a digit 0 - 9 but got [" + numberString.charAt(numberString.length() - 1) + "]"));
+                assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length())));
+                assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            }
         })));
     }
 
@@ -2519,14 +2576,13 @@ final class StajParserTest {
         ).flatMap(numberString -> shimmedExpectations().map(shimmedExpectation -> dynamicTest(numberString + " using " + shimmedExpectation.shim(), () -> {
             final Iterator<JsonStreamElement> stajParser = shimmedExpectation.shim().parse(numberString);
             stajParser.next();
-            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-                IOUtils.consume(stajParser.next().reader());
-                stajParser.next();
-            });
-            final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length()) + ":  Expected a digit 0 - 9 but got [" + String.format("\\u%04X", (int) expectedInvalidCharacter) + "]"));
-            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length())));
-            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            try (Reader reader = stajParser.next().reader()) {
+                final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+                final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
+                assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length()) + ":  Expected a digit 0 - 9 but got [" + String.format("\\u%04X", (int) expectedInvalidCharacter) + "]"));
+                assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length())));
+                assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            }
         })));
     }
 
@@ -2553,13 +2609,12 @@ final class StajParserTest {
         ).flatMap(numberString -> shimmedExpectations().map(shimmedExpectation -> dynamicTest(numberString + " using " + shimmedExpectation.shim(), () -> {
             final Iterator<JsonStreamElement> stajParser = shimmedExpectation.shim().parse(numberString);
             stajParser.next();
-            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-                IOUtils.consume(stajParser.next().reader());
-                stajParser.next();
-            });
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + numberString.charAt(numberString.length() - 1) + "]"));
-            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length())));
-            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            try (Reader reader = stajParser.next().reader()) {
+                final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+                assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + numberString.charAt(numberString.length() - 1) + "]"));
+                assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length())));
+                assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            }
         })));
     }
 
@@ -2572,14 +2627,13 @@ final class StajParserTest {
         ).flatMap(numberString -> shimmedExpectations().map(shimmedExpectation -> dynamicTest(numberString + " using " + shimmedExpectation.shim(), () -> {
             final Iterator<JsonStreamElement> stajParser = shimmedExpectation.shim().parse(numberString);
             stajParser.next();
-            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-                IOUtils.consume(stajParser.next().reader());
-                stajParser.next();
-            });
-            final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
-            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + String.format("\\u%04X", (int) expectedInvalidCharacter) + "]"));
-            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length())));
-            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            try (Reader reader = stajParser.next().reader()) {
+                final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+                final char expectedInvalidCharacter = numberString.charAt(numberString.length() - 1);
+                assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length()) + ":  Expected '+' or '-' or a digit 0 - 9 but got [" + String.format("\\u%04X", (int) expectedInvalidCharacter) + "]"));
+                assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length())));
+                assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
+            }
         })));
     }
 
@@ -2591,10 +2645,8 @@ final class StajParserTest {
         ).flatMap(numberString -> shimmedExpectations().map(shimmedExpectation -> dynamicTest(numberString + " using " + shimmedExpectation.shim(), () -> {
             final Iterator<JsonStreamElement> stajParser = shimmedExpectation.shim().parse(numberString);
             stajParser.next();
-            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-                IOUtils.consume(stajParser.next().reader());
-                stajParser.next();
-            });
+            stajParser.next();
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
             assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, numberString.length()) + ":  Expected end of stream or whitespace but got [" + numberString.charAt(numberString.length() - 1) + "]"));
             assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(numberString.length())));
             assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
@@ -2640,14 +2692,16 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void rejectsPrematureEndOfStreamDuringFieldName(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+    void rejectsPrematureEndOfStreamDuringFieldName(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("{\"");
         stajParser.next();
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 2) + ":  Got opening [\"] without matching closing [\"]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(2)));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        try (Reader reader = stajParser.next().reader()) {
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 2) + ":  Got opening [\"] without matching closing [\"]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(2)));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        }
     }
 
     @ParameterizedTest
@@ -2705,24 +2759,28 @@ final class StajParserTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void rejectsPrematureEndOfStreamDuringString(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+    void rejectsPrematureEndOfStreamDuringString(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 1) + ":  Got opening [\"] without matching closing [\"]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(1)));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        try (Reader reader = stajParser.next().reader()) {
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 1) + ":  Got opening [\"] without matching closing [\"]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(1)));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        }
     }
 
     @ParameterizedTest
     @ArgumentsSource(ParserArgumentsProvider.class)
-    void rejectsPrematureEndOfStreamDuringHexCharacter(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
+    void rejectsPrematureEndOfStreamDuringHexCharacter(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) throws IOException {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("\"\\uab");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(stajParser.next().reader()));
-        assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 6) + ":  Expected 4 hexadecimal digits, but got [a, b]"));
-        assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(6)));
-        assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        try (Reader reader = stajParser.next().reader()) {
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> IOUtils.consume(reader));
+            assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 6) + ":  Expected 4 hexadecimal digits, but got [a, b]"));
+            assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(6)));
+            assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
+        }
     }
 
     @ParameterizedTest
@@ -2826,10 +2884,7 @@ final class StajParserTest {
     void rejectsEmptyDocument(final StajParserJsonParserShim stajParserJsonParserShim, final ExceptionDetailMapper exceptionDetailMapper) {
         final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse("");
         stajParser.next();
-        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-            IOUtils.consume(stajParser.next().reader());
-            stajParser.next();
-        });
+        final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
         assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(exceptionDetailMapper.positionText(1, 1) + ":  Expected a value but reached end of input"));
         assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(exceptionDetailMapper.column(1)));
         assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(exceptionDetailMapper.line(1)));
@@ -2844,10 +2899,7 @@ final class StajParserTest {
         ).flatMap(text -> shimmedExpectations().map(shimmedExpectation -> dynamicTest(text + " using " + shimmedExpectation.shim(), () -> {
             final Iterator<JsonStreamElement> stajParser = shimmedExpectation.shim().parse(text);
             stajParser.next();
-            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-                IOUtils.consume(stajParser.next().reader());
-                stajParser.next();
-            });
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
             assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, text.length()) + ":  Invalid character [" + text.charAt(0) + "] at start of value"));
             assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(text.length())));
             assertThat(invalidSyntaxRuntimeException.getLine(), equalTo(shimmedExpectation.exceptionDetailMapper().line(1)));
@@ -2863,10 +2915,7 @@ final class StajParserTest {
         ).flatMap(text -> shimmedExpectations().map(shimmedExpectation -> dynamicTest(text + " using " + shimmedExpectation.shim(), () -> {
             final Iterator<JsonStreamElement> stajParser = shimmedExpectation.shim().parse(text);
             stajParser.next();
-            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, () -> {
-                IOUtils.consume(stajParser.next().reader());
-                stajParser.next();
-            });
+            final InvalidSyntaxRuntimeException invalidSyntaxRuntimeException = assertThrows(InvalidSyntaxRuntimeException.class, stajParser::next);
             final char expectedInvalidCharacter = text.charAt(0);
             assertThat(invalidSyntaxRuntimeException.getMessage(), equalTo(shimmedExpectation.exceptionDetailMapper().positionText(1, text.length()) + ":  Invalid character [" + String.format("\\u%04X", (int) expectedInvalidCharacter) + "] at start of value"));
             assertThat(invalidSyntaxRuntimeException.getColumn(), equalTo(shimmedExpectation.exceptionDetailMapper().column(text.length())));

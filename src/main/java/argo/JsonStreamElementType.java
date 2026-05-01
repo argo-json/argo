@@ -249,61 +249,6 @@ public enum JsonStreamElementType {
         return startField(new StringReader(pushbackReader, pushbackReader.column(), pushbackReader.line()));
     }
 
-    private static char escapedStringChar(final PositionedPushbackReader in) throws IOException {
-        final char result;
-        final int firstChar = in.read();
-        switch (firstChar) {
-            case DOUBLE_QUOTE:
-                result = DOUBLE_QUOTE;
-                break;
-            case BACK_SLASH:
-                result = BACK_SLASH;
-                break;
-            case '/':
-                result = '/';
-                break;
-            case 'b':
-                result = BACKSPACE;
-                break;
-            case 'f':
-                result = FORM_FEED;
-                break;
-            case 'n':
-                result = NEWLINE;
-                break;
-            case 'r':
-                result = CARRIAGE_RETURN;
-                break;
-            case 't':
-                result = TAB;
-                break;
-            case 'u':
-                result = (char) hexadecimalNumber(in);
-                break;
-            default:
-                throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u", firstChar, in.position());
-        }
-        return result;
-    }
-
-    private static int hexadecimalNumber(final PositionedPushbackReader in) throws IOException {
-        final Position startPosition = in.position();
-        final char[] resultCharArray = new char[4];
-        for (int i = 0; i < resultCharArray.length; i++) {
-            final int character = in.read();
-            if (character == -1) {
-                throw new InvalidSyntaxRuntimeException("Expected 4 hexadecimal digits" + ", but " + (i == 0 ? "reached end of input" : "got " + asPrintableString(resultCharArray, i)), in.position());
-            } else {
-                resultCharArray[i] = (char) character;
-            }
-        }
-        try {
-            return Integer.parseInt(String.valueOf(resultCharArray), 16);
-        } catch (final NumberFormatException e) {
-            throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + asPrintableString(resultCharArray, resultCharArray.length) + " as a hexadecimal number", e, startPosition);
-        }
-    }
-
     abstract JsonStreamElement parseNext(PositionedPushbackReader pushbackReader, Stack<JsonStreamElementType> stack) throws IOException;
 
     private abstract static class SingleCharacterReader extends Reader {
@@ -424,6 +369,7 @@ public enum JsonStreamElementType {
                 final int nextChar = in.read();
                 switch (nextChar) {
                     case -1:
+                        ended = true;
                         throw new InvalidSyntaxRuntimeException("Got opening [" + DOUBLE_QUOTE + "] without matching closing [" + DOUBLE_QUOTE + "]", new Position(openDoubleQuotesColumn, openDoubleQuotesLine));
                     case DOUBLE_QUOTE:
                         ended = true;
@@ -433,6 +379,64 @@ public enum JsonStreamElementType {
                     default:
                         return nextChar;
                 }
+            }
+        }
+
+        private char escapedStringChar(final PositionedPushbackReader in) throws IOException {
+            final char result;
+            final int firstChar = in.read();
+            switch (firstChar) {
+                case DOUBLE_QUOTE:
+                    result = DOUBLE_QUOTE;
+                    break;
+                case BACK_SLASH:
+                    result = BACK_SLASH;
+                    break;
+                case '/':
+                    result = '/';
+                    break;
+                case 'b':
+                    result = BACKSPACE;
+                    break;
+                case 'f':
+                    result = FORM_FEED;
+                    break;
+                case 'n':
+                    result = NEWLINE;
+                    break;
+                case 'r':
+                    result = CARRIAGE_RETURN;
+                    break;
+                case 't':
+                    result = TAB;
+                    break;
+                case 'u':
+                    result = (char) hexadecimalNumber(in);
+                    break;
+                default:
+                    ended = true;
+                    throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected \\ to be followed by one of \", \\, /, b, f, n, r, t, or u", firstChar, in.position());
+            }
+            return result;
+        }
+
+        private int hexadecimalNumber(final PositionedPushbackReader in) throws IOException {
+            final Position startPosition = in.position();
+            final char[] resultCharArray = new char[4];
+            for (int i = 0; i < resultCharArray.length; i++) {
+                final int character = in.read();
+                if (character == -1) {
+                    ended = true;
+                    throw new InvalidSyntaxRuntimeException("Expected 4 hexadecimal digits" + ", but " + (i == 0 ? "reached end of input" : "got " + asPrintableString(resultCharArray, i)), in.position());
+                } else {
+                    resultCharArray[i] = (char) character;
+                }
+            }
+            try {
+                return Integer.parseInt(String.valueOf(resultCharArray), 16);
+            } catch (final NumberFormatException e) {
+                ended = true;
+                throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + asPrintableString(resultCharArray, resultCharArray.length) + " as a hexadecimal number", e, startPosition);
             }
         }
 
