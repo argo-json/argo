@@ -396,3 +396,23 @@ ParserBenchmark.jdomParse                          thrpt   25    27190.085 ±   
 ParserBenchmark.jdomParseNonInterning              thrpt   25    31147.094 ±   788.165  ops/s
 ParserBenchmark.streamingEventParse                thrpt   25    50266.054 ±   508.024  ops/s
 ParserBenchmark.streamingIteratorParse             thrpt   25    53548.347 ±   350.553  ops/s
+
+
+Throw once on parsing failure, to allow close to complete cleanly
+
+Benchmark                                           Mode  Cnt        Score       Error  Units
+GeneratorBenchmark.compactJdomArrayGenerate        thrpt   25  2950262.797 ± 13724.472  ops/s
+GeneratorBenchmark.compactJdomGenerate             thrpt   25   209407.423 ±   822.523  ops/s
+GeneratorBenchmark.compactJdomGenerateString       thrpt   25   141184.130 ±  3002.948  ops/s
+GeneratorBenchmark.compactStreamingGenerate        thrpt   25   190983.482 ±  3176.475  ops/s
+GeneratorBenchmark.compactStreamingGenerateString  thrpt   25   138997.286 ±  1063.964  ops/s
+GeneratorBenchmark.prettyJdomArrayGenerate         thrpt   25  1671153.028 ± 32234.657  ops/s
+GeneratorBenchmark.prettyJdomGenerate              thrpt   25   169138.274 ±   977.500  ops/s
+GeneratorBenchmark.prettyJdomGenerateString        thrpt   25   116574.529 ±   862.332  ops/s
+GeneratorBenchmark.prettyStreamingGenerate         thrpt   25   151480.765 ±   758.406  ops/s
+GeneratorBenchmark.prettyStreamingGenerateString   thrpt   25   108780.575 ±  1232.164  ops/s
+ParserBenchmark.jdomArrayParse                     thrpt   25   640268.300 ± 24088.120  ops/s
+ParserBenchmark.jdomParse                          thrpt   25    27601.041 ±   311.617  ops/s
+ParserBenchmark.jdomParseNonInterning              thrpt   25    31232.871 ±   264.887  ops/s
+ParserBenchmark.streamingEventParse                thrpt   25    50035.354 ±   735.861  ops/s
+ParserBenchmark.streamingIteratorParse             thrpt   25    52578.410 ±   909.324  ops/s
