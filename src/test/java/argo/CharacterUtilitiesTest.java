@@ -119,7 +119,7 @@ class CharacterUtilitiesTest {
             '~',
     })
     void convertsPrintableCharacterToItself(final char character) {
-        assertThat(CharacterUtilities.asPrintableString(character), equalTo(Character.toString(character)));
+        assertThat(CharacterUtilities.toPrintableString(character), equalTo(Character.toString(character)));
     }
 
     @ParameterizedTest
@@ -164,26 +164,51 @@ class CharacterUtilitiesTest {
             "0xffff,\\uFFFF",
     })
     void convertsNonPrintableCharacterToItsUnicodeEscapedRepresentation(final int character, final String expectedRepresentation) {
-        assertThat(CharacterUtilities.asPrintableString((char) character), equalTo(expectedRepresentation));
+        assertThat(CharacterUtilities.toPrintableString((char) character), equalTo(expectedRepresentation));
     }
 
     @Test
-    void convertsCharArrayLimitedByLength() {
-        assertThat(CharacterUtilities.asPrintableString(new char[]{'F', 'o', 'o'}, 2), equalTo("[F, o]"));
+    void convertsString() {
+        assertThat(CharacterUtilities.toCharacterArrayString("Foo"), equalTo("[F, o, o]"));
     }
 
     @Test
-    void convertsEntireCharArrayWhenLengthIsGreaterThanArrayLength() {
-        assertThat(CharacterUtilities.asPrintableString(new char[]{'F', 'o', 'o'}, 10), equalTo("[F, o, o]"));
+    void convertsStringLimitedByEnd() {
+        assertThat(CharacterUtilities.toCharacterArrayString("Foo", 2), equalTo("[F, o]"));
     }
 
     @Test
-    void convertsCharArrayOfNonPrintableCharacters() {
-        assertThat(CharacterUtilities.asPrintableString(new char[]{'\ud800', '\udfff', '\uffff'}, 3), equalTo("[\\uD800, \\uDFFF, \\uFFFF]"));
+    void convertsStringWithNonZeroStart() {
+        assertThat(CharacterUtilities.toCharacterArrayString("Foo", 1, 3), equalTo("[o, o]"));
     }
 
     @Test
-    void convertsCharArrayOfMixedPrintableAndNonPrintableCharacters() {
-        assertThat(CharacterUtilities.asPrintableString(new char[]{'F', '\u0000', '\u0000'}, 3), equalTo("[F, \\u0000, \\u0000]"));
+    void convertsEntireStringWhenEndIsGreaterThanStringLength() {
+        assertThat(CharacterUtilities.toCharacterArrayString("Foo", 10), equalTo("[F, o, o]"));
+    }
+
+    @Test
+    void skipsEntireStringWhenStartIsGreaterThanOrEqualToStringLength() {
+        assertThat(CharacterUtilities.toCharacterArrayString("Foo", 3,10), equalTo("[]"));
+    }
+
+    @Test
+    void skipsEntireStringWhenStartIsEqualToEnd() {
+        assertThat(CharacterUtilities.toCharacterArrayString("Foo", 1,1), equalTo("[]"));
+    }
+
+    @Test
+    void skipsEntireStringWhenStartIsGreaterThanEnd() {
+        assertThat(CharacterUtilities.toCharacterArrayString("Foo", 2,1), equalTo("[]"));
+    }
+
+    @Test
+    void convertsStringOfNonPrintableCharacters() {
+        assertThat(CharacterUtilities.toCharacterArrayString("\ud800\udfff\uffff"), equalTo("[\\uD800, \\uDFFF, \\uFFFF]"));
+    }
+
+    @Test
+    void convertsStringOfMixedPrintableAndNonPrintableCharacters() {
+        assertThat(CharacterUtilities.toCharacterArrayString("F\u0000\u0000"), equalTo("[F, \\u0000, \\u0000]"));
     }
 }

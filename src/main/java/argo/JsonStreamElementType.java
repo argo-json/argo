@@ -14,11 +14,11 @@ import argo.internal.NumberParserState;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-import static argo.CharacterUtilities.asPrintableString;
+import static argo.CharacterUtilities.toCharacterArrayString;
+import static argo.CharacterUtilities.toPrintableString;
 import static argo.InvalidSyntaxRuntimeException.unexpectedCharacterInvalidSyntaxRuntimeException;
 import static argo.JsonStreamElement.*;
 
@@ -215,25 +215,24 @@ public enum JsonStreamElementType {
                 stack.push(START_ARRAY);
                 return NonTextJsonStreamElement.START_ARRAY;
             default:
-                final String explanation = -1 == nextChar ? "Expected a value but reached end of input" : "Invalid character [" + asPrintableString((char) nextChar) + "] at start of value";
+                final String explanation = -1 == nextChar ? "Expected a value but reached end of input" : "Invalid character [" + toPrintableString((char) nextChar) + "] at start of value";
                 throw new InvalidSyntaxRuntimeException(explanation, pushbackReader.position());
         }
     }
 
     private static JsonStreamElement constant(final PositionedPushbackReader pushbackReader, final String expectedCharacters, final JsonStreamElement result) throws IOException {
-        final char[] actual = new char[expectedCharacters.length() - 1];
-        for (int i = 0; i < actual.length; i++) {
+        for (int i = 1; i < expectedCharacters.length(); i++) {
             final int character = pushbackReader.read();
-            if (character == expectedCharacters.charAt(i + 1)) {
-                actual[i] = (char) character;
-            } else {
-                if (character != -1) {
-                    actual[i] = (char) character;
+            if (character != expectedCharacters.charAt(i)) {
+                final String actual;
+                if (character == -1) {
+                    actual = expectedCharacters.substring(1, i);
+                } else {
+                    actual = expectedCharacters.substring(1, i) + (char) character;
                 }
-                final char[] expected = new char[expectedCharacters.length() - 1];
-                System.arraycopy(expectedCharacters.toCharArray(), 1, expected, 0, expectedCharacters.length() - 1);
-                final String explanation = "Expected '" + expectedCharacters.charAt(0) + "' to be followed by " + Arrays.toString(expected) + ", but "
-                        + (character == -1 && i == 0 ? "reached end of input" : "got " + asPrintableString(actual, i + (character == -1 ? 0 : 1)));
+                final String explanation = "Expected '" + expectedCharacters.charAt(0) + "' to be followed by "
+                        + toCharacterArrayString(expectedCharacters, 1, expectedCharacters.length()) + ", but "
+                        + (character == -1 && i == 1 ? "reached end of input" : "got " + toCharacterArrayString(actual));
                 throw new InvalidSyntaxRuntimeException(explanation, pushbackReader.position());
             }
         }
@@ -319,7 +318,7 @@ public enum JsonStreamElementType {
             if (parserState == NumberParserState.ERROR_EXPECTED_DIGIT) {
                 throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected a digit 0 - 9", nextChar, in.position());
             } else if (parserState == NumberParserState.ERROR_EXPECTED_DIGIT_OR_MINUS) {
-                throw new RuntimeException("Coding failure in Argo:  Began parsing number despite invalid first character " + asPrintableString((char) nextChar));
+                throw new RuntimeException("Coding failure in Argo:  Began parsing number despite invalid first character " + toPrintableString((char) nextChar));
             } else if (parserState == NumberParserState.ERROR_EXPECTED_DIGIT_PLUS_OR_MINUS) {
                 throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected '+' or '-' or a digit 0 - 9", nextChar, in.position());
             } else if (parserState == NumberParserState.END) {
@@ -431,16 +430,17 @@ public enum JsonStreamElementType {
                 final int character = in.read();
                 if (character == -1) {
                     ended = true;
-                    throw new InvalidSyntaxRuntimeException("Expected 4 hexadecimal digits" + ", but " + (i == 0 ? "reached end of input" : "got " + asPrintableString(resultCharArray, i)), in.position());
+                    throw new InvalidSyntaxRuntimeException("Expected 4 hexadecimal digits" + ", but " + (i == 0 ? "reached end of input" : "got " + toCharacterArrayString(String.valueOf(resultCharArray, 0, i))), in.position());
                 } else {
                     resultCharArray[i] = (char) character;
                 }
             }
+            final String resultString = String.valueOf(resultCharArray);
             try {
-                return Integer.parseInt(String.valueOf(resultCharArray), 16);
+                return Integer.parseInt(resultString, 16);
             } catch (final NumberFormatException e) {
                 ended = true;
-                throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + asPrintableString(resultCharArray, resultCharArray.length) + " as a hexadecimal number", e, startPosition);
+                throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + toCharacterArrayString(resultString) + " as a hexadecimal number", e, startPosition);
             }
         }
 
