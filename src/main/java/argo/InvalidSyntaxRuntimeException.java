@@ -10,7 +10,7 @@
 
 package argo;
 
-import static argo.CharacterUtilities.asPrintableString;
+import static argo.CharacterUtilities.toPrintableString;
 
 /**
  * Thrown to indicate a given character stream is not valid JSON.
@@ -31,7 +31,7 @@ public final class InvalidSyntaxRuntimeException extends RuntimeException {
     }
 
     static InvalidSyntaxRuntimeException unexpectedCharacterInvalidSyntaxRuntimeException(final String expectation, final int actualCharacter, final Position position) {
-        final String explanation = expectation + (-1 == actualCharacter ? " but reached end of input" : " but got [" + asPrintableString((char) actualCharacter) + "]");
+        final String explanation = expectation + (-1 == actualCharacter ? " but reached end of input" : " but got [" + toPrintableString((char) actualCharacter) + "]");
         return new InvalidSyntaxRuntimeException(explanation, position);
     }
 

@@ -11,10 +11,11 @@
 package argo;
 
 final class CharacterUtilities {
+
     private CharacterUtilities() {
     }
 
-    static String asPrintableString(final char character) {
+    static String toPrintableString(final char character) {
         if (character < 32 || character >= 127) {
             return String.format("\\u%04X", (int) character);
         } else {
@@ -22,13 +23,21 @@ final class CharacterUtilities {
         }
     }
 
-    static String asPrintableString(final char[] characters, final int length) {
+    static String toCharacterArrayString(final String characters) {
+        return toCharacterArrayString(characters, 0, characters.length());
+    }
+
+    static String toCharacterArrayString(final String characters, final int end) {
+        return toCharacterArrayString(characters, 0, end);
+    }
+
+    static String toCharacterArrayString(final String characters, final int start, final int end) {
         final StringBuilder result = new StringBuilder("[");
-        for (int i = 0; i < characters.length && i < length; i++) {
-            if (i > 0) {
+        for (int i = start; i < characters.length() && i < end; i++) {
+            if (i > start) {
                 result.append(", ");
             }
-            result.append(asPrintableString(characters[i]));
+            result.append(toPrintableString(characters.charAt(i)));
         }
         result.append(']');
         return result.toString();

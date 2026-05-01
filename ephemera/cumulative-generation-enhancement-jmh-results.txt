@@ -416,3 +416,13 @@ ParserBenchmark.jdomParse                          thrpt   25    27601.041 ±   
 ParserBenchmark.jdomParseNonInterning              thrpt   25    31232.871 ±   264.887  ops/s
 ParserBenchmark.streamingEventParse                thrpt   25    50035.354 ±   735.861  ops/s
 ParserBenchmark.streamingIteratorParse             thrpt   25    52578.410 ±   909.324  ops/s
+
+
+Only make char array for constant parsing failure error message on error branch
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  662343.809 ± 6890.508  ops/s
+ParserBenchmark.jdomParse               thrpt   25   27458.955 ±  553.659  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   31489.676 ±  314.887  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   49883.074 ±  907.285  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   53236.564 ± 1182.781  ops/s
