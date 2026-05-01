@@ -271,6 +271,28 @@ public enum JsonStreamElementType {
             return n == 0 && length != 0 ? -1 : n;
         }
 
+        abstract void ensureOpen() throws IOException;
+
+        @Override
+        public final long skip(final long n) throws IOException {
+            if (n < 0) {
+                throw new IllegalArgumentException("Skip value is negative: " + n);
+            }
+            ensureOpen();
+            for (long i = 0; i < n; i++) {
+                if (read() == -1) {
+                    return i;
+                }
+            }
+            return n;
+        }
+
+        @Override
+        public final boolean ready() throws IOException {
+            ensureOpen();
+            return false;
+        }
+
     }
 
     private static final class NumberReader extends SingleCharacterReader {
@@ -282,7 +304,8 @@ public enum JsonStreamElementType {
             this.in = in;
         }
 
-        private void ensureOpen() throws IOException {
+        @Override
+        void ensureOpen() throws IOException {
             if (in == null) {
                 throw new IOException("Stream closed");
             }
@@ -307,26 +330,6 @@ public enum JsonStreamElementType {
             } else {
                 return nextChar;
             }
-        }
-
-        @Override
-        public boolean ready() throws IOException {
-            ensureOpen();
-            return false;
-        }
-
-        @Override
-        public long skip(final long n) throws IOException {
-            if (n < 0) {
-                throw new IllegalArgumentException("Skip value is negative: " + n);
-            }
-            ensureOpen();
-            for (long i = 0; i < n; i++) {
-                if (read() == -1) {
-                    return i;
-                }
-            }
-            return n;
         }
 
         @SuppressWarnings({"PMD.EmptyControlStatement", "StatementWithEmptyBody"})
@@ -354,7 +357,8 @@ public enum JsonStreamElementType {
             this.openDoubleQuotesLine = line;
         }
 
-        private void ensureOpen() throws IOException {
+        @Override
+        void ensureOpen() throws IOException {
             if (in == null) {
                 throw new IOException("Stream closed");
             }
@@ -438,26 +442,6 @@ public enum JsonStreamElementType {
                 ended = true;
                 throw new InvalidSyntaxRuntimeException("Unable to parse escaped character " + asPrintableString(resultCharArray, resultCharArray.length) + " as a hexadecimal number", e, startPosition);
             }
-        }
-
-        @Override
-        public boolean ready() throws IOException {
-            ensureOpen();
-            return false;
-        }
-
-        @Override
-        public long skip(final long n) throws IOException {
-            if (n < 0) {
-                throw new IllegalArgumentException("Skip value is negative: " + n);
-            }
-            ensureOpen();
-            for (long i = 0; i < n; i++) {
-                if (read() == -1) {
-                    return i;
-                }
-            }
-            return n;
         }
 
         @Override
