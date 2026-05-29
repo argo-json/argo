@@ -1,5 +1,5 @@
 /*
- *  Copyright 2024 Mark Slater
+ *  Copyright 2026 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -10,11 +10,12 @@
 
 package release
 
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 
 interface ReleasePluginExtension {
     val jar: RegularFileProperty
     val combinedJar: RegularFileProperty
     val smallJar: RegularFileProperty
-    val documentationTar: RegularFileProperty
+    val documentationDirectory: DirectoryProperty
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2025 Mark Slater
+ *  Copyright 2026 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -255,13 +255,6 @@ tasks {
         }
     }
 
-    register<Tar>("documentationTar") {
-        group = "documentation"
-        from(asciidoctor)
-        archiveBaseName.set("documentation")
-        compression = Compression.GZIP
-    }
-
     pmdMain {
         ruleSetFiles = files("tools/pmd-ruleset.xml", "tools/pmd-non-docs-extra-ruleset.xml", "tools/pmd-main-extra-ruleset.xml")
         ruleSets = emptyList()
@@ -318,7 +311,7 @@ releasing {
     jar = tasks.jar.get().archiveFile
     combinedJar = tasks.named<Jar>("combinedJar").get().archiveFile
     smallJar = tasks.named<Jar>("smallJar").get().archiveFile
-    documentationTar = tasks.named<Tar>("documentationTar").get().archiveFile
+    documentationDirectory = tasks.asciidoctor.get().outputDirProperty
 }
 
 publishing {
