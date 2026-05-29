@@ -54,7 +54,7 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
             withSftpClient("web.sourceforge.net", username, password) { sftpClient ->
                 sftpClient.putLocalDirectory(documentationDirectory.get().toString(), "/home/project-web/argo/${project.version}", true, false, true, object : FileTransferProgress {})
                 sftpClient.rm("/home/project-web/argo/htdocs")
-                sftpClient.symlink("/home/project-web/argo/${project.version}","/home/project-web/argo/htdocs")
+                sftpClient.symlink("${project.version}","/home/project-web/argo/htdocs")
             }
         } catch (e: SshExecuteRuntimeException) {
             logger.error("Remote command execution failed", e)
