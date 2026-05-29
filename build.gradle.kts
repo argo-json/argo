@@ -291,7 +291,7 @@ tasks {
 
     register("release") {
         group = "publishing"
-        dependsOn(clean, build, publish, closeAndReleaseStagingRepositories, sourceforgeRelease, gitHubRelease)
+        dependsOn(clean, build, publish, closeAndReleaseStagingRepositories, asciidoctor, sourceforgeRelease, gitHubRelease)
     }
 }
 
