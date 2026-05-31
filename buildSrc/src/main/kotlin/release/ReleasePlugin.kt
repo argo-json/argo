@@ -32,7 +32,7 @@ class ReleasePlugin : Plugin<Project> {
             group = "publishing"
             combinedJar.set(extension.combinedJar)
             smallJar.set(extension.smallJar)
-            documentationDirectory.set(extension.documentationDirectory)
+            documentation.from(extension.documentation)
         }
         target.tasks.register("gitHubRelease", GitHubReleaseTask::class.java) {
             group = "publishing"

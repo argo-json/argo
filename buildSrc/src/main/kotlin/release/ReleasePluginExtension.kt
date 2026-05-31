@@ -10,12 +10,12 @@
 
 package release
 
-import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 
 interface ReleasePluginExtension {
     val jar: RegularFileProperty
     val combinedJar: RegularFileProperty
     val smallJar: RegularFileProperty
-    val documentationDirectory: DirectoryProperty
+    val documentation: ConfigurableFileCollection
 }

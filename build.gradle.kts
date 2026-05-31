@@ -311,7 +311,7 @@ releasing {
     jar = tasks.jar.get().archiveFile
     combinedJar = tasks.named<Jar>("combinedJar").get().archiveFile
     smallJar = tasks.named<Jar>("smallJar").get().archiveFile
-    documentationDirectory = tasks.asciidoctor.get().outputDirProperty
+    documentation.from(tasks.asciidoctor)
 }
 
 publishing {

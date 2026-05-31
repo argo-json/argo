@@ -16,10 +16,10 @@ import com.sshtools.client.sftp.SftpClient.SftpClientBuilder
 import com.sshtools.client.tasks.FileTransferProgress
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 import java.net.URI
 import java.net.http.HttpClient
@@ -35,8 +35,8 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
     @get:InputFile
     abstract val smallJar: RegularFileProperty
 
-    @get:InputDirectory
-    abstract val documentationDirectory: DirectoryProperty
+    @get:InputFiles
+    abstract val documentation: ConfigurableFileCollection
 
     @TaskAction
     fun release() {
@@ -52,7 +52,7 @@ abstract class SourceforgeReleaseTask : DefaultTask() {
                 sftpClient.put(smallJar.get().toString(), "/home/frs/project/argo/argo/${project.version}/argo-small-${project.version}.jar")
             }
             withSftpClient("web.sourceforge.net", username, password) { sftpClient ->
-                sftpClient.putLocalDirectory(documentationDirectory.get().toString(), "/home/project-web/argo/${project.version}", true, false, true, object : FileTransferProgress {})
+                sftpClient.putLocalDirectory(documentation.singleFile.toString(), "/home/project-web/argo/${project.version}", true, false, true, object : FileTransferProgress {})
                 sftpClient.rm("/home/project-web/argo/htdocs")
                 sftpClient.symlink("${project.version}","/home/project-web/argo/htdocs")
             }
