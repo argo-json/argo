@@ -20,6 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -271,6 +272,32 @@ final class JdomParserTest {
         final JsonNode jsonNode = new JsonParser().nodeInterning(INTERN_NOTHING).parse("[123, 123]");
         assertThat(jsonNode.getNode(0), not(sameInstance(jsonNode.getNode(1))));
         assertThat(jsonNode.getNode(0), equalTo(jsonNode.getNode(1)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "{}",
+            "[]",
+            "{\"foo\":[true,false,null,\"bar\",123,-0.5e+7]}",
+            " \n\t{\"escaped\":\"\\\" \\\\ \\b \\t \\n \\r \\f\",\"unicode\":\"\\uD834\\uDD1E\"}\r\n"
+    })
+    void fastUntrackedParserMatchesTrackedParserForValidJson(final String json) throws Exception {
+        assertThat(new JsonParser().positionTracking(DO_NOT_TRACK).parse(json), equalTo(new JsonParser().positionTracking(TRACK).parse(json)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "",
+            "{\"a\":}",
+            "{\"a\":\"unterminated}",
+            "[01]",
+            "[1.]",
+            "[1e]",
+            "{\"a\"\n\"b\"}",
+            "[\"bad \u0000 control\"]"
+    })
+    void fastUntrackedParserRejectsInvalidJson(final String json) {
+        assertThrows(InvalidSyntaxException.class, () -> new JsonParser().positionTracking(DO_NOT_TRACK).parse(json));
     }
 
     static final class AllParsersArgumentsProvider implements ArgumentsProvider {
