@@ -1,5 +1,5 @@
 /*
- *  Copyright 2025 Mark Slater
+ *  Copyright 2026 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -43,7 +43,7 @@ class GitHubHttp(
     gitHubApiAuthority: GitHubApiAuthority,
     releaseTrustStore: ReleaseTrustStore,
     private val auditor: Auditor<AuditEvent>,
-    private val connectTimeout: Duration = 2.seconds,
+    private val connectTimeout: Duration = 10.seconds,
     private val firstByteTimeout: Duration = 1.minutes,
     private val endToEndTimeout: Duration = 2.minutes,
 ) : GitHub {
