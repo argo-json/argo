@@ -45,9 +45,10 @@ public final class JsonParser {
 
     private static String asString(final Reader reader, final StringBuilder stringBuilder) throws IOException {
         stringBuilder.setLength(0);
-        int c;
-        while ((c = reader.read()) != -1) {
-            stringBuilder.append((char) c);
+        final char[] buffer = new char[1024];
+        int charsRead;
+        while ((charsRead = reader.read(buffer)) != -1) {
+            stringBuilder.append(buffer, 0, charsRead);
         }
         return stringBuilder.toString();
     }
@@ -81,6 +82,9 @@ public final class JsonParser {
      * @throws IOException            rethrown when reading characters from the given {@code Reader} throws {@code IOException}.
      */
     public JsonNode parse(final Reader reader) throws InvalidSyntaxException, IOException {
+        if (positionTracking == PositionTracking.DO_NOT_TRACK) {
+            return parseFast(asString(reader, new StringBuilder(1024)));
+        }
         return parse(new ParseExecutor() {
             public void parseUsing(final JsonListener jsonListener) throws InvalidSyntaxException, IOException {
                 parseStreaming(reader, jsonListener);
@@ -96,10 +100,25 @@ public final class JsonParser {
      * @throws InvalidSyntaxException if the characters streamed from the given {@code String} do not represent valid JSON.
      */
     public JsonNode parse(final String json) throws InvalidSyntaxException {
+        if (positionTracking == PositionTracking.DO_NOT_TRACK) {
+            return parseFast(json);
+        }
         try {
             return parse(new StringReader(json));
         } catch (final IOException e) {
             throw new RuntimeException("Coding failure in Argo:  StringReader threw an IOException");
+        }
+    }
+
+    private JsonNode parseFast(final String json) throws InvalidSyntaxException {
+        try {
+            return new FastJsonNodeParser(
+                    json,
+                    nodeInterningStrategy.newJsonStringNodeFactory(),
+                    nodeInterningStrategy.newJsonNumberNodeFactory()
+            ).parse();
+        } catch (final InvalidSyntaxRuntimeException e) {
+            throw InvalidSyntaxException.from(e);
         }
     }
 
@@ -552,6 +571,291 @@ public final class JsonParser {
             return prevalidatedNumber(new PrevalidatedNumber(value));
         }
     }
+
+    private static final class FastJsonNodeParser {
+        private static final Position UNKNOWN_POSITION = new Position(-1, -1);
+
+        private final String json;
+        private final JsonStringNodeFactory stringNodeFactory;
+        private final JsonNumberNodeFactory numberNodeFactory;
+        private final int length;
+        private int index;
+
+        FastJsonNodeParser(final String json, final JsonStringNodeFactory stringNodeFactory, final JsonNumberNodeFactory numberNodeFactory) {
+            this.json = json;
+            this.stringNodeFactory = stringNodeFactory;
+            this.numberNodeFactory = numberNodeFactory;
+            length = json.length();
+        }
+
+        JsonNode parse() {
+            skipWhitespace();
+            final JsonNode result = value();
+            skipWhitespace();
+            if (index != length) {
+                error("Expected end of input");
+            }
+            return result;
+        }
+
+        private JsonNode value() {
+            skipWhitespace();
+            if (index >= length) {
+                error("Expected a value but reached end of input");
+            }
+            switch (json.charAt(index)) {
+                case '{':
+                    return objectNode();
+                case '[':
+                    return arrayNode();
+                case '"':
+                    return stringNodeFactory.jsonStringNode(stringValue());
+                case 't':
+                    literal("true");
+                    return trueNode();
+                case 'f':
+                    literal("false");
+                    return falseNode();
+                case 'n':
+                    literal("null");
+                    return nullNode();
+                default:
+                    return numberNode();
+            }
+        }
+
+        private JsonNode objectNode() {
+            index++;
+            skipWhitespace();
+            final List<JsonField> fields = new ArrayList<JsonField>();
+            if (consume('}')) {
+                return object(fields);
+            }
+            do {
+                skipWhitespace();
+                final JsonStringNode name = stringNodeFactory.jsonStringNode(stringValue());
+                skipWhitespace();
+                expect(':');
+                fields.add(field(name, value()));
+                skipWhitespace();
+            } while (consume(','));
+            expect('}');
+            return object(fields);
+        }
+
+        private JsonNode arrayNode() {
+            index++;
+            skipWhitespace();
+            final List<JsonNode> elements = new ArrayList<JsonNode>();
+            if (consume(']')) {
+                return array(elements);
+            }
+            do {
+                elements.add(value());
+                skipWhitespace();
+            } while (consume(','));
+            expect(']');
+            return array(elements);
+        }
+
+        private JsonNode numberNode() {
+            final int start = index;
+            if (consume('-')) {
+                // sign
+            }
+            intDigits();
+            if (consume('.')) {
+                digits();
+            }
+            if (index < length && (json.charAt(index) == 'e' || json.charAt(index) == 'E')) {
+                index++;
+                if (index < length && (json.charAt(index) == '+' || json.charAt(index) == '-')) {
+                    index++;
+                }
+                digits();
+            }
+            if (start == index) {
+                error("Expected a value");
+            }
+            return numberNodeFactory.jsonNumberNode(json.substring(start, index));
+        }
+
+        private void intDigits() {
+            if (index >= length) {
+                error("Expected a digit 0 - 9");
+            }
+            final char first = json.charAt(index);
+            if (first == '0') {
+                index++;
+                if (index < length) {
+                    final char next = json.charAt(index);
+                    if (next >= '0' && next <= '9') {
+                        error("Expected non-zero digit after 0");
+                    }
+                }
+            } else if (first >= '1' && first <= '9') {
+                index++;
+                while (index < length) {
+                    final char c = json.charAt(index);
+                    if (c < '0' || c > '9') {
+                        break;
+                    }
+                    index++;
+                }
+            } else {
+                error("Expected a digit 0 - 9");
+            }
+        }
+
+        private void digits() {
+            final int start = index;
+            while (index < length) {
+                final char c = json.charAt(index);
+                if (c < '0' || c > '9') {
+                    break;
+                }
+                index++;
+            }
+            if (start == index) {
+                error("Expected a digit 0 - 9");
+            }
+        }
+
+        private String stringValue() {
+            expect('"');
+            final int start = index;
+            while (index < length) {
+                final char c = json.charAt(index++);
+                if (c == '"') {
+                    return json.substring(start, index - 1);
+                }
+                if (c < 32) {
+                    error("String contains unescaped control character");
+                }
+                if (c == '\\') {
+                    return escapedStringValue(start);
+                }
+            }
+            error("Got opening [\"] without matching closing [\"]");
+            return null;
+        }
+
+        private String escapedStringValue(final int start) {
+            final StringBuilder out = new StringBuilder(length - start);
+            out.append(json, start, index - 1);
+            while (index < length) {
+                out.append(escapedChar());
+                final int chunkStart = index;
+                while (index < length) {
+                    final char c = json.charAt(index++);
+                    if (c == '"') {
+                        out.append(json, chunkStart, index - 1);
+                        return out.toString();
+                    }
+                    if (c < 32) {
+                        error("String contains unescaped control character");
+                    }
+                    if (c == '\\') {
+                        out.append(json, chunkStart, index - 1);
+                        break;
+                    }
+                }
+            }
+            error("Got opening [\"] without matching closing [\"]");
+            return null;
+        }
+
+        private char escapedChar() {
+            if (index >= length) {
+                error("Expected escaped character");
+            }
+            switch (json.charAt(index++)) {
+                case '"':
+                    return '"';
+                case '\\':
+                    return '\\';
+                case '/':
+                    return '/';
+                case 'b':
+                    return '\b';
+                case 'f':
+                    return '\f';
+                case 'n':
+                    return '\n';
+                case 'r':
+                    return '\r';
+                case 't':
+                    return '\t';
+                case 'u':
+                    if (index + 4 > length) {
+                        error("Expected four hexadecimal digits");
+                    }
+                    final char result = (char) (
+                            (hexValue(json.charAt(index)) << 12)
+                                    + (hexValue(json.charAt(index + 1)) << 8)
+                                    + (hexValue(json.charAt(index + 2)) << 4)
+                                    + hexValue(json.charAt(index + 3))
+                    );
+                    index += 4;
+                    return result;
+                default:
+                    error("Expected valid escape sequence");
+                    return 0;
+            }
+        }
+
+        private int hexValue(final char c) {
+            if (c >= '0' && c <= '9') {
+                return c - '0';
+            } else if (c >= 'a' && c <= 'f') {
+                return c - 'a' + 10;
+            } else if (c >= 'A' && c <= 'F') {
+                return c - 'A' + 10;
+            } else {
+                error("Expected hexadecimal digit");
+                return 0;
+            }
+        }
+
+        private void literal(final String literal) {
+            if (!json.startsWith(literal, index)) {
+                error("Expected " + literal);
+            }
+            index += literal.length();
+        }
+
+        private boolean consume(final char expected) {
+            if (index < length && json.charAt(index) == expected) {
+                index++;
+                return true;
+            }
+            return false;
+        }
+
+        private void expect(final char expected) {
+            if (!consume(expected)) {
+                error("Expected [" + expected + "]");
+            }
+        }
+
+        private void skipWhitespace() {
+            while (index < length) {
+                final char c = json.charAt(index);
+                if (c > ' ') {
+                    return;
+                }
+                if (c != ' ' && c != '\t' && c != '\n' && c != '\r') {
+                    return;
+                }
+                index++;
+            }
+        }
+
+        private void error(final String message) {
+            throw new InvalidSyntaxRuntimeException(message, UNKNOWN_POSITION);
+        }
+    }
+
 
     /**
      * Internal class
