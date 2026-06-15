@@ -1,5 +1,5 @@
 /*
- *  Copyright 2025 Mark Slater
+ *  Copyright 2026 Mark Slater
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  *
@@ -52,6 +52,7 @@ final class JsonNodeSelectorsTest {
         assertThat(result, equalTo("fo"));
     }
 
+    @SuppressWarnings("PMD.UseUtilityClass")
     static final class TreeTestCase {
 
         private static Stream<? extends Arguments> nestedPermutations(final TestCase... testCases) {
@@ -275,6 +276,7 @@ final class JsonNodeSelectorsTest {
         }
     }
 
+    @SuppressWarnings("PMD.UseUtilityClass")
     static final class NodeTestCase {
 
         static final class FieldByStringArgumentsProvider implements ArgumentsProvider {
