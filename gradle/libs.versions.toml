@@ -27,7 +27,7 @@ ickles = { group = "net.sourceforge.ickles", name = "ickles", version = "0.21" }
 hamcrest = { group = "org.hamcrest", name = "hamcrest", version = "3.0" }
 jol = { group = "org.openjdk.jol", name = "jol-core", version = "0.17" }
 
-spotbugs = { group = "com.github.spotbugs", name = "spotbugs", version = "4.9.8" }
+spotbugs = { group = "com.github.spotbugs", name = "spotbugs", version = "4.10.2" }
 
 asciidoctorTabs = { group = "rubygems", name = "asciidoctor-tabs", version = "1.0.0.beta.6" }
 
