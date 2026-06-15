@@ -132,9 +132,18 @@ include::{docfile}/../../java/argo/ExamplesTest.java[tags=enableCompactGeneratio
 
 ==== Buffering
 
-Argo does not add its own buffering to a `Reader` it parses from, or to a `Writer` it generates to.
-Parsing from an unbuffered `Reader` may be improved by wrapping it in an appropriately sized `BufferedReader` if the underlying `Reader` performs poorly when reading single characters and small arrays of characters.
-Likewise, generating JSON to an unbuffered `Writer` might be improved by wrapping it in a `BufferedWriter` if the underlying `Writer` is unsuited to single character and short `String` writes.
+Argo does not add its own buffering to a `Writer` it generates to.
+Generating JSON to an unbuffered `Writer` may be improved by wrapping it in a `BufferedWriter` if the underlying `Writer` is unsuited to single character and short `String` writes.
+
+When parsing, characters are read from the underlying reader in blocks of up to 512 characters.  When parsing large documents, increasing the read size may improve performance, at the
+expense of allocating more memory:
+
+[source,java]
+----
+include::{docfile}/../../java/argo/ExamplesTest.java[tags=increaseReadBufferSize,indent=0]
+----
+
+Similarly, when parsing small documents, performance may be improved by reducing the read size, to avoid allocating unnecessarily large buffers.
 
 ==== Position tracking
 

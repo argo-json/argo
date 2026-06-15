@@ -22,21 +22,30 @@ class PositionIgnoringPushbackReaderTest {
 
     @Test
     void readingACharacterFromAnEmptyReaderReturnsMinusOne() throws IOException {
-        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader(""));
+        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader(""), 1);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
     }
 
     @Test
     void afterACharacterHasBeenPushedBackItCanBeRead() throws IOException {
-        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader("Foo"));
-        final int character = positionTrackingPushbackReader.read();
-        positionTrackingPushbackReader.unread(character);
+        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader("Foo"), 1);
+        positionTrackingPushbackReader.read();
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'F'));
     }
 
     @Test
+    void afterACharacterHasBeenPushedBackItCanBeReadMidBuffer() throws IOException {
+        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader("Bar"), 2);
+        positionTrackingPushbackReader.read();
+        positionTrackingPushbackReader.read();
+        positionTrackingPushbackReader.unread();
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'a'));
+    }
+
+    @Test
     void positionIsAlwaysMinusOne() throws IOException {
-        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader("Foo"));
+        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader("Foo"), 1);
         assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
         assertThat(positionTrackingPushbackReader.column(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));
@@ -50,19 +59,19 @@ class PositionIgnoringPushbackReaderTest {
 
     @Test
     void continuingToReadPastEndOfStreamContinuesToReturnMinus1() throws IOException {
-        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader(""));
+        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader(""), 1);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
     }
 
     @Test
     void canReadPastEndOfStreamThenPushingBackAndReread() throws IOException {
-        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader("Foo"));
+        final PositionIgnoringPushbackReader positionTrackingPushbackReader = new PositionIgnoringPushbackReader(new StringReader("Foo"), 1);
         for (int i = 0; i < 3; i++) {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unread('o');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'o'));
     }
 

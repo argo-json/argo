@@ -23,25 +23,34 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void readingACharacterFromAnEmptyReaderReturnsMinusOne() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""), 1);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
     }
 
     @Test
     void afterACharacterHasBeenPushedBackItCanBeRead() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"));
-        final int character = positionTrackingPushbackReader.read();
-        positionTrackingPushbackReader.unread(character);
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"), 1);
+        positionTrackingPushbackReader.read();
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'F'));
     }
 
     @Test
+    void afterACharacterHasBeenPushedBackItCanBeReadMidBuffer() throws IOException {
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar"), 2);
+        positionTrackingPushbackReader.read();
+        positionTrackingPushbackReader.read();
+        positionTrackingPushbackReader.unread();
+        assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'a'));
+    }
+
+    @Test
     void positionIsCorrectAfterPushingBackASingleCharacter() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Hello"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Hello"), 1);
         for (int i = 0; i < 5; i++) {
             positionTrackingPushbackReader.read();
         }
-        positionTrackingPushbackReader.unread('o');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(4));
         assertThat(positionTrackingPushbackReader.column(), equalTo(4));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
@@ -49,24 +58,8 @@ class PositionTrackingPushbackReaderTest {
     }
 
     @Test
-    void positionIsCorrectAfterPushingBackFourCharacters() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Hello"));
-        for (int i = 0; i < 5; i++) {
-            positionTrackingPushbackReader.read();
-        }
-        positionTrackingPushbackReader.unread('o');
-        positionTrackingPushbackReader.unread('l');
-        positionTrackingPushbackReader.unread('l');
-        positionTrackingPushbackReader.unread('e');
-        assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
-        assertThat(positionTrackingPushbackReader.column(), equalTo(1));
-        assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
-        assertThat(positionTrackingPushbackReader.line(), equalTo(1));
-    }
-
-    @Test
     void positionIsCorrectAfterReadingALineFeed() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
@@ -78,7 +71,7 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingACarriageReturn() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
@@ -90,7 +83,7 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingACarriageReturnLineFeed() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"), 1);
         for (int i = 0; i < 5; i++) {
             positionTrackingPushbackReader.read();
         }
@@ -102,11 +95,11 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterPushingBackALineFeed() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
-        positionTrackingPushbackReader.unread('\n');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(3));
         assertThat(positionTrackingPushbackReader.column(), equalTo(3));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
@@ -115,11 +108,11 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterPushingBackACarriageReturn() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
-        positionTrackingPushbackReader.unread('\r');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(3));
         assertThat(positionTrackingPushbackReader.column(), equalTo(3));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
@@ -128,11 +121,11 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterPushingBackALineFeedThatFollowedACarriageReturn() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"), 1);
         for (int i = 0; i < 5; i++) {
             positionTrackingPushbackReader.read();
         }
-        positionTrackingPushbackReader.unread('\n');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
@@ -141,11 +134,11 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingAPushedBackLineFeed() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
-        positionTrackingPushbackReader.unread('\n');
+        positionTrackingPushbackReader.unread();
         positionTrackingPushbackReader.read();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.column(), equalTo(0));
@@ -155,11 +148,11 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingAPushedBackCarriageReturn() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
-        positionTrackingPushbackReader.unread('\r');
+        positionTrackingPushbackReader.unread();
         positionTrackingPushbackReader.read();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.column(), equalTo(0));
@@ -169,11 +162,11 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingAPushedBackLineFeedThatFollowedACarriageReturn() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"), 1);
         for (int i = 0; i < 5; i++) {
             positionTrackingPushbackReader.read();
         }
-        positionTrackingPushbackReader.unread('\n');
+        positionTrackingPushbackReader.unread();
         positionTrackingPushbackReader.read();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.column(), equalTo(0));
@@ -183,11 +176,11 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void canReadPastEndOfStreamAndThenPushBackALineFeedThatFollowedACarriageReturn() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"), 1);
         for (int i = 0; i < 6; i++) {
             positionTrackingPushbackReader.read();
         }
-        positionTrackingPushbackReader.unread('\n');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.column(), equalTo(0));
         assertThat(positionTrackingPushbackReader.position().line, equalTo(2));
@@ -196,7 +189,7 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void continuingToReadPastEndOfStreamDoesNotAlterPosition() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader(""), 1);
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
@@ -207,12 +200,12 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingPastEndOfStreamThenPushingBackAndRereading() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"), 1);
         for (int i = 0; i < 3; i++) {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unread('o');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'o'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(3));
         assertThat(positionTrackingPushbackReader.column(), equalTo(3));
@@ -222,12 +215,12 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingPastEndOfStreamThenPushingBackALineFeedAndRereading() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unread('\n');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.column(), equalTo(0));
@@ -237,12 +230,12 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingPastEndOfStreamThenPushingBackACarriageReturnAndRereading() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unread('\r');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\r'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.column(), equalTo(0));
@@ -252,12 +245,12 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingPastEndOfStreamThenPushingBackALineFeedThatFollowedACarriageReturnAndRereading() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"), 1);
         for (int i = 0; i < 5; i++) {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unread('\n');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(0));
         assertThat(positionTrackingPushbackReader.column(), equalTo(0));
@@ -267,12 +260,12 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingPastEndOfStreamThenPushingBackAndRereadingPastEndOfStream() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Foo"), 1);
         for (int i = 0; i < 3; i++) {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unread('o');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) 'o'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(4));
@@ -283,12 +276,12 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingPastEndOfStreamThenPushingBackALineFeedAndRereadingPastEndOfStream() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\n"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unread('\n');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
@@ -299,12 +292,12 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingPastEndOfStreamThenPushingBackACarriageReturnAndRereadingPastEndOfStream() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r"), 1);
         for (int i = 0; i < 4; i++) {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unread('\r');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\r'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
@@ -315,12 +308,12 @@ class PositionTrackingPushbackReaderTest {
 
     @Test
     void positionIsCorrectAfterReadingPastEndOfStreamThenPushingBackALineFeedThatFollowedACarriageReturnAndRereadingPastEndOfStream() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new StringReader("Bar\r\n"), 1);
         for (int i = 0; i < 5; i++) {
             positionTrackingPushbackReader.read();
         }
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
-        positionTrackingPushbackReader.unread('\n');
+        positionTrackingPushbackReader.unread();
         assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
         assertThat(positionTrackingPushbackReader.read(), equalTo(-1));
         assertThat(positionTrackingPushbackReader.position().column, equalTo(1));
@@ -332,7 +325,7 @@ class PositionTrackingPushbackReaderTest {
     @Test
     @Tag("slow")
     void handlesMoreCarriageReturnsThanLargestInteger() throws IOException {
-        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('\r'));
+        final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new InfiniteReader('\r'), 1);
         for (int i = -1; i != Integer.MAX_VALUE; i++) {
             positionTrackingPushbackReader.read();
         }
@@ -349,7 +342,7 @@ class PositionTrackingPushbackReaderTest {
         final PositionTrackingPushbackReader positionTrackingPushbackReader = new PositionTrackingPushbackReader(new SequenceReader(
                 new BoundedRepeatingReader('a', Integer.MAX_VALUE),
                 new StringReader("a\n")
-        ));
+        ), 1);
 
         @BeforeAll
         void overflowColumn() throws IOException {
@@ -372,7 +365,7 @@ class PositionTrackingPushbackReaderTest {
         @Order(1)
         @Tag("slow")
         void canUnreadAfterLineLongerThanLargestInteger() throws IOException {
-            positionTrackingPushbackReader.unread('a');
+            positionTrackingPushbackReader.unread();
             assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
             assertThat(positionTrackingPushbackReader.column(), equalTo(-1));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
@@ -395,7 +388,7 @@ class PositionTrackingPushbackReaderTest {
         @Order(3)
         @Tag("slow")
         void pushingBackNewlineAfterLineLongerThanLargestIntegerFollowedByNewlineHasCorrectPosition() {
-            positionTrackingPushbackReader.unread('\n');
+            positionTrackingPushbackReader.unread();
             assertThat(positionTrackingPushbackReader.position().column, equalTo(-1));
             assertThat(positionTrackingPushbackReader.column(), equalTo(-1));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(1));
@@ -412,7 +405,7 @@ class PositionTrackingPushbackReaderTest {
                 new StringReader("ab\n"),
                 new StringReader("a\n"),
                 new StringReader("\n")
-        ));
+        ), 1);
 
         @BeforeAll
         void overflowLines() throws IOException {
@@ -430,7 +423,7 @@ class PositionTrackingPushbackReaderTest {
             assertThat(positionTrackingPushbackReader.position().line, equalTo(Integer.MAX_VALUE));
             assertThat(positionTrackingPushbackReader.line(), equalTo(Integer.MAX_VALUE));
             assertThat(positionTrackingPushbackReader.read(), equalTo((int) '\n'));
-            positionTrackingPushbackReader.unread('\n');
+            positionTrackingPushbackReader.unread();
             assertThat(positionTrackingPushbackReader.position().column, equalTo(2));
             assertThat(positionTrackingPushbackReader.column(), equalTo(2));
             assertThat(positionTrackingPushbackReader.position().line, equalTo(-1));

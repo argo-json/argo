@@ -426,3 +426,83 @@ ParserBenchmark.jdomParse               thrpt   25   27458.955 ±  553.659  ops/
 ParserBenchmark.jdomParseNonInterning   thrpt   25   31489.676 ±  314.887  ops/s
 ParserBenchmark.streamingEventParse     thrpt   25   49883.074 ±  907.285  ops/s
 ParserBenchmark.streamingIteratorParse  thrpt   25   53236.564 ± 1182.781  ops/s
+
+
+Build 8K read buffer into implementations of PositionedPushbackReader
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  401355.015 ± 1489.137  ops/s
+ParserBenchmark.jdomParse               thrpt   25   35355.188 ±  421.584  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   43492.900 ±  391.914  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   74428.222 ±  815.324  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   79042.878 ± 2235.718  ops/s
+
+
+Build 1K read buffer into implementations of PositionedPushbackReader
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  671940.084 ± 5457.150  ops/s
+ParserBenchmark.jdomParse               thrpt   25   36418.686 ±  591.219  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   45470.089 ±  322.218  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   78498.803 ± 1343.974  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   84585.535 ± 2609.173  ops/s
+
+
+Build 512 byte read buffer into implementations of PositionedPushbackReader
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  700684.183 ± 7510.914  ops/s
+ParserBenchmark.jdomParse               thrpt   25   35810.319 ±  268.704  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   45380.455 ±  452.757  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   77622.887 ±  781.639  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   84480.482 ±  597.530  ops/s
+
+
+Build 256 byte read buffer into implementations of PositionedPushbackReader
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  711700.356 ± 7335.127  ops/s
+ParserBenchmark.jdomParse               thrpt   25   35476.885 ±  196.268  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   43657.630 ± 1045.415  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   75133.354 ±  842.551  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   82564.355 ± 1096.711  ops/s
+
+
+Build 256 byte read buffer into implementations of PositionedPushbackReader; improve implementation of PositionedPushbackReader
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  715579.040 ± 8604.639  ops/s
+ParserBenchmark.jdomParse               thrpt   25   36821.787 ±  268.170  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   43935.028 ±  316.929  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   79598.379 ± 1204.702  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   87729.543 ±  875.169  ops/s
+
+
+Build read buffer into implementations of PositionedPushbackReader, with size tuned in benchmarks to input size
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  697185.441 ± 2651.059  ops/s
+ParserBenchmark.jdomParse               thrpt   25   38636.636 ±  583.556  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   46218.472 ±  528.201  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   78260.158 ±  629.614  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   85746.750 ±  818.295  ops/s
+
+
+Simplify implementations of PositionedPushbackReader to only push back the previously read char.
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  731057.639 ± 8935.210  ops/s
+ParserBenchmark.jdomParse               thrpt   25   38871.796 ±  140.656  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   48558.588 ±  338.370  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   79883.318 ± 1149.110  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   83092.652 ± 2828.367  ops/s
+
+
+In release trim: tested, null checks, etc
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  717709.448 ± 5404.409  ops/s
+ParserBenchmark.jdomParse               thrpt   25   39012.740 ±  384.868  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   47524.191 ±  975.059  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   77854.416 ±  700.864  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   87211.260 ± 1546.437  ops/s
