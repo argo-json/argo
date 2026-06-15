@@ -125,27 +125,28 @@ public class ParserBenchmark {
             "  ]\n" +
             "]";
 
-    private final JsonParser jsonParser = new JsonParser().positionTracking(DO_NOT_TRACK);
-    private final JsonParser jsonParserNonInterning = jsonParser.nodeInterning(INTERN_NOTHING);
+    private final JsonParser jsonParser1k = new JsonParser().positionTracking(DO_NOT_TRACK).bufferSize(1024);
+    private final JsonParser jsonParser256b = new JsonParser().positionTracking(DO_NOT_TRACK).bufferSize(256);
+    private final JsonParser jsonParser1kNonInterning = jsonParser1k.nodeInterning(INTERN_NOTHING);
 
     @Benchmark
     public void jdomParse(final Blackhole blackhole) throws InvalidSyntaxException {
-        blackhole.consume(jsonParser.parse(JSON_STRING));
+        blackhole.consume(jsonParser1k.parse(JSON_STRING));
     }
 
     @Benchmark
     public void jdomArrayParse(final Blackhole blackhole) throws InvalidSyntaxException {
-        blackhole.consume(jsonParser.parse(ARRAY_JSON_STRING));
+        blackhole.consume(jsonParser256b.parse(ARRAY_JSON_STRING));
     }
 
     @Benchmark
     public void jdomParseNonInterning(final Blackhole blackhole) throws InvalidSyntaxException {
-        blackhole.consume(jsonParserNonInterning.parse(JSON_STRING));
+        blackhole.consume(jsonParser1kNonInterning.parse(JSON_STRING));
     }
 
     @Benchmark
     public void streamingIteratorParse(final Blackhole blackhole) {
-        final Iterator<JsonStreamElement> jsonStreamElementIterator = jsonParser.parseStreaming(new StringReader(JSON_STRING));
+        final Iterator<JsonStreamElement> jsonStreamElementIterator = jsonParser1k.parseStreaming(new StringReader(JSON_STRING));
         while (jsonStreamElementIterator.hasNext()) {
             blackhole.consume(jsonStreamElementIterator.next());
         }
@@ -153,7 +154,7 @@ public class ParserBenchmark {
 
     @Benchmark
     public void streamingEventParse(final Blackhole blackhole) throws InvalidSyntaxException, IOException {
-        jsonParser.parseStreaming(new StringReader(JSON_STRING), new BlackHoleJsonListener(blackhole::consume));
+        jsonParser1k.parseStreaming(new StringReader(JSON_STRING), new BlackHoleJsonListener(blackhole::consume));
     }
 
 }

@@ -1,3 +1,7 @@
+## 7.29
+
+Introduce read buffer of configurable size to significantly improve parsing performance
+
 ## 7.17
 
 Significant JSON generation performance enhancements.

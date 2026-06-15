@@ -150,4 +150,12 @@ class ExamplesTest {
         JsonParser jsonParser = new JsonParser().positionTracking(PositionTracking.DO_NOT_TRACK);
         // end::disablePositionTracking[]
     }
+
+    @Test
+    @SuppressWarnings("unused")
+    void increaseReadBufferSize() {
+        // tag::increaseReadBufferSize[]
+        JsonParser jsonParser = new JsonParser().bufferSize(1024);
+        // end::increaseReadBufferSize[]
+    }
 }

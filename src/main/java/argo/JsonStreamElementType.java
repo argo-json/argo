@@ -29,10 +29,10 @@ public enum JsonStreamElementType {
     START_ARRAY {
         @Override
         JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
-            final int secondChar = readNextNonWhitespaceChar(pushbackReader);
-            if (']' != secondChar) {
-                if (secondChar != -1) {
-                    pushbackReader.unread(secondChar);
+            final int nextChar = readNextNonWhitespaceChar(pushbackReader);
+            if (']' != nextChar) {
+                if (nextChar != -1) {
+                    pushbackReader.unread();
                 }
                 return aJsonValue(pushbackReader, stack);
             }
@@ -129,7 +129,7 @@ public enum JsonStreamElementType {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if ('}' != nextChar) {
             if (nextChar != -1) {
-                pushbackReader.unread(nextChar);
+                pushbackReader.unread();
             }
             return aFieldToken(pushbackReader, stack);
         }
@@ -158,7 +158,7 @@ public enum JsonStreamElementType {
                         return NonTextJsonStreamElement.END_FIELD;
                     case '}':
                         stack.pop();
-                        pushbackReader.unread(nextChar);
+                        pushbackReader.unread();
                         return NonTextJsonStreamElement.END_FIELD;
                     default:
                         throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected either , or }", nextChar, pushbackReader.position());
@@ -206,7 +206,7 @@ public enum JsonStreamElementType {
             case '7':
             case '8':
             case '9':
-                pushbackReader.unread(nextChar);
+                pushbackReader.unread();
                 return number(new NumberReader(pushbackReader));
             case '{':
                 stack.push(START_OBJECT);
@@ -323,7 +323,7 @@ public enum JsonStreamElementType {
                 throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected '+' or '-' or a digit 0 - 9", nextChar, in.position());
             } else if (parserState == NumberParserState.END) {
                 if (nextChar != -1) {
-                    in.unread(nextChar);
+                    in.unread();
                 }
                 return -1;
             } else {

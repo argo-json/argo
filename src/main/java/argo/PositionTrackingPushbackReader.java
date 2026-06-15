@@ -22,29 +22,30 @@ final class PositionTrackingPushbackReader implements PositionedPushbackReader {
     private static final int CARRIAGE_RETURN = '\r';
 
     private final Reader delegate;
+    private final char[] buffer;
+    private int position = 0;
+    private int end = 0;
+
     private int column = 0;
     private boolean columnOverflow = false;
 
     private int previousLineEnd;
-
     private boolean previousColumnOverflow;
 
     private int line = 1;
-
     private boolean lineOverflow = false;
 
     private int readsSinceLastCarriageReturn = 2;
 
     private boolean endOfStream = false;
 
-    private int pushbackBuffer = -1;
-
-    PositionTrackingPushbackReader(final Reader in) {
-        this.delegate = in;
+    PositionTrackingPushbackReader(final Reader delegate, final int bufferSize) {
+        this.delegate = delegate;
+        buffer = new char[bufferSize];
     }
 
-    public void unread(final int character) {
-        pushbackBuffer = character;
+    public void unread() {
+        final char character = buffer[--position];
 
         if (CARRIAGE_RETURN == character) {
             column = previousLineEnd;
@@ -72,13 +73,7 @@ final class PositionTrackingPushbackReader implements PositionedPushbackReader {
     }
 
     public int read() throws IOException {
-        final int character;
-        if (pushbackBuffer < 0) {
-            character = delegate.read();
-        } else {
-            character = pushbackBuffer;
-            pushbackBuffer = -1;
-        }
+        final int character = nextCharacter();
 
         if (CARRIAGE_RETURN == character) {
             previousLineEnd = column;
@@ -116,6 +111,23 @@ final class PositionTrackingPushbackReader implements PositionedPushbackReader {
             if (!endOfStream && readsSinceLastCarriageReturn < 2) {
                 readsSinceLastCarriageReturn++;
             }
+        }
+        return character;
+    }
+
+    private int nextCharacter() throws IOException {
+        final int character;
+        if (position >= end) {
+            final int readResult = delegate.read(buffer);
+            if (readResult <= 0) {
+                character = -1;
+            } else {
+                character = buffer[0];
+                position = 1;
+                end = readResult;
+            }
+        } else {
+            character = buffer[position++];
         }
         return character;
     }

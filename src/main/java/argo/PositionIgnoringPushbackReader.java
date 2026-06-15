@@ -20,34 +20,34 @@ import java.io.Reader;
 final class PositionIgnoringPushbackReader implements PositionedPushbackReader {
 
     private final Reader delegate;
+    private final char[] buffer;
+    private int position = 0;
+    private int end = 0;
 
-    private boolean endOfStream = false;
-
-    private int pushbackBuffer = -1;
-
-    PositionIgnoringPushbackReader(final Reader in) {
-        this.delegate = in;
+    PositionIgnoringPushbackReader(final Reader delegate, final int bufferSize) {
+        this.delegate = delegate;
+        buffer = new char[bufferSize];
     }
 
-    public void unread(final int character) {
-        pushbackBuffer = character;
-        if (endOfStream) {
-            endOfStream = false;
-        }
+    public void unread() {
+        position--;
     }
 
     public int read() throws IOException {
-        final int character;
-        if (pushbackBuffer < 0) {
-            character = delegate.read();
+        final int result;
+        if (position >= end) {
+            final int readResult = delegate.read(buffer);
+            if (readResult <= 0) {
+                result = -1;
+            } else {
+                result = buffer[0];
+                position = 1;
+                end = readResult;
+            }
         } else {
-            character = pushbackBuffer;
-            pushbackBuffer = -1;
+            result = buffer[position++];
         }
-        if (character == -1) {
-            endOfStream = true;
-        }
-        return character;
+        return result;
     }
 
     public int column() {

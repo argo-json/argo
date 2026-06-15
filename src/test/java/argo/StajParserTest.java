@@ -62,7 +62,9 @@ final class StajParserTest {
                 new ShimmedExpectation(new StajParserJsonParserShim.Staj(), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER),
                 new ShimmedExpectation(new StajParserJsonParserShim.Json(new JsonParser()), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER),
                 new ShimmedExpectation(new StajParserJsonParserShim.Json(new JsonParser().positionTracking(TRACK)), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER),
-                new ShimmedExpectation(new StajParserJsonParserShim.Json(new JsonParser().positionTracking(DO_NOT_TRACK)), UNTRACKED_POSITION_EXCEPTION_DETAIL_MAPPER)
+                new ShimmedExpectation(new StajParserJsonParserShim.Json(new JsonParser().positionTracking(DO_NOT_TRACK)), UNTRACKED_POSITION_EXCEPTION_DETAIL_MAPPER),
+                new ShimmedExpectation(new StajParserJsonParserShim.Json(new JsonParser().bufferSize(1).positionTracking(TRACK)), POSITION_TRACKING_EXCEPTION_DETAIL_MAPPER),
+                new ShimmedExpectation(new StajParserJsonParserShim.Json(new JsonParser().bufferSize(1).positionTracking(DO_NOT_TRACK)), UNTRACKED_POSITION_EXCEPTION_DETAIL_MAPPER)
         );
     }
 
@@ -274,10 +276,10 @@ final class StajParserTest {
     @SuppressWarnings("PMD.CloseResource")
     void propagatesIoExceptionReadingNumber(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final IOException ioException = new IOException("An IOException");
-        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new ChoppingReader(new SequenceReader(
                 new StringReader("1"),
                 new BrokenReader(() -> ioException)
-        ));
+        )));
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         try {
@@ -293,10 +295,10 @@ final class StajParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void propagatesIoExceptionSkippingNumberByGettingNextElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new ChoppingReader(new SequenceReader(
                 new StringReader("1"),
                 new BrokenReader(() -> ioException)
-        ));
+        )));
         stajParser.next();
         stajParser.next();
         final JsonStreamException actualException = assertThrows(JsonStreamException.class, stajParser::next);
@@ -307,10 +309,10 @@ final class StajParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void propagatesIoExceptionSkippingNumberByQueryingNextElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new ChoppingReader(new SequenceReader(
                 new StringReader("1"),
                 new BrokenReader(() -> ioException)
-        ));
+        )));
         stajParser.next();
         stajParser.next();
         final JsonStreamException actualException = assertThrows(JsonStreamException.class, stajParser::hasNext);
@@ -665,10 +667,10 @@ final class StajParserTest {
     @SuppressWarnings("PMD.CloseResource")
     void propagatesIoExceptionReadingString(final StajParserJsonParserShim stajParserJsonParserShim) throws IOException {
         final IOException ioException = new IOException("An IOException");
-        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new ChoppingReader(new SequenceReader(
                 new StringReader("\"F"),
                 new BrokenReader(() -> ioException)
-        ));
+        )));
         stajParser.next();
         final Reader reader = stajParser.next().reader();
         try {
@@ -684,10 +686,10 @@ final class StajParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void propagatesIoExceptionSkippingStringByGettingNextElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new ChoppingReader(new SequenceReader(
                 new StringReader("\"F"),
                 new BrokenReader(() -> ioException)
-        ));
+        )));
         stajParser.next();
         stajParser.next();
         final JsonStreamException actualException = assertThrows(JsonStreamException.class, stajParser::next);
@@ -698,10 +700,10 @@ final class StajParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void propagatesIoExceptionSkippingStringByQueryingNextElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new ChoppingReader(new SequenceReader(
                 new StringReader("\"F"),
                 new BrokenReader(() -> ioException)
-        ));
+        )));
         stajParser.next();
         stajParser.next();
         final JsonStreamException actualException = assertThrows(JsonStreamException.class, stajParser::hasNext);
@@ -1180,10 +1182,10 @@ final class StajParserTest {
     @ArgumentsSource(ParserArgumentsProvider.class)
     void handlesIoExceptionSkippingElement(final StajParserJsonParserShim stajParserJsonParserShim) {
         final IOException ioException = new IOException("An IOException");
-        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new SequenceReader(
+        final Iterator<JsonStreamElement> stajParser = stajParserJsonParserShim.parse(new ChoppingReader(new SequenceReader(
                 new StringReader("["),
                 new BrokenReader(() -> ioException)
-        ));
+        )));
         stajParser.next();
         stajParser.next();
         final JsonStreamException jsonStreamException = assertThrows(JsonStreamException.class, stajParser::next);

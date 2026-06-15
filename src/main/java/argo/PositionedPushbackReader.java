@@ -13,7 +13,10 @@ package argo;
 import java.io.IOException;
 
 interface PositionedPushbackReader {
-    void unread(int character);
+    /**
+     * Note that behaviour when calling unread more than once consecutively is undefined.
+     */
+    void unread();
 
     int read() throws IOException;
 

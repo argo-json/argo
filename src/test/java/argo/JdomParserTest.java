@@ -29,8 +29,8 @@ import static argo.JsonParser.NodeInterningStrategy.INTERN_LEAF_NODES;
 import static argo.JsonParser.NodeInterningStrategy.INTERN_NOTHING;
 import static argo.JsonParser.PositionTracking.DO_NOT_TRACK;
 import static argo.JsonParser.PositionTracking.TRACK;
-import static argo.jdom.JsonNodeFactories.array;
 import static argo.jdom.JsonNodeFactories.*;
+import static argo.jdom.JsonNodeFactories.array;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -273,6 +273,28 @@ final class JdomParserTest {
         assertThat(jsonNode.getNode(0), equalTo(jsonNode.getNode(1)));
     }
 
+    @Test
+    void rejectsNullNodeInterningArgument() {
+        assertThrows(NullPointerException.class, () -> new JsonParser().nodeInterning(null));
+    }
+
+    @Test
+    void rejectsNullPositionTrackingArgument() {
+        assertThrows(NullPointerException.class, () -> new JsonParser().positionTracking(null));
+    }
+
+    @Test
+    void rejectsZeroBufferSizeArgument() {
+        final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> new JsonParser().bufferSize(0));
+        assertThat(illegalArgumentException.getMessage(), equalTo("bufferSize is not positive: 0"));
+    }
+
+    @Test
+    void rejectsNegativeBufferSizeArgument() {
+        final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> new JsonParser().bufferSize(-1));
+        assertThat(illegalArgumentException.getMessage(), equalTo("bufferSize is not positive: -1"));
+    }
+
     static final class AllParsersArgumentsProvider implements ArgumentsProvider {
         @Override
         @SuppressWarnings("deprecation")
@@ -283,7 +305,10 @@ final class JdomParserTest {
                     new JdomParserJsonParserShim.Json(new JsonParser().nodeInterning(INTERN_LEAF_NODES)),
                     new JdomParserJsonParserShim.Json(new JsonParser().nodeInterning(INTERN_NOTHING)),
                     new JdomParserJsonParserShim.Json(new JsonParser().positionTracking(TRACK)),
-                    new JdomParserJsonParserShim.Json(new JsonParser().positionTracking(DO_NOT_TRACK))
+                    new JdomParserJsonParserShim.Json(new JsonParser().positionTracking(DO_NOT_TRACK)),
+                    new JdomParserJsonParserShim.Json(new JsonParser().bufferSize(1024)),
+                    new JdomParserJsonParserShim.Json(new JsonParser().bufferSize(1).positionTracking(TRACK)),
+                    new JdomParserJsonParserShim.Json(new JsonParser().bufferSize(1).positionTracking(DO_NOT_TRACK))
             ).map(Arguments::arguments);
         }
     }
@@ -297,7 +322,10 @@ final class JdomParserTest {
                     new JdomParserJsonParserShim.Json(new JsonParser()),
                     new JdomParserJsonParserShim.Json(new JsonParser().nodeInterning(INTERN_LEAF_NODES)),
                     new JdomParserJsonParserShim.Json(new JsonParser().positionTracking(TRACK)),
-                    new JdomParserJsonParserShim.Json(new JsonParser().positionTracking(DO_NOT_TRACK))
+                    new JdomParserJsonParserShim.Json(new JsonParser().positionTracking(DO_NOT_TRACK)),
+                    new JdomParserJsonParserShim.Json(new JsonParser().bufferSize(1024)),
+                    new JdomParserJsonParserShim.Json(new JsonParser().bufferSize(1).positionTracking(TRACK)),
+                    new JdomParserJsonParserShim.Json(new JsonParser().bufferSize(1).positionTracking(DO_NOT_TRACK))
             ).map(Arguments::arguments);
         }
     }
