@@ -506,3 +506,43 @@ ParserBenchmark.jdomParse               thrpt   25   39012.740 ±  384.868  ops/
 ParserBenchmark.jdomParseNonInterning   thrpt   25   47524.191 ±  975.059  ops/s
 ParserBenchmark.streamingEventParse     thrpt   25   77854.416 ±  700.864  ops/s
 ParserBenchmark.streamingIteratorParse  thrpt   25   87211.260 ± 1546.437  ops/s
+
+
+Experimental cut-down implementation of Stack
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  780767.330 ± 6692.418  ops/s
+ParserBenchmark.jdomParse               thrpt   25   41162.251 ±  367.574  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   50164.531 ±  255.316  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   82372.515 ±  605.207  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   87677.435 ± 2249.108  ops/s
+
+
+More complete cut-down implementation of Stack
+
+Benchmark                                Mode  Cnt       Score       Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  785216.171 ± 10801.723  ops/s
+ParserBenchmark.jdomParse               thrpt   25   40448.995 ±   168.800  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   48520.357 ±   672.435  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   83460.409 ±   845.153  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   88534.279 ±  1353.533  ops/s
+
+
+Reduce initial stack size to 8
+
+Benchmark                                Mode  Cnt       Score      Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  781390.872 ± 9620.991  ops/s
+ParserBenchmark.jdomParse               thrpt   25   40113.458 ±  487.802  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   48274.655 ±  504.970  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   77692.442 ± 1719.142  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   83777.902 ± 1190.555  ops/s
+
+
+Increase initial stack size to 16
+
+Benchmark                                Mode  Cnt       Score       Error  Units
+ParserBenchmark.jdomArrayParse          thrpt   25  777636.547 ± 11700.620  ops/s
+ParserBenchmark.jdomParse               thrpt   25   39519.725 ±   496.460  ops/s
+ParserBenchmark.jdomParseNonInterning   thrpt   25   48410.744 ±   170.430  ops/s
+ParserBenchmark.streamingEventParse     thrpt   25   83074.378 ±  1496.538  ops/s
+ParserBenchmark.streamingIteratorParse  thrpt   25   85955.245 ±  1472.313  ops/s

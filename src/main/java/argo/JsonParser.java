@@ -10,6 +10,7 @@
 
 package argo;
 
+import argo.internal.FastStack;
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonStringNode;
@@ -140,7 +141,7 @@ public final class JsonParser {
     public Iterator<JsonStreamElement> parseStreaming(final Reader reader) {
         return new Iterator<JsonStreamElement>() {
             private final PositionedPushbackReader pushbackReader = positionTracking.newPositionedPushbackReader(reader, bufferSize);
-            private final Stack<JsonStreamElementType> stack = new Stack<JsonStreamElementType>();
+            private final FastStack<JsonStreamElementType> stack = new FastStack<JsonStreamElementType>();
             private JsonStreamElement current;
             private JsonStreamElement next;
 
@@ -246,7 +247,7 @@ public final class JsonParser {
         final JsonNumberNodeFactory jsonNumberNodeFactory = nodeInterningStrategy.newJsonNumberNodeFactory();
         final StringBuilder stringBuilder = new StringBuilder(32);
         final RootNodeContainer root = new RootNodeContainer();
-        final Stack<NodeContainer> stack = new Stack<NodeContainer>();
+        final FastStack<NodeContainer> stack = new FastStack<NodeContainer>();
         try {
             parseExecutor.parseUsing(new JsonListener() {
                 public void startDocument() {

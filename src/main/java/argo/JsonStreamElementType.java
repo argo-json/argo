@@ -10,12 +10,12 @@
 
 package argo;
 
+import argo.internal.FastStack;
 import argo.internal.NumberParserState;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.NoSuchElementException;
-import java.util.Stack;
 
 import static argo.CharacterUtilities.toCharacterArrayString;
 import static argo.CharacterUtilities.toPrintableString;
@@ -28,7 +28,7 @@ import static argo.JsonStreamElement.*;
 public enum JsonStreamElementType {
     START_ARRAY {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             final int nextChar = readNextNonWhitespaceChar(pushbackReader);
             if (']' != nextChar) {
                 if (nextChar != -1) {
@@ -42,25 +42,25 @@ public enum JsonStreamElementType {
     },
     END_ARRAY {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     START_OBJECT {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return parseFieldOrObjectEnd(pushbackReader, stack);
         }
     },
     END_OBJECT {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     START_FIELD {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             final int nextChar = readNextNonWhitespaceChar(pushbackReader);
             if (nextChar != ':') {
                 throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to be followed by :", nextChar, pushbackReader.position());
@@ -70,49 +70,49 @@ public enum JsonStreamElementType {
     },
     END_FIELD {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return parseFieldOrObjectEnd(pushbackReader, stack);
         }
     },
     STRING {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     TRUE {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     FALSE {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     NULL {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     NUMBER {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return parseFromEndOfNode(pushbackReader, stack);
         }
     },
     START_DOCUMENT {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
             return aJsonValue(pushbackReader, stack);
         }
     },
     END_DOCUMENT {
         @Override
-        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) {
+        JsonStreamElement parseNext(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) {
             throw new NoSuchElementException("Document complete");
         }
     };
@@ -125,7 +125,7 @@ public enum JsonStreamElementType {
     private static final char CARRIAGE_RETURN = '\r';
     private static final char FORM_FEED = '\f';
 
-    private static JsonStreamElement parseFieldOrObjectEnd(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+    private static JsonStreamElement parseFieldOrObjectEnd(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if ('}' != nextChar) {
             if (nextChar != -1) {
@@ -137,7 +137,7 @@ public enum JsonStreamElementType {
         return NonTextJsonStreamElement.END_OBJECT;
     }
 
-    private static JsonStreamElement parseFromEndOfNode(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+    private static JsonStreamElement parseFromEndOfNode(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         final JsonStreamElementType peek = stack.peek();
         switch (peek) {
@@ -184,7 +184,7 @@ public enum JsonStreamElementType {
     }
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
-    private static JsonStreamElement aJsonValue(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+    private static JsonStreamElement aJsonValue(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         switch (nextChar) {
             case '"':
@@ -239,7 +239,7 @@ public enum JsonStreamElementType {
         return result;
     }
 
-    private static JsonStreamElement aFieldToken(final PositionedPushbackReader pushbackReader, final Stack<JsonStreamElementType> stack) throws IOException {
+    private static JsonStreamElement aFieldToken(final PositionedPushbackReader pushbackReader, final FastStack<JsonStreamElementType> stack) throws IOException {
         final int nextChar = readNextNonWhitespaceChar(pushbackReader);
         if (DOUBLE_QUOTE != nextChar) {
             throw unexpectedCharacterInvalidSyntaxRuntimeException("Expected object identifier to begin with [\"]", nextChar, pushbackReader.position());
@@ -248,7 +248,7 @@ public enum JsonStreamElementType {
         return startField(new StringReader(pushbackReader, pushbackReader.column(), pushbackReader.line()));
     }
 
-    abstract JsonStreamElement parseNext(PositionedPushbackReader pushbackReader, Stack<JsonStreamElementType> stack) throws IOException;
+    abstract JsonStreamElement parseNext(PositionedPushbackReader pushbackReader, FastStack<JsonStreamElementType> stack) throws IOException;
 
     private abstract static class SingleCharacterReader extends Reader {
 

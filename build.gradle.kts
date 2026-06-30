@@ -201,6 +201,14 @@ tasks {
         })
     }
 
+    named<Test>("test") {
+        if (providers.gradleProperty("excludeLargeHeapDependentTests").isPresent) {
+            systemProperty("argo.excludeLargeHeapDependentTests", "true")
+        } else {
+            maxHeapSize = "24g"
+        }
+    }
+
     named<Test>("limitations") {
         testLogging {
             showStandardStreams = true
